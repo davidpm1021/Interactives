@@ -1,0 +1,19 @@
+.template-example {
+  min-height: calc(100vh - 80px);
+  padding: 2rem;
+
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    h2 {
+      color: #1976d2;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+  }
+}
