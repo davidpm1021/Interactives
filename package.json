@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "feature": "bash create-feature.sh"
+    "feature": "bash create-feature.sh",
+    "production": "ng build --configuration production --base-href \"https://www.ngpf.org/interactives/\""
   },
   "prettier": {
     "printWidth": 100,
