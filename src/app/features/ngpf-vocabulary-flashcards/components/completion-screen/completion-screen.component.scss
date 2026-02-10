@@ -70,6 +70,7 @@
   .session-details {
     border-top: 1px solid var(--ngpf-light-gray-blue);
     padding-top: var(--ngpf-spacing-md);
+    margin: 0;
 
     .detail-row {
       display: flex;
@@ -85,6 +86,7 @@
         font-weight: 500;
         text-align: right;
         max-width: 60%;
+        margin: 0;
       }
     }
   }

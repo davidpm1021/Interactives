@@ -26,12 +26,13 @@
       (click)="onFlip()"
       role="button"
       tabindex="0"
+      aria-describedby="keyboard-hints"
       [attr.aria-label]="isFlipped() ? 'Flashcard showing ' + backLabel() + ': ' + backContent() : 'Flashcard showing ' + frontLabel() + ': ' + frontContent() + '. Press space or click to flip.'"
     >
       <div class="flashcard-inner">
         <div class="flashcard-front">
           <span class="card-label">{{ frontLabel() }}</span>
-          <p class="card-content">{{ frontContent() }}</p>
+          <p class="card-content" [attr.lang]="session().isSpanish ? 'es' : null">{{ frontContent() }}</p>
           <span class="flip-hint">Tap to reveal</span>
           @if (currentCard(); as card) {
             <span class="unit-badge">{{ card.unitName }}</span>
@@ -39,7 +40,7 @@
         </div>
         <div class="flashcard-back">
           <span class="card-label">{{ backLabel() }}</span>
-          <p class="card-content">{{ backContent() }}</p>
+          <p class="card-content" [attr.lang]="session().isSpanish ? 'es' : null">{{ backContent() }}</p>
           @if (currentCard(); as card) {
             <span class="unit-badge">{{ card.unitName }}</span>
           }
@@ -47,7 +48,7 @@
       </div>
     </div>
 
-    <div class="action-buttons" [class.visible]="isFlipped()">
+    <div class="action-buttons" [class.visible]="isFlipped()" [attr.aria-hidden]="isFlipped() ? null : true">
       <button
         type="button"
         class="ngpf-btn ngpf-btn-danger"
@@ -68,11 +69,13 @@
       </button>
     </div>
 
-    <p class="keyboard-hints">
+    <p class="keyboard-hints" id="keyboard-hints">
       <kbd>Space</kbd> flip &nbsp;&middot;&nbsp;
       <kbd>←</kbd> missed &nbsp;&middot;&nbsp;
       <kbd>→</kbd> got it
     </p>
+
+    <div class="sr-only" aria-live="polite">{{ cardAnnouncement() }}</div>
   } @else {
     <div class="session-complete">
       <h2>Round Complete!</h2>

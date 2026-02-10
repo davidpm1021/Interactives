@@ -127,6 +127,11 @@ a {
     color: var(--ngpf-bright-blue);
     text-decoration: underline;
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--ngpf-sky-blue);
+    outline-offset: 2px;
+  }
 }
 
 // ==========================================
@@ -404,4 +409,39 @@ kbd {
   border: 1px solid var(--ngpf-light-gray-blue);
   border-radius: var(--ngpf-radius-sm);
   padding: var(--ngpf-spacing-xs) var(--ngpf-spacing-sm);
+}
+
+// ==========================================
+// Screen Reader Only (Visually Hidden)
+// ==========================================
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ==========================================
+// Reduced Motion
+// ==========================================
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+// ==========================================
+// Live Region (prevent empty whitespace)
+// ==========================================
+
+[aria-live]:empty {
+  display: none;
 }

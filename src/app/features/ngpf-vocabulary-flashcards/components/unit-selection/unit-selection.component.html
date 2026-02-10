@@ -21,7 +21,7 @@
     </button>
   </div>
 
-  <div class="units-grid">
+  <div class="units-grid" role="group" aria-label="Available units">
     @for (unit of units(); track unit.id) {
       <button
         type="button"
@@ -29,6 +29,7 @@
         [class.ngpf-card-selected]="isSelected(unit.id)"
         (click)="toggleUnit(unit.id)"
         [attr.aria-pressed]="isSelected(unit.id)"
+        [attr.aria-label]="unit.name + ', ' + unit.terms.length + ' terms'"
       >
         <span class="unit-name">{{ unit.name }}</span>
         <span class="term-count">{{ unit.terms.length }} terms</span>

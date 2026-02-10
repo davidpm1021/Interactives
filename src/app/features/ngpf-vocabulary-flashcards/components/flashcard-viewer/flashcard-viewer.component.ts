@@ -73,14 +73,26 @@ export class FlashcardViewerComponent {
     return card.frontSide === 'term' ? 'Definition' : 'Term';
   });
 
+  protected readonly cardAnnouncement = computed(() => {
+    const card = this.currentCard();
+    if (!card) return '';
+    if (card.isFlipped) {
+      return `${this.backLabel()}: ${this.backContent()}`;
+    }
+    return `Card ${this.cardNumber()} of ${this.session().totalCards}. ${this.frontLabel()}: ${this.frontContent()}`;
+  });
+
   @HostListener('document:keydown', ['$event'])
   handleKeyboard(event: KeyboardEvent): void {
+    const tag = (event.target as HTMLElement)?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
     if (this.isSessionComplete()) return;
 
     const card = this.currentCard();
     if (!card) return;
 
-    if (event.code === 'Space' && !card.isFlipped) {
+    if ((event.code === 'Space' || event.code === 'Enter') && !card.isFlipped) {
       event.preventDefault();
       this.onFlip();
     } else if ((event.code === 'Enter' || event.code === 'ArrowRight') && card.isFlipped) {
@@ -89,6 +101,9 @@ export class FlashcardViewerComponent {
     } else if (event.code === 'ArrowLeft' && card.isFlipped) {
       event.preventDefault();
       this.onMissed();
+    } else if (event.code === 'Escape') {
+      event.preventDefault();
+      this.onExit();
     }
   }
 

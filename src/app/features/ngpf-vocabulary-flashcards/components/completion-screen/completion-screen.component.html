@@ -5,7 +5,7 @@
     <p>You've completed all cards.</p>
   </div>
 
-  <div class="ngpf-card stats-card">
+  <div class="ngpf-card stats-card" role="region" aria-label="Session statistics">
     <h3>Session Summary</h3>
 
     <div class="stat-grid">
@@ -15,12 +15,12 @@
       </div>
 
       <div class="stat-item">
-        <span class="stat-value correct">{{ stats().correctOnFirstPass }}</span>
+        <span class="stat-value correct">{{ stats().correctOnFirstPass }}<span class="sr-only"> (correct)</span></span>
         <span class="stat-label">Correct (First Try)</span>
       </div>
 
       <div class="stat-item">
-        <span class="stat-value review">{{ stats().neededReview }}</span>
+        <span class="stat-value review">{{ stats().neededReview }}<span class="sr-only"> (needed review)</span></span>
         <span class="stat-label">Needed Review</span>
       </div>
 
@@ -30,20 +30,20 @@
       </div>
     </div>
 
-    <div class="session-details">
+    <dl class="session-details">
       <div class="detail-row">
-        <span class="detail-label">Units Studied:</span>
-        <span class="detail-value">{{ stats().unitNames.join(', ') }}</span>
+        <dt class="detail-label">Units Studied:</dt>
+        <dd class="detail-value">{{ stats().unitNames.join(', ') }}</dd>
       </div>
       <div class="detail-row">
-        <span class="detail-label">Study Mode:</span>
-        <span class="detail-value">{{ studyModeLabel() }}</span>
+        <dt class="detail-label">Study Mode:</dt>
+        <dd class="detail-value">{{ studyModeLabel() }}</dd>
       </div>
       <div class="detail-row">
-        <span class="detail-label">Language:</span>
-        <span class="detail-value">{{ stats().isSpanish ? 'Spanish' : 'English' }}</span>
+        <dt class="detail-label">Language:</dt>
+        <dd class="detail-value">{{ stats().isSpanish ? 'Spanish' : 'English' }}</dd>
       </div>
-    </div>
+    </dl>
   </div>
 
   <div class="action-buttons">

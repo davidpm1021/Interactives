@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, afterNextRender, ElementRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { TopHeader } from '../../shared/top-header/top-header';
 import { BottomHeader } from '../../shared/bottom-header/bottom-header';
@@ -33,8 +33,10 @@ import {
 })
 export class NgpfVocabularyFlashcards implements OnInit {
   private readonly flashcardService = inject(FlashcardService);
+  private readonly elementRef = inject(ElementRef);
 
   protected readonly title = 'NGPF Vocabulary Flashcards';
+  protected readonly liveAnnouncement = signal('');
 
   protected readonly currentView = signal<ViewState>('unit-selection');
   protected readonly vocabularyData = signal<VocabularyData | null>(null);
@@ -50,6 +52,24 @@ export class NgpfVocabularyFlashcards implements OnInit {
   private readonly totalReviewedCards = signal(0);
 
   protected readonly units = computed(() => this.vocabularyData()?.units ?? []);
+
+  private readonly viewAnnouncementEffect = effect(() => {
+    const view = this.currentView();
+    const announcements: Record<ViewState, string> = {
+      'unit-selection': 'Unit selection view loaded',
+      'study-settings': 'Study settings view loaded',
+      'studying': 'Flashcard study session started',
+      'completion': 'Study session complete',
+    };
+    this.liveAnnouncement.set(announcements[view]);
+    afterNextRender(() => {
+      const heading = this.elementRef.nativeElement.querySelector('h2');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus();
+      }
+    });
+  });
 
   protected readonly currentCard = computed(() => {
     const session = this.studySession();
