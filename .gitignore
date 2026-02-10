@@ -41,3 +41,10 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Playwright MCP screenshots
+.playwright-mcp/
+
+# Google Service Account credentials (sensitive - NEVER commit)
+/config/*.json
+!/config/*.example.json

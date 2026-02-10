@@ -1,0 +1,60 @@
+<div class="completion-screen">
+  <div class="celebration">
+    <span class="celebration-icon" aria-hidden="true">&#127881;</span>
+    <h2>Congratulations!</h2>
+    <p>You've completed all cards.</p>
+  </div>
+
+  <div class="ngpf-card stats-card">
+    <h3>Session Summary</h3>
+
+    <div class="stat-grid">
+      <div class="stat-item">
+        <span class="stat-value">{{ stats().totalCards }}</span>
+        <span class="stat-label">Total Cards</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-value correct">{{ stats().correctOnFirstPass }}</span>
+        <span class="stat-label">Correct (First Try)</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-value review">{{ stats().neededReview }}</span>
+        <span class="stat-label">Needed Review</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-value">{{ accuracyPercentage() }}%</span>
+        <span class="stat-label">Accuracy</span>
+      </div>
+    </div>
+
+    <div class="session-details">
+      <div class="detail-row">
+        <span class="detail-label">Units Studied:</span>
+        <span class="detail-value">{{ stats().unitNames.join(', ') }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Study Mode:</span>
+        <span class="detail-value">{{ studyModeLabel() }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Language:</span>
+        <span class="detail-value">{{ stats().isSpanish ? 'Spanish' : 'English' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onStudyAgain()">
+      Study Again
+    </button>
+    <button type="button" class="ngpf-btn ngpf-btn-outline" (click)="onChangeUnits()">
+      Change Units
+    </button>
+    <a routerLink="/" class="link-btn ngpf-text-secondary">
+      Back to Home
+    </a>
+  </div>
+</div>

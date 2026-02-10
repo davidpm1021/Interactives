@@ -1,0 +1,103 @@
+<div class="flashcard-viewer">
+  <div class="nav-bar">
+    <button type="button" class="ngpf-btn ngpf-btn-outline" (click)="onExit()" aria-label="Exit to unit selection">
+      ← Exit
+    </button>
+  </div>
+
+  @if (!isSessionComplete()) {
+    <div class="progress-section">
+      <app-progress-bar
+        [current]="session().completedCards"
+        [total]="session().totalCards"
+      />
+    </div>
+
+    <p class="card-counter">
+      Card {{ cardNumber() }} of {{ session().totalCards }}
+      @if (session().isReviewRound) {
+        <span class="ngpf-label ngpf-label-warning">Review Round</span>
+      }
+    </p>
+
+    <div
+      class="flashcard"
+      [class.flipped]="isFlipped()"
+      (click)="onFlip()"
+      role="button"
+      tabindex="0"
+      [attr.aria-label]="isFlipped() ? 'Flashcard showing ' + backLabel() + ': ' + backContent() : 'Flashcard showing ' + frontLabel() + ': ' + frontContent() + '. Press space or click to flip.'"
+    >
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <span class="card-label">{{ frontLabel() }}</span>
+          <p class="card-content">{{ frontContent() }}</p>
+          <span class="flip-hint">Tap to reveal</span>
+          @if (currentCard(); as card) {
+            <span class="unit-badge">{{ card.unitName }}</span>
+          }
+        </div>
+        <div class="flashcard-back">
+          <span class="card-label">{{ backLabel() }}</span>
+          <p class="card-content">{{ backContent() }}</p>
+          @if (currentCard(); as card) {
+            <span class="unit-badge">{{ card.unitName }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons" [class.visible]="isFlipped()">
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-danger"
+        (click)="onMissed()"
+        [disabled]="!isFlipped()"
+        aria-label="Mark as missed"
+      >
+        Missed
+      </button>
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-success"
+        (click)="onGotIt()"
+        [disabled]="!isFlipped()"
+        aria-label="Mark as correct"
+      >
+        Got it
+      </button>
+    </div>
+
+    <p class="keyboard-hints">
+      <kbd>Space</kbd> flip &nbsp;&middot;&nbsp;
+      <kbd>←</kbd> missed &nbsp;&middot;&nbsp;
+      <kbd>→</kbd> got it
+    </p>
+  } @else {
+    <div class="session-complete">
+      <h2>Round Complete!</h2>
+
+      @if (hasMissedCards()) {
+        <p class="missed-message ngpf-text-secondary ngpf-mb-lg">
+          You missed <strong>{{ missedCount() }}</strong> card(s).
+          Would you like to review them?
+        </p>
+        <div class="complete-actions">
+          <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onReviewMissed()">
+            Review Missed Cards
+          </button>
+          <button type="button" class="ngpf-btn ngpf-btn-outline" (click)="onFinish()">
+            Finish Anyway
+          </button>
+        </div>
+      } @else {
+        <p class="ngpf-text-success ngpf-mb-lg">
+          Perfect! You got all cards correct!
+        </p>
+        <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onFinish()">
+          View Results
+        </button>
+      }
+    </div>
+  }
+</div>

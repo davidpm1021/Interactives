@@ -7,7 +7,5 @@ import { Component } from '@angular/core';
   templateUrl: './top-header.html',
   styleUrl: './top-header.scss'
 })
-export class TopHeader {
-  protected readonly title = 'NGPF Interactives';
-}
+export class TopHeader {}
 

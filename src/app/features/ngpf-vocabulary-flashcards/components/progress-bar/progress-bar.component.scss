@@ -1,0 +1,19 @@
+// Progress Bar - Layout only (colors/styling inherited from global .ngpf-progress)
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: var(--ngpf-spacing-md);
+  width: 100%;
+
+  .ngpf-progress {
+    flex: 1;
+  }
+
+  .progress-text {
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: right;
+  }
+}

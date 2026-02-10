@@ -1,0 +1,16 @@
+<div
+  class="progress-container"
+  role="progressbar"
+  [attr.aria-valuenow]="current()"
+  [attr.aria-valuemin]="0"
+  [attr.aria-valuemax]="total()"
+  [attr.aria-label]="'Progress: ' + current() + ' of ' + total() + ' cards completed'"
+>
+  <div class="ngpf-progress">
+    <div
+      class="ngpf-progress-bar"
+      [style.width.%]="percentage()"
+    ></div>
+  </div>
+  <span class="progress-text ngpf-text-secondary">{{ current() }} / {{ total() }}</span>
+</div>

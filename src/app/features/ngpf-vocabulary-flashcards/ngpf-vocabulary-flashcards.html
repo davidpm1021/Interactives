@@ -1,0 +1,54 @@
+<app-top-header></app-top-header>
+<div class="ngpf-vocabulary-flashcards">
+  <div class="content">
+    <h1>{{ title }}</h1>
+
+    @if (isLoading()) {
+      <div class="loading">
+        <p>Loading vocabulary...</p>
+      </div>
+    } @else if (error()) {
+      <div class="error">
+        <p>{{ error() }}</p>
+        <button type="button" (click)="loadVocabulary()">Retry</button>
+      </div>
+    } @else {
+      @switch (currentView()) {
+        @case ('unit-selection') {
+          <app-unit-selection
+            [units]="units()"
+            (unitsSelected)="onUnitsSelected($event)"
+          />
+        }
+        @case ('study-settings') {
+          <app-study-settings
+            [selectedUnits]="selectedUnits()"
+            (settingsConfirmed)="onSettingsConfirmed($event)"
+            (back)="onSettingsBack()"
+          />
+        }
+        @case ('studying') {
+          @if (studySession(); as session) {
+            <app-flashcard-viewer
+              [session]="session"
+              [currentCard]="currentCard()"
+              (flipCard)="onFlipCard()"
+              (cardResult)="onCardResult($event)"
+              (reviewMissed)="onReviewMissed()"
+              (finish)="onFinish()"
+              (exit)="onExitStudy()"
+            />
+          }
+        }
+        @case ('completion') {
+          <app-completion-screen
+            [stats]="completionStats()"
+            (studyAgain)="onStudyAgain()"
+            (changeUnits)="onChangeUnits()"
+          />
+        }
+      }
+    }
+  </div>
+</div>
+<app-bottom-header></app-bottom-header>
