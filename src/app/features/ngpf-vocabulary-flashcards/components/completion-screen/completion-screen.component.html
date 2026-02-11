@@ -1,0 +1,60 @@
+<div class="completion-screen">
+  <div class="celebration">
+    <span class="celebration-icon" aria-hidden="true">&#127881;</span>
+    <h2>Congratulations!</h2>
+    <p>You've completed all cards.</p>
+  </div>
+
+  <div class="ngpf-card stats-card" role="region" aria-label="Session statistics">
+    <h3>Session Summary</h3>
+
+    <div class="stat-grid">
+      <div class="stat-item">
+        <span class="stat-value">{{ stats().totalCards }}</span>
+        <span class="stat-label">Total Cards</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-value correct">{{ stats().correctOnFirstPass }}<span class="sr-only"> (correct)</span></span>
+        <span class="stat-label">Correct (First Try)</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-value review">{{ stats().neededReview }}<span class="sr-only"> (needed review)</span></span>
+        <span class="stat-label">Needed Review</span>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-value">{{ accuracyPercentage() }}%</span>
+        <span class="stat-label">Accuracy</span>
+      </div>
+    </div>
+
+    <dl class="session-details">
+      <div class="detail-row">
+        <dt class="detail-label">Units Studied:</dt>
+        <dd class="detail-value">{{ stats().unitNames.join(', ') }}</dd>
+      </div>
+      <div class="detail-row">
+        <dt class="detail-label">Study Mode:</dt>
+        <dd class="detail-value">{{ studyModeLabel() }}</dd>
+      </div>
+      <div class="detail-row">
+        <dt class="detail-label">Language:</dt>
+        <dd class="detail-value">{{ stats().isSpanish ? 'Spanish' : 'English' }}</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="action-buttons">
+    <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onStudyAgain()">
+      Study Again
+    </button>
+    <button type="button" class="ngpf-btn ngpf-btn-outline" (click)="onChangeUnits()">
+      Change Units
+    </button>
+    <a routerLink="/" class="link-btn ngpf-text-secondary">
+      Back to Home
+    </a>
+  </div>
+</div>

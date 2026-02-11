@@ -1,0 +1,66 @@
+// Study Settings - Layout only (colors/typography inherited from global styles)
+
+.study-settings {
+  max-width: 600px;
+  margin: 0 auto;
+
+  h2, .summary {
+    text-align: center;
+  }
+
+  .settings-section {
+    margin-bottom: var(--ngpf-spacing-xl);
+
+    .section-description {
+      font-size: 14px;
+      color: var(--ngpf-text-muted);
+      margin-bottom: var(--ngpf-spacing-md);
+    }
+  }
+
+  .mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-md);
+
+    @media (min-width: 600px) {
+      flex-direction: row;
+    }
+  }
+
+  .mode-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .mode-icon {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--ngpf-bright-blue);
+      margin-bottom: var(--ngpf-spacing-sm);
+    }
+
+    .mode-label {
+      font-weight: 600;
+      margin-bottom: var(--ngpf-spacing-xs);
+    }
+
+    .mode-description {
+      font-size: 12px;
+      color: var(--ngpf-text-secondary);
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--ngpf-spacing-md);
+    margin-top: var(--ngpf-spacing-xl);
+
+    .start-btn {
+      flex: 1;
+    }
+  }
+}

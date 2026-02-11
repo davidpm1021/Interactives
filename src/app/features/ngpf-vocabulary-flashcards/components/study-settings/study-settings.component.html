@@ -1,0 +1,84 @@
+<div class="study-settings">
+  <h2>Study Settings</h2>
+
+  <p class="summary ngpf-text-secondary ngpf-mb-xl">
+    You're about to study <strong class="ngpf-text-primary">{{ totalTerms() }} cards</strong> from
+    <strong class="ngpf-text-primary">{{ unitCount() }} unit(s)</strong>
+  </p>
+
+  <div class="settings-section">
+    <h3>Study Mode</h3>
+    <p class="section-description">Choose how you want to see each card</p>
+
+    <div class="mode-options" role="radiogroup" aria-label="Study mode selection">
+      <button
+        type="button"
+        class="ngpf-card ngpf-card-interactive mode-option"
+        [class.ngpf-card-selected]="studyMode() === 'term-first'"
+        (click)="setStudyMode('term-first')"
+        role="radio"
+        [attr.aria-checked]="studyMode() === 'term-first'"
+      >
+        <span class="mode-icon" aria-hidden="true">A</span>
+        <span class="mode-label">Term → Definition</span>
+        <span class="mode-description">See the word, guess the meaning</span>
+      </button>
+
+      <button
+        type="button"
+        class="ngpf-card ngpf-card-interactive mode-option"
+        [class.ngpf-card-selected]="studyMode() === 'definition-first'"
+        (click)="setStudyMode('definition-first')"
+        role="radio"
+        [attr.aria-checked]="studyMode() === 'definition-first'"
+      >
+        <span class="mode-icon" aria-hidden="true">?</span>
+        <span class="mode-label">Definition → Term</span>
+        <span class="mode-description">See the meaning, guess the word</span>
+      </button>
+
+      <button
+        type="button"
+        class="ngpf-card ngpf-card-interactive mode-option"
+        [class.ngpf-card-selected]="studyMode() === 'mixed'"
+        (click)="setStudyMode('mixed')"
+        role="radio"
+        [attr.aria-checked]="studyMode() === 'mixed'"
+      >
+        <span class="mode-icon" aria-hidden="true">↔</span>
+        <span class="mode-label">Mixed</span>
+        <span class="mode-description">Random for each card</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h3>Language</h3>
+
+    <button
+      type="button"
+      class="ngpf-toggle"
+      [class.ngpf-toggle-active]="isSpanish()"
+      (click)="toggleSpanish()"
+      role="switch"
+      [attr.aria-checked]="isSpanish()"
+      [attr.aria-label]="isSpanish() ? 'Study in Spanish, currently on' : 'Study in Spanish, currently off'"
+    >
+      <span class="ngpf-toggle-track">
+        <span class="ngpf-toggle-thumb"></span>
+      </span>
+      <span class="ngpf-toggle-label">
+        {{ isSpanish() ? 'Estudiar en Español' : 'Study in Spanish' }}
+      </span>
+    </button>
+  </div>
+
+  <div class="action-buttons">
+    <button type="button" class="ngpf-btn ngpf-btn-outline" (click)="onBack()">
+      ← Back
+    </button>
+    <button type="button" class="ngpf-btn ngpf-btn-primary start-btn" (click)="onStartStudying()">
+      Start Studying →
+    </button>
+  </div>
+</div>

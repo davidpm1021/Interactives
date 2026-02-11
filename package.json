@@ -8,7 +8,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "feature": "bash create-feature.sh",
-    "production": "ng build --configuration production --base-href \"https://www.ngpf.org/interactives/\""
+    "production": "ng build --configuration production --base-href \"https://www.ngpf.org/interactives/\"",
+    "parse-dictionary": "npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/parse-dictionary.ts",
+    "audit-dictionary": "npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/audit-dictionary.ts"
   },
   "prettier": {
     "printWidth": 100,
@@ -38,7 +40,9 @@
     "@angular/build": "^21.0.4",
     "@angular/cli": "^21.0.4",
     "@angular/compiler-cli": "^21.0.0",
+    "googleapis": "^171.2.0",
     "jsdom": "^27.1.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }

@@ -1,0 +1,55 @@
+<app-top-header></app-top-header>
+<main class="ngpf-vocabulary-flashcards" id="main-content">
+  <div class="content">
+    <h1>{{ title }}</h1>
+
+    @if (isLoading()) {
+      <div class="loading" role="status" aria-live="polite">
+        <p>Loading vocabulary...</p>
+      </div>
+    } @else if (error()) {
+      <div class="error" role="alert">
+        <p>{{ error() }}</p>
+        <button type="button" (click)="loadVocabulary()" aria-label="Retry loading vocabulary data">Retry</button>
+      </div>
+    } @else {
+      @switch (currentView()) {
+        @case ('unit-selection') {
+          <app-unit-selection
+            [units]="units()"
+            (unitsSelected)="onUnitsSelected($event)"
+          />
+        }
+        @case ('study-settings') {
+          <app-study-settings
+            [selectedUnits]="selectedUnits()"
+            (settingsConfirmed)="onSettingsConfirmed($event)"
+            (back)="onSettingsBack()"
+          />
+        }
+        @case ('studying') {
+          @if (studySession(); as session) {
+            <app-flashcard-viewer
+              [session]="session"
+              [currentCard]="currentCard()"
+              (flipCard)="onFlipCard()"
+              (cardResult)="onCardResult($event)"
+              (reviewMissed)="onReviewMissed()"
+              (finish)="onFinish()"
+              (exit)="onExitStudy()"
+            />
+          }
+        }
+        @case ('completion') {
+          <app-completion-screen
+            [stats]="completionStats()"
+            (studyAgain)="onStudyAgain()"
+            (changeUnits)="onChangeUnits()"
+          />
+        }
+      }
+    }
+    <div class="sr-only" aria-live="polite">{{ liveAnnouncement() }}</div>
+  </div>
+</main>
+<app-bottom-header></app-bottom-header>

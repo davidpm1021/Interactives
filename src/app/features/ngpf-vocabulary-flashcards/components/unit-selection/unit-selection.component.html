@@ -1,0 +1,58 @@
+<div class="unit-selection">
+  <h2>Select Units to Study</h2>
+  <p class="subtitle ngpf-text-secondary ngpf-mb-lg">Choose one or more units to create your flashcard deck</p>
+
+  <div class="actions-bar">
+    <button
+      type="button"
+      class="ngpf-btn ngpf-btn-outline"
+      (click)="selectAll()"
+      [disabled]="allSelected()"
+    >
+      Select All
+    </button>
+    <button
+      type="button"
+      class="ngpf-btn ngpf-btn-outline"
+      (click)="deselectAll()"
+      [disabled]="!hasSelection()"
+    >
+      Deselect All
+    </button>
+  </div>
+
+  <div class="units-grid" role="group" aria-label="Available units">
+    @for (unit of units(); track unit.id) {
+      <button
+        type="button"
+        class="ngpf-card ngpf-card-interactive unit-card"
+        [class.ngpf-card-selected]="isSelected(unit.id)"
+        (click)="toggleUnit(unit.id)"
+        [attr.aria-pressed]="isSelected(unit.id)"
+        [attr.aria-label]="unit.name + ', ' + unit.terms.length + ' terms'"
+      >
+        <span class="unit-name">{{ unit.name }}</span>
+        <span class="term-count">{{ unit.terms.length }} terms</span>
+        @if (isSelected(unit.id)) {
+          <span class="check-indicator" aria-hidden="true">&#10003;</span>
+        }
+      </button>
+    }
+  </div>
+
+  <div class="continue-section">
+    @if (hasSelection()) {
+      <p class="selection-summary">
+        {{ selectedUnitIds().size }} unit(s) selected &middot; {{ totalSelectedTerms() }} total terms
+      </p>
+    }
+    <button
+      type="button"
+      class="ngpf-btn ngpf-btn-primary"
+      [disabled]="!hasSelection()"
+      (click)="onContinue()"
+    >
+      Continue
+    </button>
+  </div>
+</div>
