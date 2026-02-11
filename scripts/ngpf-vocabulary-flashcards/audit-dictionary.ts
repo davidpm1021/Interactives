@@ -14,14 +14,15 @@
 import { google } from 'googleapis';
 import * as fs from 'fs';
 import * as path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const DOCUMENT_ID = '1YH07bp18mb2fLOlJqvRMpiEAJ0oodsZRzEhEHPwjEDo';
-const PROJECT_ROOT = path.join(__dirname, '../../../../..');
-const JSON_PATH = path.join(PROJECT_ROOT, 'public/features/ngpf-vocabulary-flashcards/data/flashcard-vocabulary.json');
+
+// When invoked via `npm run ...`, cwd is the package root (`angular-interactives/`).
+const PROJECT_ROOT = path.resolve(process.cwd());
+const JSON_PATH = path.join(
+  PROJECT_ROOT,
+  'public/features/ngpf-vocabulary-flashcards/data/flashcard-vocabulary.json'
+);
 const CREDENTIALS_PATH = path.join(PROJECT_ROOT, 'config/google-service-account.json');
 
 // ============================================================
@@ -35,13 +36,6 @@ interface DocTerm {
   spanishDef: string;
   unitName: string;
   elementIndex: number;
-}
-
-interface JsonTerm {
-  term: string;
-  definition: string;
-  spanishTerm: string;
-  spanishDef: string;
 }
 
 interface UnitComparison {
@@ -125,9 +119,11 @@ function extractDocSections(doc: any): Map<string, DocTerm[]> {
     // HEADING_1 = section boundary
     if (styleType === 'HEADING_1') {
       // Stop at glossary
-      if (text.toLowerCase().includes('glossary') ||
-          text.toLowerCase().includes('appendix') ||
-          text.toLowerCase().includes('index')) {
+      if (
+        text.toLowerCase().includes('glossary') ||
+        text.toLowerCase().includes('appendix') ||
+        text.toLowerCase().includes('index')
+      ) {
         // Save pending term
         if (currentTerm?.englishTerm && currentSection) {
           saveTerm(currentSection, currentTerm as DocTerm, sections, i);
@@ -204,8 +200,11 @@ function extractDocSections(doc: any): Map<string, DocTerm[]> {
 
     // Definition text (NORMAL_TEXT, or HEADING_2 that isn't a new term entry)
     // Some definitions in the doc are misformatted as HEADING_2 instead of NORMAL_TEXT
-    if ((styleType === 'NORMAL_TEXT' ||
-         (styleType === 'HEADING_2' && !text.startsWith('ENGLISH') && !text.startsWith('SPANISH'))) && currentTerm) {
+    if (
+      (styleType === 'NORMAL_TEXT' ||
+        (styleType === 'HEADING_2' && !text.startsWith('ENGLISH') && !text.startsWith('SPANISH'))) &&
+      currentTerm
+    ) {
       if (expectingEnglishDef && !currentTerm.englishDef) {
         currentTerm.englishDef = text;
         expectingEnglishDef = false;
@@ -224,16 +223,11 @@ function extractDocSections(doc: any): Map<string, DocTerm[]> {
   return sections;
 }
 
-function saveTerm(
-  section: string,
-  term: DocTerm,
-  sections: Map<string, DocTerm[]>,
-  index: number
-): void {
+function saveTerm(section: string, term: DocTerm, sections: Map<string, DocTerm[]>, index: number): void {
   if (!term.englishTerm) return;
   const list = sections.get(section) || [];
   // Dedup within section
-  const exists = list.some(t => t.englishTerm.toLowerCase() === term.englishTerm.toLowerCase());
+  const exists = list.some((t) => t.englishTerm.toLowerCase() === term.englishTerm.toLowerCase());
   if (!exists) {
     term.elementIndex = index;
     list.push(term);
@@ -261,9 +255,9 @@ function loadJson(): any {
 function normalize(s: string): string {
   return s
     .toLowerCase()
-    .replace(/[\u000b\u000c\r\n]+/g, ' ')  // vertical tabs, newlines
+    .replace(/[\u000b\u000c\r\n]+/g, ' ') // vertical tabs, newlines
     .replace(/\s+/g, ' ')
-    .replace(/[–—]/g, '-')  // normalize dashes
+    .replace(/[–—]/g, '-') // normalize dashes
     .trim();
 }
 
@@ -310,27 +304,27 @@ function runComparison(docSections: Map<string, DocTerm[]>, jsonData: any): Audi
       continue;
     }
 
-    const docTermNames = docTerms.map(t => normalize(t.englishTerm));
+    const docTermNames = docTerms.map((t) => normalize(t.englishTerm));
     const jsonTermNames = jsonUnit.terms.map((t: any) => normalize(t.term));
 
-    const missingFromJson = docTermNames.filter(dt => !jsonTermNames.includes(dt));
+    const missingFromJson = docTermNames.filter((dt) => !jsonTermNames.includes(dt));
     const extraInJson = jsonTermNames.filter((jt: string) => !docTermNames.includes(jt));
-    const matched = docTermNames.filter(dt => jsonTermNames.includes(dt));
+    const matched = docTermNames.filter((dt) => jsonTermNames.includes(dt));
 
     const comparison: UnitComparison = {
       unitName: jsonUnit.name,
-      docTerms: docTerms.map(t => t.englishTerm),
+      docTerms: docTerms.map((t) => t.englishTerm),
       jsonTerms: jsonUnit.terms.map((t: any) => t.term),
-      missingFromJson: missingFromJson.map(n => {
-        const orig = docTerms.find(t => normalize(t.englishTerm) === n);
+      missingFromJson: missingFromJson.map((n) => {
+        const orig = docTerms.find((t) => normalize(t.englishTerm) === n);
         return orig?.englishTerm || n;
       }),
       extraInJson: extraInJson.map((n: string) => {
         const orig = jsonUnit.terms.find((t: any) => normalize(t.term) === n);
         return orig?.term || n;
       }),
-      matched: matched.map(n => {
-        const orig = docTerms.find(t => normalize(t.englishTerm) === n);
+      matched: matched.map((n) => {
+        const orig = docTerms.find((t) => normalize(t.englishTerm) === n);
         return orig?.englishTerm || n;
       }),
     };
@@ -366,7 +360,7 @@ function runComparison(docSections: Map<string, DocTerm[]>, jsonData: any): Audi
 
   // Check for JSON units that have no matching doc section
   for (const jsonUnit of jsonData.units) {
-    const hasMatch = result.unitComparisons.some(c => c.unitName === jsonUnit.name);
+    const hasMatch = result.unitComparisons.some((c) => c.unitName === jsonUnit.name);
     if (!hasMatch && jsonUnit.terms.length > 0) {
       result.unmatchedDocSections.push(`JSON unit "${jsonUnit.name}" has no matching doc section`);
       result.overallPass = false;
@@ -398,20 +392,22 @@ function printReport(audit: AuditResult): void {
   console.log('-'.repeat(70));
 
   for (const comp of audit.unitComparisons) {
-    const status = (comp.missingFromJson.length === 0 && comp.extraInJson.length === 0) ? '✅' : '❌';
+    const status = comp.missingFromJson.length === 0 && comp.extraInJson.length === 0 ? '✅' : '❌';
     console.log(`\n  ${status} ${comp.unitName}`);
-    console.log(`     Doc: ${comp.docTerms.length} terms | JSON: ${comp.jsonTerms.length} terms | Matched: ${comp.matched.length}`);
+    console.log(
+      `     Doc: ${comp.docTerms.length} terms | JSON: ${comp.jsonTerms.length} terms | Matched: ${comp.matched.length}`
+    );
 
     if (comp.missingFromJson.length > 0) {
       totalMissing += comp.missingFromJson.length;
       console.log(`     ❌ MISSING from JSON (${comp.missingFromJson.length}):`);
-      comp.missingFromJson.forEach(t => console.log(`        - "${t}"`));
+      comp.missingFromJson.forEach((t) => console.log(`        - "${t}"`));
     }
 
     if (comp.extraInJson.length > 0) {
       totalExtra += comp.extraInJson.length;
       console.log(`     ❌ EXTRA in JSON (${comp.extraInJson.length}):`);
-      comp.extraInJson.forEach(t => console.log(`        - "${t}"`));
+      comp.extraInJson.forEach((t) => console.log(`        - "${t}"`));
     }
   }
 
@@ -420,7 +416,7 @@ function printReport(audit: AuditResult): void {
     console.log('\n' + '-'.repeat(70));
     console.log('  UNMATCHED DOC SECTIONS');
     console.log('-'.repeat(70));
-    audit.unmatchedDocSections.forEach(s => console.log(`  ❌ ${s}`));
+    audit.unmatchedDocSections.forEach((s) => console.log(`  ❌ ${s}`));
   }
 
   // Corrupted terms
@@ -428,9 +424,7 @@ function printReport(audit: AuditResult): void {
     console.log('\n' + '-'.repeat(70));
     console.log('  CORRUPTED TERMS');
     console.log('-'.repeat(70));
-    audit.corruptedTerms.forEach(t =>
-      console.log(`  ❌ [${t.unit}] "${t.term}..." - ${t.issue}`)
-    );
+    audit.corruptedTerms.forEach((t) => console.log(`  ❌ [${t.unit}] "${t.term}..." - ${t.issue}`));
   }
 
   // Missing definitions
@@ -438,9 +432,7 @@ function printReport(audit: AuditResult): void {
     console.log('\n' + '-'.repeat(70));
     console.log('  MISSING DEFINITIONS');
     console.log('-'.repeat(70));
-    audit.missingDefinitions.forEach(t =>
-      console.log(`  ⚠️  [${t.unit}] "${t.term}"`)
-    );
+    audit.missingDefinitions.forEach((t) => console.log(`  ⚠️  [${t.unit}] "${t.term}"`));
   }
 
   // Missing Spanish
@@ -449,15 +441,15 @@ function printReport(audit: AuditResult): void {
     console.log(`  MISSING SPANISH TRANSLATIONS (${audit.missingSpanish.length})`);
     console.log('-'.repeat(70));
     // Group by type
-    const missingTerms = audit.missingSpanish.filter(t => t.missing === 'term');
-    const missingDefs = audit.missingSpanish.filter(t => t.missing === 'definition');
+    const missingTerms = audit.missingSpanish.filter((t) => t.missing === 'term');
+    const missingDefs = audit.missingSpanish.filter((t) => t.missing === 'definition');
     if (missingTerms.length > 0) {
       console.log(`  Missing Spanish terms: ${missingTerms.length}`);
-      missingTerms.forEach(t => console.log(`    - [${t.unit}] "${t.term}"`));
+      missingTerms.forEach((t) => console.log(`    - [${t.unit}] "${t.term}"`));
     }
     if (missingDefs.length > 0) {
       console.log(`  Missing Spanish definitions: ${missingDefs.length}`);
-      missingDefs.forEach(t => console.log(`    - [${t.unit}] "${t.term}"`));
+      missingDefs.forEach((t) => console.log(`    - [${t.unit}] "${t.term}"`));
     }
   }
 

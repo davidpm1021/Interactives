@@ -84,7 +84,7 @@ function main(): void {
   // Step 2: Parse dictionary
   const parseOk = runStep(
     'Parse Dictionary',
-    'npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/parse-dictionary.ts'
+    'npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/parse-dictionary.ts'
   );
   if (!parseOk) {
     cleanup();
@@ -96,7 +96,7 @@ function main(): void {
   const baselineArg = fs.existsSync(BASELINE_PATH) ? ` -- --baseline "${BASELINE_PATH}"` : '';
   const validateOk = runStep(
     'Validate Dictionary',
-    `npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/validate-dictionary.ts${baselineArg}`
+    `npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/validate-dictionary.ts${baselineArg}`
   );
   if (!validateOk) {
     cleanup();
@@ -107,7 +107,7 @@ function main(): void {
   // Step 4: Audit dictionary
   const auditOk = runStep(
     'Audit Dictionary',
-    'npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/audit-dictionary.ts'
+    'npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/audit-dictionary.ts'
   );
   if (!auditOk) {
     cleanup();

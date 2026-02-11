@@ -18,16 +18,16 @@
 import { google } from 'googleapis';
 import * as fs from 'fs';
 import * as path from 'path';
-import { fileURLToPath } from 'url';
-
-// ES Module compatibility
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Document configuration
 const DOCUMENT_ID = '1YH07bp18mb2fLOlJqvRMpiEAJ0oodsZRzEhEHPwjEDo';
-const PROJECT_ROOT = path.join(__dirname, '../../../../..');
-const OUTPUT_PATH = path.join(PROJECT_ROOT, 'public/features/ngpf-vocabulary-flashcards/data/flashcard-vocabulary.json');
+
+// When invoked via `npm run ...`, cwd is the package root (`angular-interactives/`).
+const PROJECT_ROOT = path.resolve(process.cwd());
+const OUTPUT_PATH = path.join(
+  PROJECT_ROOT,
+  'public/features/ngpf-vocabulary-flashcards/data/flashcard-vocabulary.json'
+);
 const CREDENTIALS_PATH = path.join(PROJECT_ROOT, 'config/google-service-account.json');
 
 // Unit definitions - 11 main units + 8 mini units
@@ -150,7 +150,7 @@ function getStyleType(paragraph: any): string {
 /**
  * Find matching unit by name (flexible matching)
  */
-function findUnit(text: string): typeof UNITS[0] | null {
+function findUnit(text: string): (typeof UNITS)[0] | null {
   const normalizedText = text.toLowerCase().trim();
 
   for (const unit of UNITS) {
@@ -165,7 +165,11 @@ function findUnit(text: string): typeof UNITS[0] | null {
     }
     // Match ignoring case differences in articles/prepositions
     const normalizeForCompare = (s: string) =>
-      s.toLowerCase().replace(/\s+(a|an|the|to|for|of|in|and)\s+/g, ' ').replace(/\s+/g, ' ').trim();
+      s
+        .toLowerCase()
+        .replace(/\s+(a|an|the|to|for|of|in|and)\s+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
     if (normalizeForCompare(normalizedText) === normalizeForCompare(unitNameLower)) {
       return unit;
     }
@@ -179,16 +183,9 @@ function findUnit(text: string): typeof UNITS[0] | null {
  */
 function isEndOfVocabulary(text: string): boolean {
   const normalizedText = text.toLowerCase().trim();
-  const endMarkers = [
-    'glossary',
-    'translation glossary',
-    'appendix',
-    'index',
-    'references',
-    'additional resources',
-  ];
+  const endMarkers = ['glossary', 'translation glossary', 'appendix', 'index', 'references', 'additional resources'];
 
-  return endMarkers.some(marker => normalizedText.includes(marker));
+  return endMarkers.some((marker) => normalizedText.includes(marker));
 }
 
 /**
@@ -205,14 +202,14 @@ function parseDocumentContent(doc: any): Map<string, Term[]> {
   const content = doc.body?.content || [];
   console.log('🔍 Parsing document structure...');
 
-  let currentUnit: typeof UNITS[0] | null = null;
+  let currentUnit: (typeof UNITS)[0] | null = null;
   let currentEnglishTerm = '';
   let currentEnglishDef = '';
   let currentSpanishTerm = '';
   let currentSpanishDef = '';
   let expectingEnglishDef = false;
   let expectingSpanishDef = false;
-  let termCounter = new Map<string, number>();
+  const termCounter = new Map<string, number>();
 
   for (const element of content) {
     if (!element.paragraph) continue;
@@ -249,7 +246,9 @@ function parseDocumentContent(doc: any): Map<string, Term[]> {
           currentUnit = unit;
           console.log(`   📁 Found unit: ${unit.name}`);
         } else {
-          console.log(`   ⚠️  Unmatched HEADING_1: "${text}" (staying in ${currentUnit?.name || 'none'})`);
+          console.log(
+            `   ⚠️  Unmatched HEADING_1: "${text}" (staying in ${currentUnit?.name || 'none'})`
+          );
         }
         continue;
       }
@@ -296,8 +295,11 @@ function parseDocumentContent(doc: any): Map<string, Term[]> {
 
     // Collect definitions (NORMAL_TEXT after term headers, or HEADING_2 that isn't a new term)
     // Some definitions in the doc are misformatted as HEADING_2 instead of NORMAL_TEXT
-    if ((styleType === 'NORMAL_TEXT' ||
-         (styleType === 'HEADING_2' && !text.startsWith('ENGLISH') && !text.startsWith('SPANISH'))) && currentUnit) {
+    if (
+      (styleType === 'NORMAL_TEXT' ||
+        (styleType === 'HEADING_2' && !text.startsWith('ENGLISH') && !text.startsWith('SPANISH'))) &&
+      currentUnit
+    ) {
       if (expectingEnglishDef && !currentEnglishDef) {
         currentEnglishDef = text;
         expectingEnglishDef = false;
@@ -323,9 +325,7 @@ function parseDocumentContent(doc: any): Map<string, Term[]> {
     const terms = unitTerms.get(slug) || [];
 
     // Check for duplicates
-    const isDuplicate = terms.some(
-      t => t.term.toLowerCase() === currentEnglishTerm.toLowerCase()
-    );
+    const isDuplicate = terms.some((t) => t.term.toLowerCase() === currentEnglishTerm.toLowerCase());
 
     if (!isDuplicate) {
       terms.push({
@@ -354,7 +354,7 @@ function parseDocumentContent(doc: any): Map<string, Term[]> {
  * Build the final units array
  */
 function buildUnits(unitTerms: Map<string, Term[]>): Unit[] {
-  return UNITS.map(unit => ({
+  return UNITS.map((unit) => ({
     id: unit.id,
     name: unit.name,
     slug: unit.slug,
@@ -438,10 +438,10 @@ async function main() {
 
     if (validation.warnings.length > 0 && validation.warnings.length <= 10) {
       console.log('\n⚠️  Warnings:');
-      validation.warnings.forEach(w => console.log(`   ${w}`));
+      validation.warnings.forEach((w) => console.log(`   ${w}`));
     } else if (validation.warnings.length > 10) {
       console.log(`\n⚠️  ${validation.warnings.length} warnings (showing first 10):`);
-      validation.warnings.slice(0, 10).forEach(w => console.log(`   ${w}`));
+      validation.warnings.slice(0, 10).forEach((w) => console.log(`   ${w}`));
     }
 
     // Write output
@@ -456,16 +456,17 @@ async function main() {
     console.log(`\n📈 Summary:`);
     console.log(`   Units: ${units.length}`);
     console.log(`   Total terms: ${totalTerms}`);
-    units.forEach(u => {
+    units.forEach((u) => {
       console.log(`   - ${u.name}: ${u.terms.length} terms`);
     });
-
   } catch (error: any) {
     if (error.code === 'ENOENT' && error.path?.includes('google-service-account')) {
       console.error('\n❌ Service account credentials not found.');
       console.error('   Please place your credentials at: config/google-service-account.json');
     } else if (error.code === 403) {
-      console.error('\n❌ Permission denied. Make sure the Google Doc is shared with your service account.');
+      console.error(
+        '\n❌ Permission denied. Make sure the Google Doc is shared with your service account.'
+      );
     } else if (error.code === 404) {
       console.error('\n❌ Document not found. Check the document ID.');
     } else {
