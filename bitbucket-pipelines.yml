@@ -1,0 +1,18 @@
+pipelines:
+  custom:
+    sync-dictionary:
+      - step:
+          name: Sync vocabulary from Google Doc
+          image: node:22
+          script:
+            - npm ci
+            - echo $GOOGLE_SERVICE_ACCOUNT_JSON > config/google-service-account.json
+            - npm run sync-dictionary
+            - |
+              if git diff --quiet public/features/ngpf-vocabulary-flashcards/data/flashcard-vocabulary.json; then
+                echo "No changes detected."
+              else
+                git add public/features/ngpf-vocabulary-flashcards/data/flashcard-vocabulary.json
+                git commit -m "Update vocabulary data from Google Doc [skip ci]"
+                git push
+              fi

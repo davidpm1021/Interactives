@@ -10,7 +10,9 @@
     "feature": "bash create-feature.sh",
     "production": "ng build --configuration production --base-href \"https://www.ngpf.org/interactives/\"",
     "parse-dictionary": "npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/parse-dictionary.ts",
-    "audit-dictionary": "npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/audit-dictionary.ts"
+    "audit-dictionary": "npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/audit-dictionary.ts",
+    "validate-dictionary": "npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/validate-dictionary.ts",
+    "sync-dictionary": "npx ts-node --esm src/app/features/ngpf-vocabulary-flashcards/scripts/sync-dictionary.ts"
   },
   "prettier": {
     "printWidth": 100,
