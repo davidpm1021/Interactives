@@ -10,7 +10,9 @@
     "feature": "bash create-feature.sh",
     "production": "ng build --configuration production",
     "parse-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/parse-dictionary.ts",
-    "audit-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/audit-dictionary.ts"
+    "audit-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/audit-dictionary.ts",
+    "validate-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/validate-dictionary.ts",
+    "sync-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/sync-dictionary.ts"
   },
   "prettier": {
     "printWidth": 100,
