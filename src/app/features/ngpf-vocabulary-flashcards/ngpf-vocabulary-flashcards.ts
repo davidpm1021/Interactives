@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect, OnInit, afterNextRender, ElementRef } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, afterNextRender, ElementRef, Injector } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { TopHeader } from '../../shared/top-header/top-header';
 import { BottomHeader } from '../../shared/bottom-header/bottom-header';
@@ -34,6 +34,7 @@ import {
 export class NgpfVocabularyFlashcards implements OnInit {
   private readonly flashcardService = inject(FlashcardService);
   private readonly elementRef = inject(ElementRef);
+  private readonly injector = inject(Injector);
 
   protected readonly title = 'NGPF Vocabulary Flashcards';
   protected readonly liveAnnouncement = signal('');
@@ -68,7 +69,7 @@ export class NgpfVocabularyFlashcards implements OnInit {
         heading.setAttribute('tabindex', '-1');
         heading.focus();
       }
-    });
+    }, { injector: this.injector });
   });
 
   protected readonly currentCard = computed(() => {
