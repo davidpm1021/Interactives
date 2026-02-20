@@ -1,7 +1,6 @@
 import { Component, inject, signal, computed, effect, OnInit, afterNextRender, ElementRef, Injector } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { TopHeader } from '../../shared/top-header/top-header';
-import { BottomHeader } from '../../shared/bottom-header/bottom-header';
 import { UnitSelectionComponent } from './components/unit-selection/unit-selection.component';
 import { StudySettingsComponent, StudySettings } from './components/study-settings/study-settings.component';
 import { FlashcardViewerComponent } from './components/flashcard-viewer/flashcard-viewer.component';
@@ -22,7 +21,6 @@ import {
   imports: [
     HttpClientModule,
     TopHeader,
-    BottomHeader,
     UnitSelectionComponent,
     StudySettingsComponent,
     FlashcardViewerComponent,

@@ -61,6 +61,12 @@ export class FlashcardViewerComponent {
     }
   });
 
+  protected readonly frontIsTerm = computed(() => {
+    const card = this.currentCard();
+    if (!card) return false;
+    return card.frontSide === 'term';
+  });
+
   protected readonly frontLabel = computed(() => {
     const card = this.currentCard();
     if (!card) return '';
