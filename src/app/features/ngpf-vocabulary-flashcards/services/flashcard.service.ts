@@ -105,7 +105,7 @@ export class FlashcardService {
     }
 
     const updatedCards = session.cards.map((card, index) =>
-      index === session.currentIndex ? { ...card, isFlipped: true } : card
+      index === session.currentIndex ? { ...card, isFlipped: !card.isFlipped } : card
     );
 
     return {
