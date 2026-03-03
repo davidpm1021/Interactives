@@ -61,6 +61,15 @@ export class FlashcardViewerComponent {
     }
   });
 
+  protected readonly frontIsTerm = computed(() => {
+    const card = this.currentCard();
+    if (!card) return false;
+    return card.frontSide === 'term';
+  });
+
+  protected readonly frontFontSize = computed(() => this.scaledFontSize(this.frontContent()));
+  protected readonly backFontSize = computed(() => this.scaledFontSize(this.backContent()));
+
   protected readonly frontLabel = computed(() => {
     const card = this.currentCard();
     if (!card) return '';
@@ -92,7 +101,10 @@ export class FlashcardViewerComponent {
     const card = this.currentCard();
     if (!card) return;
 
-    if ((event.code === 'Space' || event.code === 'Enter') && !card.isFlipped) {
+    if (event.code === 'Space') {
+      event.preventDefault();
+      this.onFlip();
+    } else if (!card.isFlipped && event.code === 'Enter') {
       event.preventDefault();
       this.onFlip();
     } else if ((event.code === 'Enter' || event.code === 'ArrowRight') && card.isFlipped) {
@@ -108,9 +120,7 @@ export class FlashcardViewerComponent {
   }
 
   protected onFlip(): void {
-    if (!this.currentCard()?.isFlipped) {
-      this.flipCard.emit();
-    }
+    this.flipCard.emit();
   }
 
   protected onGotIt(): void {
@@ -137,5 +147,14 @@ export class FlashcardViewerComponent {
 
   protected onExit(): void {
     this.exit.emit();
+  }
+
+  private scaledFontSize(text: string): string {
+    const len = text.length;
+    if (len <= 50) return '24px';
+    if (len <= 100) return '22px';
+    if (len <= 180) return '19px';
+    if (len <= 280) return '17px';
+    return '15px';
   }
 }

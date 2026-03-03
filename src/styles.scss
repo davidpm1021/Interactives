@@ -152,6 +152,7 @@ a {
   justify-content: center;
   gap: var(--ngpf-spacing-sm);
   min-height: 48px;
+  align-self: center;
 
   &:disabled {
     opacity: 0.5;
