@@ -67,6 +67,9 @@ export class FlashcardViewerComponent {
     return card.frontSide === 'term';
   });
 
+  protected readonly frontFontSize = computed(() => this.scaledFontSize(this.frontContent()));
+  protected readonly backFontSize = computed(() => this.scaledFontSize(this.backContent()));
+
   protected readonly frontLabel = computed(() => {
     const card = this.currentCard();
     if (!card) return '';
@@ -143,5 +146,14 @@ export class FlashcardViewerComponent {
 
   protected onExit(): void {
     this.exit.emit();
+  }
+
+  private scaledFontSize(text: string): string {
+    const len = text.length;
+    if (len <= 40) return '24px';
+    if (len <= 80) return '20px';
+    if (len <= 150) return '17px';
+    if (len <= 250) return '15px';
+    return '14px';
   }
 }

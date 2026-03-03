@@ -74,12 +74,20 @@
       backface-visibility: hidden;
       border-radius: var(--ngpf-radius-lg);
       padding: var(--ngpf-spacing-lg);
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       box-shadow: var(--ngpf-shadow-lg);
+      overflow: hidden;
+
+      .card-content {
+        max-height: 100%;
+        overflow: hidden;
+      }
     }
 
     .flashcard-front {
@@ -98,13 +106,8 @@
       }
 
       .card-content {
-        font-size: 20px;
         line-height: 1.4;
         max-width: 90%;
-
-        @media (min-width: 600px) {
-          font-size: 24px;
-        }
       }
 
       .flip-hint {
@@ -144,13 +147,8 @@
       }
 
       .card-content {
-        font-size: 20px;
         line-height: 1.4;
         max-width: 90%;
-
-        @media (min-width: 600px) {
-          font-size: 24px;
-        }
       }
 
       .unit-badge {
