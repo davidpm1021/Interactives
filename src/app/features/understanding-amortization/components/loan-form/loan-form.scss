@@ -1,0 +1,129 @@
+.loan-form {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-md);
+  padding: var(--ngpf-spacing-xl);
+
+  &__wrapper {
+    overflow: hidden;
+    max-height: 1000px;
+    opacity: 1;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+
+    &--hidden {
+      max-height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-md);
+    margin-bottom: var(--ngpf-spacing-lg);
+
+    &--extra {
+      background: var(--ngpf-soft-blue-tint);
+      border-radius: var(--ngpf-radius-md);
+      padding: var(--ngpf-spacing-lg);
+    }
+  }
+
+  &__section-heading {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ngpf-royal-blue);
+    margin: 0 0 var(--ngpf-spacing-xs);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--ngpf-navy-blue);
+  }
+
+  &__input {
+    font-family: var(--ngpf-font-body);
+    font-size: 16px;
+    padding: 0.625rem 0.75rem;
+    border: 2px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+    transition: border-color 0.15s ease;
+    width: 100%;
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+      border-color: var(--ngpf-bright-blue);
+    }
+
+    &::placeholder {
+      color: var(--ngpf-text-muted);
+    }
+
+    // Hide number input spinners
+    &[type='number'] {
+      -moz-appearance: textfield;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+
+  &__error {
+    background: var(--ngpf-orange);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0;
+    border-radius: var(--ngpf-radius-md);
+    margin-bottom: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s ease, margin-bottom 0.2s ease;
+
+    &--visible {
+      padding: 0.75rem var(--ngpf-spacing-md);
+      margin-bottom: var(--ngpf-spacing-md);
+      max-height: 100px;
+    }
+  }
+
+  &__submit {
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__toggle-row {
+    text-align: center;
+    margin-bottom: var(--ngpf-spacing-md);
+  }
+
+  &__toggle-btn {
+    font-size: 14px;
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .loan-form {
+    padding: var(--ngpf-spacing-lg);
+  }
+}
