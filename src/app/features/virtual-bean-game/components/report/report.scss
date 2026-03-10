@@ -1,0 +1,322 @@
+.report {
+  max-width: 700px;
+  margin: 0 auto;
+
+  h3 {
+    color: var(--ngpf-text-primary);
+    margin-bottom: var(--ngpf-spacing-md);
+    font-size: 1.125rem;
+  }
+
+  // ─── Score Card ───────────────────────
+  &__score-card {
+    text-align: center;
+    padding: var(--ngpf-spacing-xl);
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: var(--ngpf-radius-lg);
+    margin-bottom: var(--ngpf-spacing-xl);
+  }
+
+  &__score-number {
+    font-family: var(--ngpf-font-heading);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+    line-height: 1;
+    margin-bottom: var(--ngpf-spacing-xs);
+  }
+
+  &__score-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ngpf-text-secondary);
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__score-rating {
+    font-size: 1.125rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.5;
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__seed {
+    color: var(--ngpf-text-secondary);
+    font-size: 0.9375rem;
+    margin: 0;
+
+    strong {
+      font-family: monospace;
+      font-size: 1.125rem;
+      letter-spacing: 0.15em;
+      color: var(--ngpf-bright-blue);
+    }
+  }
+
+  &__replay-callout {
+    display: flex;
+    gap: var(--ngpf-spacing-md);
+    align-items: flex-start;
+    padding: var(--ngpf-spacing-md);
+    background: var(--ngpf-soft-blue-tint);
+    border: 2px solid var(--ngpf-bright-blue);
+    border-radius: var(--ngpf-radius-md);
+    margin-bottom: var(--ngpf-spacing-xl);
+  }
+
+  &__replay-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  &__replay-text {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+
+    strong {
+      display: block;
+      margin-bottom: var(--ngpf-spacing-xs);
+      color: var(--ngpf-royal-blue);
+    }
+
+    p {
+      margin: 0;
+      color: var(--ngpf-text-secondary);
+    }
+  }
+
+  &__section {
+    margin-bottom: var(--ngpf-spacing-xl);
+    padding-bottom: var(--ngpf-spacing-xl);
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
+
+  &__final-beans {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+    margin-bottom: var(--ngpf-spacing-md);
+  }
+
+  // ─── Chart ─────────────────────────────
+
+  &__chart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__chart-header {
+    display: none; // Visually hidden, semantic for screen readers
+  }
+
+  &__chart-row {
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-sm);
+  }
+
+  &__chart-label {
+    min-width: 120px;
+    font-size: 0.875rem;
+    color: var(--ngpf-text-secondary);
+    text-align: right;
+  }
+
+  &__chart-bar-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__chart-bar {
+    height: 24px;
+    background: var(--ngpf-bright-blue);
+    border-radius: var(--ngpf-radius-sm);
+    min-width: 4px;
+    transition: width 0.3s ease;
+  }
+
+  &__chart-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ngpf-text-primary);
+    min-width: 20px;
+  }
+
+  // ─── Events ────────────────────────────
+
+  &__events {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__event {
+    display: flex;
+    gap: var(--ngpf-spacing-sm);
+    padding: var(--ngpf-spacing-sm) 0;
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    font-size: 0.9375rem;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__event-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--ngpf-soft-blue-tint);
+    color: var(--ngpf-royal-blue);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  &__event-detail {
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  &__event-delta {
+    font-weight: 600;
+
+    &--positive {
+      color: var(--ngpf-success);
+    }
+
+    &--negative {
+      color: var(--ngpf-error);
+    }
+  }
+
+  &__event-floor {
+    font-size: 0.8125rem;
+    font-style: italic;
+    color: var(--ngpf-text-muted);
+  }
+
+  // ─── Insights ──────────────────────────
+
+  &__insights {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-md);
+  }
+
+  &__insight {
+    padding: var(--ngpf-spacing-md);
+    background: var(--ngpf-soft-blue-tint);
+    border-left: 3px solid var(--ngpf-bright-blue);
+    border-radius: var(--ngpf-radius-sm);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ngpf-text-primary);
+  }
+
+  // ─── Code Section ──────────────────────
+
+  &__code-section {
+    text-align: center;
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: var(--ngpf-radius-lg);
+    padding: var(--ngpf-spacing-xl);
+  }
+
+  &__code-info {
+    font-size: 0.875rem;
+    color: var(--ngpf-text-secondary);
+    margin-bottom: var(--ngpf-spacing-md);
+  }
+
+  &__code-container {
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &__code-text {
+    font-family: monospace;
+    font-size: 0.8125rem;
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    background: white;
+    border-radius: var(--ngpf-radius-sm);
+    word-break: break-all;
+    user-select: all;
+  }
+
+  &__copy-btn {
+    flex-shrink: 0;
+  }
+
+  // ─── Actions ───────────────────────────
+
+  &__actions {
+    display: flex;
+    gap: var(--ngpf-spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--ngpf-spacing-xl);
+  }
+}
+
+@media (max-width: 600px) {
+  .report {
+    &__chart-label {
+      min-width: 80px;
+      font-size: 0.75rem;
+    }
+
+    &__actions {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    &__score-number {
+      font-size: 2.5rem;
+    }
+  }
+}
+
+@media print {
+  .report {
+    &__actions,
+    &__copy-btn,
+    &__code-section {
+      display: none !important;
+    }
+
+    &__section {
+      break-inside: avoid;
+    }
+
+    &__chart-bar {
+      background: #333 !important;
+      print-color-adjust: exact;
+    }
+
+    &__score-card {
+      border: 1px solid #ccc;
+    }
+  }
+}

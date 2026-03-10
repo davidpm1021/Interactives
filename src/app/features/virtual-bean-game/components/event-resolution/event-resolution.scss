@@ -1,0 +1,37 @@
+.event-resolution {
+  margin-top: var(--ngpf-spacing-md);
+  padding-top: var(--ngpf-spacing-md);
+  border-top: 1px solid var(--ngpf-light-gray-blue);
+
+  &__prompt {
+    font-weight: 600;
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__slot {
+    font-size: 0.875rem;
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    min-height: 48px;
+  }
+
+  &__slot-name {
+    margin-right: var(--ngpf-spacing-xs);
+  }
+
+  &__slot-beans {
+    color: var(--ngpf-text-muted);
+    font-weight: 400;
+  }
+
+  &__done {
+    font-weight: 700;
+    color: var(--ngpf-success);
+    margin-top: var(--ngpf-spacing-sm);
+  }
+}

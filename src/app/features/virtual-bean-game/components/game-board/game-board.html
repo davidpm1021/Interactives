@@ -1,0 +1,36 @@
+<div class="game-board">
+  <aside class="game-board__sidebar">
+    <app-bean-counter
+      [beansRemaining]="beansRemaining()"
+      [totalBudget]="totalBudget()"
+      [totalAllocated]="totalAllocated()"
+    />
+  </aside>
+
+  <main class="game-board__grid">
+    @for (category of categories; track category.id) {
+      <app-category-card
+        [category]="category"
+        [allocations]="allocations()"
+        [disabled]="disabled()"
+        (selectionChange)="onAllocationChange($event)"
+      />
+    }
+
+    <div class="game-board__actions">
+      @if (validation().overBudget) {
+        <p class="game-board__error" role="alert">{{ overBudgetText() }}</p>
+      }
+      @if (validation().missingRequired.length > 0) {
+        <p class="game-board__warning" role="alert">{{ missingRequiredText() }}</p>
+      }
+      <button
+        class="ngpf-btn ngpf-btn-primary game-board__submit"
+        [disabled]="!canSubmit()"
+        (click)="onSubmit()"
+      >
+        {{ submitLabel() }}
+      </button>
+    </div>
+  </main>
+</div>

@@ -3,7 +3,6 @@ import { Home } from './features/home/home';
 import { InteractiveOne } from './features/interactive-one/interactive-one';
 import { InteractiveTwo } from './features/interactive-two/interactive-two';
 import { TemplateExample } from './features/template-example/template-example';
-import { UnderstandingAmortization } from './features/understanding-amortization/understanding-amortization';
 import { NgpfVocabularyFlashcards } from './features/ngpf-vocabulary-flashcards/ngpf-vocabulary-flashcards';
 
 export const routes: Routes = [
@@ -12,6 +11,12 @@ export const routes: Routes = [
   { path: 'interactive-two', component: InteractiveTwo },
   { path: 'template-example', component: TemplateExample },
   { path: 'ngpf-vocabulary-flashcards', component: NgpfVocabularyFlashcards },
-  { path: 'understanding-amortization', component: UnderstandingAmortization, title: 'Loan Amortization Calculator | NGPF' },
+  {
+    path: 'virtual-bean-game',
+    loadChildren: () =>
+      import('./features/virtual-bean-game/virtual-bean-game.routes').then(
+        (m) => m.VIRTUAL_BEAN_GAME_ROUTES,
+      ),
+  },
   { path: '**', redirectTo: '' }
 ];
