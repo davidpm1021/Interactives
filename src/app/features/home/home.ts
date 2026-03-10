@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TopHeader } from '../../shared/top-header/top-header';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TopHeader],
   templateUrl: './home.html',
-  styleUrl: './home.scss'
+  styleUrl: './home.scss',
 })
 export class Home {
-  protected readonly title = 'Welcome to NGPF Interactives';
+  protected readonly title = 'NGPF Interactives';
 }
-
