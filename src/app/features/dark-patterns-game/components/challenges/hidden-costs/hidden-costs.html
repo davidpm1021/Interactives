@@ -1,0 +1,85 @@
+<div class="hidden-costs">
+  <div class="hidden-costs__checkout">
+    <div class="hidden-costs__header">
+      <span class="hidden-costs__logo" aria-hidden="true">🎧 SoundGear</span>
+      <h3 class="hidden-costs__title">Checkout</h3>
+      <span class="hidden-costs__secure" aria-hidden="true">🔒 Secure Checkout</span>
+    </div>
+
+    <div class="hidden-costs__body">
+      <div class="hidden-costs__order-summary">
+        <h4>Order Summary</h4>
+
+        <div class="hidden-costs__line-item">
+          <div class="hidden-costs__item-info">
+            <span class="hidden-costs__item-icon" aria-hidden="true">🎧</span>
+            <span>ProSound X200 Wireless Headphones</span>
+          </div>
+          <span class="hidden-costs__item-price">{{ subtotal | currency:'USD' }}</span>
+        </div>
+
+        <div class="hidden-costs__line-item">
+          <span>Standard Shipping</span>
+          <span class="hidden-costs__item-price">{{ shipping | currency:'USD' }}</span>
+        </div>
+
+        <div class="hidden-costs__addon">
+          <label class="hidden-costs__addon-row">
+            <input
+              type="checkbox"
+              [checked]="protectionPlan()"
+              (change)="protectionPlan.set(!protectionPlan())"
+            />
+            <div class="hidden-costs__addon-info">
+              <span class="hidden-costs__addon-name">HeadphoneGuard Protection Plan</span>
+              <span class="hidden-costs__addon-desc">Covers accidental damage for 1 year</span>
+            </div>
+            <span class="hidden-costs__item-price">{{ protectionCost() > 0 ? (protectionCost() | currency:'USD') : '-' }}</span>
+          </label>
+        </div>
+
+        <div class="hidden-costs__addon">
+          <label class="hidden-costs__addon-row">
+            <input
+              type="checkbox"
+              [checked]="priorityProcessing()"
+              (change)="priorityProcessing.set(!priorityProcessing())"
+            />
+            <div class="hidden-costs__addon-info">
+              <span class="hidden-costs__addon-name">Priority Processing</span>
+              <span class="hidden-costs__addon-desc">Your order ships first</span>
+            </div>
+            <span class="hidden-costs__item-price">{{ priorityCost() > 0 ? (priorityCost() | currency:'USD') : '-' }}</span>
+          </label>
+        </div>
+
+        <div class="hidden-costs__divider"></div>
+
+        <div class="hidden-costs__total-row">
+          <span>Order Total</span>
+          <span class="hidden-costs__total-amount">{{ total() | currency:'USD' }}</span>
+        </div>
+      </div>
+
+      <div class="hidden-costs__payment" aria-hidden="true">
+        <h4>Payment Method</h4>
+        <div class="hidden-costs__card-mock">
+          <span>💳 •••• •••• •••• 4242</span>
+          <span>Exp: 12/27</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="hidden-costs__place-order-btn"
+        (click)="onPlaceOrder()"
+      >
+        Place Order
+      </button>
+
+      <p class="hidden-costs__terms">
+        By placing your order, you agree to our Terms of Use and Privacy Policy.
+      </p>
+    </div>
+  </div>
+</div>
