@@ -6,8 +6,6 @@ import { NgpfVocabularyFlashcards } from './features/ngpf-vocabulary-flashcards/
 
 export const routes: Routes = [
   { path: '', component: Home, title: 'NGPF Interactives' },
-  { path: 'interactive-one', component: InteractiveOne },
-  { path: 'interactive-two', component: InteractiveTwo },
   { path: 'template-example', component: TemplateExample },
   { path: 'ngpf-vocabulary-flashcards', component: NgpfVocabularyFlashcards },
   { path: 'understanding-amortization', component: UnderstandingAmortization, title: 'Loan Amortization Calculator | NGPF' },
