@@ -1,0 +1,24 @@
+<div class="summary-bar" role="region" aria-label="Loan summary">
+  <div class="summary-bar__item">
+    <span class="summary-bar__label">Monthly Payment</span>
+    <span class="summary-bar__value">{{ format(summary().monthlyPayment) }}</span>
+  </div>
+  <div class="summary-bar__item">
+    <span class="summary-bar__label">Total Interest</span>
+    <span class="summary-bar__value">{{ format(summary().totalInterest) }}</span>
+  </div>
+  <div class="summary-bar__item">
+    <span class="summary-bar__label">Total Payment</span>
+    <span class="summary-bar__value">{{ format(summary().totalPayment) }}</span>
+  </div>
+  <div class="summary-bar__item">
+    <span class="summary-bar__label">Months to Payoff</span>
+    <span class="summary-bar__value">{{ summary().monthsToPayoff }}</span>
+  </div>
+  @if (summary().totalSaved > 0) {
+    <div class="summary-bar__item summary-bar__item--saved">
+      <span class="summary-bar__label">Interest Saved</span>
+      <span class="summary-bar__value">{{ format(summary().totalSaved) }}</span>
+    </div>
+  }
+</div>

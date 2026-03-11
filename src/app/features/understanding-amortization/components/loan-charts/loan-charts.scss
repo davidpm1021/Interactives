@@ -1,0 +1,63 @@
+.loan-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ngpf-spacing-lg);
+  margin-top: var(--ngpf-spacing-xl);
+
+  &__card {
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    box-shadow: var(--ngpf-shadow-md);
+    padding: var(--ngpf-spacing-lg);
+    overflow: hidden;
+  }
+
+  &__title {
+    color: var(--ngpf-royal-blue);
+    margin: 0 0 var(--ngpf-spacing-md);
+    text-align: center;
+  }
+
+  &__donut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__line {
+    width: 100%;
+
+    svg {
+      display: block;
+    }
+  }
+
+  &__legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--ngpf-spacing-lg);
+    margin-top: var(--ngpf-spacing-md);
+    font-size: 14px;
+    color: var(--ngpf-text-primary);
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__legend-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .loan-charts {
+    grid-template-columns: 1fr;
+  }
+}

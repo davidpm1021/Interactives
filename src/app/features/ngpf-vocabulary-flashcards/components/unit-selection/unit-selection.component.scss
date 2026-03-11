@@ -1,6 +1,8 @@
 // Unit Selection - Layout only (colors/typography inherited from global styles)
 
 .unit-selection {
+  font-family: 'Montserrat', sans-serif;
+
   h2, .subtitle {
     text-align: center;
   }
@@ -33,6 +35,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    font-family: 'Montserrat', sans-serif;
 
     .unit-name {
       font-size: 20px; // Large Paragraph per NGPF style guide

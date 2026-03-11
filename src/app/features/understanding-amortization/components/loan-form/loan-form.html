@@ -1,0 +1,124 @@
+<div class="loan-form__toggle-row">
+  <button
+    type="button"
+    class="ngpf-btn ngpf-btn-outline loan-form__toggle-btn"
+    [attr.aria-expanded]="isFormVisible()"
+    aria-controls="loanFormWrapper"
+    (click)="onToggle()"
+  >
+    {{ isFormVisible() ? 'Hide Calculator' : 'Show Calculator' }}
+  </button>
+</div>
+
+<div
+  id="loanFormWrapper"
+  class="loan-form__wrapper"
+  [class.loan-form__wrapper--hidden]="!isFormVisible()"
+  [attr.aria-hidden]="!isFormVisible()"
+>
+  <form class="loan-form" (submit)="$event.preventDefault(); onSubmit()">
+    <div class="loan-form__section">
+      <div class="loan-form__field">
+        <label class="loan-form__label" for="loanAmount">Loan Amount ($)</label>
+        <input
+          id="loanAmount"
+          type="text"
+          inputmode="numeric"
+          class="loan-form__input"
+          placeholder="e.g. 25,000"
+          [value]="loanAmountDisplay()"
+          (input)="onLoanAmountInput($event)"
+        />
+      </div>
+
+      <div class="loan-form__field">
+        <label class="loan-form__label" for="interestRate">Annual Interest Rate (%)</label>
+        <input
+          id="interestRate"
+          type="number"
+          step="0.1"
+          min="0"
+          class="loan-form__input"
+          placeholder="e.g. 5.5"
+          [value]="interestRate()"
+          (input)="interestRate.set($any($event.target).valueAsNumber || null)"
+        />
+      </div>
+
+      <div class="loan-form__field">
+        <label class="loan-form__label" for="loanTerm">Loan Term (Years)</label>
+        <input
+          id="loanTerm"
+          type="number"
+          min="1"
+          max="40"
+          class="loan-form__input"
+          placeholder="e.g. 30"
+          [value]="loanTerm()"
+          (input)="loanTerm.set($any($event.target).valueAsNumber || null)"
+        />
+      </div>
+    </div>
+
+    <div class="loan-form__section loan-form__section--extra">
+      <h4 class="loan-form__section-heading">Extra Payments</h4>
+
+      <div class="loan-form__field">
+        <label class="loan-form__label" for="monthlyExtra">Monthly Extra Payment ($)</label>
+        <input
+          id="monthlyExtra"
+          type="number"
+          min="0"
+          class="loan-form__input"
+          placeholder="0"
+          [value]="monthlyExtra()"
+          (input)="monthlyExtra.set($any($event.target).valueAsNumber || null)"
+        />
+      </div>
+
+      <div class="loan-form__field">
+        <label class="loan-form__label" for="oneTimeExtra">One-time Extra Payment ($)</label>
+        <input
+          id="oneTimeExtra"
+          type="number"
+          min="0"
+          class="loan-form__input"
+          placeholder="0"
+          [value]="oneTimeExtra()"
+          (input)="oneTimeExtra.set($any($event.target).valueAsNumber || null)"
+        />
+      </div>
+
+      @if (showOneTimeMonth()) {
+        <div class="loan-form__field">
+          <label class="loan-form__label" for="oneTimeMonth">Apply One-time Payment in Month</label>
+          <input
+            id="oneTimeMonth"
+            type="number"
+            min="1"
+            [max]="maxMonth()"
+            class="loan-form__input"
+            placeholder="1"
+            [value]="oneTimeMonth()"
+            (input)="oneTimeMonth.set($any($event.target).valueAsNumber || null)"
+          />
+        </div>
+      }
+    </div>
+
+    <div class="loan-form__error" role="alert" aria-live="polite" [class.loan-form__error--visible]="hasError()">
+      @if (hasError()) {
+        {{ errorMessage() }}
+      }
+    </div>
+
+    <button
+      type="submit"
+      class="ngpf-btn ngpf-btn-primary loan-form__submit"
+      [disabled]="isCalculating()"
+    >
+      {{ isCalculating() ? 'Calculating...' : 'CALCULATE' }}
+    </button>
+  </form>
+</div>
+

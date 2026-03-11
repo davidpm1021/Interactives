@@ -1,0 +1,55 @@
+<div class="amort-table" role="region" aria-label="Amortization schedule">
+  <div class="amort-table__header-row">
+    <h3 class="amort-table__heading">Amortization Schedule</h3>
+    <button
+      type="button"
+      class="ngpf-btn ngpf-btn-secondary amort-table__export-btn"
+      aria-label="Export amortization schedule as CSV"
+      (click)="exportCsv()"
+    >
+      Export CSV
+    </button>
+  </div>
+
+  <div class="amort-table__scroll">
+    <table class="amort-table__table">
+      <thead>
+        <tr>
+          <th scope="col" class="amort-table__th amort-table__th--month">Month</th>
+          <th scope="col" class="amort-table__th">Payment</th>
+          <th scope="col" class="amort-table__th">Principal</th>
+          <th scope="col" class="amort-table__th">Interest</th>
+          <th scope="col" class="amort-table__th">Extra</th>
+          <th scope="col" class="amort-table__th">Total</th>
+          <th scope="col" class="amort-table__th">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of visibleRows(); track row.paymentNumber) {
+          <tr class="amort-table__row">
+            <td class="amort-table__td amort-table__td--month">{{ row.paymentNumber }}</td>
+            <td class="amort-table__td">{{ format(row.paymentAmount) }}</td>
+            <td class="amort-table__td">{{ format(row.principal) }}</td>
+            <td class="amort-table__td">{{ format(row.interest) }}</td>
+            <td class="amort-table__td">{{ formatExtra(row.extraPayment) }}</td>
+            <td class="amort-table__td">{{ format(row.totalPayment) }}</td>
+            <td class="amort-table__td">{{ format(row.remainingBalance) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (hasMoreRows()) {
+    <div class="amort-table__more">
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-outline"
+        aria-label="Show more payment rows in the amortization schedule"
+        (click)="onLoadMore()"
+      >
+        Show More Payments
+      </button>
+    </div>
+  }
+</div>
