@@ -6,10 +6,10 @@ import { TemplateExample } from './features/template-example/template-example';
 import { NgpfVocabularyFlashcards } from './features/ngpf-vocabulary-flashcards/ngpf-vocabulary-flashcards';
 
 export const routes: Routes = [
-  { path: '', component: Home },
+  { path: '', component: Home, title: 'NGPF Interactives' },
   { path: 'interactive-one', component: InteractiveOne },
   { path: 'interactive-two', component: InteractiveTwo },
   { path: 'template-example', component: TemplateExample },
-  { path: 'ngpf-vocabulary-flashcards', component: NgpfVocabularyFlashcards },
+  { path: 'ngpf-vocabulary-flashcards', component: NgpfVocabularyFlashcards, title: 'Vocabulary Flashcards | NGPF' },
   { path: '**', redirectTo: '' }
 ];
