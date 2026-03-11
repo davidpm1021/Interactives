@@ -1,0 +1,111 @@
+.amort-table {
+  margin-top: var(--ngpf-spacing-xl);
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-md);
+  overflow: hidden;
+
+  &__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ngpf-spacing-lg) var(--ngpf-spacing-xl);
+    border-bottom: 2px solid var(--ngpf-light-gray-blue);
+  }
+
+  &__heading {
+    margin: 0;
+    color: var(--ngpf-royal-blue);
+  }
+
+  &__export-btn {
+    font-size: 13px;
+    padding: var(--ngpf-spacing-xs) var(--ngpf-spacing-md);
+    min-height: 36px;
+  }
+
+  &__scroll {
+    overflow-x: auto;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  &__th {
+    position: sticky;
+    top: 0;
+    background: var(--ngpf-soft-blue-tint);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--ngpf-text-secondary);
+    text-align: right;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    border-bottom: 2px solid var(--ngpf-light-gray-blue);
+
+    &--month {
+      text-align: center;
+    }
+  }
+
+  &__row {
+    transition: background 0.1s ease;
+
+    &:hover {
+      background: var(--ngpf-soft-blue-tint);
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    }
+  }
+
+  &__td {
+    text-align: right;
+    padding: 0.625rem 1rem;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+
+    &--month {
+      text-align: center;
+      font-weight: 600;
+      color: var(--ngpf-text-secondary);
+    }
+  }
+
+  &__more {
+    padding: var(--ngpf-spacing-lg);
+    text-align: center;
+    border-top: 1px solid var(--ngpf-light-gray-blue);
+  }
+}
+
+@media (max-width: 768px) {
+  .amort-table {
+    &__header-row {
+      padding: var(--ngpf-spacing-md);
+    }
+
+    &__heading {
+      font-size: 18px;
+    }
+
+    &__table {
+      font-size: 12px;
+    }
+
+    &__th {
+      padding: 0.5rem 0.625rem;
+      font-size: 10px;
+    }
+
+    &__td {
+      padding: 0.5rem 0.625rem;
+    }
+  }
+}
