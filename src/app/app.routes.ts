@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
-import { InteractiveOne } from './features/interactive-one/interactive-one';
-import { InteractiveTwo } from './features/interactive-two/interactive-two';
 import { TemplateExample } from './features/template-example/template-example';
 import { UnderstandingAmortization } from './features/understanding-amortization/understanding-amortization';
 import { NgpfVocabularyFlashcards } from './features/ngpf-vocabulary-flashcards/ngpf-vocabulary-flashcards';

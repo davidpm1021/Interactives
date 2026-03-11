@@ -1,61 +1,73 @@
 .home {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: calc(100vh - 80px);
+  padding: var(--ngpf-spacing-xl);
+  background: var(--ngpf-soft-blue-tint);
 
   .content {
-    max-width: 800px;
-    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     text-align: center;
-    color: white;
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
+      color: var(--ngpf-royal-blue);
+      margin-bottom: var(--ngpf-spacing-sm);
     }
 
-    p {
-      font-size: 1.25rem;
-      margin-bottom: 3rem;
-      opacity: 0.9;
+    > p {
+      font-size: 18px;
+      color: var(--ngpf-text-secondary);
+      margin-bottom: var(--ngpf-spacing-xxl);
     }
 
     .links {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--ngpf-spacing-lg);
 
       .link-card {
         background: white;
-        color: #333;
         text-decoration: none;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: var(--ngpf-spacing-xl);
+        border-radius: var(--ngpf-radius-lg);
+        border: 2px solid var(--ngpf-light-gray-blue);
+        box-shadow: var(--ngpf-shadow-sm);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 
         &:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+          transform: translateY(-3px);
+          box-shadow: var(--ngpf-shadow-lg);
+          border-color: var(--ngpf-bright-blue);
+          text-decoration: none;
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--ngpf-sky-blue);
+          outline-offset: 2px;
         }
 
         h2 {
-          color: #1976d2;
-          margin: 0 0 0.5rem 0;
-          font-size: 1.5rem;
+          color: var(--ngpf-royal-blue);
+          font-size: 20px;
+          margin: 0 0 var(--ngpf-spacing-sm);
         }
 
         p {
           margin: 0;
-          color: #666;
-          font-size: 1rem;
+          color: var(--ngpf-text-secondary);
+          font-size: 15px;
+          line-height: 1.5;
         }
       }
     }
   }
 }
 
+@media (max-width: 768px) {
+  .home {
+    padding: var(--ngpf-spacing-lg) var(--ngpf-spacing-md);
+
+    .content > p {
+      margin-bottom: var(--ngpf-spacing-xl);
+    }
+  }
+}
