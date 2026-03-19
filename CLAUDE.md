@@ -135,6 +135,12 @@ Features wrap content in a div matching the component name, with TopHeader and B
 - Kebab-case for files/selectors, PascalCase for classes
 - Single quotes, 100 char line width (Prettier config in package.json)
 
+## Git Workflow
+
+- **Never commit directly to main.** Always use a feature branch.
+- Each feature has its own branch (e.g., `compound-interest`, `check-writing`, `your-first-year`).
+- Changes to the home page tiles (`src/app/features/home/home.html`) go on the `home-cleanup` branch.
+
 ## Build Configuration
 
 - Production output: `../dev.ngpf.org/public_html/interactives`
