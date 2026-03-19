@@ -1,0 +1,233 @@
+.false-urgency {
+  display: flex;
+  justify-content: center;
+  padding: var(--ngpf-spacing-xl);
+
+  &__site {
+    width: 720px;
+    max-width: 100%;
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--ngpf-shadow-lg);
+  }
+
+  &__site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ngpf-spacing-md) var(--ngpf-spacing-lg);
+    background: #1a1a1a;
+    color: white;
+  }
+
+  &__logo {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &__search {
+    flex: 1;
+    max-width: 300px;
+    margin: 0 var(--ngpf-spacing-lg);
+    padding: 8px 14px;
+    background: #333;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #888;
+  }
+
+  &__cart {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  &__product {
+    display: flex;
+    gap: var(--ngpf-spacing-xl);
+    padding: var(--ngpf-spacing-xl);
+  }
+
+  &__product-image {
+    width: 240px;
+    min-height: 240px;
+    background: #f5f5f5;
+    border-radius: var(--ngpf-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__headphones-icon {
+    font-size: 80px;
+  }
+
+  &__product-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__product-title {
+    font-size: 22px;
+    color: #1a1a1a;
+    margin-bottom: var(--ngpf-spacing-xs);
+    line-height: 1.3;
+  }
+
+  &__rating {
+    font-size: 14px;
+    margin-bottom: var(--ngpf-spacing-md);
+
+    span {
+      color: #666;
+      font-size: 13px;
+    }
+  }
+
+  &__price {
+    display: flex;
+    align-items: baseline;
+    gap: var(--ngpf-spacing-sm);
+    margin-bottom: var(--ngpf-spacing-lg);
+  }
+
+  &__price-current {
+    font-size: 28px;
+    font-weight: 700;
+    color: #b12704;
+  }
+
+  &__price-original {
+    font-size: 16px;
+    color: #999;
+    text-decoration: line-through;
+  }
+
+  &__price-discount {
+    font-size: 14px;
+    font-weight: 600;
+    color: #cc0c39;
+    background: #fff0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  // Urgency signals
+  &__timer {
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-sm);
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 10px 14px;
+    border-radius: var(--ngpf-radius-md);
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__timer-icon {
+    font-size: 18px;
+  }
+
+  &__timer-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #856404;
+    letter-spacing: 0.5px;
+  }
+
+  &__timer-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #cc0c39;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__stock-warning {
+    font-size: 14px;
+    font-weight: 600;
+    color: #cc0c39;
+    margin-bottom: var(--ngpf-spacing-xs);
+    padding: 4px 0;
+  }
+
+  &__viewers {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: var(--ngpf-spacing-xs);
+    padding: 4px 0;
+  }
+
+  &__shipping-warning {
+    font-size: 13px;
+    color: #2e7d32;
+    margin-bottom: var(--ngpf-spacing-lg);
+    padding: 4px 0;
+
+    strong { color: #1b5e20; }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-lg);
+  }
+
+  &__add-to-cart {
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    background: #ff9900;
+    color: #111;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover { background: #e68a00; }
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__save-for-later {
+    font-size: 14px;
+    color: #2563eb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    text-decoration: underline;
+
+    &:hover { color: #1d4ed8; }
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .false-urgency {
+    padding: var(--ngpf-spacing-md);
+
+    &__product {
+      flex-direction: column;
+      padding: var(--ngpf-spacing-lg);
+    }
+
+    &__product-image {
+      width: 100%;
+      min-height: 160px;
+    }
+
+    &__search { display: none; }
+
+    &__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}

@@ -1,0 +1,49 @@
+<div class="hub">
+  <div class="hub__header">
+    <h1 class="hub__title" tabindex="-1">Your Day Online</h1>
+    @if (completedCount === 0) {
+      <p class="hub__subtitle">10 perfectly normal tasks. Have at it.</p>
+    } @else if (completedCount < totalCount) {
+      <p class="hub__subtitle">{{ completedCount }} down, {{ totalCount - completedCount }} to go. You're doing great. Probably.</p>
+    } @else {
+      <p class="hub__subtitle">All done! That was easy. Suspiciously easy.</p>
+    }
+  </div>
+
+  <div class="hub__task-list" role="list">
+    @for (act of acts; track act.id) {
+      <div class="hub__section">
+        <div class="hub__section-header" [style.border-color]="act.accentColor">
+          <span class="hub__section-icon" aria-hidden="true">
+            @switch (act.timeOfDay) {
+              @case ('morning') { &#9728;&#65039; }
+              @case ('midday') { &#9925; }
+              @case ('afternoon') { &#127749; }
+              @case ('evening') { &#127769; }
+            }
+          </span>
+          <span class="hub__section-title">{{ act.title }}</span>
+        </div>
+
+        @for (challenge of getChallengesForAct(act.id); track challenge.id) {
+          <button
+            type="button"
+            class="hub__task"
+            [class.hub__task--done]="isCompleted(challenge.id)"
+            [disabled]="isCompleted(challenge.id)"
+            [attr.aria-label]="challenge.taskLabel + (isCompleted(challenge.id) ? ' (completed)' : '')"
+            role="listitem"
+            (click)="onTaskClick(challenge.id)"
+          >
+            <span class="hub__task-check" aria-hidden="true">
+              @if (isCompleted(challenge.id)) {
+                &#10003;
+              }
+            </span>
+            <span class="hub__task-label">{{ challenge.taskLabel }}</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>
