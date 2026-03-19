@@ -16,7 +16,7 @@ export const routes: Routes = [
         (m) => m.VIRTUAL_BEAN_GAME_ROUTES,
       ),
   },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
   { path: 'ngpf-vocabulary-flashcards', component: NgpfVocabularyFlashcards, title: 'Vocabulary Flashcards | NGPF' },
   { path: 'understanding-amortization', component: UnderstandingAmortization, title: 'Loan Amortization Calculator | NGPF' },
   { path: 'dark-patterns-game', component: DarkPatternsGame, title: 'Dark Patterns Game | NGPF' },
