@@ -1,0 +1,32 @@
+<app-top-header></app-top-header>
+<div class="understanding-amortization">
+  <div class="content">
+    <h2>{{ title }}</h2>
+
+    <app-loan-form
+      [isFormVisible]="isFormVisible()"
+      [isCalculating]="isCalculating()"
+      [hasError]="hasError()"
+      [errorMessage]="errorMessage()"
+      (calculate)="onCalculate($event)"
+      (toggleForm)="onToggleForm()"
+    />
+
+    @if (hasResults() && loanSummary(); as summary) {
+      <app-summary-bar [summary]="summary" />
+
+      <app-loan-charts
+        [schedule]="amortizationSchedule()"
+        [loanAmount]="summary.totalPayment - summary.totalInterest"
+        [totalInterest]="summary.totalInterest"
+      />
+
+      <app-amortization-table
+        [visibleRows]="visibleRows()"
+        [hasMoreRows]="hasMoreRows()"
+        [fullSchedule]="amortizationSchedule()"
+        (loadMore)="onLoadMore()"
+      />
+    }
+  </div>
+</div>
