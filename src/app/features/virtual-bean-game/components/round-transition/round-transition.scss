@@ -1,0 +1,149 @@
+.round-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11, 21, 65, 0.85);
+  padding: var(--ngpf-spacing-xl);
+  animation: fadeIn 0.3s ease;
+
+  &__card {
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    padding: var(--ngpf-spacing-xxl) var(--ngpf-spacing-xl);
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--ngpf-shadow-lg);
+    animation: slideUp 0.4s ease;
+
+    &--income-cut {
+      border-top: 4px solid var(--ngpf-gold);
+    }
+
+    &--life-happens {
+      border-top: 4px solid var(--ngpf-royal-blue);
+    }
+  }
+
+  &__icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-bottom: var(--ngpf-spacing-md);
+
+    &--amber {
+      background: #fff8e1;
+    }
+
+    &--blue {
+      background: var(--ngpf-soft-blue-tint);
+    }
+  }
+
+  &__icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  &__title {
+    margin-bottom: var(--ngpf-spacing-sm);
+
+    &--amber {
+      color: #b8860b;
+    }
+
+    &--blue {
+      color: var(--ngpf-royal-blue);
+    }
+  }
+
+  &__message {
+    font-size: 1.125rem;
+    color: var(--ngpf-text-primary);
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__bean-count {
+    font-family: var(--ngpf-font-heading);
+    font-size: 1.5rem;
+    animation: countPop 0.4s ease 0.3s both;
+  }
+
+  &__summary {
+    font-size: 0.9375rem;
+    font-style: italic;
+    color: var(--ngpf-text-primary);
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: var(--ngpf-radius-md);
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    margin-bottom: var(--ngpf-spacing-md);
+    line-height: 1.5;
+  }
+
+  &__detail {
+    font-size: 0.9375rem;
+    color: var(--ngpf-text-secondary);
+    margin-bottom: var(--ngpf-spacing-lg);
+  }
+
+  &__seed {
+    font-size: 1.25rem;
+    color: var(--ngpf-bright-blue);
+    margin-bottom: var(--ngpf-spacing-lg);
+
+    strong {
+      font-family: monospace;
+      font-size: 1.5rem;
+      letter-spacing: 0.25em;
+    }
+  }
+
+  &__btn {
+    min-width: 200px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes countPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .round-transition,
+  .round-transition__card {
+    animation: none;
+  }
+
+  .round-transition__bean-count {
+    animation: none;
+  }
+}

@@ -1,0 +1,33 @@
+<div
+  class="bean-counter"
+  [class.bean-counter--under]="status() === 'under'"
+  [class.bean-counter--at]="status() === 'at'"
+  [class.bean-counter--over]="status() === 'over'"
+>
+  <div class="bean-counter__remaining">
+    <span class="bean-counter__number">{{ beansRemaining() }}</span>
+    <span class="bean-counter__label">beans remaining</span>
+  </div>
+
+  <div
+    class="bean-counter__progress"
+    role="progressbar"
+    [attr.aria-valuenow]="totalAllocated()"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="totalBudget()"
+    [attr.aria-label]="totalAllocated() + ' of ' + totalBudget() + ' beans allocated'"
+  >
+    <div class="bean-counter__progress-fill" [style.width]="fillWidth()"></div>
+  </div>
+
+  <div class="bean-counter__status" role="status">
+    <span class="bean-counter__status-icon" aria-hidden="true">{{ statusIcon() }}</span>
+    <span class="bean-counter__status-text">{{ statusText() }}</span>
+  </div>
+
+  <div class="bean-counter__detail">
+    <span>{{ totalAllocated() }} / {{ totalBudget() }} allocated</span>
+  </div>
+
+  <div class="sr-only" aria-live="polite">{{ announcement() }}</div>
+</div>

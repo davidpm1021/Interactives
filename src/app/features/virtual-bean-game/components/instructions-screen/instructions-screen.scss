@@ -1,0 +1,146 @@
+.instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--ngpf-spacing-lg) 0;
+
+  &__scene {
+    text-align: center;
+    margin-bottom: var(--ngpf-spacing-xl);
+
+    h2 {
+      color: var(--ngpf-royal-blue);
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      margin-bottom: var(--ngpf-spacing-sm);
+    }
+  }
+
+  &__hook {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--ngpf-text-secondary);
+
+    em {
+      font-style: italic;
+      color: var(--ngpf-text-primary);
+    }
+  }
+
+  &__budget {
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: var(--ngpf-radius-lg);
+    padding: var(--ngpf-spacing-lg);
+    margin-bottom: var(--ngpf-spacing-xl);
+    text-align: center;
+
+    p {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--ngpf-text-secondary);
+      margin: 0;
+    }
+  }
+
+  &__budget-visual {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--ngpf-spacing-sm);
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__bean-number {
+    font-family: var(--ngpf-font-heading);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+    line-height: 1;
+  }
+
+  &__bean-label {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--ngpf-text-secondary);
+  }
+
+  &__rounds {
+    margin-bottom: var(--ngpf-spacing-xl);
+
+    h3 {
+      font-size: 1.125rem;
+      color: var(--ngpf-text-primary);
+      margin-bottom: var(--ngpf-spacing-md);
+    }
+  }
+
+  &__round-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: round;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: var(--ngpf-spacing-sm) 0 var(--ngpf-spacing-sm) 2.5rem;
+      position: relative;
+      border-left: 2px solid var(--ngpf-light-gray-blue);
+      margin-left: 1rem;
+
+      &::before {
+        counter-increment: round;
+        content: counter(round);
+        position: absolute;
+        left: -0.875rem;
+        top: var(--ngpf-spacing-sm);
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background: var(--ngpf-bright-blue);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &:last-child {
+        border-left-color: transparent;
+      }
+
+      strong {
+        font-size: 0.9375rem;
+        color: var(--ngpf-text-primary);
+      }
+
+      span {
+        font-size: 0.875rem;
+        color: var(--ngpf-text-secondary);
+        line-height: 1.4;
+      }
+    }
+  }
+
+  &__callout {
+    background: #fff8e1;
+    border-left: 4px solid var(--ngpf-gold);
+    border-radius: var(--ngpf-radius-md);
+    padding: var(--ngpf-spacing-md) var(--ngpf-spacing-lg);
+    margin-bottom: var(--ngpf-spacing-xl);
+
+    p {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--ngpf-text-primary);
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+
+  &__start-btn {
+    display: block;
+    margin: 0 auto;
+    min-width: 200px;
+  }
+}

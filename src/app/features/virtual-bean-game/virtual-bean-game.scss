@@ -1,0 +1,142 @@
+.virtual-bean-game {
+  min-height: calc(100vh - 80px);
+  padding: 2rem;
+
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    h2 {
+      color: var(--ngpf-royal-blue);
+      margin-bottom: var(--ngpf-spacing-sm);
+    }
+
+    > p {
+      color: var(--ngpf-text-secondary);
+      margin-bottom: var(--ngpf-spacing-lg);
+    }
+  }
+}
+
+// ─── Round Step Indicator ────────────────
+.round-steps {
+  margin-bottom: var(--ngpf-spacing-lg);
+
+  &__list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0;
+  }
+
+  &__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border: 2px solid var(--ngpf-light-gray-blue);
+    background: white;
+    color: var(--ngpf-text-muted);
+  }
+
+  &__name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ngpf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  &__connector {
+    width: 48px;
+    height: 2px;
+    background: var(--ngpf-light-gray-blue);
+    margin: 0 var(--ngpf-spacing-xs);
+    margin-bottom: 1.25rem; // align with circles, not labels
+    flex-shrink: 0;
+
+    &--completed {
+      background: var(--ngpf-success);
+    }
+  }
+
+  &__step--current {
+    .round-steps__number {
+      border-color: var(--ngpf-bright-blue);
+      background: var(--ngpf-bright-blue);
+      color: white;
+    }
+
+    .round-steps__name {
+      color: var(--ngpf-bright-blue);
+    }
+  }
+
+  &__step--completed {
+    .round-steps__number {
+      border-color: var(--ngpf-success);
+      background: var(--ngpf-success);
+      color: white;
+    }
+
+    .round-steps__name {
+      color: var(--ngpf-success);
+    }
+  }
+}
+
+.round2-diff {
+  max-width: 700px;
+  margin: 0 auto;
+
+  button {
+    margin-top: var(--ngpf-spacing-lg);
+    width: 100%;
+  }
+}
+
+.round3-seed {
+  text-align: center;
+  font-size: 1.125rem;
+
+  strong {
+    font-family: monospace;
+    font-size: 1.25rem;
+    letter-spacing: 0.15em;
+    color: var(--ngpf-bright-blue);
+  }
+}
+
+@media (max-width: 600px) {
+  .virtual-bean-game {
+    padding: 1rem;
+  }
+}
+
+@media print {
+  .virtual-bean-game {
+    padding: 1rem;
+  }
+
+  app-top-header,
+  app-bottom-header,
+  app-start-screen,
+  .round2-diff button,
+  app-round-transition {
+    display: none !important;
+  }
+}

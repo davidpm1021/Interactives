@@ -1,0 +1,110 @@
+.allocation-diff {
+  &__title {
+    font-size: 1.125rem;
+    margin-bottom: var(--ngpf-spacing-xs);
+    color: var(--ngpf-royal-blue);
+  }
+
+  &__summary {
+    font-size: 0.9375rem;
+    color: var(--ngpf-text-secondary);
+    margin-bottom: var(--ngpf-spacing-md);
+    font-style: italic;
+  }
+
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-sm);
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    border-radius: var(--ngpf-radius-md);
+    font-size: 0.9375rem;
+    border-left: 3px solid transparent;
+
+    &--upgraded {
+      border-left-color: var(--ngpf-success);
+      background: var(--ngpf-success-bg);
+    }
+
+    &--downgraded {
+      border-left-color: var(--ngpf-gold);
+      background: #fff8e1;
+    }
+
+    &--dropped {
+      border-left-color: var(--ngpf-error);
+      background: var(--ngpf-error-bg);
+    }
+
+    &--added {
+      border-left-color: var(--ngpf-success);
+      background: var(--ngpf-success-bg);
+    }
+
+    &--unchanged {
+      border-left-color: var(--ngpf-light-gray-blue);
+      opacity: 0.5;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 1.25rem;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  &__label {
+    font-weight: 600;
+    min-width: 8rem;
+    flex-shrink: 0;
+  }
+
+  &__detail {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--ngpf-text-secondary);
+  }
+
+  &__delta {
+    font-weight: 700;
+    font-size: 0.8125rem;
+    flex-shrink: 0;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+
+    &--positive {
+      background: var(--ngpf-success-bg);
+      color: var(--ngpf-success);
+    }
+
+    &--negative {
+      background: var(--ngpf-error-bg);
+      color: var(--ngpf-error);
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .allocation-diff__item {
+    flex-wrap: wrap;
+  }
+
+  .allocation-diff__label {
+    min-width: auto;
+  }
+
+  .allocation-diff__detail {
+    width: 100%;
+    padding-left: 1.75rem;
+  }
+}

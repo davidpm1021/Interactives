@@ -1,0 +1,163 @@
+<app-top-header></app-top-header>
+<div class="virtual-bean-game">
+  <div class="content">
+    @switch (gameState.phase()) {
+      @case ('start') {
+        @if (showInstructions()) {
+          <app-instructions-screen (ready)="onInstructionsReady()" />
+        } @else {
+          <app-start-screen (startGame)="startGame($event)" />
+        }
+      }
+
+      @case ('round1') {
+        <nav class="round-steps" aria-label="Game progress">
+          <ol class="round-steps__list">
+            <li class="round-steps__step round-steps__step--current" aria-current="step">
+              <span class="round-steps__number">1</span>
+              <span class="round-steps__name">Full Income</span>
+            </li>
+            <li class="round-steps__connector" aria-hidden="true"></li>
+            <li class="round-steps__step round-steps__step--future">
+              <span class="round-steps__number">2</span>
+              <span class="round-steps__name">Income Cut</span>
+            </li>
+            <li class="round-steps__connector" aria-hidden="true"></li>
+            <li class="round-steps__step round-steps__step--future">
+              <span class="round-steps__number">3</span>
+              <span class="round-steps__name">Life Happens</span>
+            </li>
+          </ol>
+        </nav>
+        <h2>Round 1: Full Income ({{ gameState.totalBeans() }} Beans)</h2>
+        <p>Allocate your {{ gameState.totalBeans() }} beans across the categories below. Required categories are marked with a star.</p>
+        <app-game-board
+          [allocations]="gameState.allocations()"
+          [totalBudget]="gameState.totalBeans()"
+          [beansRemaining]="gameState.beansRemaining()"
+          [validation]="gameState.validationResult()"
+          [round]="1"
+          (allocationChange)="onAllocationChange($event)"
+          (submitRound)="onSubmitRound()"
+        />
+      }
+
+      @case ('round2') {
+        <nav class="round-steps" aria-label="Game progress">
+          <ol class="round-steps__list">
+            <li class="round-steps__step round-steps__step--completed">
+              <span class="round-steps__number">✓</span>
+              <span class="round-steps__name">Full Income</span>
+            </li>
+            <li class="round-steps__connector round-steps__connector--completed" aria-hidden="true"></li>
+            <li class="round-steps__step round-steps__step--current" aria-current="step">
+              <span class="round-steps__number">2</span>
+              <span class="round-steps__name">Income Cut</span>
+            </li>
+            <li class="round-steps__connector" aria-hidden="true"></li>
+            <li class="round-steps__step round-steps__step--future">
+              <span class="round-steps__number">3</span>
+              <span class="round-steps__name">Life Happens</span>
+            </li>
+          </ol>
+        </nav>
+        <h2>Round 2: Income Cut ({{ gameState.totalBeans() }} Beans)</h2>
+        <p>Your income has been reduced! You now have only <strong>{{ gameState.totalBeans() }}</strong> beans. Adjust your choices.</p>
+
+        @if (showDiff()) {
+          <div class="round2-diff">
+            <app-allocation-diff
+              [diffs]="gameState.allocationDiff()"
+              title="What Changed from Round 1"
+            />
+            <button class="ngpf-btn ngpf-btn-primary" (click)="onConfirmRound2()">
+              @if (gameState.config().round3Enabled) {
+                Continue to Life Happens
+              } @else {
+                View Report
+              }
+            </button>
+          </div>
+        } @else {
+          <app-game-board
+            [allocations]="gameState.allocations()"
+            [totalBudget]="gameState.totalBeans()"
+            [beansRemaining]="gameState.beansRemaining()"
+            [validation]="gameState.validationResult()"
+            [round]="2"
+            (allocationChange)="onAllocationChange($event)"
+            (submitRound)="onSubmitRound()"
+          />
+        }
+      }
+
+      @case ('round3') {
+        <nav class="round-steps" aria-label="Game progress">
+          <ol class="round-steps__list">
+            <li class="round-steps__step round-steps__step--completed">
+              <span class="round-steps__number">✓</span>
+              <span class="round-steps__name">Full Income</span>
+            </li>
+            <li class="round-steps__connector round-steps__connector--completed" aria-hidden="true"></li>
+            <li class="round-steps__step round-steps__step--completed">
+              <span class="round-steps__number">✓</span>
+              <span class="round-steps__name">Income Cut</span>
+            </li>
+            <li class="round-steps__connector round-steps__connector--completed" aria-hidden="true"></li>
+            <li class="round-steps__step round-steps__step--current" aria-current="step">
+              <span class="round-steps__number">3</span>
+              <span class="round-steps__name">Life Happens</span>
+            </li>
+          </ol>
+        </nav>
+        <h2>Round 3: Life Happens</h2>
+        <p class="round3-seed">
+          Life Path: <strong>{{ gameState.seed() }}</strong>
+          &nbsp;·&nbsp;
+          {{ gameState.totalBeans() }} beans
+        </p>
+
+        @if (gameState.currentEvent(); as event) {
+          <app-event-card
+            [event]="event"
+            [eventIndex]="gameState.eventIndex()"
+            [totalEvents]="gameState.events().length"
+            [result]="currentResult()"
+            [allocations]="gameState.allocations()"
+            (reveal)="onRevealEvent()"
+            (next)="onNextEvent()"
+          />
+        }
+      }
+
+      @case ('report') {
+        <app-report
+          [seed]="gameState.seed()"
+          [round1]="gameState.round1Snapshot()!"
+          [round2]="gameState.round2Snapshot() ?? gameState.allocations()"
+          [diffs]="gameState.allocationDiff()"
+          [eventResults]="gameState.eventResults()"
+          [finalBeans]="gameState.totalBeans()"
+          [isReplay]="gameState.isReplay()"
+          [previousRunFinal]="gameState.previousRunFinal()"
+          [round3Enabled]="gameState.config().round3Enabled"
+          [allowReplay]="gameState.config().allowReplay"
+          (replaySameLife)="onReplaySameLife()"
+          (replayNewLife)="onReplayNewLife()"
+        />
+      }
+    }
+  </div>
+</div>
+
+<!-- Round transition overlays -->
+@if (showTransition()) {
+  <app-round-transition
+    [type]="transitionType()"
+    [seed]="gameState.seed()"
+    [summary]="round1Summary()"
+    (proceed)="onTransitionProceed()"
+  />
+}
+
+<app-bottom-header></app-bottom-header>

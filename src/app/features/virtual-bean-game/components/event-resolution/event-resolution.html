@@ -1,0 +1,26 @@
+<div class="event-resolution">
+  <p class="event-resolution__prompt">
+    @if (isAdding()) {
+      Choose where to add {{ beansLeft() }} bean{{ beansLeft() !== 1 ? 's' : '' }}:
+    } @else {
+      Choose where to remove {{ beansLeft() }} bean{{ beansLeft() !== 1 ? 's' : '' }}:
+    }
+  </p>
+
+  <div class="event-resolution__slots" role="group" [attr.aria-label]="isAdding() ? 'Add beans to' : 'Remove beans from'">
+    @for (slot of slots(); track slot.slotId) {
+      <button
+        class="event-resolution__slot ngpf-btn ngpf-btn-outline"
+        [disabled]="isDone()"
+        (click)="onSelectSlot(slot.slotId)"
+      >
+        <span class="event-resolution__slot-name">{{ slot.name }}</span>
+        <span class="event-resolution__slot-beans">({{ slot.currentBeans }})</span>
+      </button>
+    }
+  </div>
+
+  @if (isDone()) {
+    <p class="event-resolution__done" role="status">Done!</p>
+  }
+</div>
