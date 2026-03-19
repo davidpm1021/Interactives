@@ -1,0 +1,18 @@
+.dark-patterns-game {
+  min-height: calc(100vh - 80px);
+  background: #1a1a2e;
+
+  &__challenge-area {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--ngpf-spacing-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .dark-patterns-game {
+    &__challenge-area {
+      padding: var(--ngpf-spacing-md);
+    }
+  }
+}

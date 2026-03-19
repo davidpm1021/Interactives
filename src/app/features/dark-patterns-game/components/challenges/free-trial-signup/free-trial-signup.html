@@ -1,0 +1,93 @@
+<div class="free-trial">
+  <div class="free-trial__card">
+    <div class="free-trial__header">
+      <div class="free-trial__brand" aria-hidden="true">
+        <span class="free-trial__brand-icon">▶</span>
+        <span class="free-trial__brand-name">StreamVault</span>
+      </div>
+      <h3 class="free-trial__title">Watch FREE for 7 Days!</h3>
+      <p class="free-trial__subtitle">
+        Unlimited movies, shows, and originals. Start watching in minutes.
+      </p>
+    </div>
+
+    <div class="free-trial__body">
+      <div class="free-trial__field">
+        <label class="free-trial__label">Email Address</label>
+        <div class="free-trial__input-fake" aria-hidden="true">alex.johnson&#64;email.com</div>
+      </div>
+
+      <div class="free-trial__field">
+        <label class="free-trial__label">Card Number</label>
+        <div class="free-trial__input-fake" aria-hidden="true">4242 4242 4242 4242</div>
+      </div>
+
+      <div class="free-trial__field-row">
+        <div class="free-trial__field">
+          <label class="free-trial__label">Expiry</label>
+          <div class="free-trial__input-fake" aria-hidden="true">12/27</div>
+        </div>
+        <div class="free-trial__field">
+          <label class="free-trial__label">CVC</label>
+          <div class="free-trial__input-fake" aria-hidden="true">•••</div>
+        </div>
+      </div>
+
+      <div class="free-trial__terms-notice">
+        <label class="free-trial__terms-checkbox">
+          <input
+            type="checkbox"
+            [checked]="noticedTerms()"
+            (change)="onToggleTermsNotice()"
+          />
+          <span>I understand this trial auto-renews</span>
+        </label>
+        <p class="free-trial__fine-print">
+          By clicking "Start Watching," you agree that your free trial will automatically
+          convert to a Premium subscription at $14.99/month unless you cancel before the
+          trial ends.
+        </p>
+      </div>
+
+      <div class="free-trial__email-question">
+        <p class="free-trial__question-text">
+          Would you like to <em>not</em> receive promotional emails from us and our partners?
+        </p>
+        <div class="free-trial__question-options">
+          <label class="free-trial__radio-option">
+            <input
+              type="radio"
+              name="email-pref"
+              value="yes"
+              [checked]="emailQuestion() === 'yes'"
+              (change)="emailQuestion.set('yes')"
+            />
+            <span>Yes</span>
+          </label>
+          <label class="free-trial__radio-option">
+            <input
+              type="radio"
+              name="email-pref"
+              value="no"
+              [checked]="emailQuestion() === 'no'"
+              (change)="emailQuestion.set('no')"
+            />
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="free-trial__submit-btn"
+        (click)="onStartWatching()"
+      >
+        Start Watching
+      </button>
+
+      <p class="free-trial__guarantee">
+        <span aria-hidden="true">🔒</span> Cancel anytime. No commitment.
+      </p>
+    </div>
+  </div>
+</div>

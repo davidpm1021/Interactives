@@ -1,0 +1,58 @@
+<div class="privacy-settings">
+  <div class="privacy-settings__card">
+    <div class="privacy-settings__header">
+      <span class="privacy-settings__logo" aria-hidden="true">🏦</span>
+      <span class="privacy-settings__bank-name">TrustBank</span>
+    </div>
+
+    <div class="privacy-settings__body">
+      <h3 class="privacy-settings__title">Review Your Privacy Preferences</h3>
+      <p class="privacy-settings__subtitle">
+        Manage how your data is used. Customize your settings below.
+      </p>
+
+      <div class="privacy-settings__notice">
+        <span class="privacy-settings__notice-icon" aria-hidden="true">ℹ️</span>
+        <span>Toggle switches: <strong>Left = Active</strong>, Right = Inactive</span>
+      </div>
+
+      <div class="privacy-settings__toggle-list">
+        @for (toggle of toggles(); track toggle.id; let i = $index) {
+          <div class="privacy-settings__toggle-row">
+            <div class="privacy-settings__toggle-info">
+              <span class="privacy-settings__toggle-label">{{ toggle.label }}</span>
+              <span class="privacy-settings__toggle-desc">{{ toggle.description }}</span>
+            </div>
+            <button
+              type="button"
+              class="privacy-settings__toggle-btn"
+              [class.privacy-settings__toggle-btn--active]="toggle.enabled"
+              [attr.aria-pressed]="toggle.enabled"
+              [attr.aria-label]="toggle.label"
+              (click)="onToggle(i)"
+            >
+              <span class="privacy-settings__toggle-track">
+                <span class="privacy-settings__toggle-thumb"></span>
+              </span>
+              <span class="privacy-settings__toggle-state">
+                {{ toggle.enabled ? 'Active' : 'Inactive' }}
+              </span>
+            </button>
+          </div>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="privacy-settings__save-btn"
+        (click)="onSavePreferences()"
+      >
+        Save Preferences
+      </button>
+
+      <p class="privacy-settings__footer-note">
+        You can update these preferences anytime in your account settings.
+      </p>
+    </div>
+  </div>
+</div>

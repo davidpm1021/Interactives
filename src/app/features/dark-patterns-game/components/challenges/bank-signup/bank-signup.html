@@ -1,0 +1,100 @@
+<div class="bank-signup">
+  <div class="bank-signup__card">
+    <div class="bank-signup__header">
+      <span class="bank-signup__logo" aria-hidden="true">🏦</span>
+      <span class="bank-signup__bank-name">TrustBank</span>
+      <span class="bank-signup__tagline">Your finances, simplified.</span>
+    </div>
+
+    <div class="bank-signup__body">
+      <h3 class="bank-signup__title">Open a Free Checking Account</h3>
+      <p class="bank-signup__subtitle">Complete the application below to get started.</p>
+
+      <div class="bank-signup__form" role="form" aria-label="Bank account application">
+        <div class="bank-signup__field">
+          <label class="bank-signup__label">Full Legal Name</label>
+          <div class="bank-signup__input-fake" aria-hidden="true">Alex Johnson</div>
+        </div>
+
+        <div class="bank-signup__field">
+          <label class="bank-signup__label">Email Address</label>
+          <div class="bank-signup__input-fake" aria-hidden="true">alex.johnson&#64;email.com</div>
+        </div>
+
+        <div class="bank-signup__field">
+          <label class="bank-signup__label">Social Security Number</label>
+          <div class="bank-signup__input-fake" aria-hidden="true">•••-••-4589</div>
+        </div>
+
+        <!-- Disguised opt-in: looks like a security feature -->
+        <div class="bank-signup__shield-section">
+          <div class="bank-signup__shield-header">
+            <span class="bank-signup__shield-icon" aria-hidden="true">🛡️</span>
+            <div class="bank-signup__shield-info">
+              <span class="bank-signup__shield-title">Protect your account with IdentityShield</span>
+              <span class="bank-signup__shield-desc">
+                Advanced identity monitoring and fraud alerts to keep your account safe.
+              </span>
+            </div>
+            <button
+              type="button"
+              class="bank-signup__shield-toggle"
+              [class.bank-signup__shield-toggle--on]="identityShieldEnabled()"
+              [attr.aria-pressed]="identityShieldEnabled()"
+              aria-label="IdentityShield protection"
+              (click)="identityShieldEnabled.set(!identityShieldEnabled())"
+            >
+              <span class="bank-signup__shield-toggle-track">
+                <span class="bank-signup__shield-toggle-thumb"></span>
+              </span>
+            </button>
+          </div>
+          <span class="bank-signup__shield-price">$9.99/mo</span>
+        </div>
+
+        <div class="bank-signup__field">
+          <label class="bank-signup__label">Date of Birth</label>
+          <div class="bank-signup__input-fake" aria-hidden="true">01/15/2005</div>
+        </div>
+
+        <!-- Disguised ad: looks like part of the application -->
+        <div class="bank-signup__credit-card-ad">
+          <div class="bank-signup__ad-badge">Recommended for you</div>
+          <div class="bank-signup__ad-content">
+            <div class="bank-signup__ad-card-image" aria-hidden="true">
+              <span>💳</span>
+            </div>
+            <div class="bank-signup__ad-info">
+              <span class="bank-signup__ad-title">TrustBank Rewards Visa</span>
+              <span class="bank-signup__ad-desc">
+                Earn 2% cash back on every purchase. Pre-approved based on your profile.
+              </span>
+              <span class="bank-signup__ad-apr">24.99% variable APR</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="bank-signup__ad-apply-btn"
+            (click)="onApplyCreditCard()"
+            [class.bank-signup__ad-apply-btn--clicked]="clickedCreditCardAd()"
+          >
+            {{ clickedCreditCardAd() ? 'Applied ✓' : 'Apply Now' }}
+          </button>
+        </div>
+
+        <div class="bank-signup__field">
+          <label class="bank-signup__label">Mailing Address</label>
+          <div class="bank-signup__input-fake" aria-hidden="true">123 Main St, Anytown, USA</div>
+        </div>
+
+        <button
+          type="button"
+          class="bank-signup__submit-btn"
+          (click)="onSubmitApplication()"
+        >
+          Submit Application
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
