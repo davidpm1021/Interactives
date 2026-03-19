@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
-import { InteractiveOne } from './features/interactive-one/interactive-one';
-import { InteractiveTwo } from './features/interactive-two/interactive-two';
 import { TemplateExample } from './features/template-example/template-example';
 import { DarkPatternsGame } from './features/dark-patterns-game/dark-patterns-game';
 import { UnderstandingAmortization } from './features/understanding-amortization/understanding-amortization';
