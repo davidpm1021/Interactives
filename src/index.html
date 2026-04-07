@@ -7,6 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="https://d3f7q2msm2165u.cloudfront.net/aaa-content/user/files/images/site/favicon_new.ico" />
   <link rel="shortcut" type="image/png" href="https://d3f7q2msm2165u.cloudfront.net/aaa-content/user/files/images/site/favicon_new.ico" />
+  <!-- GA4: cookieless, no PII -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZEC31MJEZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9ZEC31MJEZ', {
+      storage: 'none',
+      client_id: crypto.randomUUID(),
+      send_page_view: false
+    });
+  </script>
 </head>
 <body>
   <app-root></app-root>

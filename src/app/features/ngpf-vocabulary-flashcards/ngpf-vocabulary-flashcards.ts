@@ -14,6 +14,7 @@ import {
   Flashcard,
   StudyMode,
 } from './models/flashcard.models';
+import { AnalyticsService } from '../../shared/services/analytics.service';
 
 @Component({
   selector: 'app-ngpf-vocabulary-flashcards',
@@ -31,8 +32,10 @@ import {
 })
 export class NgpfVocabularyFlashcards implements OnInit {
   private readonly flashcardService = inject(FlashcardService);
+  private readonly analytics = inject(AnalyticsService);
   private readonly elementRef = inject(ElementRef);
   private readonly injector = inject(Injector);
+  private sessionStartTime = 0;
 
   protected readonly title = 'NGPF Vocabulary Flashcards';
   protected readonly liveAnnouncement = signal('');
@@ -111,6 +114,12 @@ export class NgpfVocabularyFlashcards implements OnInit {
   protected onUnitsSelected(units: Unit[]): void {
     this.selectedUnits.set(units);
     this.currentView.set('study-settings');
+
+    this.analytics.trackEvent('flashcard_units_selected', {
+      unit_count: units.length,
+      unit_names: units.map(u => u.name).join(', '),
+      total_terms: units.reduce((sum, u) => sum + u.terms.length, 0),
+    });
   }
 
   protected onSettingsConfirmed(settings: StudySettings): void {
@@ -127,7 +136,15 @@ export class NgpfVocabularyFlashcards implements OnInit {
     this.originalTotalCards.set(session.totalCards);
     this.firstPassCorrect.set(0);
     this.totalReviewedCards.set(0);
+    this.sessionStartTime = Date.now();
     this.currentView.set('studying');
+
+    this.analytics.trackEvent('flashcard_session_start', {
+      study_mode: settings.mode,
+      is_spanish: settings.isSpanish,
+      total_cards: session.totalCards,
+      unit_names: this.selectedUnits().map(u => u.name).join(', '),
+    });
   }
 
   protected onSettingsBack(): void {
@@ -158,6 +175,11 @@ export class NgpfVocabularyFlashcards implements OnInit {
     const session = this.studySession();
     if (!session) return;
 
+    this.analytics.trackEvent('flashcard_review_started', {
+      missed_count: session.missedCards.length,
+      total_cards: session.totalCards,
+    });
+
     this.totalReviewedCards.update((v) => v + session.missedCards.length);
     const reviewSession = this.flashcardService.createReviewSession(session);
     this.studySession.set(reviewSession);
@@ -169,9 +191,28 @@ export class NgpfVocabularyFlashcards implements OnInit {
       this.totalReviewedCards.update((v) => v + session.missedCards.length);
     }
     this.currentView.set('completion');
+
+    const durationSec = Math.round((Date.now() - this.sessionStartTime) / 1000);
+    const total = this.originalTotalCards();
+    const correct = this.firstPassCorrect();
+    this.analytics.trackEvent('flashcard_session_complete', {
+      total_cards: total,
+      correct_first_pass: correct,
+      accuracy_pct: total > 0 ? Math.round((correct / total) * 100) : 0,
+      needed_review: this.totalReviewedCards(),
+      duration_seconds: durationSec,
+      study_mode: this.studyMode(),
+      is_spanish: this.isSpanish(),
+      unit_names: this.selectedUnits().map(u => u.name).join(', '),
+    });
   }
 
   protected onStudyAgain(): void {
+    this.analytics.trackEvent('flashcard_study_again', {
+      unit_names: this.selectedUnits().map(u => u.name).join(', '),
+      study_mode: this.studyMode(),
+    });
+
     const session = this.flashcardService.createSession(
       this.selectedUnits(),
       this.studyMode(),
@@ -182,6 +223,7 @@ export class NgpfVocabularyFlashcards implements OnInit {
     this.originalTotalCards.set(session.totalCards);
     this.firstPassCorrect.set(0);
     this.totalReviewedCards.set(0);
+    this.sessionStartTime = Date.now();
     this.currentView.set('studying');
   }
 
@@ -192,6 +234,12 @@ export class NgpfVocabularyFlashcards implements OnInit {
   }
 
   protected onExitStudy(): void {
+    const session = this.studySession();
+    this.analytics.trackEvent('flashcard_exit_early', {
+      cards_completed: session?.currentIndex ?? 0,
+      total_cards: session?.totalCards ?? 0,
+    });
+
     this.studySession.set(null);
     this.selectedUnits.set([]);
     this.currentView.set('unit-selection');
