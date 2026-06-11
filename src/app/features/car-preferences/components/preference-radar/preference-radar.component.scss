@@ -1,0 +1,39 @@
+.preference-radar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ngpf-spacing-sm);
+
+  &__copy {
+    align-self: stretch;
+  }
+
+  &__status {
+    margin: 0;
+    color: var(--ngpf-success);
+    font-size: 14px;
+    text-align: center;
+  }
+}
+
+.preference-radar {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  padding: var(--ngpf-spacing-md);
+  border: 1px solid var(--ngpf-light-gray-blue);
+  box-shadow: var(--ngpf-shadow-sm);
+
+  canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .preference-radar {
+    height: 320px;
+  }
+}

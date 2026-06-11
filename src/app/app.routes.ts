@@ -16,5 +16,10 @@ export const routes: Routes = [
         (m) => m.VIRTUAL_BEAN_GAME_ROUTES,
       ),
   },
+  {
+    path: 'car-preferences',
+    title: 'Your Driving Preferences | NGPF',
+    loadComponent: () => import('./features/car-preferences/car-preferences').then((m) => m.CarPreferences),
+  },
   { path: '**', redirectTo: '' },
 ];

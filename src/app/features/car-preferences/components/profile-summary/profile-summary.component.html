@@ -1,0 +1,41 @@
+<section class="profile-summary">
+  <h2 class="profile-summary__heading">Your preference profile</h2>
+
+  <div class="profile-summary__chart">
+    <app-preference-radar [categories]="categories()" [values]="profile().values" />
+  </div>
+
+  <table class="profile-summary__table">
+    <caption class="sr-only">Your saved driving preferences</caption>
+    <thead>
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">Value</th>
+        <th scope="col">Meaning</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.label) {
+        <tr>
+          <th scope="row">{{ row.label }}</th>
+          <td class="profile-summary__value">{{ row.value }}</td>
+          <td>{{ row.tag }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="profile-summary__actions">
+    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="copyLink()">
+      Copy my profile link
+    </button>
+    <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onEdit()">
+      Edit preferences
+    </button>
+  </div>
+
+  <p class="sr-only" aria-live="polite">{{ copyStatus() }}</p>
+  @if (copyStatus()) {
+    <p class="profile-summary__copy-status" aria-hidden="true">{{ copyStatus() }}</p>
+  }
+</section>
