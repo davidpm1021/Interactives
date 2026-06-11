@@ -1,0 +1,34 @@
+<div class="preference-slider">
+  <div class="preference-slider__row">
+    <label class="preference-slider__label" [attr.for]="'slider-' + category().id">
+      {{ category().label }}
+    </label>
+    <span class="preference-slider__bubble" aria-hidden="true">{{ value() }}</span>
+  </div>
+
+  <div class="preference-slider__track-wrapper">
+    <input
+      type="range"
+      class="preference-slider__input"
+      [id]="'slider-' + category().id"
+      min="0"
+      max="10"
+      step="1"
+      [value]="value()"
+      [disabled]="disabled()"
+      [attr.aria-label]="category().label"
+      [attr.aria-valuetext]="ariaValueText()"
+      (input)="onInput($event)"
+    />
+    <div class="preference-slider__ticks" aria-hidden="true">
+      @for (tick of tickPositions(); track tick.value) {
+        <span class="preference-slider__tick" [style.left.%]="tick.leftPct"></span>
+      }
+    </div>
+  </div>
+
+  <p class="preference-slider__anchor-text">
+    <span class="preference-slider__anchor-tag">{{ anchor().tag }}:</span>
+    {{ anchor().description }}
+  </p>
+</div>

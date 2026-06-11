@@ -1,0 +1,63 @@
+.profile-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ngpf-spacing-lg);
+
+  &__heading {
+    color: var(--ngpf-royal-blue);
+    margin: 0;
+  }
+
+  &__chart {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    font-size: 15px;
+
+    th,
+    td {
+      padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+      text-align: left;
+      border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    }
+
+    thead th {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      font-weight: 700;
+    }
+
+    tbody tr:last-child th,
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  &__value {
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+    font-variant-numeric: tabular-nums;
+    width: 4rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ngpf-spacing-md);
+  }
+
+  &__copy-status {
+    margin: 0;
+    color: var(--ngpf-success);
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,23 @@
+<table class="anchor-key">
+  <caption class="anchor-key__caption">
+    What the numbers mean. Drag any slider to see the full description.
+  </caption>
+  <thead>
+    <tr>
+      <th scope="col" class="anchor-key__category-header">Category</th>
+      @for (val of anchorValues(); track val) {
+        <th scope="col">{{ val }}</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (cat of categories(); track cat.id) {
+      <tr>
+        <th scope="row" class="anchor-key__category">{{ cat.label }}</th>
+        @for (val of anchorValues(); track val) {
+          <td>{{ tagAt(cat, val) }}</td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>

@@ -1,0 +1,33 @@
+<div class="preference-radar-wrapper">
+  <div class="preference-radar" role="img" [attr.aria-label]="summary()">
+    <canvas #canvas></canvas>
+    <table class="sr-only">
+      <caption>Current preference values</caption>
+      <thead>
+        <tr>
+          <th scope="col">Category</th>
+          <th scope="col">Value (0-10)</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cat of categories(); track cat.id) {
+          <tr>
+            <th scope="row">{{ cat.label }}</th>
+            <td>{{ values()[cat.id] }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <button
+    type="button"
+    class="ngpf-btn ngpf-btn-secondary preference-radar-wrapper__copy"
+    (click)="copyImage()"
+  >
+    Copy image
+  </button>
+  <p class="sr-only" aria-live="polite">{{ copyStatus() }}</p>
+  @if (copyStatus()) {
+    <p class="preference-radar-wrapper__status" aria-hidden="true">{{ copyStatus() }}</p>
+  }
+</div>

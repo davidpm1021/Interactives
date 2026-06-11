@@ -1,0 +1,135 @@
+{
+  "title": "Your Driving Preferences",
+  "pointBudget": null,
+  "categories": [
+    {
+      "id": "performance",
+      "label": "Performance",
+      "anchors": [
+        {
+          "value": 0,
+          "tag": "Minimal",
+          "description": "Just needs to move; acceleration and handling don't matter"
+        },
+        {
+          "value": 3,
+          "tag": "Modest",
+          "description": "Comfortable merging and keeping up with traffic"
+        },
+        {
+          "value": 5,
+          "tag": "Average",
+          "description": "Responsive everyday acceleration and handling"
+        },
+        {
+          "value": 7,
+          "tag": "Spirited",
+          "description": "Quick acceleration, sport-tuned handling"
+        },
+        {
+          "value": 10,
+          "tag": "Maximum",
+          "description": "Sports car acceleration, track-level handling"
+        }
+      ]
+    },
+    {
+      "id": "efficiency",
+      "label": "Efficiency",
+      "anchors": [
+        {
+          "value": 0,
+          "tag": "Minimal",
+          "description": "Fuel costs aren't a factor (under 15 MPG is fine)"
+        },
+        { "value": 3, "tag": "Modest", "description": "Around 20 MPG" },
+        { "value": 5, "tag": "Average", "description": "25 - 30 MPG" },
+        { "value": 7, "tag": "High", "description": "35 - 45 MPG or hybrid" },
+        { "value": 10, "tag": "Maximum", "description": "Plug-in hybrid or full EV" }
+      ]
+    },
+    {
+      "id": "budget",
+      "label": "Budget",
+      "anchors": [
+        { "value": 0, "tag": "Low", "description": "Vehicles under $5k" },
+        { "value": 3, "tag": "Conservative", "description": "Vehicles around $15k" },
+        { "value": 5, "tag": "Average", "description": "Vehicles $20k - $35k" },
+        { "value": 7, "tag": "High", "description": "Vehicles $50k - $75k" },
+        { "value": 10, "tag": "Maximum", "description": "$100k+" }
+      ]
+    },
+    {
+      "id": "style",
+      "label": "Style",
+      "anchors": [
+        { "value": 0, "tag": "Minimal", "description": "Looks don't matter at all" },
+        { "value": 3, "tag": "Modest", "description": "Presentable, no strong opinions" },
+        { "value": 5, "tag": "Average", "description": "Want something that looks good" },
+        { "value": 7, "tag": "High", "description": "Distinctive design is a real factor" },
+        {
+          "value": 10,
+          "tag": "Maximum",
+          "description": "Head-turner; design is a top priority"
+        }
+      ]
+    },
+    {
+      "id": "safety",
+      "label": "Safety",
+      "anchors": [
+        { "value": 0, "tag": "Minimal", "description": "Meets legal requirements" },
+        { "value": 3, "tag": "Modest", "description": "Solid crash-test ratings" },
+        {
+          "value": 5,
+          "tag": "Average",
+          "description": "Good ratings plus basics like a backup camera"
+        },
+        {
+          "value": 7,
+          "tag": "High",
+          "description": "Top ratings plus driver-assist (blind spot, lane keep)"
+        },
+        {
+          "value": 10,
+          "tag": "Maximum",
+          "description": "Best-in-class ratings, full active safety suite"
+        }
+      ]
+    },
+    {
+      "id": "reliability",
+      "label": "Reliability",
+      "anchors": [
+        {
+          "value": 0,
+          "tag": "Minimal",
+          "description": "Fine with frequent repairs or a project car"
+        },
+        { "value": 3, "tag": "Modest", "description": "Occasional repairs are acceptable" },
+        { "value": 5, "tag": "Average", "description": "Typical maintenance, few surprises" },
+        { "value": 7, "tag": "High", "description": "Strong reliability record, low repair costs" },
+        {
+          "value": 10,
+          "tag": "Maximum",
+          "description": "Top reliability brands; expect 200k+ miles"
+        }
+      ]
+    },
+    {
+      "id": "utility",
+      "label": "Utility & Cargo",
+      "anchors": [
+        { "value": 0, "tag": "Minimal", "description": "Just the driver" },
+        { "value": 3, "tag": "Modest", "description": "A passenger and some groceries" },
+        { "value": 5, "tag": "Average", "description": "4 - 5 people, trunk for luggage" },
+        { "value": 7, "tag": "High", "description": "Big cargo area, gear hauling, light towing" },
+        {
+          "value": 10,
+          "tag": "Maximum",
+          "description": "Max passengers and cargo, or serious towing"
+        }
+      ]
+    }
+  ]
+}

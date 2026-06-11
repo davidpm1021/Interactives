@@ -1,0 +1,42 @@
+<app-top-header></app-top-header>
+<div class="car-preferences">
+  <div class="content">
+    @if (!loaded()) {
+      <p class="car-preferences__loading">Loading…</p>
+    } @else {
+      <header class="car-preferences__header">
+        <h1>{{ config()?.title }}</h1>
+        <p class="car-preferences__intro">
+          Move each slider to show how much you care about that aspect of a car.
+        </p>
+      </header>
+
+      <div class="car-preferences__main">
+        <div class="car-preferences__sliders">
+          @for (cat of categories(); track cat.id) {
+            <app-preference-slider
+              [category]="cat"
+              [value]="values()[cat.id]"
+              (valueChange)="onValueChange(cat.id, $event)"
+            />
+          }
+        </div>
+        <aside class="car-preferences__chart-wrapper">
+          <div class="car-preferences__sticky">
+            <app-preference-radar [categories]="categories()" [values]="values()" />
+            @if (pointBudget() !== null) {
+              <p
+                class="car-preferences__budget"
+                [class.car-preferences__budget--over]="overBudget()"
+                aria-live="polite"
+              >
+                Points used: {{ pointsUsed() }} / {{ pointBudget() }}
+              </p>
+            }
+          </div>
+        </aside>
+      </div>
+    }
+  </div>
+</div>
+<app-bottom-header></app-bottom-header>
