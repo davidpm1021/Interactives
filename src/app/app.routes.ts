@@ -10,13 +10,6 @@ export const routes: Routes = [
   { path: 'ngpf-vocabulary-flashcards', component: NgpfVocabularyFlashcards, title: 'Vocabulary Flashcards | NGPF' },
   { path: 'understanding-amortization', component: UnderstandingAmortization, title: 'Loan Amortization Calculator | NGPF' },
   {
-    path: 'virtual-bean-game',
-    loadChildren: () =>
-      import('./features/virtual-bean-game/virtual-bean-game.routes').then(
-        (m) => m.VIRTUAL_BEAN_GAME_ROUTES,
-      ),
-  },
-  {
     path: 'car-preferences',
     title: 'Your Driving Preferences | NGPF',
     loadComponent: () => import('./features/car-preferences/car-preferences').then((m) => m.CarPreferences),
