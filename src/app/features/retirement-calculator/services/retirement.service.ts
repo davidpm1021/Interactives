@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  ChartPoint,
   INCOME_GROWTH,
   INFLATION,
   LIFE_EXPECTANCY,
@@ -99,6 +100,18 @@ export class RetirementService {
     const projectedMonthlyIncome =
       firstYearIncomeNominal / 12 / Math.pow(1 + INFLATION, yearsToRetirement);
 
+    const chartData = this.buildChartData(
+      inputs,
+      yearsToRetirement,
+      yearsInRetirement,
+      finalBalance,
+      targetNestEgg,
+      budgetAtRetirement,
+      requiredMonthlyToHitGoal,
+      r,
+      g,
+    );
+
     return {
       yearlyBalances,
       finalBalance,
@@ -111,7 +124,92 @@ export class RetirementService {
       totalContributed,
       salaryAtRetirement,
       budgetAtRetirement,
+      chartData,
     };
+  }
+
+  /**
+   * "What you'll have vs. what you'll need" over the full lifetime.
+   *
+   * Accumulation phase: both series grow via the same 6% annual + 2%
+   * contribution-growth model. `actual` uses the user's monthlyContribution;
+   * `target` uses the requiredMonthlyToHitGoal (year-1) so it lands at
+   * exactly targetNestEgg at retirement.
+   *
+   * Drawdown phase: each series starts at its own peak and each year
+   * withdraws the inflating budget while remaining balance grows at 5%.
+   * The target line hits ~0 at age 95 by construction; the actual line
+   * may hit 0 earlier if the user is under-saving.
+   */
+  private buildChartData(
+    inputs: RetirementInputs,
+    yearsToRetirement: number,
+    yearsInRetirement: number,
+    finalBalance: number,
+    targetNestEgg: number,
+    budgetAtRetirement: number,
+    requiredMonthly: number,
+    r: number,
+    g: number,
+  ): ChartPoint[] {
+    const out: ChartPoint[] = [];
+    // If the user is already on track or over, "target" contribution equals
+    // the user's own contribution (there's no additional required amount).
+    const needStartingMonthly = requiredMonthly > 0
+      ? requiredMonthly
+      : inputs.monthlyContribution;
+
+    let actualBalance = inputs.currentSavings;
+    let targetBalance = inputs.currentSavings;
+    let actualContrib = inputs.monthlyContribution;
+    let targetContrib = needStartingMonthly;
+
+    out.push({
+      age: inputs.currentAge,
+      actual: actualBalance,
+      target: targetBalance,
+      phase: 'accumulation',
+    });
+
+    for (let year = 1; year <= yearsToRetirement; year++) {
+      actualBalance = actualBalance * (1 + r) + actualContrib * 12;
+      targetBalance = targetBalance * (1 + r) + targetContrib * 12;
+      out.push({
+        age: inputs.currentAge + year,
+        actual: actualBalance,
+        target: targetBalance,
+        phase: 'accumulation',
+      });
+      actualContrib *= 1 + g;
+      targetContrib *= 1 + g;
+    }
+
+    // If the user's actual accumulation overshoots targetNestEgg, the target
+    // line at retirement should still show targetNestEgg (not the higher
+    // actual). Snap the target curve to targetNestEgg at retirement so the
+    // drawdown starts from the correct base.
+    if (out.length > 0) {
+      out[out.length - 1] = { ...out[out.length - 1], target: targetNestEgg };
+    }
+
+    // Drawdown phase.
+    let actualDraw = finalBalance;
+    let targetDraw = targetNestEgg;
+    let withdrawal = budgetAtRetirement * 12;
+
+    for (let k = 1; k <= yearsInRetirement; k++) {
+      actualDraw = Math.max(0, actualDraw * (1 + POST_RETIREMENT_RETURN) - withdrawal);
+      targetDraw = Math.max(0, targetDraw * (1 + POST_RETIREMENT_RETURN) - withdrawal);
+      out.push({
+        age: inputs.retirementAge + k,
+        actual: actualDraw,
+        target: targetDraw,
+        phase: 'drawdown',
+      });
+      withdrawal *= 1 + INFLATION;
+    }
+
+    return out;
   }
 
   /**

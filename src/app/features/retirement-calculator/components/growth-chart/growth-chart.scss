@@ -4,23 +4,135 @@
   box-shadow: var(--ngpf-shadow-sm);
   padding: var(--ngpf-spacing-md);
 
-  &__caption {
-    font-family: var(--ngpf-font-body);
+  &__tabs {
+    display: flex;
+    gap: var(--ngpf-spacing-sm);
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    margin-bottom: var(--ngpf-spacing-md);
+  }
+
+  &__tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    font-family: var(--ngpf-font-heading);
     font-size: 0.8rem;
-    color: var(--ngpf-text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: var(--ngpf-spacing-sm);
+    letter-spacing: 0.05em;
+    color: var(--ngpf-text-secondary);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+
+    &:hover {
+      color: var(--ngpf-text-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-royal-blue);
+      outline-offset: 2px;
+      border-radius: var(--ngpf-radius-sm);
+    }
+
+    &--active {
+      color: var(--ngpf-success);
+      border-bottom-color: var(--ngpf-success);
+    }
   }
 
   &__container {
     width: 100%;
-    min-height: 300px;
+    min-height: 320px;
   }
 
   &__svg {
     width: 100%;
     display: block;
+  }
+
+  &__legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--ngpf-spacing-xl);
+    margin-top: var(--ngpf-spacing-sm);
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+    color: var(--ngpf-text-secondary);
+    flex-wrap: wrap;
+  }
+
+  &__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__legend-swatch {
+    display: inline-block;
+    width: 22px;
+    height: 10px;
+
+    &--actual {
+      background: var(--ngpf-success);
+      border-radius: 2px;
+    }
+
+    &--target {
+      background: transparent;
+      border-top: 2px dashed var(--ngpf-royal-blue);
+      height: 0;
+      margin-top: 4px;
+    }
+  }
+
+  &__table-wrap {
+    max-height: 480px;
+    overflow-y: auto;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: var(--ngpf-soft-blue-tint);
+      text-align: left;
+      padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+      font-family: var(--ngpf-font-heading);
+      color: var(--ngpf-text-primary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    }
+
+    tbody td {
+      padding: 0.35rem var(--ngpf-spacing-md);
+      color: var(--ngpf-text-primary);
+      border-bottom: 1px solid rgba(210, 216, 233, 0.4);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  &__table-phase {
+    text-transform: capitalize;
+    color: var(--ngpf-text-secondary);
+    font-size: 0.8rem;
+  }
+
+  &__table-row--retirement td {
+    background: var(--ngpf-soft-blue-tint);
+    font-weight: 600;
   }
 
   :host ::ng-deep {

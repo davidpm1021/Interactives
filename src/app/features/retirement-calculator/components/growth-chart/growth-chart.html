@@ -1,21 +1,80 @@
 <div class="growth-chart">
-  <div class="growth-chart__caption">
-    Balance from age {{ projection().yearlyBalances[0].age }} to {{ projection().yearlyBalances[projection().yearlyBalances.length - 1].age }}
+  <div class="growth-chart__tabs" role="tablist" aria-label="Chart view">
+    <button
+      type="button"
+      role="tab"
+      class="growth-chart__tab"
+      [class.growth-chart__tab--active]="view() === 'graph'"
+      [attr.aria-selected]="view() === 'graph'"
+      (click)="view.set('graph')"
+    >
+      Graph view
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="growth-chart__tab"
+      [class.growth-chart__tab--active]="view() === 'table'"
+      [attr.aria-selected]="view() === 'table'"
+      (click)="view.set('table')"
+    >
+      Summary view
+    </button>
   </div>
-  <div #container class="growth-chart__container"></div>
+
+  @if (view() === 'graph') {
+    <div #container class="growth-chart__container"></div>
+    <div class="growth-chart__legend">
+      <span class="growth-chart__legend-item">
+        <span class="growth-chart__legend-swatch growth-chart__legend-swatch--actual" aria-hidden="true"></span>
+        What you'll have
+      </span>
+      <span class="growth-chart__legend-item">
+        <span class="growth-chart__legend-swatch growth-chart__legend-swatch--target" aria-hidden="true"></span>
+        What you'll need
+      </span>
+    </div>
+  } @else {
+    <div class="growth-chart__table-wrap">
+      <table class="growth-chart__table">
+        <caption class="sr-only">Yearly balance vs. target through age 95</caption>
+        <thead>
+          <tr>
+            <th scope="col">Age</th>
+            <th scope="col">Phase</th>
+            <th scope="col">What you'll have</th>
+            <th scope="col">What you'll need</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of projection().chartData; track row.age) {
+            <tr [class.growth-chart__table-row--retirement]="row.age === projection().yearlyBalances[projection().yearlyBalances.length - 1].age">
+              <td>{{ row.age }}</td>
+              <td class="growth-chart__table-phase">{{ row.phase }}</td>
+              <td>${{ row.actual | number:'1.0-0' }}</td>
+              <td>${{ row.target | number:'1.0-0' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
   <table class="sr-only">
-    <caption>Projected retirement balance by age. Target nest egg: ${{ projection().targetNestEgg | number:'1.0-0' }}.</caption>
+    <caption>Projected retirement balance vs. target by age.</caption>
     <thead>
       <tr>
         <th scope="col">Age</th>
-        <th scope="col">Balance</th>
+        <th scope="col">What you'll have</th>
+        <th scope="col">What you'll need</th>
       </tr>
     </thead>
     <tbody>
-      @for (row of projection().yearlyBalances; track row.age) {
+      @for (row of projection().chartData; track row.age) {
         <tr>
           <td>{{ row.age }}</td>
-          <td>${{ row.balance | number:'1.0-0' }}</td>
+          <td>${{ row.actual | number:'1.0-0' }}</td>
+          <td>${{ row.target | number:'1.0-0' }}</td>
         </tr>
       }
     </tbody>

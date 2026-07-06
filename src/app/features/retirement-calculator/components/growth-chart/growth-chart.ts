@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import * as d3 from 'd3';
-import { RetirementProjection, YearlyBalance } from '../../models/retirement.models';
+import { ChartPoint, RetirementProjection } from '../../models/retirement.models';
 import { formatCurrency } from '../../utils/formatters';
 import { computeChartDimensions, createScales, DEFAULT_MARGIN } from '../../utils/chart-helpers';
 
@@ -26,6 +26,8 @@ import { computeChartDimensions, createScales, DEFAULT_MARGIN } from '../../util
 })
 export class GrowthChart {
   readonly projection = input.required<RetirementProjection>();
+
+  protected readonly view = signal<'graph' | 'table'>('graph');
 
   private readonly injector = inject(Injector);
   private readonly container = viewChild<ElementRef<HTMLDivElement>>('container');
@@ -44,10 +46,18 @@ export class GrowthChart {
     );
 
     effect(() => {
-      // Read projection to establish dependency
       const p = this.projection();
-      if (this.initialized() && p) {
-        this.render(p);
+      const isGraph = this.view() === 'graph';
+      if (this.initialized() && p && isGraph) {
+        // If the container just remounted (returning from table view), the
+        // svg selection may be stale. Re-init on demand.
+        if (!this.container()?.nativeElement?.querySelector('svg')) {
+          this.svg = undefined;
+          this.chartGroup = undefined;
+          this.initChart();
+        } else {
+          this.render(p);
+        }
       }
     });
   }
@@ -64,9 +74,10 @@ export class GrowthChart {
 
     this.chartGroup.append('g').attr('class', 'x-axis');
     this.chartGroup.append('g').attr('class', 'y-axis');
-    this.chartGroup.append('g').attr('class', 'target-layer');
-    this.chartGroup.append('g').attr('class', 'area-layer');
-    this.chartGroup.append('g').attr('class', 'line-layer');
+    this.chartGroup.append('g').attr('class', 'actual-area-layer');
+    this.chartGroup.append('g').attr('class', 'target-line-layer');
+    this.chartGroup.append('g').attr('class', 'actual-line-layer');
+    this.chartGroup.append('g').attr('class', 'retirement-marker-layer');
 
     const ro = new ResizeObserver(() => this.render(this.projection()));
     ro.observe(el);
@@ -81,28 +92,32 @@ export class GrowthChart {
     const rect = el.getBoundingClientRect();
     if (rect.width <= 0) return;
 
-    const dims = computeChartDimensions(rect.width, DEFAULT_MARGIN, 0.55, 280, 440);
+    const dims = computeChartDimensions(rect.width, DEFAULT_MARGIN, 0.55, 320, 480);
     this.svg.attr('viewBox', `0 0 ${dims.width} ${dims.height}`);
 
-    const data = p.yearlyBalances;
+    const data = p.chartData;
     if (data.length === 0) return;
 
     const minAge = data[0].age;
     const maxAge = data[data.length - 1].age;
-    const maxBalance = Math.max(p.targetNestEgg, ...data.map((d) => d.balance)) * 1.05;
+    const maxValue =
+      Math.max(...data.map((d) => Math.max(d.actual, d.target))) * 1.05;
 
-    const scales = createScales(dims.innerWidth, dims.innerHeight, [minAge, maxAge], [0, maxBalance]);
+    const scales = createScales(
+      dims.innerWidth,
+      dims.innerHeight,
+      [minAge, maxAge],
+      [0, maxValue],
+    );
 
-    // X-axis: age
     const xAxis = d3
       .axisBottom(scales.x)
-      .ticks(Math.min(maxAge - minAge, 10))
+      .ticks(Math.min(maxAge - minAge, 8))
       .tickFormat((d) => `${d}`);
 
-    // Y-axis: currency compact
     const yAxis = d3
       .axisLeft(scales.y)
-      .ticks(5)
+      .ticks(6)
       .tickFormat((d) => formatCurrency(d as number, true));
 
     this.chartGroup
@@ -112,81 +127,92 @@ export class GrowthChart {
       .duration(300)
       .call(xAxis);
 
-    this.chartGroup.select<SVGGElement>('.y-axis').transition().duration(300).call(yAxis);
+    this.chartGroup
+      .select<SVGGElement>('.y-axis')
+      .transition()
+      .duration(300)
+      .call(yAxis);
 
-    // Target line (dashed)
-    const targetLayer = this.chartGroup.select('.target-layer');
-    targetLayer.selectAll('*').remove();
-    if (p.targetNestEgg > 0 && p.targetNestEgg <= maxBalance) {
-      targetLayer
+    // Retirement-age vertical marker.
+    const retirementAge = p.yearlyBalances[p.yearlyBalances.length - 1].age;
+    const markerLayer = this.chartGroup.select('.retirement-marker-layer');
+    markerLayer.selectAll('*').remove();
+    if (retirementAge > minAge && retirementAge < maxAge) {
+      markerLayer
         .append('line')
-        .attr('x1', 0)
-        .attr('x2', dims.innerWidth)
-        .attr('y1', scales.y(p.targetNestEgg))
-        .attr('y2', scales.y(p.targetNestEgg))
-        .attr('stroke', 'var(--ngpf-gold, #d68b0a)')
-        .attr('stroke-width', 2)
-        .attr('stroke-dasharray', '5 4');
+        .attr('x1', scales.x(retirementAge))
+        .attr('x2', scales.x(retirementAge))
+        .attr('y1', 0)
+        .attr('y2', dims.innerHeight)
+        .attr('stroke', 'var(--ngpf-light-gray-blue, #d2d8e9)')
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '3 3');
 
-      targetLayer
+      markerLayer
         .append('text')
-        .attr('x', dims.innerWidth - 6)
-        .attr('y', scales.y(p.targetNestEgg) - 6)
-        .attr('text-anchor', 'end')
+        .attr('x', scales.x(retirementAge))
+        .attr('y', -4)
+        .attr('text-anchor', 'middle')
         .attr('font-family', 'var(--ngpf-font-body)')
-        .attr('font-size', '0.75rem')
-        .attr('fill', 'var(--ngpf-gold, #d68b0a)')
-        .text(`Target: ${formatCurrency(p.targetNestEgg, true)}`);
+        .attr('font-size', '0.7rem')
+        .attr('fill', 'var(--ngpf-text-muted)')
+        .text(`Retirement (age ${retirementAge})`);
     }
 
-    // Area under balance
+    // Area under "What you'll have".
     const areaGen = d3
-      .area<YearlyBalance>()
+      .area<ChartPoint>()
       .x((d) => scales.x(d.age))
       .y0(dims.innerHeight)
-      .y1((d) => scales.y(d.balance))
+      .y1((d) => scales.y(d.actual))
       .curve(d3.curveMonotoneX);
 
-    const areaLayer = this.chartGroup.select('.area-layer');
+    const areaLayer = this.chartGroup.select('.actual-area-layer');
     areaLayer.selectAll('path').remove();
     areaLayer
       .append('path')
       .attr('d', areaGen(data))
-      .attr('fill', 'var(--ngpf-sky-blue)')
-      .attr('opacity', 0.18);
+      .attr('fill', 'var(--ngpf-success, #2e7d32)')
+      .attr('opacity', 0.15);
 
-    // Balance line
-    const lineGen = d3
-      .line<YearlyBalance>()
+    // "What you'll have" solid line.
+    const actualLine = d3
+      .line<ChartPoint>()
       .x((d) => scales.x(d.age))
-      .y((d) => scales.y(d.balance))
+      .y((d) => scales.y(d.actual))
       .curve(d3.curveMonotoneX);
 
-    const lineLayer = this.chartGroup.select('.line-layer');
-    lineLayer.selectAll('*').remove();
-    lineLayer
+    const actualLayer = this.chartGroup.select('.actual-line-layer');
+    actualLayer.selectAll('*').remove();
+    actualLayer
       .append('path')
-      .attr('d', lineGen(data))
+      .attr('d', actualLine(data))
       .attr('fill', 'none')
-      .attr('stroke', 'var(--ngpf-bright-blue)')
-      .attr('stroke-width', 3);
+      .attr('stroke', 'var(--ngpf-success, #2e7d32)')
+      .attr('stroke-width', 2.5);
 
-    // Endpoint dot
-    const last = data[data.length - 1];
-    lineLayer
-      .append('circle')
-      .attr('cx', scales.x(last.age))
-      .attr('cy', scales.y(last.balance))
-      .attr('r', 5)
-      .attr('fill', 'var(--ngpf-bright-blue)')
-      .attr('stroke', 'white')
-      .attr('stroke-width', 2);
+    // "What you'll need" dashed line.
+    const targetLine = d3
+      .line<ChartPoint>()
+      .x((d) => scales.x(d.age))
+      .y((d) => scales.y(d.target))
+      .curve(d3.curveMonotoneX);
+
+    const targetLayer = this.chartGroup.select('.target-line-layer');
+    targetLayer.selectAll('*').remove();
+    targetLayer
+      .append('path')
+      .attr('d', targetLine(data))
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--ngpf-royal-blue, #1f3b9b)')
+      .attr('stroke-width', 2)
+      .attr('stroke-dasharray', '6 4');
 
     this.svg
       .attr('role', 'img')
       .attr(
         'aria-label',
-        `Growth chart. Balance at age ${last.age}: ${formatCurrency(last.balance)}. Target: ${formatCurrency(p.targetNestEgg)}.`,
+        `Two lines from age ${minAge} to age ${maxAge}. What you'll have peaks at ${formatCurrency(p.finalBalance)} at retirement. What you'll need peaks at ${formatCurrency(p.targetNestEgg)}.`,
       );
   }
 }

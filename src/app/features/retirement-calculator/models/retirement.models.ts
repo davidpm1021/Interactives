@@ -14,6 +14,16 @@ export interface YearlyBalance {
   totalContributed: number;
 }
 
+/** One year of the "What you'll have vs. what you'll need" comparison. */
+export interface ChartPoint {
+  age: number;
+  /** Balance you're projected to have at end of this year, in nominal dollars. */
+  actual: number;
+  /** Balance you'd need to have at end of this year to end at zero at 95, nominal. */
+  target: number;
+  phase: 'accumulation' | 'drawdown';
+}
+
 export interface RetirementProjection {
   yearlyBalances: YearlyBalance[];
   /** Balance at retirement age, in nominal (future) dollars. */
@@ -31,6 +41,8 @@ export interface RetirementProjection {
   salaryAtRetirement: number;
   /** targetMonthlyBudget inflated to retirement year, in nominal dollars. */
   budgetAtRetirement: number;
+  /** Full-lifetime chart data from currentAge through age 95. */
+  chartData: ChartPoint[];
 }
 
 // ── Hardcoded model assumptions ─────────────────────────────
