@@ -14,6 +14,10 @@ import * as d3 from 'd3';
 import { RateSeries } from '../../models/rates.models';
 import { computeChartDimensions, DEFAULT_MARGIN } from '../../utils/chart-helpers';
 
+// Wider right margin than the default so end-of-line "21%"-style labels
+// fit inside the chart's viewBox instead of getting clipped.
+const CHART_MARGIN = { ...DEFAULT_MARGIN, right: 58 };
+
 const SERIES_COLORS: Record<string, string> = {
   'credit-card': '#c62828',
   'personal-loan': '#e28f10',
@@ -80,10 +84,11 @@ export class TrendChart {
     this.svg = d3.select(el).append('svg').attr('class', 'trend-chart__svg');
     this.chartGroup = this.svg
       .append('g')
-      .attr('transform', `translate(${DEFAULT_MARGIN.left},${DEFAULT_MARGIN.top})`);
+      .attr('transform', `translate(${CHART_MARGIN.left},${CHART_MARGIN.top})`);
     this.chartGroup.append('g').attr('class', 'x-axis');
     this.chartGroup.append('g').attr('class', 'y-axis');
     this.chartGroup.append('g').attr('class', 'line-layer');
+    this.chartGroup.append('g').attr('class', 'label-layer');
     this.chartGroup.append('g').attr('class', 'hover-layer');
     // Overlay rect captures mouse events across the whole plot area.
     this.chartGroup
@@ -103,7 +108,7 @@ export class TrendChart {
     const rect = el.getBoundingClientRect();
     if (rect.width <= 0) return;
 
-    const dims = computeChartDimensions(rect.width, DEFAULT_MARGIN, 0.55, 280, 400);
+    const dims = computeChartDimensions(rect.width, CHART_MARGIN, 0.55, 280, 400);
     this.svg.attr('viewBox', `0 0 ${dims.width} ${dims.height}`);
 
     let minYear = Infinity, maxYear = -Infinity, maxValue = 0;
@@ -151,6 +156,61 @@ export class TrendChart {
         .attr('stroke-width', 2.5)
         .attr('opacity', 0.9);
     }
+
+    // End-of-line labels. Show each series' current value and a dot at the
+    // right edge so students can read Q1, Q2, Q4, and Q5 straight off the
+    // chart without cross-referencing the sidebar table. Labels stack
+    // vertically when adjacent series overlap (personal loan / auto loan
+    // often within 4 points).
+    const labelLayer = this.chartGroup.select('.label-layer');
+    labelLayer.selectAll('*').remove();
+
+    const endPoints = seriesList
+      .map((s) => {
+        const last = s.history[s.history.length - 1];
+        return { id: s.id, label: s.label, value: last.value, year: last.year };
+      })
+      .sort((a, b) => b.value - a.value);
+
+    // Prevent overlapping labels by nudging each label above the y-coord of
+    // its natural position when it would collide with the label above it.
+    const minGap = 14;
+    const labelYs: number[] = [];
+    for (let i = 0; i < endPoints.length; i++) {
+      let yPx = y(endPoints[i].value);
+      if (i > 0) {
+        const prev = labelYs[i - 1];
+        if (yPx - prev < minGap) yPx = prev + minGap;
+      }
+      labelYs.push(yPx);
+    }
+
+    endPoints.forEach((p, i) => {
+      const cx = x(p.year);
+      const cy = y(p.value);
+      const labelY = labelYs[i];
+
+      // Dot marker exactly at the data point.
+      labelLayer
+        .append('circle')
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('r', 3.5)
+        .attr('fill', this.colorFor(p.id))
+        .attr('stroke', 'white')
+        .attr('stroke-width', 1.5);
+
+      // Value label to the right of the dot.
+      labelLayer
+        .append('text')
+        .attr('x', cx + 8)
+        .attr('y', labelY + 4)
+        .attr('font-family', 'var(--ngpf-font-heading)')
+        .attr('font-size', '11')
+        .attr('font-weight', '700')
+        .attr('fill', this.colorFor(p.id))
+        .text(`${p.value}%`);
+    });
 
     // Hover behaviour: an invisible rect captures mouse and updates hover().
     const capture = this.chartGroup
@@ -212,8 +272,8 @@ export class TrendChart {
       const containerRect = containerEl.getBoundingClientRect();
       const scaleX = containerRect.width / dims.width;
       const scaleY = containerRect.height / dims.height;
-      const leftPx = (DEFAULT_MARGIN.left + cx) * scaleX;
-      const topPx = DEFAULT_MARGIN.top * scaleY;
+      const leftPx = (CHART_MARGIN.left + cx) * scaleX;
+      const topPx = CHART_MARGIN.top * scaleY;
       this.tooltipPos.set({ left: leftPx, top: topPx });
     };
 

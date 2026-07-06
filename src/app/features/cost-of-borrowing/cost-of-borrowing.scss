@@ -152,9 +152,9 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      border-bottom: 2px solid #1a1a1a;
-      padding-bottom: 6pt;
-      margin-bottom: 12pt;
+      border-bottom: 2.5pt solid #1a1a1a;
+      padding-bottom: 8pt;
+      margin-bottom: 14pt;
 
       &-title {
         font-size: 16pt;
@@ -168,16 +168,21 @@
       }
     }
 
+    // Chart section: bordered box that ends with a heavy rule, so the
+    // "current national averages" area feels clearly separate from the
+    // question set below.
     &__layout {
       display: block;
-      margin-bottom: 12pt;
+      padding-bottom: 10pt;
+      margin-bottom: 14pt;
+      border-bottom: 2.5pt solid #1a1a1a;
     }
 
     &__data {
       position: static;
       max-height: none;
       overflow: visible;
-      margin-bottom: 12pt;
+      padding: 6pt 0;
       page-break-inside: avoid;
     }
 
@@ -196,9 +201,9 @@
       color: #1a1a1a;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      border-bottom: 1px solid #999;
-      padding-bottom: 3pt;
-      margin: 0 0 6pt;
+      border-bottom: 1.5pt solid #1a1a1a;
+      padding-bottom: 4pt;
+      margin: 0 0 8pt;
     }
 
     &__questions {
