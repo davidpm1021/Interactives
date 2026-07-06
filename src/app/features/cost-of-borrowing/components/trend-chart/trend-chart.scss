@@ -1,0 +1,128 @@
+.trend-chart {
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-sm);
+  padding: var(--ngpf-spacing-md);
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ngpf-spacing-md);
+    margin-bottom: var(--ngpf-spacing-sm);
+    font-family: var(--ngpf-font-body);
+    font-size: 0.82rem;
+    color: var(--ngpf-text-secondary);
+  }
+
+  &__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  &__container {
+    width: 100%;
+    min-height: 260px;
+    position: relative;
+  }
+
+  &__svg {
+    width: 100%;
+    display: block;
+  }
+
+  &__tooltip {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    background: var(--ngpf-royal-blue);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.82rem;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    white-space: nowrap;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%) rotate(45deg);
+      width: 8px;
+      height: 8px;
+      background: var(--ngpf-royal-blue);
+    }
+  }
+
+  &__tooltip-year {
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: white;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    padding-bottom: 4px;
+  }
+
+  &__tooltip-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 8px;
+    row-gap: 3px;
+    align-items: center;
+
+    li {
+      display: contents;
+    }
+  }
+
+  &__tooltip-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  &__tooltip-label {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  &__tooltip-value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: white;
+  }
+
+  :host ::ng-deep {
+    .x-axis text,
+    .y-axis text {
+      font-family: var(--ngpf-font-body);
+      font-size: 0.72rem;
+      fill: var(--ngpf-text-muted);
+    }
+
+    .x-axis line,
+    .x-axis path,
+    .y-axis line,
+    .y-axis path {
+      stroke: var(--ngpf-light-gray-blue);
+    }
+
+    .hover-capture {
+      cursor: crosshair;
+    }
+  }
+}

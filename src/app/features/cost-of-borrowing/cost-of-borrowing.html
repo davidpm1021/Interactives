@@ -1,0 +1,26 @@
+<app-top-header></app-top-header>
+<main class="cost-of-borrowing">
+  <div class="cost-of-borrowing__intro">
+    <h1>Cost of Borrowing</h1>
+    <p>National-average interest rates on the four most common consumer credit products, plus a 20-year trend. Read the data, then answer the questions.</p>
+  </div>
+
+  <div class="cost-of-borrowing__layout">
+    <aside class="cost-of-borrowing__data" aria-labelledby="data-heading">
+      <h2 id="data-heading" class="cost-of-borrowing__section-heading">Current national averages</h2>
+      <div class="cost-of-borrowing__data-inner">
+        <app-rate-table [series]="rateSeries" />
+        <app-trend-chart [series]="rateSeries" />
+      </div>
+    </aside>
+
+    <div class="cost-of-borrowing__questions">
+      <app-question-stack [questions]="questions" />
+    </div>
+  </div>
+
+  <p class="cost-of-borrowing__disclaimer">
+    Rate data from the Federal Reserve (<a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED</a>).
+    As of {{ refreshedAt }}. Refreshed quarterly.
+  </p>
+</main>

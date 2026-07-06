@@ -1,0 +1,8 @@
+<section class="question-stack" aria-labelledby="questions-heading">
+  <h2 id="questions-heading" class="question-stack__heading">Questions</h2>
+  <div class="question-stack__list">
+    @for (q of questions(); track q.id; let i = $index) {
+      <app-question-item [question]="q" [index]="i" />
+    }
+  </div>
+</section>

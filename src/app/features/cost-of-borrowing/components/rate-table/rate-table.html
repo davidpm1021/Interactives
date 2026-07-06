@@ -1,0 +1,18 @@
+<table class="rate-table" aria-label="Current consumer credit rates">
+  <thead>
+    <tr>
+      <th scope="col" class="rate-table__col-product">Product</th>
+      <th scope="col" class="rate-table__col-num">Current APR</th>
+      <th scope="col" class="rate-table__col-num">20-year average</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (s of series(); track s.id) {
+      <tr>
+        <th scope="row" class="rate-table__product">{{ s.label }}</th>
+        <td class="rate-table__num rate-table__num--current">{{ s.currentRate | number: '1.2-2' }}%</td>
+        <td class="rate-table__num">{{ s.twentyYearAverage | number: '1.2-2' }}%</td>
+      </tr>
+    }
+  </tbody>
+</table>

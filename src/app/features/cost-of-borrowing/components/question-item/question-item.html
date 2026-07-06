@@ -1,0 +1,94 @@
+<article class="question-item"
+         [class.question-item--correct]="submitted() && correct() === true"
+         [class.question-item--wrong]="submitted() && correct() === false"
+         [class.question-item--self-graded]="submitted() && correct() === null">
+  <div class="question-item__header">
+    <span class="question-item__num">Q{{ index() + 1 }}</span>
+    <span class="question-item__dok">DOK {{ question().dok }}</span>
+  </div>
+
+  <p class="question-item__prompt">{{ question().prompt }}</p>
+
+  @switch (question().answerType) {
+    @case ('multiple-choice') {
+      <div class="question-item__options" role="radiogroup" [attr.aria-label]="question().prompt">
+        @for (option of asMc(question()).options; track option; let i = $index) {
+          <button
+            type="button"
+            class="question-item__option"
+            [class.question-item__option--selected]="selectedIndex() === i"
+            [class.question-item__option--correct-answer]="submitted() && i === asMc(question()).correctIndex"
+            [class.question-item__option--wrong-answer]="submitted() && selectedIndex() === i && i !== asMc(question()).correctIndex"
+            [disabled]="submitted()"
+            [attr.aria-pressed]="selectedIndex() === i"
+            (click)="onSelect(i)"
+          >
+            {{ option }}
+          </button>
+        }
+      </div>
+    }
+
+    @case ('numeric') {
+      <div class="question-item__numeric">
+        <input
+          type="text"
+          inputmode="decimal"
+          class="question-item__numeric-input"
+          [ngModel]="numericInput()"
+          (ngModelChange)="numericInput.set($event)"
+          [disabled]="submitted()"
+          [placeholder]="asNumeric(question()).unit === '$' ? 'Amount in dollars' : 'Your answer'"
+        />
+        @if (asNumeric(question()).unit) {
+          <span class="question-item__numeric-unit">{{ asNumeric(question()).unit }}</span>
+        }
+      </div>
+    }
+
+    @case ('short-text') {
+      <textarea
+        class="question-item__text-input"
+        rows="3"
+        [ngModel]="textInput()"
+        (ngModelChange)="textInput.set($event)"
+        [disabled]="submitted()"
+        placeholder="Type your answer..."
+      ></textarea>
+    }
+  }
+
+  @if (!submitted()) {
+    <div class="question-item__actions">
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-primary"
+        [disabled]="!canCheck()"
+        (click)="onCheck()"
+      >
+        Check
+      </button>
+    </div>
+  } @else {
+    <div class="question-item__reveal" aria-live="polite">
+      @if (correct() === true) {
+        <div class="question-item__verdict">Correct.</div>
+      } @else if (correct() === false) {
+        <div class="question-item__verdict">Not quite.</div>
+      } @else {
+        <div class="question-item__verdict">Compare your answer to the model answer below.</div>
+      }
+
+      @if (question().answerType === 'short-text') {
+        <div class="question-item__model">
+          <div class="question-item__model-label">Model answer</div>
+          <p>{{ asShortText(question()).modelAnswer }}</p>
+        </div>
+      }
+
+      <div class="question-item__explanation">{{ question().explanation }}</div>
+
+      <button type="button" class="question-item__reset" (click)="onReset()">Try again</button>
+    </div>
+  }
+</article>

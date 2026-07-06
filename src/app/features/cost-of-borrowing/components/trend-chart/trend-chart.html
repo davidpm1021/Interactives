@@ -1,0 +1,29 @@
+<div class="trend-chart">
+  <div class="trend-chart__legend">
+    @for (s of series(); track s.id) {
+      <span class="trend-chart__legend-item">
+        <span class="trend-chart__swatch" [style.background]="colorFor(s.id)"></span>
+        {{ s.label }}
+      </span>
+    }
+  </div>
+  <div #container class="trend-chart__container">
+    @if (hover(); as h) {
+      <div class="trend-chart__tooltip"
+           [style.left.px]="tooltipPos()?.left ?? 0"
+           [style.top.px]="tooltipPos()?.top ?? 0"
+           role="tooltip">
+        <div class="trend-chart__tooltip-year">{{ h.year }}</div>
+        <ul class="trend-chart__tooltip-list">
+          @for (v of h.values; track v.id) {
+            <li>
+              <span class="trend-chart__tooltip-swatch" [style.background]="v.color"></span>
+              <span class="trend-chart__tooltip-label">{{ v.label }}</span>
+              <span class="trend-chart__tooltip-value">{{ v.value }}%</span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</div>

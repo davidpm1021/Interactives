@@ -1,0 +1,56 @@
+.rate-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-sm);
+  overflow: hidden;
+  font-family: var(--ngpf-font-body);
+
+  thead th {
+    background: var(--ngpf-royal-blue);
+    color: white;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    text-align: left;
+
+    &.rate-table__col-num {
+      text-align: right;
+    }
+  }
+
+  tbody th {
+    color: var(--ngpf-text-primary);
+    font-weight: 600;
+    text-align: left;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  tbody td,
+  tbody th {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    color: var(--ngpf-text-primary);
+  }
+
+  &__num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--ngpf-text-secondary);
+  }
+
+  &__num--current {
+    color: var(--ngpf-text-primary);
+    font-weight: 600;
+  }
+}
