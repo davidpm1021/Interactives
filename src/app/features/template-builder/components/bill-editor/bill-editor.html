@@ -87,7 +87,7 @@
   <fieldset class="bill-editor__section">
     <legend>Line items</legend>
     @for (item of current().lineItems; track $index) {
-      <div class="bill-editor__line-item">
+      <div class="bill-editor__line-item" role="group" [attr.aria-label]="'Line item ' + ($index + 1)">
         <label>
           <span>Description</span>
           <input type="text" [ngModel]="item.description" (ngModelChange)="updateLineItem($index, { description: $event })" />

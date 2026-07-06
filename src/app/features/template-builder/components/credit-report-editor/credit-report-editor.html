@@ -61,7 +61,7 @@
   <fieldset class="credit-editor__section">
     <legend>Accounts</legend>
     @for (acct of current().accounts; track $index) {
-      <div class="credit-editor__line-item">
+      <div class="credit-editor__line-item" role="group" [attr.aria-label]="'Account ' + ($index + 1)">
         <label>
           <span>Creditor</span>
           <input type="text" [ngModel]="acct.creditor" (ngModelChange)="updateAccount($index, { creditor: $event })" />
@@ -118,7 +118,7 @@
   <fieldset class="credit-editor__section">
     <legend>Recent inquiries</legend>
     @for (q of current().inquiries; track $index) {
-      <div class="credit-editor__line-item">
+      <div class="credit-editor__line-item" role="group" [attr.aria-label]="'Inquiry ' + ($index + 1)">
         <div class="credit-editor__row">
           <label>
             <span>Date</span>

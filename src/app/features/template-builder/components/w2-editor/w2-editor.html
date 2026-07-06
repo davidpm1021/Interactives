@@ -103,7 +103,7 @@
   <fieldset class="w2-editor__section">
     <legend>Box 12 codes (up to 4)</legend>
     @for (b of current().box12; track $index) {
-      <div class="w2-editor__line-item">
+      <div class="w2-editor__line-item" role="group" [attr.aria-label]="'Box 12 entry ' + ($index + 1)">
         <div class="w2-editor__row">
           <label>
             <span>Code</span>

@@ -25,7 +25,7 @@
   <fieldset class="checkbook-editor__section">
     <legend>Entries</legend>
     @for (entry of current().entries; track $index) {
-      <div class="checkbook-editor__line-item">
+      <div class="checkbook-editor__line-item" role="group" [attr.aria-label]="'Entry ' + ($index + 1)">
         <div class="checkbook-editor__row">
           <label>
             <span>Date</span>

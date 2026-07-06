@@ -27,20 +27,20 @@
       role="button"
       tabindex="0"
       aria-describedby="keyboard-hints"
-      [attr.aria-label]="isFlipped() ? 'Flashcard showing ' + backLabel() + ': ' + backContent() : 'Flashcard showing ' + frontLabel() + ': ' + frontContent() + '. Press space or click to flip.'"
+      [attr.aria-labelledby]="isFlipped() ? 'flashcard-back-label flashcard-back-content' : 'flashcard-front-label flashcard-front-content'"
     >
       <div class="flashcard-inner">
         <div class="flashcard-front">
-          <span class="card-label">{{ frontLabel() }}</span>
-          <p class="card-content" [class.term-text]="frontIsTerm()" [style.font-size]="frontFontSize()" [attr.lang]="session().isSpanish ? 'es' : null">{{ frontContent() }}</p>
+          <span id="flashcard-front-label" class="card-label">{{ frontLabel() }}</span>
+          <p id="flashcard-front-content" class="card-content" [class.term-text]="frontIsTerm()" [style.font-size]="frontFontSize()" [attr.lang]="session().isSpanish ? 'es' : null">{{ frontContent() }}</p>
           <span class="flip-hint">Tap to reveal</span>
           @if (currentCard(); as card) {
             <span class="unit-badge">{{ card.unitName }}</span>
           }
         </div>
         <div class="flashcard-back">
-          <span class="card-label">{{ backLabel() }}</span>
-          <p class="card-content" [class.term-text]="!frontIsTerm()" [style.font-size]="backFontSize()" [attr.lang]="session().isSpanish ? 'es' : null">{{ backContent() }}</p>
+          <span id="flashcard-back-label" class="card-label">{{ backLabel() }}</span>
+          <p id="flashcard-back-content" class="card-content" [class.term-text]="!frontIsTerm()" [style.font-size]="backFontSize()" [attr.lang]="session().isSpanish ? 'es' : null">{{ backContent() }}</p>
           @if (currentCard(); as card) {
             <span class="unit-badge">{{ card.unitName }}</span>
           }

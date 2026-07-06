@@ -83,7 +83,7 @@
   <fieldset class="paystub-editor__section">
     <legend>Earnings</legend>
     @for (earning of current().earnings; track $index) {
-      <div class="paystub-editor__line-item">
+      <div class="paystub-editor__line-item" role="group" [attr.aria-label]="'Earning row ' + ($index + 1)">
         <label>
           <span>Description</span>
           <input type="text" [ngModel]="earning.description" (ngModelChange)="updateEarning($index, { description: $event })" />
@@ -138,7 +138,7 @@
       </div>
     }
     @for (tax of current().otherTaxes; track $index) {
-      <div class="paystub-editor__line-item">
+      <div class="paystub-editor__line-item" role="group" [attr.aria-label]="'Tax row ' + ($index + 1)">
         <label>
           <span>Description</span>
           <input type="text" [ngModel]="tax.description" (ngModelChange)="updateOtherTax($index, { description: $event })" />
@@ -159,7 +159,7 @@
   <fieldset class="paystub-editor__section">
     <legend>Other deductions</legend>
     @for (deduction of current().deductions; track $index) {
-      <div class="paystub-editor__line-item">
+      <div class="paystub-editor__line-item" role="group" [attr.aria-label]="'Deduction row ' + ($index + 1)">
         <label>
           <span>Description</span>
           <input type="text" [ngModel]="deduction.description" (ngModelChange)="updateDeduction($index, { description: $event })" />
