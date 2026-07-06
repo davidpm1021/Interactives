@@ -4,13 +4,6 @@
     See all 5 stocks side by side. Which one was the best investment?
   </p>
 
-  <!-- Callout cards -->
-  <app-callout-cards
-    [bestRoi]="bestRoi()"
-    [highestValue]="highestValue()"
-    [mostVolatile]="mostVolatile()">
-  </app-callout-cards>
-
   <!-- Line chart -->
   <app-multi-line-chart [picks]="state.picks()"></app-multi-line-chart>
 

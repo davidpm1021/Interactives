@@ -40,42 +40,6 @@ export class CalculationService {
     return new Date(best * 1000);
   }
 
-  /** Stock with the highest ROI percentage */
-  findBestROI(picks: StockPick[]): StockPick | null {
-    if (picks.length === 0) return null;
-    return picks.reduce((best, pick) => (pick.roi > best.roi ? pick : best));
-  }
-
-  /** Stock with the highest current value of 100 shares */
-  findHighestValue(picks: StockPick[]): StockPick | null {
-    if (picks.length === 0) return null;
-    return picks.reduce((best, pick) => (pick.currentValue > best.currentValue ? pick : best));
-  }
-
-  /**
-   * Most volatile stock: largest peak-to-trough swing in value of 100 shares.
-   * Measured as (max - min) / min * 100 across all annual data points.
-   */
-  findMostVolatile(picks: StockPick[]): StockPick | null {
-    if (picks.length === 0) return null;
-
-    let mostVolatile = picks[0];
-    let highestSwing = 0;
-
-    for (const pick of picks) {
-      if (pick.annualData.length === 0) continue;
-      const values = pick.annualData.map(d => d.valueOf100Shares);
-      const max = Math.max(...values);
-      const min = Math.min(...values);
-      const swing = min > 0 ? ((max - min) / min) * 100 : 0;
-      if (swing > highestSwing) {
-        highestSwing = swing;
-        mostVolatile = pick;
-      }
-    }
-
-    return mostVolatile;
-  }
 
   /** Calculate the student's 10th birthday from their birthday */
   calculateTenthBirthday(birthday: Date): Date {

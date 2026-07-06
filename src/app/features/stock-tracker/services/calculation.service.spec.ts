@@ -103,62 +103,6 @@ describe('CalculationService', () => {
     expect(result.getDate()).toBe(5);
   });
 
-  // ── Best ROI ──
-
-  it('should find best ROI', () => {
-    const picks = [
-      makePick({ ticker: 'A', roi: 50 }),
-      makePick({ ticker: 'B', roi: 200 }),
-      makePick({ ticker: 'C', roi: 100 }),
-    ];
-    expect(service.findBestROI(picks)!.ticker).toBe('B');
-  });
-
-  it('should return null for empty picks', () => {
-    expect(service.findBestROI([])).toBeNull();
-  });
-
-  // ── Highest Value ──
-
-  it('should find highest value', () => {
-    const picks = [
-      makePick({ ticker: 'A', currentValue: 5000 }),
-      makePick({ ticker: 'B', currentValue: 20000 }),
-      makePick({ ticker: 'C', currentValue: 10000 }),
-    ];
-    expect(service.findHighestValue(picks)!.ticker).toBe('B');
-  });
-
-  it('should return null for empty picks', () => {
-    expect(service.findHighestValue([])).toBeNull();
-  });
-
-  // ── Most Volatile ──
-
-  it('should find most volatile stock', () => {
-    const picks = [
-      makePick({
-        ticker: 'STEADY',
-        annualData: [
-          { year: 2020, age: 10, dateUsed: new Date(), adjClose: 100, valueOf100Shares: 10000, yearOverYearChange: 0 },
-          { year: 2021, age: 11, dateUsed: new Date(), adjClose: 110, valueOf100Shares: 11000, yearOverYearChange: 10 },
-        ],
-      }),
-      makePick({
-        ticker: 'WILD',
-        annualData: [
-          { year: 2020, age: 10, dateUsed: new Date(), adjClose: 50, valueOf100Shares: 5000, yearOverYearChange: 0 },
-          { year: 2021, age: 11, dateUsed: new Date(), adjClose: 200, valueOf100Shares: 20000, yearOverYearChange: 300 },
-        ],
-      }),
-    ];
-    expect(service.findMostVolatile(picks)!.ticker).toBe('WILD');
-  });
-
-  it('should return null for empty picks', () => {
-    expect(service.findMostVolatile([])).toBeNull();
-  });
-
   // ── Tenth Birthday ──
 
   it('should calculate 10th birthday', () => {
