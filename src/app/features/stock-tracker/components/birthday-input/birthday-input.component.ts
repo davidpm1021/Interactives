@@ -85,7 +85,7 @@ export class BirthdayInputComponent {
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     if (tenthBirthday > oneYearAgo) {
       this.error.set(
-        `That would put your 10th birthday on ${tenthBirthday.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}, which isn't at least a year in the past. Enter the year you were born — you'd need to be born on or before ${this.maxBirthDateDisplay}.`,
+        `That would put your 10th birthday on ${tenthBirthday.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}, which isn't at least a year in the past. Please enter the year you were born. You'd need to be born on or before ${this.maxBirthDateDisplay}.`,
       );
       return;
     }
