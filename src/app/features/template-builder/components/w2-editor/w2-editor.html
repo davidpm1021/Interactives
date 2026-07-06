@@ -114,7 +114,7 @@
             <input type="number" step="0.01" [ngModel]="b.amount" (ngModelChange)="updateBox12($index, { amount: parseNumber($event) })" />
           </label>
         </div>
-        <button type="button" class="w2-editor__remove" (click)="removeBox12($index)" aria-label="Remove box 12 entry">Remove</button>
+        <button type="button" class="w2-editor__remove" (click)="removeBox12($index)" [attr.aria-label]="'Remove box 12 entry ' + ($index + 1) + (b.code ? ' (' + b.code + ')' : '')">Remove</button>
       </div>
     }
     @if (current().box12.length < 4) {
@@ -168,7 +168,7 @@
 </app-editor-shell>
 
 <ng-template #previewTpl let-w2>
-  <article class="w2-preview" id="w2-preview">
+  <article class="w2-preview">
     <div class="w2-preview__title-row">
       <div class="w2-preview__form-title">
         <div class="w2-preview__form-name">Form W-2</div>
@@ -273,15 +273,15 @@
         <div class="w2-preview__box-label">13 Checkboxes</div>
         <div class="w2-preview__box13">
           <label>
-            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.statutoryEmployee"></span>
+            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.statutoryEmployee" role="checkbox" [attr.aria-checked]="w2.statutoryEmployee ? 'true' : 'false'" aria-readonly="true"></span>
             Statutory employee
           </label>
           <label>
-            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.retirementPlan"></span>
+            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.retirementPlan" role="checkbox" [attr.aria-checked]="w2.retirementPlan ? 'true' : 'false'" aria-readonly="true"></span>
             Retirement plan
           </label>
           <label>
-            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.thirdPartySickPay"></span>
+            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.thirdPartySickPay" role="checkbox" [attr.aria-checked]="w2.thirdPartySickPay ? 'true' : 'false'" aria-readonly="true"></span>
             Third-party sick pay
           </label>
         </div>

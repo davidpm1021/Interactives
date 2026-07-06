@@ -39,12 +39,19 @@ export class TrendChart {
 
   protected readonly hover = signal<HoverPoint | null>(null);
   protected readonly tooltipPos = signal<{ left: number; top: number } | null>(null);
+  protected readonly hoverAnnouncement = signal('');
 
   private readonly injector = inject(Injector);
   private readonly container = viewChild<ElementRef<HTMLDivElement>>('container');
   private svg?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   private chartGroup?: d3.Selection<SVGGElement, unknown, null, undefined>;
   private readonly initialized = signal(false);
+  private renderState?: {
+    minYear: number;
+    maxYear: number;
+    setHoverAtYear: (year: number) => void;
+    clearHover: () => void;
+  };
 
   constructor() {
     afterNextRender(
@@ -156,12 +163,7 @@ export class TrendChart {
     const hoverLayer = this.chartGroup.select('.hover-layer');
     const containerEl = el;
 
-    const handleMove = (event: MouseEvent) => {
-      const [mx] = d3.pointer(event, capture.node()!);
-      // Snap to the nearest integer year present in any series.
-      const year = Math.round(x.invert(mx));
-      const clampedYear = Math.max(minYear, Math.min(maxYear, year));
-
+    const setHoverAtYear = (clampedYear: number) => {
       const values: HoverPoint['values'] = [];
       for (const s of seriesList) {
         const point = s.history.find((h) => h.year === clampedYear);
@@ -178,6 +180,9 @@ export class TrendChart {
       if (values.length === 0) return;
 
       this.hover.set({ year: clampedYear, values });
+      this.hoverAnnouncement.set(
+        `${clampedYear}: ` + values.map((v) => `${v.label} ${v.value} percent`).join(', '),
+      );
 
       // Draw crosshair line + dots.
       hoverLayer.selectAll('*').remove();
@@ -212,14 +217,55 @@ export class TrendChart {
       this.tooltipPos.set({ left: leftPx, top: topPx });
     };
 
-    const handleLeave = () => {
+    const clearHover = () => {
       this.hover.set(null);
       this.tooltipPos.set(null);
+      this.hoverAnnouncement.set('');
       hoverLayer.selectAll('*').remove();
     };
 
-    capture.on('mousemove', handleMove).on('mouseleave', handleLeave);
+    const handleMove = (event: MouseEvent) => {
+      const [mx] = d3.pointer(event, capture.node()!);
+      const year = Math.round(x.invert(mx));
+      const clampedYear = Math.max(minYear, Math.min(maxYear, year));
+      setHoverAtYear(clampedYear);
+    };
 
-    this.svg.attr('role', 'img').attr('aria-label', 'Twenty-year trend of consumer credit interest rates');
+    capture.on('mousemove', handleMove).on('mouseleave', clearHover);
+
+    this.renderState = { minYear, maxYear, setHoverAtYear, clearHover };
+
+    this.svg
+      .attr('role', 'img')
+      .attr(
+        'aria-label',
+        'Twenty-year trend of consumer credit interest rates. Use arrow keys to explore values year by year.',
+      )
+      .attr('tabindex', 0)
+      .on('keydown', (event: KeyboardEvent) => this.onSvgKeydown(event))
+      .on('focus', () => {
+        // On first focus, place the crosshair at the most recent year.
+        const state = this.renderState;
+        if (!state) return;
+        const current = this.hover()?.year ?? state.maxYear;
+        state.setHoverAtYear(current);
+      })
+      .on('blur', () => this.renderState?.clearHover());
+  }
+
+  private onSvgKeydown(event: KeyboardEvent): void {
+    const state = this.renderState;
+    if (!state) return;
+    const current = this.hover()?.year ?? state.maxYear;
+    let next = current;
+    const key = event.key;
+    if (key === 'ArrowRight' || key === 'ArrowUp') next = Math.min(state.maxYear, current + 1);
+    else if (key === 'ArrowLeft' || key === 'ArrowDown') next = Math.max(state.minYear, current - 1);
+    else if (key === 'Home') next = state.minYear;
+    else if (key === 'End') next = state.maxYear;
+    else if (key === 'Escape') { state.clearHover(); event.preventDefault(); return; }
+    else return;
+    event.preventDefault();
+    state.setHoverAtYear(next);
   }
 }

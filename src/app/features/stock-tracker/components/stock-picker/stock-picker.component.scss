@@ -98,7 +98,8 @@
     cursor: pointer;
     transition: background 0.15s;
 
-    &:hover {
+    &:hover,
+    &--active {
       background: var(--ngpf-soft-blue-tint);
     }
   }

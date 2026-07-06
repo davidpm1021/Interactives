@@ -9,14 +9,15 @@
 
   <div class="stock-table__wrapper" #tableEl>
     <table class="stock-table__table">
+      <caption class="sr-only">Annual price history for {{ pick().companyName }} ({{ pick().ticker }})</caption>
       <thead>
         <tr>
-          <th>Year</th>
-          <th>Age</th>
-          <th>Date Used</th>
-          <th>Adj. Close</th>
-          <th>100 Shares Value</th>
-          <th>YoY Change</th>
+          <th scope="col">Year</th>
+          <th scope="col">Age</th>
+          <th scope="col">Date Used</th>
+          <th scope="col">Adj. Close</th>
+          <th scope="col">100 Shares Value</th>
+          <th scope="col">YoY Change</th>
         </tr>
       </thead>
       <tbody>

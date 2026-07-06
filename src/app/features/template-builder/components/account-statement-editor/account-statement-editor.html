@@ -103,7 +103,7 @@
           <span>Amount ($)</span>
           <input type="number" step="0.01" [ngModel]="txn.amount" (ngModelChange)="updateTxn($index, { amount: parseNumber($event) })" />
         </label>
-        <button type="button" class="account-editor__remove" (click)="removeTxn($index)" aria-label="Remove transaction">Remove</button>
+        <button type="button" class="account-editor__remove" (click)="removeTxn($index)" [attr.aria-label]="'Remove transaction ' + ($index + 1) + (txn.description ? ': ' + txn.description : '')">Remove</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addTxn()">+ Add transaction</button>
@@ -111,7 +111,7 @@
 </app-editor-shell>
 
 <ng-template #previewTpl let-statement>
-  <article class="account-preview" [class.account-preview--savings]="variant() === 'savings'" id="account-preview">
+  <article class="account-preview" [class.account-preview--savings]="variant() === 'savings'">
     <header class="account-preview__header">
       <div>
         <div class="account-preview__bank-name">{{ statement.bank.name }}</div>

@@ -1,6 +1,6 @@
 import {
   Component, input, inject, viewChild, ElementRef,
-  OnInit, OnDestroy, AfterViewInit, effect,
+  OnInit, OnDestroy, AfterViewInit, computed, effect,
 } from '@angular/core';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { StockPick } from '../../models/stock-tracker.models';
@@ -21,7 +21,7 @@ Chart.register(...registerables);
         <app-download-button label="Download chart as PNG" (download)="onDownload()"></app-download-button>
       </div>
       <div class="multi-line-chart__canvas-wrap">
-        <canvas #chartCanvas role="img" aria-label="Line chart showing the value of 100 shares over time for each selected stock"></canvas>
+        <canvas #chartCanvas role="img" [attr.aria-label]="chartAriaLabel()"></canvas>
       </div>
     </div>
   `,
@@ -69,6 +69,18 @@ export class MultiLineChartComponent implements AfterViewInit, OnDestroy {
   private readonly exportService = inject(ExportService);
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('chartCanvas');
   private chart: Chart | null = null;
+
+  protected readonly chartAriaLabel = computed(() => {
+    const picks = this.picks();
+    if (picks.length === 0 || picks[0].annualData.length === 0) {
+      return 'Line chart showing the value of 100 shares over time';
+    }
+    const rows = picks[0].annualData;
+    const startYear = rows[0].year;
+    const endYear = rows[rows.length - 1].year;
+    const tickers = picks.map((p) => p.ticker).join(', ');
+    return `Line chart. Value of 100 shares from ${startYear} to ${endYear} for ${tickers}. Exact yearly values are available in the combined table on this page.`;
+  });
 
   constructor() {
     effect(() => {

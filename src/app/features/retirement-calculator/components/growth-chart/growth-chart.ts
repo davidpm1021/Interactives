@@ -10,6 +10,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import * as d3 from 'd3';
 import { RetirementProjection, YearlyBalance } from '../../models/retirement.models';
 import { formatCurrency } from '../../utils/formatters';
@@ -18,7 +19,7 @@ import { computeChartDimensions, createScales, DEFAULT_MARGIN } from '../../util
 @Component({
   selector: 'app-growth-chart',
   standalone: true,
-  imports: [],
+  imports: [DecimalPipe],
   templateUrl: './growth-chart.html',
   styleUrl: './growth-chart.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

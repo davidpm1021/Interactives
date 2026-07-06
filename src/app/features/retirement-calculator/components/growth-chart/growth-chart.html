@@ -3,4 +3,21 @@
     Balance from age {{ projection().yearlyBalances[0].age }} to {{ projection().yearlyBalances[projection().yearlyBalances.length - 1].age }}
   </div>
   <div #container class="growth-chart__container"></div>
+  <table class="sr-only">
+    <caption>Projected retirement balance by age. Target nest egg: ${{ projection().targetNestEgg | number:'1.0-0' }}.</caption>
+    <thead>
+      <tr>
+        <th scope="col">Age</th>
+        <th scope="col">Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of projection().yearlyBalances; track row.age) {
+        <tr>
+          <td>{{ row.age }}</td>
+          <td>${{ row.balance | number:'1.0-0' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>

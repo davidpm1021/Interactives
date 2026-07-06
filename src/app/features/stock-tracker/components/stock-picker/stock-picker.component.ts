@@ -27,6 +27,9 @@ export class StockPickerComponent implements OnDestroy {
   protected readonly validating = signal(false);
   protected readonly error = signal('');
   protected readonly confirmedPick = signal<StockPick | null>(null);
+  protected readonly activeIndex = signal<number>(-1);
+  protected readonly listboxId = `stock-picker-listbox-${Math.random().toString(36).slice(2, 8)}`;
+  protected optionId(i: number): string { return `${this.listboxId}-opt-${i}`; }
 
   protected readonly formatCurrency = formatCurrency;
   protected readonly formatDate = formatDate;
@@ -62,6 +65,46 @@ export class StockPickerComponent implements OnDestroy {
   protected onInputBlur(): void {
     // Delay to allow click on result
     setTimeout(() => this.showDropdown.set(false), 200);
+  }
+
+  protected onInputKeydown(event: KeyboardEvent): void {
+    const list = this.results();
+    const open = this.showDropdown() && list.length > 0;
+    const key = event.key;
+    if (key === 'ArrowDown') {
+      event.preventDefault();
+      if (!open && list.length > 0) {
+        this.showDropdown.set(true);
+        this.activeIndex.set(0);
+        return;
+      }
+      if (open) {
+        const next = this.activeIndex() < 0 ? 0 : (this.activeIndex() + 1) % list.length;
+        this.activeIndex.set(next);
+      }
+    } else if (key === 'ArrowUp') {
+      event.preventDefault();
+      if (open) {
+        const next = this.activeIndex() <= 0 ? list.length - 1 : this.activeIndex() - 1;
+        this.activeIndex.set(next);
+      }
+    } else if (key === 'Home') {
+      if (open) { event.preventDefault(); this.activeIndex.set(0); }
+    } else if (key === 'End') {
+      if (open) { event.preventDefault(); this.activeIndex.set(list.length - 1); }
+    } else if (key === 'Enter') {
+      if (open && this.activeIndex() >= 0) {
+        event.preventDefault();
+        const chosen = list[this.activeIndex()];
+        if (chosen) this.onSelectResult(chosen);
+      }
+    } else if (key === 'Escape') {
+      if (open) {
+        event.preventDefault();
+        this.showDropdown.set(false);
+        this.activeIndex.set(-1);
+      }
+    }
   }
 
   protected async onSelectResult(result: TickerSearchResult): Promise<void> {
@@ -126,8 +169,10 @@ export class StockPickerComponent implements OnDestroy {
       const filtered = results.filter((r) => !taken.has(r.symbol)).slice(0, 6);
       this.results.set(filtered);
       this.showDropdown.set(filtered.length > 0);
+      this.activeIndex.set(filtered.length > 0 ? 0 : -1);
     } catch {
       this.results.set([]);
+      this.activeIndex.set(-1);
     } finally {
       this.loading.set(false);
     }

@@ -29,23 +29,33 @@
                class="stock-picker__input"
                placeholder="Search company name or ticker..."
                [attr.aria-label]="'Search for stock ' + (index() + 1)"
+               role="combobox"
+               [attr.aria-expanded]="showDropdown() && results().length > 0"
+               [attr.aria-controls]="listboxId"
+               aria-autocomplete="list"
+               aria-haspopup="listbox"
+               [attr.aria-activedescendant]="activeIndex() >= 0 && showDropdown() ? optionId(activeIndex()) : null"
                [value]="query()"
                (input)="onQueryChange($any($event.target).value)"
                (focus)="onInputFocus()"
-               (blur)="onInputBlur()" />
+               (blur)="onInputBlur()"
+               (keydown)="onInputKeydown($event)" />
         @if (loading() || validating()) {
-          <span class="stock-picker__loading" aria-label="Loading">
-            <span class="stock-picker__spinner"></span>
+          <span class="stock-picker__loading" role="status" aria-label="Loading">
+            <span class="stock-picker__spinner" aria-hidden="true"></span>
           </span>
         }
       </div>
 
       <!-- Autocomplete dropdown -->
       @if (showDropdown() && results().length > 0) {
-        <ul class="stock-picker__dropdown" role="listbox">
-          @for (result of results(); track result.symbol) {
+        <ul class="stock-picker__dropdown" role="listbox" [id]="listboxId">
+          @for (result of results(); track result.symbol; let i = $index) {
             <li class="stock-picker__option"
+                [class.stock-picker__option--active]="activeIndex() === i"
                 role="option"
+                [id]="optionId(i)"
+                [attr.aria-selected]="activeIndex() === i"
                 (mousedown)="onSelectResult(result)">
               <span class="stock-picker__option-ticker">{{ result.symbol }}</span>
               <span class="stock-picker__option-name">{{ result.shortname || result.longname }}</span>

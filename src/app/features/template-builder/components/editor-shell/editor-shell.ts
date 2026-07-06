@@ -50,6 +50,7 @@ export class EditorShell {
 
   protected readonly copiesPerPage = signal<1 | 2>(1);
   protected readonly batchCount = signal<number>(1);
+  protected readonly batchAnnouncement = signal<string>('');
 
   protected readonly renderedDocs = computed(() => {
     const docs = this.docs();
@@ -88,6 +89,7 @@ export class EditorShell {
   protected clearAll(): void {
     this.docs.set([this.clearFn()()]);
     this.batchCount.set(1);
+    this.batchAnnouncement.set('All cleared. One blank document ready.');
   }
 
   protected generateBatch(): void {
@@ -95,6 +97,10 @@ export class EditorShell {
     const random = this.randomFn();
     const docs = Array.from({ length: count }, () => random());
     this.docs.set(docs);
+    const label = this.singularLabel();
+    this.batchAnnouncement.set(
+      `Generated ${count} random ${label}${count === 1 ? '' : 's'}.`,
+    );
   }
 
   protected print(): void {

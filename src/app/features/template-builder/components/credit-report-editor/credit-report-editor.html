@@ -109,7 +109,7 @@
             <option value="90+ days late">90+ days late</option>
           </select>
         </label>
-        <button type="button" class="credit-editor__remove" (click)="removeAccount($index)">Remove account</button>
+        <button type="button" class="credit-editor__remove" (click)="removeAccount($index)" [attr.aria-label]="'Remove account ' + ($index + 1) + (acct.creditor ? ': ' + acct.creditor : '')">Remove account</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addAccount()">+ Add account</button>
@@ -136,7 +136,7 @@
           <span>Requester</span>
           <input type="text" [ngModel]="q.requester" (ngModelChange)="updateInquiry($index, { requester: $event })" />
         </label>
-        <button type="button" class="credit-editor__remove" (click)="removeInquiry($index)">Remove inquiry</button>
+        <button type="button" class="credit-editor__remove" (click)="removeInquiry($index)" [attr.aria-label]="'Remove inquiry ' + ($index + 1) + (q.requester ? ': ' + q.requester : '')">Remove inquiry</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addInquiry()">+ Add inquiry</button>
@@ -144,7 +144,7 @@
 </app-editor-shell>
 
 <ng-template #previewTpl let-report>
-  <article class="credit-preview" id="credit-preview">
+  <article class="credit-preview">
     <header class="credit-preview__header">
       <div>
         <div class="credit-preview__bureau">{{ report.bureau }}</div>

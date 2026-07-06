@@ -108,7 +108,7 @@
           <span>Current: <strong>{{ earningCurrentFor(earning) | currency }}</strong></span>
           <span>YTD: <strong>{{ earningYTDFor(earning, current()) | currency }}</strong></span>
         </div>
-        <button type="button" class="paystub-editor__remove" (click)="removeEarning($index)" aria-label="Remove earning row">Remove</button>
+        <button type="button" class="paystub-editor__remove" (click)="removeEarning($index)" [attr.aria-label]="'Remove earning row ' + ($index + 1) + (earning.description ? ': ' + earning.description : '')">Remove</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addEarning()">+ Add earning</button>
@@ -150,7 +150,7 @@
         <div class="paystub-editor__line-meta">
           <span>YTD: <strong>{{ itemYTDFor(tax, current()) | currency }}</strong></span>
         </div>
-        <button type="button" class="paystub-editor__remove" (click)="removeOtherTax($index)" aria-label="Remove tax row">Remove</button>
+        <button type="button" class="paystub-editor__remove" (click)="removeOtherTax($index)" [attr.aria-label]="'Remove tax row ' + ($index + 1) + (tax.description ? ': ' + tax.description : '')">Remove</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addOtherTax()">+ Add tax</button>
@@ -171,7 +171,7 @@
         <div class="paystub-editor__line-meta">
           <span>YTD: <strong>{{ itemYTDFor(deduction, current()) | currency }}</strong></span>
         </div>
-        <button type="button" class="paystub-editor__remove" (click)="removeDeduction($index)" aria-label="Remove deduction row">Remove</button>
+        <button type="button" class="paystub-editor__remove" (click)="removeDeduction($index)" [attr.aria-label]="'Remove deduction row ' + ($index + 1) + (deduction.description ? ': ' + deduction.description : '')">Remove</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addDeduction()">+ Add deduction</button>
@@ -179,7 +179,7 @@
 </app-editor-shell>
 
 <ng-template #previewTpl let-paystub>
-  <article class="paystub-preview" id="paystub-preview">
+  <article class="paystub-preview">
     <header class="paystub-preview__header">
       <div class="paystub-preview__employer">
         <div class="paystub-preview__employer-name">{{ paystub.employer.name }}</div>

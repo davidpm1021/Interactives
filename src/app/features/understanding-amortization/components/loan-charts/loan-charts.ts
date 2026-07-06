@@ -155,7 +155,10 @@ export class LoanCharts {
       .append('svg')
       .attr('width', containerWidth)
       .attr('height', 250)
-      .attr('aria-label', `Balance over time chart showing loan payoff over ${schedule.length} months`)
+      .attr(
+        'aria-label',
+        `Balance over time. Starts at ${formatCurrency(this.loanAmount())} and drops to zero over ${schedule.length} months. Full month-by-month detail is in the amortization table below.`,
+      )
       .attr('role', 'img')
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);

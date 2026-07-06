@@ -50,7 +50,7 @@
             <input type="number" step="0.01" [ngModel]="entry.credit" (ngModelChange)="updateEntry($index, { credit: parseNumber($event) })" />
           </label>
         </div>
-        <button type="button" class="checkbook-editor__remove" (click)="removeEntry($index)" aria-label="Remove entry">Remove</button>
+        <button type="button" class="checkbook-editor__remove" (click)="removeEntry($index)" [attr.aria-label]="'Remove entry ' + ($index + 1) + (entry.description ? ': ' + entry.description : '')">Remove</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addEntry()">+ Add entry</button>
@@ -58,7 +58,7 @@
 </app-editor-shell>
 
 <ng-template #previewTpl let-checkbook>
-  <article class="checkbook-preview" id="checkbook-preview">
+  <article class="checkbook-preview">
     <header class="checkbook-preview__header">
       <div class="checkbook-preview__title">Checkbook Register</div>
       <div class="checkbook-preview__meta">

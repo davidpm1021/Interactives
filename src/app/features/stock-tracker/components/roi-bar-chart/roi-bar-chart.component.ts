@@ -1,6 +1,6 @@
 import {
   Component, input, inject, viewChild, ElementRef,
-  AfterViewInit, OnDestroy, effect,
+  AfterViewInit, OnDestroy, computed, effect,
 } from '@angular/core';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { StockPick } from '../../models/stock-tracker.models';
@@ -21,7 +21,7 @@ Chart.register(...registerables);
         <app-download-button label="Download chart as PNG" (download)="onDownload()"></app-download-button>
       </div>
       <div class="roi-bar-chart__canvas-wrap">
-        <canvas #chartCanvas role="img" aria-label="Bar chart comparing Return on Investment (ROI) across selected stocks"></canvas>
+        <canvas #chartCanvas role="img" [attr.aria-label]="chartAriaLabel()"></canvas>
       </div>
     </div>
   `,
@@ -61,6 +61,13 @@ export class RoiBarChartComponent implements AfterViewInit, OnDestroy {
   private readonly exportService = inject(ExportService);
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('chartCanvas');
   private chart: Chart | null = null;
+
+  protected readonly chartAriaLabel = computed(() => {
+    const picks = this.picks();
+    if (picks.length === 0) return 'Bar chart comparing Return on Investment across selected stocks';
+    const parts = picks.map((p) => `${p.ticker} ${formatPercent(p.roi)}`);
+    return `Bar chart comparing ROI across selected stocks: ${parts.join(', ')}. Exact values also appear in the ROI summary table on this page.`;
+  });
 
   constructor() {
     effect(() => {

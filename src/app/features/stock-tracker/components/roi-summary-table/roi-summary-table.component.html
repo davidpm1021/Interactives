@@ -6,22 +6,23 @@
 
   <div class="roi-summary-table__wrapper" #tableEl>
     <table class="roi-summary-table__table">
+      <caption class="sr-only">ROI summary for all picks</caption>
       <thead>
         <tr>
-          <th></th>
-          <th>Company</th>
-          <th>Ticker</th>
-          <th>Price at Age 10</th>
-          <th>Price Today</th>
-          <th>100 Shares Value</th>
-          <th>ROI</th>
+          <th scope="col"><span class="sr-only">Color</span></th>
+          <th scope="col">Company</th>
+          <th scope="col">Ticker</th>
+          <th scope="col">Price at Age 10</th>
+          <th scope="col">Price Today</th>
+          <th scope="col">100 Shares Value</th>
+          <th scope="col">ROI</th>
         </tr>
       </thead>
       <tbody>
         @for (pick of picks(); track pick.ticker; let i = $index) {
           <tr>
             <td>
-              <span class="roi-summary-table__dot" [style.background]="STOCK_COLORS[i]"></span>
+              <span class="roi-summary-table__dot" [style.background]="STOCK_COLORS[i]" aria-hidden="true"></span>
             </td>
             <td>{{ pick.companyName }}</td>
             <td class="roi-summary-table__ticker">{{ pick.ticker }}</td>

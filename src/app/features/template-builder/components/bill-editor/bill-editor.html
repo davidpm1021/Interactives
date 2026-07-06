@@ -96,7 +96,7 @@
           <span>Amount ($)</span>
           <input type="number" step="0.01" [ngModel]="item.amount" (ngModelChange)="updateLineItem($index, { amount: parseNumber($event) })" />
         </label>
-        <button type="button" class="bill-editor__remove" (click)="removeLineItem($index)" aria-label="Remove line item">
+        <button type="button" class="bill-editor__remove" (click)="removeLineItem($index)" [attr.aria-label]="'Remove line item ' + ($index + 1) + (item.description ? ': ' + item.description : '')">
           Remove
         </button>
       </div>
@@ -106,7 +106,7 @@
 </app-editor-shell>
 
 <ng-template #previewTpl let-bill>
-  <article class="bill-preview" [class.bill-preview--v2]="variant() === 2" id="bill-preview">
+  <article class="bill-preview" [class.bill-preview--v2]="variant() === 2">
     @if (variant() === 1) {
       <header class="bill-preview__header">
         <div class="bill-preview__biller">

@@ -22,7 +22,7 @@
                 [disabled]="!tpl.available"
                 (click)="select(tpl.key)"
               >
-                <span class="template-builder__tile-title">{{ tpl.title }}</span>
+                <h3 class="template-builder__tile-title">{{ tpl.title }}</h3>
                 <span class="template-builder__tile-desc">{{ tpl.description }}</span>
                 @if (!tpl.available) {
                   <span class="template-builder__tile-badge">Coming soon</span>

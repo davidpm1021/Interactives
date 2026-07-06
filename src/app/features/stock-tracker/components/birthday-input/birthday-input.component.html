@@ -7,7 +7,9 @@
       <select id="birth-month"
               class="birthday-input__select"
               [ngModel]="monthValue()"
-              (ngModelChange)="monthValue.set($event); onFieldChange()">
+              (ngModelChange)="monthValue.set($event); onFieldChange()"
+              [attr.aria-invalid]="error() ? 'true' : null"
+              [attr.aria-describedby]="error() ? 'birthday-error' : null">
         <option value="" disabled>Month</option>
         @for (m of months; track m; let i = $index) {
           <option [value]="i">{{ m }}</option>
@@ -24,7 +26,9 @@
              min="1"
              max="31"
              [ngModel]="dayValue()"
-             (ngModelChange)="dayValue.set($event); onFieldChange()" />
+             (ngModelChange)="dayValue.set($event); onFieldChange()"
+             [attr.aria-invalid]="error() ? 'true' : null"
+             [attr.aria-describedby]="error() ? 'birthday-error' : null" />
     </div>
 
     <div class="birthday-input__field">
@@ -36,12 +40,14 @@
              min="1960"
              [max]="2020"
              [ngModel]="yearValue()"
-             (ngModelChange)="yearValue.set($event); onFieldChange()" />
+             (ngModelChange)="yearValue.set($event); onFieldChange()"
+             [attr.aria-invalid]="error() ? 'true' : null"
+             [attr.aria-describedby]="error() ? 'birthday-error' : null" />
     </div>
   </div>
 
   @if (error()) {
-    <p class="birthday-input__error" role="alert">{{ error() }}</p>
+    <p id="birthday-error" class="birthday-input__error" role="alert">{{ error() }}</p>
   }
 
   <button class="ngpf-btn ngpf-btn-primary birthday-input__submit"

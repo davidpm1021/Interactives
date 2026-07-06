@@ -17,7 +17,7 @@ interface CalloutData {
     <div class="callout-cards">
       @for (card of cards(); track card.label) {
         <div class="callout-cards__card">
-          <span class="callout-cards__icon">{{ card.icon }}</span>
+          <span class="callout-cards__icon" aria-hidden="true">{{ card.icon }}</span>
           <div class="callout-cards__info">
             <span class="callout-cards__label">{{ card.label }}</span>
             <span class="callout-cards__company">{{ card.company }} ({{ card.ticker }})</span>

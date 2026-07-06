@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   MultipleChoiceQuestion,
@@ -21,6 +21,7 @@ export class QuestionItem {
   readonly index = input.required<number>();
 
   private readonly state = inject(CostOfBorrowingStateService);
+  private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
 
   protected readonly selectedIndex = signal<number | null>(null);
   protected readonly numericInput = signal<string>('');
@@ -57,6 +58,30 @@ export class QuestionItem {
   protected onSelect(i: number): void {
     if (this.reveal()) return;
     this.selectedIndex.set(i);
+  }
+
+  protected onOptionKeydown(event: KeyboardEvent): void {
+    if (this.reveal()) return;
+    const q = this.question();
+    if (q.answerType !== 'multiple-choice') return;
+    const total = q.options.length;
+    if (total === 0) return;
+    const key = event.key;
+    const current = this.selectedIndex() ?? 0;
+    let next = current;
+    if (key === 'ArrowRight' || key === 'ArrowDown') next = (current + 1) % total;
+    else if (key === 'ArrowLeft' || key === 'ArrowUp') next = (current - 1 + total) % total;
+    else if (key === 'Home') next = 0;
+    else if (key === 'End') next = total - 1;
+    else return;
+    event.preventDefault();
+    this.selectedIndex.set(next);
+    requestAnimationFrame(() => {
+      const el = this.host.nativeElement.querySelector<HTMLButtonElement>(
+        `button[data-option-index="${next}"]`,
+      );
+      el?.focus();
+    });
   }
 
   protected onCheck(): void {

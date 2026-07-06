@@ -6,8 +6,8 @@
 
   <!-- Loading indicator -->
   @if (loadingTickers().size > 0) {
-    <div class="track-step__loading" aria-live="polite">
-      <span class="track-step__spinner"></span>
+    <div class="track-step__loading" role="status" aria-live="polite">
+      <span class="track-step__spinner" aria-hidden="true"></span>
       <p>Loading price data for
         @for (ticker of loadingTickers(); track ticker) {
           <strong>{{ ticker }}</strong>@if (!$last) {, }
@@ -18,7 +18,7 @@
 
   <!-- Failed tickers -->
   @for (entry of failedTickers(); track entry[0]) {
-    <div class="track-step__error">
+    <div class="track-step__error" role="alert">
       <p><strong>{{ entry[0] }}:</strong> {{ entry[1] }}</p>
       <button class="ngpf-btn ngpf-btn-secondary" (click)="retryTicker(entry[0])">Retry</button>
     </div>
