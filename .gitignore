@@ -45,6 +45,9 @@ Thumbs.db
 # Playwright MCP screenshots
 .playwright-mcp/
 
+# Ad-hoc PNG screenshots at the repo root (dev-time only; never ship)
+/*.png
+
 # Google Service Account credentials (sensitive - NEVER commit)
 /config/*.json
 !/config/*.example.json
