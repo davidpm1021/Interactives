@@ -1,8 +1,21 @@
-<app-top-header></app-top-header>
+<app-top-header class="no-print"></app-top-header>
 <main class="cost-of-borrowing" id="main-content">
   <div class="cost-of-borrowing__intro">
     <h1>Cost of Borrowing</h1>
     <p>National-average interest rates on the four most common consumer credit products, plus a 20-year trend. Read the data, then answer the questions.</p>
+    <div class="cost-of-borrowing__actions no-print">
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onPrint()">
+        Print worksheet / Save as PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="cost-of-borrowing__print-header only-print">
+    <div class="cost-of-borrowing__print-header-title">Cost of Borrowing — Data Crunch</div>
+    <div class="cost-of-borrowing__print-header-meta">
+      <span>Name:&nbsp;__________________________</span>
+      <span>Date:&nbsp;______________</span>
+    </div>
   </div>
 
   <div class="cost-of-borrowing__layout">
@@ -10,13 +23,17 @@
       <h2 id="data-heading" class="cost-of-borrowing__section-heading">Current national averages</h2>
       <div class="cost-of-borrowing__data-inner">
         <app-rate-table [series]="rateSeries" />
-        <app-trend-chart [series]="rateSeries" />
+        <app-trend-chart [series]="rateSeries" class="no-print" />
       </div>
     </aside>
 
     <div class="cost-of-borrowing__questions">
       <app-question-stack [questions]="questions" />
     </div>
+  </div>
+
+  <div class="cost-of-borrowing__behind">
+    <app-behind-the-numbers [series]="rateSeries" [refreshedAt]="refreshedAt" />
   </div>
 
   <p class="cost-of-borrowing__disclaimer">

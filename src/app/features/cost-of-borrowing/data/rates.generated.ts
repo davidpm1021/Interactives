@@ -3,14 +3,20 @@
 
 import { RateSeries } from '../models/rates.models';
 
-export const REFRESHED_AT = '2026-07-02T17:55:50.317Z';
-export const REFRESHED_AT_DISPLAY = 'July 2, 2026';
+export const REFRESHED_AT = '2026-07-06T21:38:49.460Z';
+export const REFRESHED_AT_DISPLAY = 'July 6, 2026';
 
 export const RATE_SERIES: RateSeries[] = [
   {
     id: "credit-card",
     label: "Credit card (avg)",
     fredCode: "TERMCBCCALLNS",
+    fredTitle: "Commercial Bank Interest Rate on Credit Card Plans, All Accounts",
+    fredUrl: "https://fred.stlouisfed.org/series/TERMCBCCALLNS",
+    sourcePublisher: "Board of Governors of the Federal Reserve System (US)",
+    units: "Percent, Not Seasonally Adjusted",
+    frequency: "Quarterly",
+    methodology: "Average finance rate charged on credit-card accounts by commercial banks, weighted across all accounts (not just those carrying a balance).",
     currentRate: 21,
     currentAsOf: "2026-02",
     twentyYearAverage: 14.94,
@@ -42,6 +48,12 @@ export const RATE_SERIES: RateSeries[] = [
     id: "personal-loan",
     label: "Personal loan (24-mo)",
     fredCode: "TERMCBPER24NS",
+    fredTitle: "Finance Rate on Personal Loans at Commercial Banks, 24 Month Loan",
+    fredUrl: "https://fred.stlouisfed.org/series/TERMCBPER24NS",
+    sourcePublisher: "Board of Governors of the Federal Reserve System (US)",
+    units: "Percent, Not Seasonally Adjusted",
+    frequency: "Quarterly",
+    methodology: "Average finance rate on 24-month unsecured personal loans made by commercial banks.",
     currentRate: 11.4,
     currentAsOf: "2026-02",
     twentyYearAverage: 10.86,
@@ -73,6 +85,12 @@ export const RATE_SERIES: RateSeries[] = [
     id: "auto-loan",
     label: "Auto loan (48-mo)",
     fredCode: "TERMCBAUTO48NS",
+    fredTitle: "Finance Rate on Consumer Installment Loans at Commercial Banks, New Autos 48 Month Loan",
+    fredUrl: "https://fred.stlouisfed.org/series/TERMCBAUTO48NS",
+    sourcePublisher: "Board of Governors of the Federal Reserve System (US)",
+    units: "Percent, Not Seasonally Adjusted",
+    frequency: "Quarterly",
+    methodology: "Average finance rate on 48-month new-car loans made by commercial banks. Secured by the vehicle.",
     currentRate: 7.36,
     currentAsOf: "2026-02",
     twentyYearAverage: 5.98,
@@ -104,6 +122,12 @@ export const RATE_SERIES: RateSeries[] = [
     id: "mortgage",
     label: "Mortgage (30-yr fixed)",
     fredCode: "MORTGAGE30US",
+    fredTitle: "30-Year Fixed Rate Mortgage Average in the United States",
+    fredUrl: "https://fred.stlouisfed.org/series/MORTGAGE30US",
+    sourcePublisher: "Freddie Mac — Primary Mortgage Market Survey",
+    units: "Percent, Not Seasonally Adjusted",
+    frequency: "Weekly",
+    methodology: "Weekly average rate on 30-year fixed-rate conforming mortgages, from Freddie Mac's Primary Mortgage Market Survey. Secured by the property.",
     currentRate: 6.43,
     currentAsOf: "2026-07",
     twentyYearAverage: 4.85,

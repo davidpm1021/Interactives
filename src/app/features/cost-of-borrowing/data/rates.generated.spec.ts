@@ -71,4 +71,15 @@ describe('rates.generated data integrity', () => {
       expect(year).toBeGreaterThanOrEqual(CURRENT_YEAR - 1);
     }
   });
+
+  it('every series carries source metadata so "Behind the numbers" can render', () => {
+    for (const s of RATE_SERIES) {
+      expect(s.fredTitle, `${s.id} fredTitle`).toMatch(/.+/);
+      expect(s.fredUrl, `${s.id} fredUrl`).toMatch(/^https:\/\/fred\.stlouisfed\.org\/series\//);
+      expect(s.sourcePublisher, `${s.id} sourcePublisher`).toMatch(/.+/);
+      expect(s.units, `${s.id} units`).toMatch(/Percent/);
+      expect(s.frequency, `${s.id} frequency`).toMatch(/Quarterly|Weekly|Monthly|Daily|Annual/);
+      expect(s.methodology, `${s.id} methodology`).toMatch(/.{20}/);
+    }
+  });
 });

@@ -8,6 +8,69 @@
   flex-direction: column;
   gap: var(--ngpf-spacing-md);
 
+  &__concepts {
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: var(--ngpf-radius-md);
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    font-size: 0.9rem;
+
+    &-label {
+      font-family: var(--ngpf-font-heading);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ngpf-text-secondary);
+      margin-bottom: var(--ngpf-spacing-xs);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: var(--ngpf-spacing-xs);
+    }
+
+    &-note {
+      margin: var(--ngpf-spacing-xs) 0 0;
+      font-size: 0.78rem;
+      color: var(--ngpf-text-secondary);
+      font-style: italic;
+    }
+  }
+
+  &__concept-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-weight: 700;
+  }
+
+  &__concept--hit &__concept-icon {
+    background: var(--ngpf-success);
+    color: white;
+  }
+
+  &__concept--miss &__concept-icon {
+    background: white;
+    color: var(--ngpf-text-secondary);
+    border: 1px solid var(--ngpf-light-gray-blue);
+  }
+
+  &__concept--miss &__concept-label {
+    color: var(--ngpf-text-secondary);
+  }
+
   &--correct { border-left-color: var(--ngpf-success, #2e7d32); }
   &--wrong { border-left-color: var(--ngpf-error, #c62828); }
   &--self-graded { border-left-color: var(--ngpf-gold, #d68b0a); }
@@ -217,3 +280,102 @@
 @media (prefers-reduced-motion: reduce) {
   .question-item__reveal { animation: none; }
 }
+
+// Print worksheet — hide interactive UI, show plenty of writing space.
+@media print {
+  .question-item {
+    box-shadow: none;
+    background: white;
+    border: 1px solid #999;
+    border-left: 3px solid #999;
+    padding: 10pt 12pt;
+    margin-bottom: 10pt;
+    page-break-inside: avoid;
+
+    &__header {
+      color: #1a1a1a;
+    }
+
+    &__num,
+    &__dok {
+      color: #1a1a1a;
+      background: transparent;
+      padding: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 9.5pt;
+    }
+
+    &__dok {
+      border: 1px solid #666;
+      padding: 1px 6pt;
+      border-radius: 3pt;
+    }
+
+    &__prompt {
+      font-size: 11pt;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    // Multiple choice → boxed lettered options for handwriting.
+    &__options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6pt 12pt;
+    }
+
+    &__option {
+      border: 1px solid #999;
+      background: white;
+      color: #1a1a1a;
+      padding: 6pt 8pt;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 10.5pt;
+      text-align: left;
+    }
+
+    // Numeric → single blank line above the unit.
+    &__numeric {
+      display: flex;
+      align-items: center;
+      gap: 8pt;
+    }
+
+    &__numeric-input {
+      display: inline-block;
+      width: 120pt;
+      border: none;
+      border-bottom: 1pt solid #333;
+      background: transparent;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 11pt;
+      color: #1a1a1a;
+      padding: 8pt 4pt 2pt;
+    }
+
+    &__numeric-unit {
+      color: #444;
+      font-size: 10pt;
+    }
+
+    // Short text → 4 blank lines for handwriting.
+    &__text-input {
+      display: block;
+      width: 100%;
+      height: 60pt;
+      border: none;
+      background:
+        linear-gradient(to bottom, transparent 0, transparent calc(100% - 1pt), #999 calc(100% - 1pt), #999 100%),
+        repeating-linear-gradient(to bottom, transparent 0, transparent 14pt, #999 14pt, #999 calc(14pt + 1pt));
+      color: transparent;
+    }
+
+    // Hide dynamic post-answer UI in worksheet mode.
+    &__actions,
+    &__reveal,
+    &__reset {
+      display: none !important;
+    }
+  }
+}
+

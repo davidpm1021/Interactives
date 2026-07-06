@@ -1,0 +1,67 @@
+<details class="behind-numbers">
+  <summary>
+    <span class="behind-numbers__title">Behind the numbers</span>
+    <span class="behind-numbers__hint">Where each figure comes from</span>
+    <span class="behind-numbers__caret" aria-hidden="true"></span>
+  </summary>
+
+  <div class="behind-numbers__body">
+    <p class="behind-numbers__intro">
+      Every rate on this page is pulled directly from the Federal Reserve
+      Economic Data (<a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">FRED</a>)
+      system at the St. Louis Fed. FRED republishes primary-source data from
+      the Federal Reserve Board and Freddie Mac. Nothing on this page is our
+      opinion — click any series below to open the source on FRED and verify.
+    </p>
+    <p class="behind-numbers__intro">
+      Last refresh: <strong>{{ refreshedAt() }}</strong>. The refresh script
+      lives in the repository at
+      <code>src/app/features/cost-of-borrowing/scripts/refresh-rates.mjs</code>
+      and can be re-run any time.
+    </p>
+
+    <dl class="behind-numbers__series">
+      @for (s of series(); track s.id) {
+        <div class="behind-numbers__series-block">
+          <dt>
+            <span class="behind-numbers__series-label">{{ s.label }}</span>
+            <a class="behind-numbers__link" [href]="s.fredUrl" target="_blank" rel="noopener">
+              View on FRED ({{ s.fredCode }})
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </dt>
+          <dd>
+            <div class="behind-numbers__row">
+              <span class="behind-numbers__k">FRED series title</span>
+              <span class="behind-numbers__v">{{ s.fredTitle }}</span>
+            </div>
+            <div class="behind-numbers__row">
+              <span class="behind-numbers__k">Source</span>
+              <span class="behind-numbers__v">{{ s.sourcePublisher }}</span>
+            </div>
+            <div class="behind-numbers__row">
+              <span class="behind-numbers__k">Units</span>
+              <span class="behind-numbers__v">{{ s.units }}</span>
+            </div>
+            <div class="behind-numbers__row">
+              <span class="behind-numbers__k">Frequency</span>
+              <span class="behind-numbers__v">{{ s.frequency }}</span>
+            </div>
+            <div class="behind-numbers__row">
+              <span class="behind-numbers__k">Current value</span>
+              <span class="behind-numbers__v"><strong>{{ s.currentRate }}%</strong> as of {{ s.currentAsOf }}</span>
+            </div>
+            <div class="behind-numbers__row">
+              <span class="behind-numbers__k">20-year average</span>
+              <span class="behind-numbers__v">{{ s.twentyYearAverage }}%</span>
+            </div>
+            <div class="behind-numbers__row behind-numbers__row--method">
+              <span class="behind-numbers__k">What it measures</span>
+              <span class="behind-numbers__v">{{ s.methodology }}</span>
+            </div>
+          </dd>
+        </div>
+      }
+    </dl>
+  </div>
+</details>

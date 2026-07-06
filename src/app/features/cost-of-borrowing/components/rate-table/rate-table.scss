@@ -54,3 +54,34 @@
     font-weight: 600;
   }
 }
+
+@media print {
+  .rate-table {
+    box-shadow: none;
+    border: 1px solid #999;
+    border-radius: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10pt;
+
+    thead th {
+      background: #1a1a1a;
+      color: white;
+      padding: 6pt 8pt;
+      font-size: 9pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    tbody td,
+    tbody th {
+      padding: 5pt 8pt;
+      color: #1a1a1a;
+      border-bottom: 1px solid #ccc;
+    }
+
+    &__num,
+    &__num--current {
+      color: #1a1a1a;
+    }
+  }
+}

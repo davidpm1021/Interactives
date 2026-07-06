@@ -19,13 +19,58 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// FRED series to pull. Each: [id, label, fredCode].
+// FRED series to pull, with source metadata for the "Behind the numbers"
+// disclosure. Metadata is stable series-to-series; the script only refreshes
+// the numeric values.
 const SERIES = [
-  ['credit-card', 'Credit card (avg)',      'TERMCBCCALLNS'],  // Commercial Bank Interest Rate on Credit Card Plans, quarterly
-  ['personal-loan', 'Personal loan (24-mo)', 'TERMCBPER24NS'], // 24-Month Personal Loan Rate, quarterly
-  ['auto-loan', 'Auto loan (48-mo)',        'TERMCBAUTO48NS'], // 48-Month New Car Loan Rate, quarterly
-  ['mortgage', 'Mortgage (30-yr fixed)',    'MORTGAGE30US'],   // 30-Year Fixed Rate Mortgage, weekly
+  {
+    id: 'credit-card',
+    label: 'Credit card (avg)',
+    fredCode: 'TERMCBCCALLNS',
+    fredTitle: 'Commercial Bank Interest Rate on Credit Card Plans, All Accounts',
+    sourcePublisher: 'Board of Governors of the Federal Reserve System (US)',
+    units: 'Percent, Not Seasonally Adjusted',
+    frequency: 'Quarterly',
+    methodology:
+      'Average finance rate charged on credit-card accounts by commercial banks, weighted across all accounts (not just those carrying a balance).',
+  },
+  {
+    id: 'personal-loan',
+    label: 'Personal loan (24-mo)',
+    fredCode: 'TERMCBPER24NS',
+    fredTitle: 'Finance Rate on Personal Loans at Commercial Banks, 24 Month Loan',
+    sourcePublisher: 'Board of Governors of the Federal Reserve System (US)',
+    units: 'Percent, Not Seasonally Adjusted',
+    frequency: 'Quarterly',
+    methodology:
+      'Average finance rate on 24-month unsecured personal loans made by commercial banks.',
+  },
+  {
+    id: 'auto-loan',
+    label: 'Auto loan (48-mo)',
+    fredCode: 'TERMCBAUTO48NS',
+    fredTitle:
+      'Finance Rate on Consumer Installment Loans at Commercial Banks, New Autos 48 Month Loan',
+    sourcePublisher: 'Board of Governors of the Federal Reserve System (US)',
+    units: 'Percent, Not Seasonally Adjusted',
+    frequency: 'Quarterly',
+    methodology:
+      'Average finance rate on 48-month new-car loans made by commercial banks. Secured by the vehicle.',
+  },
+  {
+    id: 'mortgage',
+    label: 'Mortgage (30-yr fixed)',
+    fredCode: 'MORTGAGE30US',
+    fredTitle: '30-Year Fixed Rate Mortgage Average in the United States',
+    sourcePublisher: 'Freddie Mac — Primary Mortgage Market Survey',
+    units: 'Percent, Not Seasonally Adjusted',
+    frequency: 'Weekly',
+    methodology:
+      'Weekly average rate on 30-year fixed-rate conforming mortgages, from Freddie Mac\'s Primary Mortgage Market Survey. Secured by the property.',
+  },
 ];
+
+const fredUrl = (code) => `https://fred.stlouisfed.org/series/${code}`;
 
 async function fetchRaw(url, timeoutMs = 20000) {
   const ac = new AbortController();
@@ -103,6 +148,12 @@ function toTs(series) {
     id: ${JSON.stringify(series.id)},
     label: ${JSON.stringify(series.label)},
     fredCode: ${JSON.stringify(series.fredCode)},
+    fredTitle: ${JSON.stringify(series.fredTitle)},
+    fredUrl: ${JSON.stringify(series.fredUrl)},
+    sourcePublisher: ${JSON.stringify(series.sourcePublisher)},
+    units: ${JSON.stringify(series.units)},
+    frequency: ${JSON.stringify(series.frequency)},
+    methodology: ${JSON.stringify(series.methodology)},
     currentRate: ${series.currentRate},
     currentAsOf: ${JSON.stringify(series.currentAsOf)},
     twentyYearAverage: ${series.twentyYearAverage},
@@ -116,10 +167,10 @@ async function main() {
   console.log(`Refreshing ${SERIES.length} FRED series...\n`);
   const generated = [];
 
-  for (const [id, label, fredCode] of SERIES) {
-    process.stdout.write(`  ${id.padEnd(15)} `);
+  for (const meta of SERIES) {
+    process.stdout.write(`  ${meta.id.padEnd(15)} `);
     try {
-      const url = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${fredCode}`;
+      const url = `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${meta.fredCode}`;
       const csv = await fetchRaw(url);
       const points = parseFredCsv(csv);
       if (points.length === 0) throw new Error('No usable data points');
@@ -129,9 +180,8 @@ async function main() {
       const avg = twentyYearAvg(history);
 
       generated.push({
-        id,
-        label,
-        fredCode,
+        ...meta,
+        fredUrl: fredUrl(meta.fredCode),
         currentRate: Math.round(current.value * 100) / 100,
         currentAsOf: current.date.slice(0, 7),
         twentyYearAverage: avg,

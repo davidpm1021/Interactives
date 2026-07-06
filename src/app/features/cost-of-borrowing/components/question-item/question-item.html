@@ -90,6 +90,23 @@
       }
 
       @if (question().answerType === 'short-text') {
+        @if (conceptHits().length > 0) {
+          <div class="question-item__concepts">
+            <div class="question-item__concepts-label">Concepts your answer touched on</div>
+            <ul>
+              @for (item of conceptHits(); track item.concept.label) {
+                <li [class.question-item__concept--hit]="item.hit" [class.question-item__concept--miss]="!item.hit">
+                  <span class="question-item__concept-icon" aria-hidden="true">{{ item.hit ? '✓' : '·' }}</span>
+                  <span class="question-item__concept-label">{{ item.concept.label }}</span>
+                  <span class="sr-only">{{ item.hit ? 'included' : 'not detected' }}</span>
+                </li>
+              }
+            </ul>
+            <p class="question-item__concepts-note">
+              This is a keyword check, not a grade. Your answer is fine if it makes the point another way.
+            </p>
+          </div>
+        }
         <div class="question-item__model">
           <div class="question-item__model-label">Model answer</div>
           <p>{{ asShortText(question()).modelAnswer }}</p>
