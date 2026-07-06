@@ -143,6 +143,10 @@
     margin: 0;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #1a1a1a;
+    // Force the browser to preserve borders/backgrounds even when the user
+    // has "Background graphics" unchecked in the print dialog.
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 
     &__intro {
       display: none;
@@ -152,9 +156,14 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      border-bottom: 2.5pt solid #1a1a1a;
+      // Use both border-bottom and an outline-like extra line via ::after
+      // so if one gets stripped by a browser print setting, the other still
+      // draws the divider.
+      border-bottom: 3pt solid #000 !important;
       padding-bottom: 8pt;
       margin-bottom: 14pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
 
       &-title {
         font-size: 16pt;
@@ -168,14 +177,14 @@
       }
     }
 
-    // Chart section: bordered box that ends with a heavy rule, so the
-    // "current national averages" area feels clearly separate from the
-    // question set below.
+    // Chart section: heavy bottom rule closes it out before the questions.
     &__layout {
       display: block;
       padding-bottom: 10pt;
       margin-bottom: 14pt;
-      border-bottom: 2.5pt solid #1a1a1a;
+      border-bottom: 3pt solid #000 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
 
     &__data {
@@ -198,12 +207,14 @@
 
     &__section-heading {
       font-size: 11pt;
-      color: #1a1a1a;
+      color: #000;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      border-bottom: 1.5pt solid #1a1a1a;
+      border-bottom: 2pt solid #000 !important;
       padding-bottom: 4pt;
       margin: 0 0 8pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
 
     &__questions {

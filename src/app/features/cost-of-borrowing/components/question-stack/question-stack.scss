@@ -16,13 +16,15 @@
 @media print {
   .question-stack__heading {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    color: #1a1a1a;
+    color: #000;
     font-size: 12pt;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    border-bottom: 1.5pt solid #1a1a1a;
+    border-bottom: 2pt solid #000 !important;
     padding-bottom: 4pt;
     margin: 0 0 8pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   // Mimic the source worksheet's layout: the two DOK-1 questions sit side
