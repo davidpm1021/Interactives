@@ -1,9 +1,11 @@
 import { RetirementService } from './retirement.service';
 import {
   DEFAULT_INPUTS,
+  INCOME_GROWTH,
   INFLATION,
   LIFE_EXPECTANCY,
   POST_RETIREMENT_RETURN,
+  PRE_RETIREMENT_RETURN,
   RetirementInputs,
 } from '../models/retirement.models';
 
@@ -22,19 +24,44 @@ describe('RetirementService', () => {
     expect(p.yearlyBalances[5].age).toBe(45);
   });
 
-  it('grows starting savings alone with no monthly contribution', () => {
+  it('grows starting savings alone with no monthly contribution (annual compounding)', () => {
     const inputs: RetirementInputs = {
       ...DEFAULT_INPUTS,
       currentAge: 30,
       retirementAge: 60,
-      currentSavings: 10000,
+      currentSavings: 10_000,
       monthlyContribution: 0,
     };
     const p = service.project(inputs);
-    // 30 years compounded monthly at 0.5%/mo: 10000 * (1.005)^360 ≈ 60225
-    expect(p.finalBalance).toBeGreaterThan(59000);
-    expect(p.finalBalance).toBeLessThan(62000);
+    // 10_000 * 1.06^30 = 57,434.91
+    expect(p.finalBalance).toBeCloseTo(10_000 * Math.pow(1 + PRE_RETIREMENT_RETURN, 30), 1);
     expect(p.totalContributed).toBe(0);
+  });
+
+  it('grows contributions at 2% per year and matches NerdWallet', () => {
+    // Scenario the user compared against NerdWallet:
+    //   age 40, retire at 67, $60k salary, $0 savings, $500/mo, $2225/mo budget
+    // NerdWallet projected nest egg: $467,319; needed: $1,267,661.
+    const p = service.project({
+      currentAge: 40,
+      retirementAge: 67,
+      currentSalary: 60_000,
+      currentSavings: 0,
+      monthlyContribution: 500,
+      targetMonthlyBudget: 2225,
+    });
+    // Closed form for growing annuity FV, annual compounding:
+    //   FV = P_annual * ((1+r)^n - (1+g)^n) / (r - g)
+    //   6000 * (1.06^27 - 1.02^27) / 0.04
+    const expectedFinal =
+      (500 * 12 * (Math.pow(1.06, 27) - Math.pow(1.02, 27))) / (1.06 - 1.02);
+    expect(p.finalBalance).toBeCloseTo(expectedFinal, 0);
+    // ~$467K, matching NerdWallet within rounding.
+    expect(p.finalBalance).toBeGreaterThan(465_000);
+    expect(p.finalBalance).toBeLessThan(470_000);
+    // Target nest egg falls in the same neighborhood as NerdWallet's $1.27M.
+    expect(p.targetNestEgg).toBeGreaterThan(1_200_000);
+    expect(p.targetNestEgg).toBeLessThan(1_300_000);
   });
 
   it('exposes hardcoded years in retirement based on life expectancy 95', () => {
@@ -49,15 +76,11 @@ describe('RetirementService', () => {
       retirementAge: 67,
       targetMonthlyBudget: 3000,
     });
-    // 3000 * 1.03^37
     const expected = 3000 * Math.pow(1 + INFLATION, 37);
     expect(p.budgetAtRetirement).toBeCloseTo(expected, 1);
   });
 
   it('computes target nest egg via growing-annuity present value', () => {
-    // With yearsToRetirement = 0, budgetAtRetirement === targetMonthlyBudget * 12.
-    // Then targetNestEgg == PV of annuity paying that amount for n years,
-    // growing at 3%, discounted at 5%.
     const inputs: RetirementInputs = {
       ...DEFAULT_INPUTS,
       currentAge: 67,
@@ -92,32 +115,26 @@ describe('RetirementService', () => {
       currentAge: 22,
       retirementAge: 67,
       currentSavings: 0,
-      monthlyContribution: 5000, // aggressive contribution swamps the target
+      monthlyContribution: 5000,
       targetMonthlyBudget: 3000,
     });
     expect(p.finalBalance).toBeGreaterThan(p.targetNestEgg);
     expect(p.gapAtRetirement).toBe(0);
   });
 
-  it('solves required monthly contribution that would hit the target exactly', () => {
-    const p = service.project({
+  it('solves required (year-1) monthly contribution that would hit the target exactly', () => {
+    const base: RetirementInputs = {
       ...DEFAULT_INPUTS,
       currentAge: 40,
       retirementAge: 67,
       currentSavings: 0,
       monthlyContribution: 500,
       targetMonthlyBudget: 3000,
-    });
+    };
+    const p = service.project(base);
     expect(p.requiredMonthlyToHitGoal).toBeGreaterThan(500);
-    const p2 = service.project({
-      ...DEFAULT_INPUTS,
-      currentAge: 40,
-      retirementAge: 67,
-      currentSavings: 0,
-      monthlyContribution: p.requiredMonthlyToHitGoal,
-      targetMonthlyBudget: 3000,
-    });
-    // Within 0.5% due to rounding.
+    // Re-run with the required starting monthly, gap should be ~0.
+    const p2 = service.project({ ...base, monthlyContribution: p.requiredMonthlyToHitGoal });
     expect(Math.abs(p2.finalBalance - p2.targetNestEgg) / p2.targetNestEgg).toBeLessThan(0.005);
   });
 
@@ -126,7 +143,7 @@ describe('RetirementService', () => {
       ...DEFAULT_INPUTS,
       currentAge: 30,
       retirementAge: 67,
-      currentSavings: 5_000_000, // huge head start swamps any inflated target
+      currentSavings: 5_000_000,
       monthlyContribution: 0,
       targetMonthlyBudget: 3000,
     });
@@ -134,8 +151,6 @@ describe('RetirementService', () => {
   });
 
   it('reports projected monthly income in today\'s dollars', () => {
-    // If retirement is now (yearsToRetirement=0), no deflation, and the
-    // nest egg supports a growing-annuity draw over the drawdown horizon.
     const p = service.project({
       ...DEFAULT_INPUTS,
       currentSavings: 1_000_000,
@@ -158,8 +173,7 @@ describe('RetirementService', () => {
       retirementAge: 60,
       currentSalary: 60_000,
     });
-    // 60_000 * 1.02^30
-    expect(p.salaryAtRetirement).toBeCloseTo(60_000 * Math.pow(1.02, 30), 1);
+    expect(p.salaryAtRetirement).toBeCloseTo(60_000 * Math.pow(1 + INCOME_GROWTH, 30), 1);
   });
 
   it('handles zero-year horizon (retirement == current age)', () => {
