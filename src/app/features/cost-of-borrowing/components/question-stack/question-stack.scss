@@ -26,26 +26,46 @@
   }
 
   // Mimic the source worksheet's layout: the two DOK-1 questions sit side
-  // by side, the DOK-2 and DOK-3 questions take a full-width row each.
+  // by side; DOK-2 and DOK-3 questions each take a full-width row. All
+  // questions are joined in one ruled table with a single outer border
+  // and internal dividers (no gaps).
   .question-stack__list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8pt 12pt;
+    gap: 0;
+    border: 1.5pt solid #1a1a1a;
   }
 
-  .question-stack__list > app-question-item:nth-child(1),
+  .question-stack__list > app-question-item {
+    display: block;
+    // Every cell gets a right divider by default; the last cell in each
+    // row loses it via the nth-child rule below.
+    border-right: 1pt solid #1a1a1a;
+    // Bottom divider between rows.
+    border-bottom: 1pt solid #1a1a1a;
+  }
+
+  // Right-column cell in the Q1/Q2 row has no right divider.
   .question-stack__list > app-question-item:nth-child(2) {
-    // First two questions share the row.
+    border-right: none;
   }
 
+  // Q3, Q4, Q5 span the full width — no right divider (they hit the outer
+  // border on both sides).
   .question-stack__list > app-question-item:nth-child(n+3) {
     grid-column: 1 / -1;
+    border-right: none;
+  }
+
+  // Last question sits at the outer bottom border.
+  .question-stack__list > app-question-item:last-child {
+    border-bottom: none;
   }
 
   // Short-text answers get more ruled writing space than short answers.
   // Q3 and Q5 in the current worksheet are DOK-2 and DOK-3 short-text.
   .question-stack__list > app-question-item:nth-child(3) .question-item::after,
   .question-stack__list > app-question-item:nth-child(5) .question-item::after {
-    height: 90pt;
+    min-height: 90pt;
   }
 }

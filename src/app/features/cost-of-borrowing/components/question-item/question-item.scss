@@ -283,16 +283,24 @@
 
 // Print worksheet — treat every question as open-ended so the student can
 // hand-write. No answer choices, no "Type your answer" hints, no Check
-// button. Every question gets blank ruled lines.
+// button. Questions join into a single ruled table with dividers instead
+// of standalone bordered cards.
 @media print {
   .question-item {
     box-shadow: none;
     background: white;
-    border: 1px solid #999;
-    border-left: 3px solid #999;
+    // Remove per-card borders; joined-table borders come from
+    // question-stack.scss.
+    border: none;
+    border-radius: 0;
     padding: 8pt 10pt;
-    margin-bottom: 8pt;
+    margin: 0;
     page-break-inside: avoid;
+    // Flex column so the ruled-lines area grows to match sibling heights
+    // when the grid stretches cells.
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 
     &__header {
       color: #1a1a1a;
@@ -317,6 +325,7 @@
       font-size: 10.5pt;
       color: #1a1a1a;
       line-height: 1.35;
+      margin: 4pt 0 8pt;
     }
 
     // Every question type: hide the input UI. We render blank ruled lines
@@ -330,13 +339,13 @@
       display: none !important;
     }
 
-    // Blank answer space. 3 ruled lines by default; short-text (Q3, Q5) get
-    // more via a body-selector override below.
+    // Ruled writing space grows to fill remaining vertical room in each
+    // grid cell so Q1 and Q2 end at the same height.
     &::after {
       content: '';
       display: block;
-      margin-top: 8pt;
-      height: 46pt;
+      flex: 1 0 auto;
+      min-height: 46pt;
       background: repeating-linear-gradient(
         to bottom,
         transparent 0,

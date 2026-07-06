@@ -134,6 +134,9 @@
     background: white;
     border: 1px solid #999;
     page-break-inside: avoid;
+    // Force the browser to preserve SVG colors + swatches in the printout.
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 
     &__legend {
       font-size: 8.5pt;
@@ -142,12 +145,32 @@
       margin-bottom: 4pt;
     }
 
+    &__swatch {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      border: 0.5pt solid #333;
+    }
+
     &__tooltip {
       display: none;
     }
 
     &__container {
-      min-height: 200pt;
+      // Explicit sizing so the SVG has room to scale into. Without a min-
+      // height the container can collapse when the on-screen sticky/scroll
+      // layout is torn down for print.
+      width: 100%;
+      min-height: 240pt;
+      overflow: visible;
+    }
+
+    &__svg {
+      width: 100% !important;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
 
     :host ::ng-deep {
@@ -161,6 +184,17 @@
       .y-axis line,
       .y-axis path {
         stroke: #666;
+      }
+
+      .line-layer path {
+        // Ensure the colored line strokes print even in mono-mode setups.
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .hover-capture,
+      .hover-layer {
+        display: none;
       }
     }
   }
