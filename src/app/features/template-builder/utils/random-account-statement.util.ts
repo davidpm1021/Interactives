@@ -58,6 +58,27 @@ export function randomChecking(now: Date = new Date()): AccountStatement {
     }
   }
 
+  const accountType = pickCheckingType();
+  // Named fee transaction only for account types that have a monthly
+  // maintenance charge. Free Checking (the majority case) doesn't have one.
+  if (accountType === 'Standard Checking') {
+    transactions.push({
+      date: toISO(shiftDays(periodEnd, -1)),
+      description: 'Monthly maintenance fee',
+      amount: 12,
+      kind: 'debit',
+    });
+  }
+  // Occasional out-of-network ATM fee, regardless of account type.
+  if (Math.random() < 0.15) {
+    transactions.push({
+      date: toISO(shiftDays(periodStart, randInt(5, 22))),
+      description: 'ATM fee — out-of-network',
+      amount: 3.5,
+      kind: 'debit',
+    });
+  }
+
   transactions.sort((a, b) => a.date.localeCompare(b.date));
 
   return {
@@ -68,15 +89,19 @@ export function randomChecking(now: Date = new Date()): AccountStatement {
       addressLine2: `${city.city}, ${city.state} ${city.zip}`,
     },
     accountNumber: `****${randInt(1000, 9999)}`,
-    accountType: 'Free Checking',
+    accountType,
     periodStart: toISO(periodStart),
     periodEnd: toISO(periodEnd),
     beginningBalance,
     transactions,
-    fees: Math.random() < 0.1 ? randFloat(5, 15) : 0,
+    fees: 0,
     interestEarned: 0,
     apy: null,
   };
+}
+
+function pickCheckingType(): string {
+  return pick(['Free Checking', 'Free Checking', 'Free Checking', 'Standard Checking']);
 }
 
 export function randomSavings(now: Date = new Date()): AccountStatement {
@@ -113,14 +138,10 @@ export function randomSavings(now: Date = new Date()): AccountStatement {
     });
   }
 
-  const interestEarned = Math.round(beginningBalance * (apy / 100) / 12 * 100) / 100;
-  transactions.push({
-    date: toISO(periodEnd),
-    description: 'Monthly interest credit',
-    amount: interestEarned,
-    kind: 'credit',
-  });
-
+  // Interest is expressed as APY, so the true monthly rate is the
+  // 12th root of (1 + APY), not APY/12.
+  const monthlyRate = Math.pow(1 + apy / 100, 1 / 12) - 1;
+  const interestEarned = Math.round(beginningBalance * monthlyRate * 100) / 100;
   transactions.sort((a, b) => a.date.localeCompare(b.date));
 
   return {

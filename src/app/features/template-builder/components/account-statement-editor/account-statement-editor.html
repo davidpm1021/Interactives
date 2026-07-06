@@ -63,7 +63,7 @@
     @if (variant() === 'savings') {
       <label>
         <span>APY (%)</span>
-        <input type="number" step="0.01" [ngModel]="current().apy" (ngModelChange)="updateField('apy', parseNumber($event))" />
+        <input type="number" step="0.01" [ngModel]="current().apy" (ngModelChange)="updateField('apy', parseNullableNumber($event))" />
       </label>
     }
     <div class="account-editor__row">
@@ -161,6 +161,12 @@
         <div class="account-preview__label">{{ '−' }} Withdrawals</div>
         <div class="account-preview__summary-num">{{ totalWithdrawalsOf(statement) | currency }}</div>
       </div>
+      @if (statement.interestEarned) {
+        <div>
+          <div class="account-preview__label">+ Interest earned</div>
+          <div class="account-preview__summary-num">{{ statement.interestEarned | currency }}</div>
+        </div>
+      }
       @if (statement.fees) {
         <div>
           <div class="account-preview__label">{{ '−' }} Fees</div>
@@ -173,11 +179,20 @@
       </div>
     </section>
 
+    @if (variant() === 'savings' && statement.apy) {
+      <p class="account-preview__savings-projection">
+        At {{ statement.apy }}% APY, this balance would earn about
+        <strong>{{ (endingBalanceOf(statement) * statement.apy / 100) | currency }}</strong>
+        in interest over the next year.
+      </p>
+    }
+
     <table class="account-preview__table">
-      <caption class="sr-only">Transactions</caption>
+      <caption class="sr-only">Transactions in chronological order with running balance</caption>
       <colgroup>
         <col class="account-preview__cg-date" />
         <col class="account-preview__cg-desc" />
+        <col class="account-preview__cg-num" />
         <col class="account-preview__cg-num" />
         <col class="account-preview__cg-num" />
       </colgroup>
@@ -187,15 +202,17 @@
           <th scope="col">Description</th>
           <th scope="col" class="account-preview__col-num">Withdrawal</th>
           <th scope="col" class="account-preview__col-num">Deposit</th>
+          <th scope="col" class="account-preview__col-num">Balance</th>
         </tr>
       </thead>
       <tbody>
-        @for (txn of statement.transactions; track $index) {
-          <tr>
+        @for (txn of sortedTxnsOf(statement); track txn.origIndex) {
+          <tr [class.account-preview__row--negative]="txn.runningBalance < 0">
             <td>{{ txn.date ? (txn.date | date: 'M/d') : '' }}</td>
             <th scope="row">{{ txn.description }}</th>
             <td>{{ txn.kind === 'debit' ? (txn.amount | currency) : '' }}</td>
             <td>{{ txn.kind === 'credit' ? (txn.amount | currency) : '' }}</td>
+            <td>{{ txn.runningBalance | currency }}</td>
           </tr>
         }
       </tbody>

@@ -10,7 +10,10 @@ import {
 } from '../../models/account-statement.model';
 import { randomChecking, randomSavings } from '../../utils/random-account-statement.util';
 import { FirstItemMutator } from '../../utils/first-item-mutator.util';
-import { parseNumber } from '../../utils/input-parsers.util';
+import {
+  parseNonNegative,
+  parseNullableNonNegative,
+} from '../../utils/input-parsers.util';
 import { EditorShell } from '../editor-shell/editor-shell';
 
 function emptyStatement(forSavings: boolean): AccountStatement {
@@ -18,7 +21,7 @@ function emptyStatement(forSavings: boolean): AccountStatement {
     bank: { name: '', tagline: '' },
     customer: { name: '', addressLine1: '', addressLine2: '' },
     accountNumber: '',
-    accountType: '',
+    accountType: forSavings ? 'High-Yield Savings' : 'Free Checking',
     periodStart: '',
     periodEnd: '',
     beginningBalance: 0,
@@ -27,6 +30,11 @@ function emptyStatement(forSavings: boolean): AccountStatement {
     interestEarned: 0,
     apy: forSavings ? 0 : null,
   };
+}
+
+interface EnrichedTxn extends AccountTransaction {
+  runningBalance: number;
+  origIndex: number;
 }
 
 @Component({
@@ -47,23 +55,58 @@ export class AccountStatementEditor {
     this.variant() === 'savings' ? randomSavings() : randomChecking();
   protected readonly clearFnRef = (): AccountStatement => emptyStatement(this.variant() === 'savings');
 
+  private lastVariant: 'checking' | 'savings' | null = null;
+
   constructor() {
     effect(() => {
-      // Load the variant-appropriate sample once the input is bound
-      if (this.variant() === 'savings' && this.statements()[0]?.accountType !== 'High-Yield Savings') {
-        this.statements.set([sampleSavings()]);
-      }
+      const v = this.variant();
+      if (v === this.lastVariant) return;
+      this.lastVariant = v;
+      // Load the sample for the newly-selected variant.
+      this.statements.set([v === 'savings' ? sampleSavings() : sampleChecking()]);
     });
   }
 
   protected totalDepositsOf(s: AccountStatement): number {
-    return s.transactions.filter((t) => t.kind === 'credit').reduce((sum, t) => sum + (t.amount || 0), 0);
+    return s.transactions
+      .filter((t) => t.kind === 'credit')
+      .reduce((sum, t) => sum + (t.amount || 0), 0);
   }
   protected totalWithdrawalsOf(s: AccountStatement): number {
-    return s.transactions.filter((t) => t.kind === 'debit').reduce((sum, t) => sum + (t.amount || 0), 0);
+    return s.transactions
+      .filter((t) => t.kind === 'debit')
+      .reduce((sum, t) => sum + (t.amount || 0), 0);
   }
   protected endingBalanceOf(s: AccountStatement): number {
-    return s.beginningBalance + this.totalDepositsOf(s) - this.totalWithdrawalsOf(s) - s.fees;
+    return (
+      s.beginningBalance +
+      this.totalDepositsOf(s) +
+      (s.interestEarned || 0) -
+      this.totalWithdrawalsOf(s) -
+      s.fees
+    );
+  }
+
+  /**
+   * Chronologically-sorted transactions with a running balance per row,
+   * used by the preview. Falls back to array order when dates are missing.
+   */
+  protected sortedTxnsOf(s: AccountStatement): EnrichedTxn[] {
+    const withIndex = s.transactions.map((t, i) => ({ ...t, origIndex: i }));
+    withIndex.sort((a, b) => {
+      const da = a.date || '';
+      const db = b.date || '';
+      if (da === db) return a.origIndex - b.origIndex;
+      if (!da) return 1; // undated go last
+      if (!db) return -1;
+      return da < db ? -1 : 1;
+    });
+    let running = s.beginningBalance;
+    return withIndex.map((t) => {
+      const amt = t.amount || 0;
+      running += t.kind === 'credit' ? amt : -amt;
+      return { ...t, runningBalance: running };
+    });
   }
 
   private readonly mutator = new FirstItemMutator(this.statements, sampleChecking);
@@ -71,7 +114,8 @@ export class AccountStatementEditor {
     this.mutator.mutate(fn);
   }
 
-  protected readonly parseNumber = parseNumber;
+  protected readonly parseNumber = parseNonNegative;
+  protected readonly parseNullableNumber = parseNullableNonNegative;
 
   protected updateBank<K extends keyof AccountStatement['bank']>(key: K, value: string): void {
     this.mutateFirst((s) => ({ ...s, bank: { ...s.bank, [key]: value } }));
@@ -94,5 +138,4 @@ export class AccountStatementEditor {
   protected removeTxn(index: number): void {
     this.mutateFirst((s) => ({ ...s, transactions: s.transactions.filter((_, i) => i !== index) }));
   }
-
 }

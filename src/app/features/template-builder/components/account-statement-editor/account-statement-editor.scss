@@ -4,6 +4,24 @@
   @include fc.form-chrome;
 }
 
+.account-preview__row--negative td {
+  color: #c62828;
+  font-weight: 600;
+}
+
+.account-preview__savings-projection {
+  margin: 0.15in 0 0.1in;
+  padding: 0.08in 0.12in;
+  background: rgba(46, 125, 50, 0.06);
+  border-left: 3px solid var(--ngpf-success);
+  font-size: 9pt;
+  color: #1a1a1a;
+
+  strong {
+    color: var(--ngpf-success);
+  }
+}
+
 .account-preview {
   background: #fff;
   color: #1a1a1a;
