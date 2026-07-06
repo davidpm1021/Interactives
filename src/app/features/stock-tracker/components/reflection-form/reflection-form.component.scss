@@ -1,0 +1,49 @@
+.reflection-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ngpf-spacing-lg);
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__label {
+    font-family: var(--ngpf-font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ngpf-text-primary);
+  }
+
+  &__prompt {
+    font-size: 0.85rem;
+    color: var(--ngpf-text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  &__textarea {
+    width: 100%;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    border: 2px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+    background: white;
+    color: var(--ngpf-text-primary);
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+
+    &:focus {
+      outline: none;
+      border-color: var(--ngpf-bright-blue);
+    }
+
+    &::placeholder {
+      color: var(--ngpf-text-muted);
+    }
+  }
+}

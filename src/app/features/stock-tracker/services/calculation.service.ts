@@ -1,0 +1,97 @@
+import { Injectable } from '@angular/core';
+import { StockPick } from '../models/stock-tracker.models';
+
+@Injectable()
+export class CalculationService {
+  /** ROI as a percentage: ((current - purchase) / purchase) * 100 */
+  calculateROI(purchasePrice: number, currentPrice: number): number {
+    if (purchasePrice === 0) return 0;
+    return ((currentPrice - purchasePrice) / purchasePrice) * 100;
+  }
+
+  /** Total dollar return: (currentPrice - purchasePrice) * shares */
+  calculateTotalReturn(purchasePrice: number, currentPrice: number, shares: number): number {
+    return (currentPrice - purchasePrice) * shares;
+  }
+
+  /** Year-over-year percentage change */
+  calculateYoYChange(previousPrice: number, currentPrice: number): number {
+    if (previousPrice === 0) return 0;
+    return ((currentPrice - previousPrice) / previousPrice) * 100;
+  }
+
+  /**
+   * Find the nearest PRIOR trading day to the target date.
+   * Timestamps are Unix seconds from Yahoo Finance.
+   * Returns a Date for the closest timestamp <= target.
+   */
+  findNearestPriorTradingDay(targetDate: Date, availableTimestamps: number[]): Date {
+    const targetUnix = Math.floor(targetDate.getTime() / 1000);
+    let best = availableTimestamps[0];
+
+    for (const ts of availableTimestamps) {
+      if (ts <= targetUnix) {
+        best = ts;
+      } else {
+        break; // timestamps are sorted ascending
+      }
+    }
+
+    return new Date(best * 1000);
+  }
+
+  /** Stock with the highest ROI percentage */
+  findBestROI(picks: StockPick[]): StockPick | null {
+    if (picks.length === 0) return null;
+    return picks.reduce((best, pick) => (pick.roi > best.roi ? pick : best));
+  }
+
+  /** Stock with the highest current value of 100 shares */
+  findHighestValue(picks: StockPick[]): StockPick | null {
+    if (picks.length === 0) return null;
+    return picks.reduce((best, pick) => (pick.currentValue > best.currentValue ? pick : best));
+  }
+
+  /**
+   * Most volatile stock: largest peak-to-trough swing in value of 100 shares.
+   * Measured as (max - min) / min * 100 across all annual data points.
+   */
+  findMostVolatile(picks: StockPick[]): StockPick | null {
+    if (picks.length === 0) return null;
+
+    let mostVolatile = picks[0];
+    let highestSwing = 0;
+
+    for (const pick of picks) {
+      if (pick.annualData.length === 0) continue;
+      const values = pick.annualData.map(d => d.valueOf100Shares);
+      const max = Math.max(...values);
+      const min = Math.min(...values);
+      const swing = min > 0 ? ((max - min) / min) * 100 : 0;
+      if (swing > highestSwing) {
+        highestSwing = swing;
+        mostVolatile = pick;
+      }
+    }
+
+    return mostVolatile;
+  }
+
+  /** Calculate the student's 10th birthday from their birthday */
+  calculateTenthBirthday(birthday: Date): Date {
+    const tenth = new Date(birthday);
+    tenth.setFullYear(tenth.getFullYear() + 10);
+    return tenth;
+  }
+
+  /** Calculate current age from birthday */
+  calculateCurrentAge(birthday: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const monthDiff = today.getMonth() - birthday.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+    }
+    return age;
+  }
+}

@@ -1,0 +1,35 @@
+<div class="report-step">
+  <h2 class="report-step__title">Write Your Report</h2>
+  <p class="report-step__description">
+    Reflect on your findings and write your investment report.
+  </p>
+
+  <!-- Overview table -->
+  <div class="report-step__section">
+    <h3 class="report-step__section-title">Overview</h3>
+    <app-roi-summary-table [picks]="state.picks()"></app-roi-summary-table>
+  </div>
+
+  <!-- Charts -->
+  <div class="report-step__charts">
+    <app-multi-line-chart [picks]="state.picks()"></app-multi-line-chart>
+    <app-roi-bar-chart [picks]="state.picks()"></app-roi-bar-chart>
+  </div>
+
+  <!-- Analysis questions -->
+  <div class="report-step__section">
+    <h3 class="report-step__section-title">Your Analysis</h3>
+    <app-reflection-form
+      [report]="state.report()"
+      (reportChange)="onReportChange($event)">
+    </app-reflection-form>
+  </div>
+
+  <!-- Export -->
+  <div class="report-step__export">
+    <app-export-buttons
+      [report]="state.report()"
+      [picks]="state.picks()">
+    </app-export-buttons>
+  </div>
+</div>

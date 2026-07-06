@@ -1,0 +1,90 @@
+.inputs-panel {
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-sm);
+  padding: var(--ngpf-spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ngpf-spacing-md);
+
+  &__title {
+    font-family: var(--ngpf-font-heading);
+    color: var(--ngpf-royal-blue);
+    font-size: 1.25rem;
+    margin: 0 0 var(--ngpf-spacing-xs);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-family: var(--ngpf-font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ngpf-text-primary);
+  }
+
+  &__hint {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.78rem;
+    color: var(--ngpf-text-muted);
+    line-height: 1.35;
+  }
+
+  input[type='number'] {
+    font-family: var(--ngpf-font-body);
+    font-size: 1rem;
+    padding: 10px 12px;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    background: white;
+    color: var(--ngpf-text-primary);
+    width: 100%;
+    min-height: 44px;
+    box-sizing: border-box;
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__input-with-prefix,
+  &__input-with-suffix {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    background: white;
+    padding: 0 12px;
+    min-height: 44px;
+
+    &:focus-within {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+
+    input[type='number'] {
+      border: none;
+      padding: 10px 6px;
+      background: transparent;
+      min-height: auto;
+
+      &:focus-visible {
+        outline: none;
+      }
+    }
+  }
+
+  &__prefix,
+  &__suffix {
+    font-family: var(--ngpf-font-body);
+    font-weight: 600;
+    color: var(--ngpf-text-muted);
+    font-size: 0.95rem;
+    user-select: none;
+  }
+}

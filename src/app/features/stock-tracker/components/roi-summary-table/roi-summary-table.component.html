@@ -1,0 +1,40 @@
+<div class="roi-summary-table">
+  <div class="roi-summary-table__header">
+    <h4 class="roi-summary-table__title">ROI Summary</h4>
+    <app-download-button label="Download table as PNG" (download)="onDownload()"></app-download-button>
+  </div>
+
+  <div class="roi-summary-table__wrapper" #tableEl>
+    <table class="roi-summary-table__table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Company</th>
+          <th>Ticker</th>
+          <th>Price at Age 10</th>
+          <th>Price Today</th>
+          <th>100 Shares Value</th>
+          <th>ROI</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (pick of picks(); track pick.ticker; let i = $index) {
+          <tr>
+            <td>
+              <span class="roi-summary-table__dot" [style.background]="STOCK_COLORS[i]"></span>
+            </td>
+            <td>{{ pick.companyName }}</td>
+            <td class="roi-summary-table__ticker">{{ pick.ticker }}</td>
+            <td>{{ formatCurrency(pick.priceOnBirthday) }}</td>
+            <td>{{ formatCurrency(pick.currentPrice) }}</td>
+            <td class="roi-summary-table__value">{{ formatCurrency(pick.currentValue) }}</td>
+            <td [class.roi-summary-table__positive]="pick.roi > 0"
+                [class.roi-summary-table__negative]="pick.roi < 0">
+              {{ formatPercent(pick.roi) }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<section class="comparison-view" aria-labelledby="comparison-heading">
+  <h2 id="comparison-heading" class="comparison-view__heading">The full picture</h2>
+
+  <div class="comparison-view__stages" role="status" aria-live="polite">
+    @for (stage of revealOrder; track stage) {
+      <span
+        class="comparison-view__stage"
+        [class.comparison-view__stage--done]="revealedStages().has(stage)"
+      >
+        {{ stageLabels[stage] }}
+      </span>
+    }
+  </div>
+
+  <div class="comparison-view__grid">
+    <app-profile-card [profile]="profileA()" [revealedStages]="revealedStages()" />
+    <app-profile-card [profile]="profileB()" [revealedStages]="revealedStages()" />
+  </div>
+
+  @if (revealComplete() && predictionSummary(); as ps) {
+    <div class="comparison-view__predict-summary"
+         [class.comparison-view__predict-summary--correct]="ps.correct"
+         [class.comparison-view__predict-summary--wrong]="!ps.correct"
+         aria-live="polite">
+      <p>
+        <strong>{{ ps.higherName }}</strong> has the higher net worth.
+        You guessed <strong>{{ ps.guessedName }}</strong>.
+        @if (ps.correct) { Good call. } @else { The salary tricked you. }
+      </p>
+    </div>
+
+    <div class="comparison-view__actions">
+      <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onContinue()">
+        See the takeaway
+      </button>
+    </div>
+  }
+</section>

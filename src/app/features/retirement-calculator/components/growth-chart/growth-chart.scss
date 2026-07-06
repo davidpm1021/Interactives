@@ -1,0 +1,41 @@
+.growth-chart {
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-sm);
+  padding: var(--ngpf-spacing-md);
+
+  &__caption {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.8rem;
+    color: var(--ngpf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__container {
+    width: 100%;
+    min-height: 300px;
+  }
+
+  &__svg {
+    width: 100%;
+    display: block;
+  }
+
+  :host ::ng-deep {
+    .x-axis text,
+    .y-axis text {
+      font-family: var(--ngpf-font-body);
+      font-size: 0.75rem;
+      fill: var(--ngpf-text-muted);
+    }
+
+    .x-axis line,
+    .x-axis path,
+    .y-axis line,
+    .y-axis path {
+      stroke: var(--ngpf-light-gray-blue);
+    }
+  }
+}

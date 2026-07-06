@@ -1,0 +1,28 @@
+<app-top-header></app-top-header>
+<main class="net-worth-visualizer">
+  <div class="net-worth-visualizer__intro">
+    <h1>Salary vs. Bank Balance vs. Net Worth</h1>
+    <p>Three numbers that measure different things. Compare two people and see which one is actually ahead.</p>
+  </div>
+
+  @switch (state.phase()) {
+    @case ('predict') {
+      <app-predict-view
+        [profileA]="profileA"
+        [profileB]="profileB"
+        (submit)="onPredict($event)"
+      />
+    }
+    @case ('reveal') {
+      <app-comparison-view
+        [profileA]="profileA"
+        [profileB]="profileB"
+        [prediction]="state.prediction()"
+        (finish)="onFinishReveal()"
+      />
+    }
+    @case ('summary') {
+      <app-summary (restart)="onRestart()" />
+    }
+  }
+</main>

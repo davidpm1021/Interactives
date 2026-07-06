@@ -1,0 +1,30 @@
+<app-top-header></app-top-header>
+<div class="stock-tracker">
+  <app-step-indicator
+    [steps]="state.steps()"
+    [currentStepNumber]="state.currentStepConfig().number"
+    (stepClick)="onStepClick($event)">
+  </app-step-indicator>
+
+  <div class="stock-tracker__content">
+    @switch (state.currentStep()) {
+      @case ('setup') {
+        <app-setup-step></app-setup-step>
+      }
+      @case ('track') {
+        <app-track-step></app-track-step>
+      }
+      @case ('compare') {
+        <app-compare-step></app-compare-step>
+      }
+      @case ('report') {
+        <app-report-step></app-report-step>
+      }
+    }
+  </div>
+
+  <p class="stock-tracker__privacy-note">
+    This activity stores no student information. Anything you enter is processed in
+    your browser and discarded when the page is closed or refreshed.
+  </p>
+</div>

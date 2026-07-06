@@ -1,0 +1,44 @@
+<div class="track-step">
+  <h2 class="track-step__title">Track the Prices</h2>
+  <p class="track-step__description">
+    See how your 5 stocks performed year by year since your 10th birthday.
+  </p>
+
+  <!-- Loading indicator -->
+  @if (loadingTickers().size > 0) {
+    <div class="track-step__loading" aria-live="polite">
+      <span class="track-step__spinner"></span>
+      <p>Loading price data for
+        @for (ticker of loadingTickers(); track ticker) {
+          <strong>{{ ticker }}</strong>@if (!$last) {, }
+        }...
+      </p>
+    </div>
+  }
+
+  <!-- Failed tickers -->
+  @for (entry of failedTickers(); track entry[0]) {
+    <div class="track-step__error">
+      <p><strong>{{ entry[0] }}:</strong> {{ entry[1] }}</p>
+      <button class="ngpf-btn ngpf-btn-secondary" (click)="retryTicker(entry[0])">Retry</button>
+    </div>
+  }
+
+  <!-- Per-company tables -->
+  @for (pick of state.picks(); track pick.ticker; let i = $index) {
+    @if (pick.annualData.length > 0) {
+      <app-stock-table [pick]="pick" [colorIndex]="i"></app-stock-table>
+    }
+  }
+
+  <!-- Combined table -->
+  @if (state.allDataLoaded()) {
+    <app-combined-table [picks]="state.picks()"></app-combined-table>
+
+    <div class="track-step__actions">
+      <button class="ngpf-btn ngpf-btn-primary" (click)="onAdvance()">
+        Compare My Stocks
+      </button>
+    </div>
+  }
+</div>

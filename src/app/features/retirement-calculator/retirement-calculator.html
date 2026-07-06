@@ -1,0 +1,34 @@
+<app-top-header></app-top-header>
+<main class="retirement-calculator">
+  <div class="retirement-calculator__intro">
+    <h1>Retirement Calculator</h1>
+    <p>
+      Try different scenarios. See the gap between what your savings will grow to and what you'd
+      need to fund your retirement budget.
+    </p>
+  </div>
+
+  <div class="retirement-calculator__grid">
+    <div class="retirement-calculator__inputs">
+      <app-inputs-panel [inputs]="inputs()" (change)="onInputsChange($event)" />
+    </div>
+
+    <div class="retirement-calculator__results">
+      <app-results-panel
+        [projection]="projection()"
+        [monthlyContribution]="inputs().monthlyContribution"
+      />
+      <app-growth-chart [projection]="projection()" />
+    </div>
+  </div>
+
+  <div class="retirement-calculator__assumptions">
+    <h3>Assumptions</h3>
+    <ul>
+      <li><strong>Expected return:</strong> {{ (inputs().expectedReturn * 100).toFixed(1) }}% real return per year, compounded monthly.</li>
+      <li><strong>Withdrawal rate:</strong> 4% of the nest egg per year (a rough industry rule of thumb).</li>
+      <li><strong>Retirement horizon:</strong> {{ inputs().yearsInRetirement }} years, ending around age {{ inputs().retirementAge + inputs().yearsInRetirement }}.</li>
+      <li><strong>What's not modeled:</strong> Social Security, employer match, taxes, inflation on your target budget, market volatility.</li>
+    </ul>
+  </div>
+</main>

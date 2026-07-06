@@ -1,0 +1,66 @@
+<div class="birthday-input">
+  <h3 class="birthday-input__title">When is your birthday?</h3>
+
+  <div class="birthday-input__fields">
+    <div class="birthday-input__field">
+      <label for="birth-month" class="birthday-input__label">Month</label>
+      <select id="birth-month"
+              class="birthday-input__select"
+              [ngModel]="monthValue()"
+              (ngModelChange)="monthValue.set($event); onFieldChange()">
+        <option value="" disabled>Month</option>
+        @for (m of months; track m; let i = $index) {
+          <option [value]="i">{{ m }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="birthday-input__field">
+      <label for="birth-day" class="birthday-input__label">Day</label>
+      <input id="birth-day"
+             type="number"
+             class="birthday-input__input"
+             placeholder="Day"
+             min="1"
+             max="31"
+             [ngModel]="dayValue()"
+             (ngModelChange)="dayValue.set($event); onFieldChange()" />
+    </div>
+
+    <div class="birthday-input__field">
+      <label for="birth-year" class="birthday-input__label">Year</label>
+      <input id="birth-year"
+             type="number"
+             class="birthday-input__input"
+             placeholder="Year"
+             min="1960"
+             [max]="2020"
+             [ngModel]="yearValue()"
+             (ngModelChange)="yearValue.set($event); onFieldChange()" />
+    </div>
+  </div>
+
+  @if (error()) {
+    <p class="birthday-input__error" role="alert">{{ error() }}</p>
+  }
+
+  <button class="ngpf-btn ngpf-btn-primary birthday-input__submit"
+          (click)="onSubmit()">
+    @if (confirmed()) {
+      Birthday Confirmed
+    } @else {
+      Confirm Birthday
+    }
+  </button>
+
+  @if (confirmed()) {
+    <div class="birthday-input__result">
+      <p class="birthday-input__tenth">
+        Your 10th birthday was <strong>{{ tenthBirthdayDisplay() }}</strong>
+      </p>
+      <p class="birthday-input__note">
+        If this date fell on a weekend or market holiday, stock prices from the closest prior trading day will be used.
+      </p>
+    </div>
+  }
+</div>

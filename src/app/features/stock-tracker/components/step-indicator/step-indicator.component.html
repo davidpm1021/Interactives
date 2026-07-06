@@ -1,0 +1,44 @@
+<!-- Desktop: full horizontal stepper -->
+<nav class="step-indicator" aria-label="Progress">
+  <ol class="step-indicator__steps">
+    @for (step of steps(); track step.id; let i = $index) {
+      <li class="step-indicator__item"
+          [class.step-indicator__item--active]="step.status === 'active'"
+          [class.step-indicator__item--completed]="step.status === 'completed'"
+          [class.step-indicator__item--locked]="step.status === 'locked'">
+
+        <!-- Connector line (before each step except the first) -->
+        @if (i > 0) {
+          <div class="step-indicator__connector"
+               [class.step-indicator__connector--completed]="step.status === 'completed' || step.status === 'active'">
+          </div>
+        }
+
+        <button class="step-indicator__button"
+                [disabled]="step.status === 'locked'"
+                [attr.aria-current]="step.status === 'active' ? 'step' : null"
+                [attr.aria-label]="'Part ' + step.number + ': ' + step.label + (step.status === 'completed' ? ' (completed)' : step.status === 'locked' ? ' (locked)' : '')"
+                (click)="onStepClick(step)">
+          <span class="step-indicator__circle">
+            @if (step.status === 'completed') {
+              <span class="step-indicator__check" aria-hidden="true">&#10003;</span>
+            } @else {
+              {{ step.number }}
+            }
+          </span>
+          <span class="step-indicator__label">{{ step.label }}</span>
+        </button>
+      </li>
+    }
+  </ol>
+</nav>
+
+<!-- Mobile: compact "Step X of Y" -->
+<div class="step-indicator__compact" aria-label="Progress">
+  <span class="step-indicator__compact-text">
+    Part {{ currentStepNumber() }} of {{ totalSteps() }}
+  </span>
+  <span class="step-indicator__compact-label">
+    {{ steps()[currentStepNumber() - 1]?.label }}
+  </span>
+</div>

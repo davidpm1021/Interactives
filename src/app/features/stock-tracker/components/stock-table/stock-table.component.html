@@ -1,0 +1,43 @@
+<div class="stock-table">
+  <div class="stock-table__header">
+    <div class="stock-table__title-group">
+      <span class="stock-table__color-dot" [style.background]="STOCK_COLORS[colorIndex()]"></span>
+      <h4 class="stock-table__title">{{ pick().companyName }} ({{ pick().ticker }})</h4>
+    </div>
+    <app-download-button label="Download table as PNG" (download)="onDownload()"></app-download-button>
+  </div>
+
+  <div class="stock-table__wrapper" #tableEl>
+    <table class="stock-table__table">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Age</th>
+          <th>Date Used</th>
+          <th>Adj. Close</th>
+          <th>100 Shares Value</th>
+          <th>YoY Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of pick().annualData; track row.year) {
+          <tr>
+            <td>{{ row.year }}</td>
+            <td>{{ row.age }}</td>
+            <td>{{ formatDate(row.dateUsed) }}</td>
+            <td>{{ formatCurrency(row.adjClose) }}</td>
+            <td class="stock-table__value">{{ formatCurrency(row.valueOf100Shares) }}</td>
+            <td [class.stock-table__positive]="row.yearOverYearChange > 0"
+                [class.stock-table__negative]="row.yearOverYearChange < 0">
+              @if (row.yearOverYearChange !== 0) {
+                {{ formatPercent(row.yearOverYearChange) }}
+              } @else {
+                --
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,242 @@
+.reference-toggle {
+  position: fixed;
+  top: 90px;
+  left: 16px;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--ngpf-royal-blue);
+  background: white;
+  color: var(--ngpf-royal-blue);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--ngpf-shadow-md);
+  transition: background 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background: var(--ngpf-soft-blue-tint);
+    transform: scale(1.1);
+  }
+}
+
+.reference-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 360px;
+  height: 100vh;
+  background: white;
+  box-shadow: var(--ngpf-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: panelSlideIn 0.3s ease-out;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ngpf-spacing-md);
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    background: var(--ngpf-soft-blue-tint);
+  }
+
+  &__title {
+    font-family: var(--ngpf-font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+    margin: 0;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--ngpf-text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+
+    &:hover {
+      color: var(--ngpf-text-primary);
+    }
+  }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--ngpf-spacing-md);
+  }
+
+  // ── Mini check diagram ──
+  &__diagram {
+    margin-bottom: var(--ngpf-spacing-md);
+  }
+
+  &__check-mini {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 6 / 2.5;
+    background: var(--ngpf-soft-blue-tint);
+    border: 1.5px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    padding: 0.5rem;
+  }
+
+  &__badge {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    background: var(--ngpf-royal-blue);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+
+    &--active {
+      background: var(--ngpf-sky-blue);
+      box-shadow: 0 0 0 3px rgba(29, 184, 232, 0.3);
+      transform: scale(1.2);
+    }
+
+    // Positions on mini check
+    &--1 { top: 8%; right: 25%; }   // Date
+    &--2 { top: 35%; left: 5%; }    // Payee
+    &--3 { top: 35%; right: 5%; }   // Numeric amount
+    &--4 { top: 55%; left: 20%; }   // Written amount
+    &--5 { top: 78%; left: 5%; }    // Memo
+    &--6 { top: 78%; right: 5%; }   // Signature
+    &--7 { top: 8%; right: 5%; }    // Check number
+    &--8 { top: 92%; left: 5%; }    // Routing
+    &--9 { top: 92%; left: 40%; }   // Account
+  }
+
+  // ── Legend list ──
+  &__legend {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-xs);
+  }
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ngpf-spacing-sm);
+    padding: var(--ngpf-spacing-xs) var(--ngpf-spacing-sm);
+    border-radius: var(--ngpf-radius-sm);
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--ngpf-soft-blue-tint);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+
+    &--active {
+      background: var(--ngpf-soft-blue-tint);
+      border-left: 3px solid var(--ngpf-sky-blue);
+    }
+  }
+
+  &__item-badge {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ngpf-royal-blue);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+
+    .reference-panel__item--active & {
+      background: var(--ngpf-sky-blue);
+    }
+  }
+
+  &__item-info {
+    flex: 1;
+
+    strong {
+      font-size: 0.85rem;
+      color: var(--ngpf-text-primary);
+    }
+  }
+
+  &__item-location {
+    font-size: 0.7rem;
+    color: var(--ngpf-text-muted);
+    margin-left: 0.375rem;
+  }
+
+  &__item-purpose {
+    font-size: 0.8rem;
+    color: var(--ngpf-text-secondary);
+    margin: 0.125rem 0 0;
+  }
+
+  &__item-mistake {
+    font-size: 0.75rem;
+    color: var(--ngpf-orange);
+    margin: 0.25rem 0 0;
+    font-style: italic;
+  }
+}
+
+@keyframes panelSlideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+// ── Mobile: full-screen overlay ──
+@media (max-width: 768px) {
+  .reference-panel {
+    width: 100vw;
+  }
+
+  .reference-toggle {
+    top: auto;
+    bottom: 16px;
+    left: 16px;
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+  }
+}

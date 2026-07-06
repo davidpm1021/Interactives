@@ -1,0 +1,127 @@
+.profile-card {
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-sm);
+  padding: var(--ngpf-spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ngpf-spacing-md);
+  min-width: 0;
+
+  &__header {
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    padding-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__name {
+    font-family: var(--ngpf-font-heading);
+    color: var(--ngpf-royal-blue);
+    font-size: 1.25rem;
+    margin: 0 0 4px;
+  }
+
+  &__job {
+    font-family: var(--ngpf-font-body);
+    color: var(--ngpf-text-muted);
+    font-size: 0.88rem;
+    margin: 0;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &--fade {
+      animation: profileFadeIn 0.35s ease-out both;
+    }
+  }
+
+  &__section-header {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ngpf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ngpf-spacing-sm);
+    font-family: var(--ngpf-font-body);
+    padding: 4px 0;
+
+    &--asset .profile-card__row-value {
+      color: var(--ngpf-success, #2e7d32);
+    }
+
+    &--debt .profile-card__row-value {
+      color: var(--ngpf-error, #c62828);
+    }
+
+    &--subtotal {
+      border-top: 1px dashed var(--ngpf-light-gray-blue);
+      margin-top: 4px;
+      padding-top: 8px;
+      font-weight: 600;
+
+      .profile-card__row-value {
+        color: var(--ngpf-text-primary);
+      }
+    }
+  }
+
+  &__row-label {
+    color: var(--ngpf-text-secondary);
+    font-size: 0.92rem;
+  }
+
+  &__row-value {
+    font-weight: 600;
+    color: var(--ngpf-text-primary);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  &__row-unit {
+    font-weight: 400;
+    color: var(--ngpf-text-muted);
+    font-size: 0.85em;
+    margin-left: 2px;
+  }
+
+  &__net-worth {
+    margin-top: var(--ngpf-spacing-sm);
+    padding: var(--ngpf-spacing-md);
+    border-radius: var(--ngpf-radius-md);
+    background: var(--ngpf-soft-blue-tint);
+    text-align: center;
+    animation: profileFadeIn 0.35s ease-out both;
+  }
+
+  &__net-worth-label {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ngpf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+}
+
+@keyframes profileFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-card__section--fade,
+  .profile-card__net-worth {
+    animation: none;
+  }
+}

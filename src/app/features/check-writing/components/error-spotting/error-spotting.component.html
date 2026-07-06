@@ -1,0 +1,78 @@
+<section class="error-spotting" aria-label="Error spotting practice">
+  <div class="error-spotting__progress">
+    Check {{ index() + 1 }} of {{ total() }}
+  </div>
+
+  <p class="error-spotting__prompt">{{ scenario().prompt }}</p>
+
+  <div class="error-spotting__check">
+    <app-check-display
+      [checkData]="scenario().check"
+      [highlightFields]="highlightedFields()"
+      [fieldErrors]="fieldErrorMap()"
+      [mode]="submitted() ? 'graded' : 'filled'"
+    />
+  </div>
+
+  @if (!submitted()) {
+    <div class="error-spotting__controls">
+      <div class="error-spotting__flag-label">Click any field that looks wrong:</div>
+      <div class="error-spotting__flag-grid">
+        @for (field of flaggableFields; track field) {
+          <button
+            type="button"
+            class="error-spotting__flag-btn"
+            [class.error-spotting__flag-btn--active]="isFlagged(field)"
+            [attr.aria-pressed]="isFlagged(field)"
+            (click)="toggleField(field)"
+          >
+            {{ fieldLabel(field) }}
+          </button>
+        }
+      </div>
+      <div class="error-spotting__submit">
+        <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="submit()">
+          Submit
+        </button>
+        <span class="error-spotting__hint">No problems? Submit with nothing flagged.</span>
+      </div>
+    </div>
+  } @else {
+    <div class="error-spotting__feedback" aria-live="polite">
+      <div
+        class="error-spotting__verdict"
+        [class.error-spotting__verdict--correct]="verdictText().kind === 'correct'"
+        [class.error-spotting__verdict--partial]="verdictText().kind === 'partial'"
+        [class.error-spotting__verdict--incorrect]="verdictText().kind === 'incorrect'"
+      >
+        {{ verdictText().text }}
+      </div>
+
+      @if (scenario().errors.length > 0) {
+        <ul class="error-spotting__explanations">
+          @for (error of scenario().errors; track error.field) {
+            <li>
+              <strong>{{ fieldLabel(error.field) }}:</strong>
+              {{ error.description }}
+              <div class="error-spotting__best-practice">
+                {{ error.bestPractice }}
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="error-spotting__clean-note">
+          A clean check isn't always perfect, just legally and practically valid. This one is.
+        </p>
+      }
+
+      <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onNext()">
+        @if (index() + 1 >= total()) {
+          Finish lesson
+        } @else {
+          Next check
+        }
+      </button>
+    </div>
+  }
+</section>

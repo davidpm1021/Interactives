@@ -1,0 +1,62 @@
+.summary {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+
+  &__title {
+    font-family: var(--ngpf-font-heading);
+    color: var(--ngpf-royal-blue);
+    font-size: 1.75rem;
+    line-height: 1.3;
+    margin: 0 0 var(--ngpf-spacing-lg);
+  }
+
+  &__panel {
+    background: white;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-lg);
+    box-shadow: var(--ngpf-shadow-sm);
+    padding: var(--ngpf-spacing-lg);
+    text-align: left;
+    margin-bottom: var(--ngpf-spacing-lg);
+  }
+
+  &__points {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--ngpf-spacing-md);
+
+    li {
+      font-family: var(--ngpf-font-body);
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--ngpf-text-primary);
+      padding: var(--ngpf-spacing-sm) 0;
+      border-bottom: 1px solid var(--ngpf-light-gray-blue);
+
+      &:last-child { border-bottom: none; }
+
+      strong {
+        color: var(--ngpf-royal-blue);
+      }
+
+      em {
+        color: var(--ngpf-text-primary);
+        font-style: italic;
+      }
+    }
+  }
+
+  &__aside {
+    font-family: var(--ngpf-font-body);
+    color: var(--ngpf-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+  }
+}

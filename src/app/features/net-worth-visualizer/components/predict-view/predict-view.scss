@@ -1,0 +1,81 @@
+.predict-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ngpf-spacing-xl);
+  max-width: 900px;
+  margin: 0 auto;
+
+  &__intro {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+
+    h2 {
+      font-family: var(--ngpf-font-heading);
+      color: var(--ngpf-royal-blue);
+      font-size: 1.75rem;
+      margin: 0 0 var(--ngpf-spacing-sm);
+    }
+
+    p {
+      font-family: var(--ngpf-font-body);
+      color: var(--ngpf-text-primary);
+      font-size: 1.02rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--ngpf-spacing-lg);
+    align-items: start;
+  }
+
+  &__prompt {
+    display: flex;
+    justify-content: center;
+    gap: var(--ngpf-spacing-md);
+    flex-wrap: wrap;
+  }
+
+  &__choice {
+    font-family: var(--ngpf-font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    border: 2px solid var(--ngpf-light-gray-blue);
+    background: white;
+    color: var(--ngpf-text-primary);
+    border-radius: var(--ngpf-radius-md);
+    cursor: pointer;
+    min-height: 48px;
+    min-width: 140px;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+
+    &:hover {
+      border-color: var(--ngpf-bright-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+
+    &--selected {
+      border-color: var(--ngpf-bright-blue);
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+    }
+  }
+
+  &__submit {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__submit-btn {
+    min-width: 220px;
+  }
+}

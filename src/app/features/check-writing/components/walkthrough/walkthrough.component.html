@@ -1,0 +1,45 @@
+<section class="walkthrough" aria-label="Worked example">
+  <div class="walkthrough__prompt">
+    <p>{{ scenario().prompt }}</p>
+  </div>
+
+  <div class="walkthrough__layout">
+    <div class="walkthrough__check">
+      <app-check-display
+        [checkData]="partialCheck()"
+        [highlightFields]="highlightedFields()"
+        mode="filled"
+      />
+    </div>
+
+    <aside class="walkthrough__callout" aria-live="polite">
+      <div class="walkthrough__step-meta">
+        Step {{ stepNumber() }} of {{ totalSteps() }}
+      </div>
+      <h3 class="walkthrough__step-title">{{ currentFieldLabel() }}</h3>
+      <p class="walkthrough__step-text">{{ currentStep().callout }}</p>
+
+      <div class="walkthrough__controls">
+        <button
+          type="button"
+          class="ngpf-btn ngpf-btn-secondary"
+          [disabled]="isFirstStep()"
+          (click)="previous()"
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          class="ngpf-btn ngpf-btn-primary"
+          (click)="next()"
+        >
+          @if (isLastStep()) {
+            Try one yourself
+          } @else {
+            Next
+          }
+        </button>
+      </div>
+    </aside>
+  </div>
+</section>

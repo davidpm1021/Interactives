@@ -1,0 +1,73 @@
+.stock-tracker {
+  min-height: calc(100vh - 80px);
+  padding: 0;
+  background: var(--ngpf-soft-blue-tint);
+
+  &__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--ngpf-spacing-lg);
+  }
+
+  &__privacy-note {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--ngpf-spacing-lg) var(--ngpf-spacing-lg);
+    font-size: 12px;
+    color: var(--ngpf-text-muted);
+    line-height: 1.5;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .stock-tracker {
+    &__content {
+      padding: var(--ngpf-spacing-md);
+    }
+  }
+}
+
+// ── Print styles ──
+@media print {
+  .stock-tracker {
+    background: white;
+    padding: 0;
+
+    &__content {
+      max-width: 100%;
+      padding: 0;
+    }
+  }
+
+  app-top-header,
+  app-step-indicator,
+  .step-indicator,
+  .step-indicator__compact {
+    display: none !important;
+  }
+
+  .ngpf-btn {
+    display: none !important;
+  }
+
+  .report-step__export,
+  .stock-tracker__privacy-note {
+    display: none !important;
+  }
+
+  // Ensure charts print well
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  // Page breaks
+  .report-step__section {
+    page-break-inside: avoid;
+  }
+
+  .report-step__charts {
+    page-break-before: always;
+  }
+}

@@ -1,0 +1,36 @@
+.net-worth-visualizer {
+  min-height: calc(100vh - 80px);
+  padding: var(--ngpf-spacing-lg);
+  background: var(--ngpf-soft-blue-tint);
+
+  &__intro {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto var(--ngpf-spacing-xl);
+
+    h1 {
+      font-family: var(--ngpf-font-heading);
+      color: var(--ngpf-royal-blue);
+      font-size: 2rem;
+      margin: 0 0 var(--ngpf-spacing-sm);
+    }
+
+    p {
+      font-family: var(--ngpf-font-body);
+      color: var(--ngpf-text-primary);
+      font-size: 1.05rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .net-worth-visualizer {
+    padding: var(--ngpf-spacing-md);
+
+    &__intro h1 {
+      font-size: 1.6rem;
+    }
+  }
+}

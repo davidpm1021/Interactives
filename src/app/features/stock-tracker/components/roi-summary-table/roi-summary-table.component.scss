@@ -1,0 +1,89 @@
+.roi-summary-table {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--ngpf-spacing-sm);
+  }
+
+  &__title {
+    font-family: var(--ngpf-font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ngpf-text-primary);
+    margin: 0;
+  }
+
+  &__wrapper {
+    overflow-x: auto;
+    background: white;
+    border-radius: var(--ngpf-radius-md);
+    box-shadow: var(--ngpf-shadow-sm);
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    white-space: nowrap;
+
+    th, td {
+      padding: 0.625rem 0.75rem;
+      text-align: right;
+    }
+
+    th {
+      background: var(--ngpf-royal-blue);
+      color: var(--ngpf-text-on-dark);
+      font-family: var(--ngpf-font-heading);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      text-align: left;
+    }
+
+    td {
+      border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--ngpf-soft-blue-tint);
+    }
+  }
+
+  &__dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  &__ticker {
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+  }
+
+  &__value {
+    font-weight: 700;
+  }
+
+  &__positive {
+    color: var(--ngpf-success);
+    font-weight: 700;
+  }
+
+  &__negative {
+    color: var(--ngpf-error);
+    font-weight: 700;
+  }
+}

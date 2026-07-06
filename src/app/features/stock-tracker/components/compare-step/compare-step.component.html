@@ -1,0 +1,29 @@
+<div class="compare-step">
+  <h2 class="compare-step__title">Compare the Stocks</h2>
+  <p class="compare-step__description">
+    See all 5 stocks side by side. Which one was the best investment?
+  </p>
+
+  <!-- Callout cards -->
+  <app-callout-cards
+    [bestRoi]="bestRoi()"
+    [highestValue]="highestValue()"
+    [mostVolatile]="mostVolatile()">
+  </app-callout-cards>
+
+  <!-- Line chart -->
+  <app-multi-line-chart [picks]="state.picks()"></app-multi-line-chart>
+
+  <!-- ROI bar chart -->
+  <app-roi-bar-chart [picks]="state.picks()"></app-roi-bar-chart>
+
+  <!-- ROI summary table -->
+  <app-roi-summary-table [picks]="state.picks()"></app-roi-summary-table>
+
+  <!-- Advance -->
+  <div class="compare-step__actions">
+    <button class="ngpf-btn ngpf-btn-primary" (click)="onAdvance()">
+      Write My Report
+    </button>
+  </div>
+</div>

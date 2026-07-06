@@ -14,5 +14,25 @@ export const routes: Routes = [
     title: 'Your Driving Preferences | NGPF',
     loadComponent: () => import('./features/car-preferences/car-preferences').then((m) => m.CarPreferences),
   },
+  {
+    path: 'check-writing',
+    title: 'Check Writing | NGPF',
+    loadComponent: () => import('./features/check-writing/check-writing').then((m) => m.CheckWriting),
+  },
+  {
+    path: 'stock-tracker',
+    title: 'Stock Tracker | NGPF',
+    loadComponent: () => import('./features/stock-tracker/stock-tracker').then((m) => m.StockTracker),
+  },
+  {
+    path: 'retirement-calculator',
+    title: 'Retirement Calculator | NGPF',
+    loadComponent: () => import('./features/retirement-calculator/retirement-calculator').then((m) => m.RetirementCalculator),
+  },
+  {
+    path: 'net-worth-visualizer',
+    title: 'Salary vs. Net Worth | NGPF',
+    loadComponent: () => import('./features/net-worth-visualizer/net-worth-visualizer').then((m) => m.NetWorthVisualizer),
+  },
   { path: '**', redirectTo: '' },
 ];

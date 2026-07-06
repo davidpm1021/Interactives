@@ -1,0 +1,40 @@
+<div class="combined-table">
+  <div class="combined-table__header">
+    <h4 class="combined-table__title">Combined Comparison: Value of 100 Shares</h4>
+    <app-download-button label="Download table as PNG" (download)="onDownload()"></app-download-button>
+  </div>
+
+  <div class="combined-table__wrapper" #tableEl>
+    <table class="combined-table__table">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Age</th>
+          @for (pick of picks(); track pick.ticker; let i = $index) {
+            <th>
+              <span class="combined-table__col-dot" [style.background]="STOCK_COLORS[i]"></span>
+              {{ pick.ticker }}
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.year) {
+          <tr>
+            <td>{{ row.year }}</td>
+            <td>{{ row.age }}</td>
+            @for (val of row.values; track $index) {
+              <td class="combined-table__value">
+                @if (val !== null) {
+                  {{ formatCurrency(val) }}
+                } @else {
+                  --
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

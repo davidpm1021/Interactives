@@ -1,0 +1,449 @@
+.check-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ngpf-spacing-md);
+  width: 100%;
+
+  // ── Coach bubble (guided mode) ──
+  &__coach {
+    width: 100%;
+    max-width: 700px;
+    background: var(--ngpf-soft-blue-tint);
+    border: 1px solid var(--ngpf-sky-blue);
+    border-left: 4px solid var(--ngpf-bright-blue);
+    border-radius: var(--ngpf-radius-md);
+    padding: 0.75rem 1rem;
+    animation: coach-fade-in 0.3s ease;
+
+    &--success {
+      background: var(--ngpf-success-bg);
+      border-color: var(--ngpf-success);
+      border-left-color: var(--ngpf-success);
+    }
+  }
+
+  &__coach-step {
+    font-size: 0.75rem;
+    color: var(--ngpf-text-muted);
+    margin-bottom: 0.25rem;
+
+    strong {
+      color: var(--ngpf-bright-blue);
+    }
+  }
+
+  &__coach-hint {
+    font-size: 0.875rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.4;
+  }
+
+  &__coach-error {
+    font-size: 0.8rem;
+    color: var(--ngpf-error);
+    margin-top: 0.375rem;
+    font-weight: 600;
+    animation: coach-fade-in 0.2s ease;
+  }
+
+  @keyframes coach-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // ── Check container ──
+  &__check {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    background: #faf8f0;
+    border: 2px solid #b8b0a0;
+    border-radius: var(--ngpf-radius-md);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--ngpf-shadow-md);
+    font-family: var(--ngpf-font-body);
+    font-size: 0.8rem;
+    color: var(--ngpf-text-primary);
+    overflow: visible;
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    grid-template-rows: auto auto auto auto auto auto;
+    gap: 0.35rem 0.5rem;
+  }
+
+  &__security-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        var(--ngpf-royal-blue) 10px,
+        var(--ngpf-royal-blue) 11px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &__check > * {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+  }
+
+  // ── Bank header ──
+  &__bank-header {
+    grid-column: 1 / 2;
+    grid-row: 1;
+  }
+
+  &__bank-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ngpf-royal-blue);
+    font-family: var(--ngpf-font-heading);
+  }
+
+  &__bank-address {
+    font-size: 0.65rem;
+    color: var(--ngpf-text-muted);
+  }
+
+  // ── Account holder ──
+  &__account-holder {
+    grid-column: 1 / 2;
+    grid-row: 2;
+    margin-top: 0.125rem;
+  }
+
+  &__holder-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  &__holder-address {
+    font-size: 0.6rem;
+    color: var(--ngpf-text-muted);
+  }
+
+  // ── Check number ──
+  &__number {
+    grid-column: 2 / 3;
+    grid-row: 1;
+    text-align: right;
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--ngpf-royal-blue);
+  }
+
+  // ── Fields shared ──
+  &__field {
+    position: relative;
+    transition: opacity 0.3s ease;
+  }
+
+  &__field-label {
+    font-size: 0.7rem;
+    color: var(--ngpf-text-muted);
+    white-space: nowrap;
+  }
+
+  &__input {
+    border: none;
+    border-bottom: 1px solid var(--ngpf-text-muted);
+    background: transparent;
+    outline: none;
+    padding: 0.125rem 0.25rem;
+    min-height: 28px;
+    width: 100%;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+
+    &:focus {
+      border-bottom-color: var(--ngpf-sky-blue);
+      box-shadow: 0 2px 0 0 var(--ngpf-sky-blue);
+    }
+
+    &::placeholder {
+      color: var(--ngpf-light-gray-blue);
+      font-family: var(--ngpf-font-body);
+      font-size: 0.75rem;
+    }
+  }
+
+  &__handwriting {
+    font-family: 'Caveat', cursive;
+    font-size: 1.15rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.2;
+  }
+
+  // ── Guided mode: field states ──
+  &__field--active {
+    .check-input__input {
+      background: rgba(237, 250, 255, 0.4);
+      border-bottom-color: var(--ngpf-bright-blue);
+      box-shadow: 0 2px 0 0 var(--ngpf-bright-blue);
+    }
+
+    .check-input__sign-btn {
+      border-color: var(--ngpf-bright-blue);
+      color: var(--ngpf-bright-blue);
+      animation: gentle-pulse 2s ease-in-out infinite;
+    }
+  }
+
+  &__field--locked {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  &__field--completed {
+    .check-input__input {
+      border-bottom-color: var(--ngpf-success);
+    }
+  }
+
+  &__field-check {
+    position: absolute;
+    right: -1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ngpf-success);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  &__sign-placeholder {
+    font-size: 0.75rem;
+    color: var(--ngpf-light-gray-blue);
+    font-style: italic;
+  }
+
+  @keyframes gentle-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 transparent; }
+    50% { box-shadow: 0 0 0 3px rgba(0, 136, 255, 0.15); }
+  }
+
+  // ── Date ──
+  &__date {
+    grid-column: 2 / 3;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.25rem;
+
+    .check-input__input {
+      max-width: 130px;
+      text-align: right;
+    }
+
+    .check-input__field-check {
+      right: -1.25rem;
+    }
+  }
+
+  // ── Payee ──
+  &__payee {
+    grid-column: 1 / 2;
+    grid-row: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__payee-input {
+    flex: 1;
+  }
+
+  // ── Numeric amount ──
+  &__amount-numeric {
+    grid-column: 2 / 3;
+    grid-row: 3;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--ngpf-text-muted);
+    padding: 0.125rem 0.375rem;
+
+    .check-input__input {
+      border-bottom: none;
+      min-width: 60px;
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+
+    .check-input__field-check {
+      right: -1.25rem;
+    }
+  }
+
+  &__dollar-sign {
+    font-weight: 700;
+    color: var(--ngpf-text-primary);
+  }
+
+  // ── Written amount ──
+  &__amount-written {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  &__written-input {
+    flex: 1;
+  }
+
+  &__dollars-text {
+    font-size: 0.7rem;
+    color: var(--ngpf-text-muted);
+    white-space: nowrap;
+  }
+
+  // ── Memo ──
+  &__memo {
+    grid-column: 1 / 2;
+    grid-row: 5;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 0.5rem;
+  }
+
+  // ── Signature ──
+  &__signature {
+    grid-column: 2 / 3;
+    grid-row: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 0.5rem;
+  }
+
+  &__signature-line {
+    width: 100%;
+    border-bottom: 1px solid var(--ngpf-text-muted);
+    margin-top: 0.125rem;
+  }
+
+  &__sign-btn {
+    background: none;
+    border: 1px dashed var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    padding: 0.25rem 0.75rem;
+    color: var(--ngpf-text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    min-height: 28px;
+
+    &:hover {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-bright-blue);
+      border-color: var(--ngpf-bright-blue);
+    }
+  }
+
+  &__signed-name {
+    font-family: 'Dancing Script', cursive;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--ngpf-text-primary);
+  }
+
+  // ── MICR ──
+  &__micr {
+    grid-column: 1 / -1;
+    grid-row: 6;
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.75rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: var(--ngpf-text-secondary);
+    letter-spacing: 0.1em;
+  }
+
+  // ── Prefilled state ──
+  &__field--prefilled {
+    .check-input__input {
+      background: rgba(237, 250, 255, 0.5);
+      border-bottom-style: solid;
+      border-bottom-color: var(--ngpf-sky-blue);
+      cursor: default;
+    }
+  }
+
+  // ── Feedback ──
+  &__feedback {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    font-size: 0.7rem;
+    color: var(--ngpf-orange);
+    margin-top: 0.125rem;
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  // ── Guided action buttons ──
+  &__guided-actions {
+    display: flex;
+    gap: var(--ngpf-spacing-sm);
+    justify-content: center;
+  }
+
+  &__confirm-btn {
+    min-width: 120px;
+  }
+
+  &__skip-btn {
+    min-width: 100px;
+  }
+
+  // ── Actions ──
+  &__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--ngpf-spacing-sm);
+  }
+}
+
+// ── Responsive ──
+@media (max-width: 768px) {
+  .check-input {
+    &__check {
+      padding: 1rem;
+      font-size: 0.75rem;
+    }
+
+    &__handwriting {
+      font-size: 1rem;
+    }
+
+    &__input {
+      min-height: 44px;
+    }
+
+    &__sign-btn {
+      min-height: 44px;
+    }
+
+    &__amount-numeric {
+      min-width: 0;
+    }
+  }
+}

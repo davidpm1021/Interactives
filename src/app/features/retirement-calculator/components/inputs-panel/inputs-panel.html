@@ -1,0 +1,104 @@
+<section class="inputs-panel" aria-labelledby="inputs-title">
+  <h2 id="inputs-title" class="inputs-panel__title">Your numbers</h2>
+
+  <label class="inputs-panel__field">
+    <span class="inputs-panel__label">Current age</span>
+    <input
+      type="number"
+      inputmode="numeric"
+      min="16"
+      max="80"
+      [ngModel]="inputs().currentAge"
+      (ngModelChange)="updateNumber('currentAge', $event)"
+    />
+  </label>
+
+  <label class="inputs-panel__field">
+    <span class="inputs-panel__label">Retirement age</span>
+    <input
+      type="number"
+      inputmode="numeric"
+      min="45"
+      max="85"
+      [ngModel]="inputs().retirementAge"
+      (ngModelChange)="updateNumber('retirementAge', $event)"
+    />
+  </label>
+
+  <label class="inputs-panel__field">
+    <span class="inputs-panel__label">Current salary</span>
+    <span class="inputs-panel__input-with-prefix">
+      <span class="inputs-panel__prefix">$</span>
+      <input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        step="1000"
+        [ngModel]="inputs().currentSalary"
+        (ngModelChange)="updateNumber('currentSalary', $event)"
+      />
+    </span>
+  </label>
+
+  <label class="inputs-panel__field">
+    <span class="inputs-panel__label">Current retirement savings</span>
+    <span class="inputs-panel__input-with-prefix">
+      <span class="inputs-panel__prefix">$</span>
+      <input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        step="1000"
+        [ngModel]="inputs().currentSavings"
+        (ngModelChange)="updateNumber('currentSavings', $event)"
+      />
+    </span>
+  </label>
+
+  <label class="inputs-panel__field">
+    <span class="inputs-panel__label">Monthly contribution</span>
+    <span class="inputs-panel__input-with-prefix">
+      <span class="inputs-panel__prefix">$</span>
+      <input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        step="50"
+        [ngModel]="inputs().monthlyContribution"
+        (ngModelChange)="updateNumber('monthlyContribution', $event)"
+      />
+    </span>
+  </label>
+
+  <label class="inputs-panel__field">
+    <span class="inputs-panel__label">Retirement monthly budget</span>
+    <span class="inputs-panel__hint">How much you want to spend per month in retirement.</span>
+    <span class="inputs-panel__input-with-prefix">
+      <span class="inputs-panel__prefix">$</span>
+      <input
+        type="number"
+        inputmode="numeric"
+        min="0"
+        step="100"
+        [ngModel]="inputs().targetMonthlyBudget"
+        (ngModelChange)="updateNumber('targetMonthlyBudget', $event)"
+      />
+    </span>
+  </label>
+
+  <label class="inputs-panel__field inputs-panel__field--slim">
+    <span class="inputs-panel__label">Expected return (annual)</span>
+    <span class="inputs-panel__input-with-suffix">
+      <input
+        type="number"
+        inputmode="decimal"
+        min="0"
+        max="15"
+        step="0.5"
+        [ngModel]="returnPct()"
+        (ngModelChange)="updateReturnPct($event)"
+      />
+      <span class="inputs-panel__suffix">%</span>
+    </span>
+  </label>
+</section>

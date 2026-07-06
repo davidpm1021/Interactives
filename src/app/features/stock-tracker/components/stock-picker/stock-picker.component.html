@@ -1,0 +1,67 @@
+<div class="stock-picker" [class.stock-picker--confirmed]="displayPick">
+  <div class="stock-picker__header">
+    <span class="stock-picker__number">Stock {{ index() + 1 }}</span>
+  </div>
+
+  @if (displayPick) {
+    <!-- Confirmed pick display -->
+    <div class="stock-picker__confirmed">
+      <div class="stock-picker__company">
+        <span class="stock-picker__ticker">{{ displayPick.ticker }}</span>
+        <span class="stock-picker__name">{{ displayPick.companyName }}</span>
+      </div>
+      <div class="stock-picker__price-info">
+        <span class="stock-picker__price-label">Price on 10th Birthday</span>
+        <span class="stock-picker__price-value">{{ formatCurrency(displayPick.priceOnBirthday) }}</span>
+        <span class="stock-picker__price-date">{{ formatDate(displayPick.dateUsed) }}</span>
+      </div>
+      <button class="stock-picker__remove"
+              aria-label="Remove {{ displayPick.companyName }}"
+              (click)="onRemove()">
+        &#10005;
+      </button>
+    </div>
+  } @else {
+    <!-- Search input -->
+    <div class="stock-picker__search">
+      <div class="stock-picker__input-wrapper">
+        <input type="text"
+               class="stock-picker__input"
+               placeholder="Search company name or ticker..."
+               [attr.aria-label]="'Search for stock ' + (index() + 1)"
+               [value]="query()"
+               (input)="onQueryChange($any($event.target).value)"
+               (focus)="onInputFocus()"
+               (blur)="onInputBlur()" />
+        @if (loading() || validating()) {
+          <span class="stock-picker__loading" aria-label="Loading">
+            <span class="stock-picker__spinner"></span>
+          </span>
+        }
+      </div>
+
+      <!-- Autocomplete dropdown -->
+      @if (showDropdown() && results().length > 0) {
+        <ul class="stock-picker__dropdown" role="listbox">
+          @for (result of results(); track result.symbol) {
+            <li class="stock-picker__option"
+                role="option"
+                (mousedown)="onSelectResult(result)">
+              <span class="stock-picker__option-ticker">{{ result.symbol }}</span>
+              <span class="stock-picker__option-name">{{ result.shortname || result.longname }}</span>
+              <span class="stock-picker__option-exchange">{{ result.exchange }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    @if (validating()) {
+      <p class="stock-picker__status">Looking up price data...</p>
+    }
+
+    @if (error()) {
+      <p class="stock-picker__error" role="alert">{{ error() }}</p>
+    }
+  }
+</div>
