@@ -10,7 +10,7 @@
       <app-predict-view
         [profileA]="profileA"
         [profileB]="profileB"
-        (submit)="onPredict($event)"
+        (predictionMade)="onPredict($event)"
       />
     }
     @case ('reveal') {

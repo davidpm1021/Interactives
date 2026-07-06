@@ -10,7 +10,7 @@
 
   <div class="retirement-calculator__grid">
     <div class="retirement-calculator__inputs">
-      <app-inputs-panel [inputs]="inputs()" (change)="onInputsChange($event)" />
+      <app-inputs-panel [inputs]="inputs()" (inputsChange)="onInputsChange($event)" />
     </div>
 
     <div class="retirement-calculator__results">

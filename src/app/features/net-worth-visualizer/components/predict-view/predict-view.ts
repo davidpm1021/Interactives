@@ -13,7 +13,7 @@ import { ProfileCard } from '../profile-card/profile-card';
 export class PredictView {
   readonly profileA = input.required<FinancialProfile>();
   readonly profileB = input.required<FinancialProfile>();
-  readonly submit = output<PredictionChoice>();
+  readonly predictionMade = output<PredictionChoice>();
 
   protected readonly selected = signal<PredictionChoice | null>(null);
 
@@ -26,7 +26,7 @@ export class PredictView {
 
   protected confirm(): void {
     const c = this.selected();
-    if (c) this.submit.emit(c);
+    if (c) this.predictionMade.emit(c);
   }
 
   protected onChoiceKeydown(event: KeyboardEvent): void {

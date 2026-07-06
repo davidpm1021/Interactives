@@ -12,12 +12,12 @@ import { RetirementInputs } from '../../models/retirement.models';
 })
 export class InputsPanel {
   readonly inputs = input.required<RetirementInputs>();
-  readonly change = output<RetirementInputs>();
+  readonly inputsChange = output<RetirementInputs>();
 
   protected readonly returnPct = computed(() => Math.round(this.inputs().expectedReturn * 1000) / 10);
 
   protected update<K extends keyof RetirementInputs>(key: K, value: RetirementInputs[K]): void {
-    this.change.emit({ ...this.inputs(), [key]: value });
+    this.inputsChange.emit({ ...this.inputs(), [key]: value });
   }
 
   protected updateNumber<K extends keyof RetirementInputs>(key: K, raw: string | number): void {
