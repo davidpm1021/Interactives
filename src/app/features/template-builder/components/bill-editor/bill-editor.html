@@ -1,0 +1,208 @@
+<app-editor-shell
+  [title]="variant() === 2 ? 'Invoice Builder' : 'Bill Builder'"
+  singularLabel="bill"
+  [(docs)]="bills"
+  [previewTpl]="previewTpl"
+  [randomFn]="randomFnRef"
+  [clearFn]="clearFnRef"
+>
+  <fieldset class="bill-editor__section">
+    <legend>Biller</legend>
+    <label>
+      <span>Company name</span>
+      <input type="text" [ngModel]="current().biller.name" (ngModelChange)="updateBiller('name', $event)" />
+    </label>
+    <label>
+      <span>Address line 1</span>
+      <input type="text" [ngModel]="current().biller.addressLine1" (ngModelChange)="updateBiller('addressLine1', $event)" />
+    </label>
+    <label>
+      <span>Address line 2</span>
+      <input type="text" [ngModel]="current().biller.addressLine2" (ngModelChange)="updateBiller('addressLine2', $event)" />
+    </label>
+    <label>
+      <span>Phone</span>
+      <input type="text" [ngModel]="current().biller.phone" (ngModelChange)="updateBiller('phone', $event)" />
+    </label>
+  </fieldset>
+
+  <fieldset class="bill-editor__section">
+    <legend>Customer</legend>
+    <label>
+      <span>Name</span>
+      <input type="text" [ngModel]="current().customer.name" (ngModelChange)="updateCustomer('name', $event)" />
+    </label>
+    <label>
+      <span>Account number</span>
+      <input type="text" [ngModel]="current().customer.accountNumber" (ngModelChange)="updateCustomer('accountNumber', $event)" />
+    </label>
+    <label>
+      <span>Address line 1</span>
+      <input type="text" [ngModel]="current().customer.addressLine1" (ngModelChange)="updateCustomer('addressLine1', $event)" />
+    </label>
+    <label>
+      <span>Address line 2</span>
+      <input type="text" [ngModel]="current().customer.addressLine2" (ngModelChange)="updateCustomer('addressLine2', $event)" />
+    </label>
+  </fieldset>
+
+  <fieldset class="bill-editor__section">
+    <legend>Dates</legend>
+    <div class="bill-editor__row">
+      <label>
+        <span>Statement date</span>
+        <input type="date" [ngModel]="current().statementDate" (ngModelChange)="updateField('statementDate', $event)" />
+      </label>
+      <label>
+        <span>Due date</span>
+        <input type="date" [ngModel]="current().dueDate" (ngModelChange)="updateField('dueDate', $event)" />
+      </label>
+    </div>
+    <div class="bill-editor__row">
+      <label>
+        <span>Service start</span>
+        <input type="date" [ngModel]="current().servicePeriodStart" (ngModelChange)="updateField('servicePeriodStart', $event)" />
+      </label>
+      <label>
+        <span>Service end</span>
+        <input type="date" [ngModel]="current().servicePeriodEnd" (ngModelChange)="updateField('servicePeriodEnd', $event)" />
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="bill-editor__section">
+    <legend>Carry-over balance</legend>
+    <div class="bill-editor__row">
+      <label>
+        <span>Previous balance ($)</span>
+        <input type="number" step="0.01" [ngModel]="current().previousBalance" (ngModelChange)="updateField('previousBalance', parseNumber($event))" />
+      </label>
+      <label>
+        <span>Payments received ($)</span>
+        <input type="number" step="0.01" [ngModel]="current().paymentsReceived" (ngModelChange)="updateField('paymentsReceived', parseNumber($event))" />
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="bill-editor__section">
+    <legend>Line items</legend>
+    @for (item of current().lineItems; track $index) {
+      <div class="bill-editor__line-item">
+        <label>
+          <span>Description</span>
+          <input type="text" [ngModel]="item.description" (ngModelChange)="updateLineItem($index, { description: $event })" />
+        </label>
+        <label>
+          <span>Amount ($)</span>
+          <input type="number" step="0.01" [ngModel]="item.amount" (ngModelChange)="updateLineItem($index, { amount: parseNumber($event) })" />
+        </label>
+        <button type="button" class="bill-editor__remove" (click)="removeLineItem($index)" aria-label="Remove line item">
+          Remove
+        </button>
+      </div>
+    }
+    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addLineItem()">+ Add line item</button>
+  </fieldset>
+</app-editor-shell>
+
+<ng-template #previewTpl let-bill>
+  <article class="bill-preview" [class.bill-preview--v2]="variant() === 2" id="bill-preview">
+    @if (variant() === 1) {
+      <header class="bill-preview__header">
+        <div class="bill-preview__biller">
+          <div class="bill-preview__biller-name">{{ bill.biller.name }}</div>
+          <div>{{ bill.biller.addressLine1 }}</div>
+          <div>{{ bill.biller.addressLine2 }}</div>
+          <div>{{ bill.biller.phone }}</div>
+        </div>
+        <div class="bill-preview__doc">
+          <div class="bill-preview__doc-title">Statement</div>
+          <table class="bill-preview__doc-meta">
+            <tbody>
+              <tr><th>Account #</th><td>{{ bill.customer.accountNumber }}</td></tr>
+              <tr><th>Statement date</th><td>{{ bill.statementDate ? (bill.statementDate | date: 'MMM d, y') : '' }}</td></tr>
+              <tr><th>Due date</th><td>{{ bill.dueDate ? (bill.dueDate | date: 'MMM d, y') : '' }}</td></tr>
+              <tr>
+                <th>Service period</th>
+                <td>
+                  {{ bill.servicePeriodStart ? (bill.servicePeriodStart | date: 'MMM d') : '' }}
+                  to
+                  {{ bill.servicePeriodEnd ? (bill.servicePeriodEnd | date: 'MMM d, y') : '' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </header>
+    } @else {
+      <header class="bill-preview__header bill-preview__header--v2">
+        <div class="bill-preview__doc-title-large">Invoice</div>
+        <div class="bill-preview__biller bill-preview__biller--right">
+          <div class="bill-preview__biller-name">{{ bill.biller.name }}</div>
+          <div>{{ bill.biller.addressLine1 }}</div>
+          <div>{{ bill.biller.addressLine2 }}</div>
+          <div>{{ bill.biller.phone }}</div>
+        </div>
+      </header>
+      <div class="bill-preview__meta-row">
+        <div><div class="bill-preview__field-label">Account #</div><div>{{ bill.customer.accountNumber }}</div></div>
+        <div><div class="bill-preview__field-label">Statement date</div><div>{{ bill.statementDate ? (bill.statementDate | date: 'MMM d, y') : '' }}</div></div>
+        <div><div class="bill-preview__field-label">Due date</div><div>{{ bill.dueDate ? (bill.dueDate | date: 'MMM d, y') : '' }}</div></div>
+        <div>
+          <div class="bill-preview__field-label">Service period</div>
+          <div>
+            {{ bill.servicePeriodStart ? (bill.servicePeriodStart | date: 'MMM d') : '' }}
+            to
+            {{ bill.servicePeriodEnd ? (bill.servicePeriodEnd | date: 'MMM d, y') : '' }}
+          </div>
+        </div>
+      </div>
+    }
+
+    <section class="bill-preview__customer">
+      <div class="bill-preview__field-label">Bill to</div>
+      <div class="bill-preview__customer-name">{{ bill.customer.name }}</div>
+      <div>{{ bill.customer.addressLine1 }}</div>
+      <div>{{ bill.customer.addressLine2 }}</div>
+    </section>
+
+    <table class="bill-preview__table">
+      <caption class="sr-only">Charges</caption>
+      <colgroup>
+        <col class="bill-preview__cg-desc" />
+        <col class="bill-preview__cg-amt" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">Description</th>
+          <th scope="col" class="bill-preview__col-num">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (bill.previousBalance) {
+          <tr><th scope="row">Previous balance</th><td>{{ bill.previousBalance | currency }}</td></tr>
+        }
+        @if (bill.paymentsReceived) {
+          <tr><th scope="row">Payments received</th><td>{{ -bill.paymentsReceived | currency }}</td></tr>
+        }
+        @for (item of bill.lineItems; track $index) {
+          <tr><th scope="row">{{ item.description }}</th><td>{{ item.amount | currency }}</td></tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr><th scope="row">New charges</th><td>{{ newChargesOf(bill) | currency }}</td></tr>
+      </tfoot>
+    </table>
+
+    <table class="bill-preview__total">
+      <tbody>
+        <tr>
+          <th scope="row">
+            Amount due {{ bill.dueDate ? 'by ' + (bill.dueDate | date: 'MMM d, y') : '' }}
+          </th>
+          <td>{{ balanceDueOf(bill) | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+</ng-template>

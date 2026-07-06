@@ -1,0 +1,269 @@
+<app-editor-shell
+  title="Credit Report Builder"
+  singularLabel="credit report"
+  [(docs)]="reports"
+  [previewTpl]="previewTpl"
+  [randomFn]="randomFnRef"
+  [clearFn]="clearFnRef"
+>
+  <fieldset class="credit-editor__section">
+    <legend>Score and bureau</legend>
+    <div class="credit-editor__row">
+      <label>
+        <span>Bureau</span>
+        <select [ngModel]="current().bureau" (ngModelChange)="updateField('bureau', $event)">
+          <option value="Equifax">Equifax</option>
+          <option value="Experian">Experian</option>
+          <option value="TransUnion">TransUnion</option>
+        </select>
+      </label>
+      <label>
+        <span>Score (300-850)</span>
+        <input type="number" min="300" max="850" [ngModel]="current().score" (ngModelChange)="updateField('score', parseScore($event))" />
+      </label>
+    </div>
+    <label>
+      <span>Report date</span>
+      <input type="date" [ngModel]="current().reportDate" (ngModelChange)="updateField('reportDate', $event)" />
+    </label>
+  </fieldset>
+
+  <fieldset class="credit-editor__section">
+    <legend>Consumer info</legend>
+    <label>
+      <span>Name</span>
+      <input type="text" [ngModel]="current().consumer.name" (ngModelChange)="updateConsumer('name', $event)" />
+    </label>
+    <label>
+      <span>Current address line 1</span>
+      <input type="text" [ngModel]="current().consumer.currentAddressLine1" (ngModelChange)="updateConsumer('currentAddressLine1', $event)" />
+    </label>
+    <label>
+      <span>Current address line 2</span>
+      <input type="text" [ngModel]="current().consumer.currentAddressLine2" (ngModelChange)="updateConsumer('currentAddressLine2', $event)" />
+    </label>
+    <label>
+      <span>Previous address</span>
+      <input type="text" [ngModel]="current().consumer.previousAddress" (ngModelChange)="updateConsumer('previousAddress', $event)" />
+    </label>
+    <div class="credit-editor__row">
+      <label>
+        <span>Date of birth (masked)</span>
+        <input type="text" [ngModel]="current().consumer.dobMasked" (ngModelChange)="updateConsumer('dobMasked', $event)" />
+      </label>
+      <label>
+        <span>SSN (masked)</span>
+        <input type="text" [ngModel]="current().consumer.ssnMasked" (ngModelChange)="updateConsumer('ssnMasked', $event)" />
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="credit-editor__section">
+    <legend>Accounts</legend>
+    @for (acct of current().accounts; track $index) {
+      <div class="credit-editor__line-item">
+        <label>
+          <span>Creditor</span>
+          <input type="text" [ngModel]="acct.creditor" (ngModelChange)="updateAccount($index, { creditor: $event })" />
+        </label>
+        <div class="credit-editor__row">
+          <label>
+            <span>Type</span>
+            <input type="text" [ngModel]="acct.type" (ngModelChange)="updateAccount($index, { type: $event })" />
+          </label>
+          <label>
+            <span>Account # (masked)</span>
+            <input type="text" [ngModel]="acct.accountNumber" (ngModelChange)="updateAccount($index, { accountNumber: $event })" />
+          </label>
+        </div>
+        <div class="credit-editor__row">
+          <label>
+            <span>Opened</span>
+            <input type="date" [ngModel]="acct.openedDate" (ngModelChange)="updateAccount($index, { openedDate: $event })" />
+          </label>
+          <label>
+            <span>Status</span>
+            <select [ngModel]="acct.status" (ngModelChange)="updateAccount($index, { status: $event })">
+              <option value="Open">Open</option>
+              <option value="Closed">Closed</option>
+              <option value="Paid">Paid</option>
+            </select>
+          </label>
+        </div>
+        <div class="credit-editor__row">
+          <label>
+            <span>Balance ($)</span>
+            <input type="number" step="0.01" [ngModel]="acct.balance" (ngModelChange)="updateAccount($index, { balance: parseNumber($event) })" />
+          </label>
+          <label>
+            <span>Limit / original ($)</span>
+            <input type="number" step="0.01" [ngModel]="acct.creditLimit" (ngModelChange)="updateAccount($index, { creditLimit: parseNumber($event) })" />
+          </label>
+        </div>
+        <label>
+          <span>Payment status</span>
+          <select [ngModel]="acct.paymentStatus" (ngModelChange)="updateAccount($index, { paymentStatus: $event })">
+            <option value="Current">Current</option>
+            <option value="30 days late">30 days late</option>
+            <option value="60 days late">60 days late</option>
+            <option value="90+ days late">90+ days late</option>
+          </select>
+        </label>
+        <button type="button" class="credit-editor__remove" (click)="removeAccount($index)">Remove account</button>
+      </div>
+    }
+    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addAccount()">+ Add account</button>
+  </fieldset>
+
+  <fieldset class="credit-editor__section">
+    <legend>Recent inquiries</legend>
+    @for (q of current().inquiries; track $index) {
+      <div class="credit-editor__line-item">
+        <div class="credit-editor__row">
+          <label>
+            <span>Date</span>
+            <input type="date" [ngModel]="q.date" (ngModelChange)="updateInquiry($index, { date: $event })" />
+          </label>
+          <label>
+            <span>Type</span>
+            <select [ngModel]="q.kind" (ngModelChange)="updateInquiry($index, { kind: $event })">
+              <option value="hard">Hard</option>
+              <option value="soft">Soft</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          <span>Requester</span>
+          <input type="text" [ngModel]="q.requester" (ngModelChange)="updateInquiry($index, { requester: $event })" />
+        </label>
+        <button type="button" class="credit-editor__remove" (click)="removeInquiry($index)">Remove inquiry</button>
+      </div>
+    }
+    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addInquiry()">+ Add inquiry</button>
+  </fieldset>
+</app-editor-shell>
+
+<ng-template #previewTpl let-report>
+  <article class="credit-preview" id="credit-preview">
+    <header class="credit-preview__header">
+      <div>
+        <div class="credit-preview__bureau">{{ report.bureau }}</div>
+        <div class="credit-preview__title">Consumer Credit Report</div>
+      </div>
+      <div class="credit-preview__date">
+        <div class="credit-preview__label">Report date</div>
+        <div>{{ report.reportDate ? (report.reportDate | date: 'MMM d, y') : '' }}</div>
+      </div>
+    </header>
+
+    <section class="credit-preview__score-block">
+      <div class="credit-preview__score-number" [style.color]="scoreCategoryOf(report).color">
+        {{ report.score }}
+      </div>
+      <div class="credit-preview__score-meta">
+        <div class="credit-preview__score-category" [style.color]="scoreCategoryOf(report).color">
+          {{ scoreCategoryOf(report).label }}
+        </div>
+        <div class="credit-preview__score-range">Range: 300 to 850</div>
+        <div class="credit-preview__score-bar">
+          <div class="credit-preview__score-bar-fill" [style.width.%]="scoreFractionOf(report)" [style.background]="scoreCategoryOf(report).color"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="credit-preview__section">
+      <h3>Personal information</h3>
+      <div class="credit-preview__personal">
+        <div>
+          <div class="credit-preview__label">Name</div>
+          <div>{{ report.consumer.name }}</div>
+        </div>
+        <div>
+          <div class="credit-preview__label">Date of birth</div>
+          <div>{{ report.consumer.dobMasked }}</div>
+        </div>
+        <div>
+          <div class="credit-preview__label">Social security number</div>
+          <div>{{ report.consumer.ssnMasked }}</div>
+        </div>
+        <div class="credit-preview__addr">
+          <div class="credit-preview__label">Current address</div>
+          <div>{{ report.consumer.currentAddressLine1 }}</div>
+          <div>{{ report.consumer.currentAddressLine2 }}</div>
+        </div>
+        <div class="credit-preview__addr">
+          <div class="credit-preview__label">Previous address</div>
+          <div>{{ report.consumer.previousAddress }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="credit-preview__section">
+      <h3>Accounts</h3>
+      <table class="credit-preview__table">
+        <colgroup>
+          <col style="width: 24%" />
+          <col style="width: 16%" />
+          <col style="width: 16%" />
+          <col style="width: 11%" />
+          <col style="width: 11%" />
+          <col style="width: 10%" />
+          <col style="width: 12%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Creditor</th>
+            <th scope="col">Type</th>
+            <th scope="col">Account #</th>
+            <th scope="col" class="credit-preview__col-num">Balance</th>
+            <th scope="col" class="credit-preview__col-num">Limit / Orig</th>
+            <th scope="col">Status</th>
+            <th scope="col">Payment</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (acct of report.accounts; track $index) {
+            <tr>
+              <th scope="row">{{ acct.creditor }}</th>
+              <td>{{ acct.type }}</td>
+              <td>{{ acct.accountNumber }}</td>
+              <td>{{ acct.balance | currency }}</td>
+              <td>{{ acct.creditLimit | currency }}</td>
+              <td>{{ acct.status }}</td>
+              <td>{{ acct.paymentStatus }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+
+    @if (report.inquiries.length) {
+      <section class="credit-preview__section">
+        <h3>Recent inquiries</h3>
+        <table class="credit-preview__table">
+          <colgroup>
+            <col style="width: 18%" />
+            <col style="width: 60%" />
+            <col style="width: 22%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Requester</th>
+              <th scope="col">Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (q of report.inquiries; track $index) {
+              <tr>
+                <td>{{ q.date ? (q.date | date: 'MMM d, y') : '' }}</td>
+                <th scope="row">{{ q.requester }}</th>
+                <td>{{ q.kind === 'hard' ? 'Hard inquiry' : 'Soft inquiry' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+  </article>
+</ng-template>

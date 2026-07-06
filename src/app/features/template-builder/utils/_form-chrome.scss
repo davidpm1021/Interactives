@@ -1,0 +1,87 @@
+// Mixin that emits the form-fieldset chrome shared by every editor. Each
+// editor SCSS does:
+//
+//   @use '../../utils/form-chrome' as fc;
+//   .paystub-editor { @include fc.form-chrome; }
+//
+// Result: the chrome rules compile into each editor's scoped namespace
+// (.paystub-editor__section, .bill-editor__section, etc.), so styles stay
+// scoped per component — no global styles touched.
+
+@mixin form-chrome {
+  &__section {
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+    padding: var(--ngpf-spacing-md);
+    background: #fff;
+    margin: 0;
+
+    legend {
+      padding: 0 var(--ngpf-spacing-xs);
+      font-weight: 600;
+      color: var(--ngpf-text-primary);
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: var(--ngpf-spacing-sm);
+      font-size: 0.9rem;
+      color: var(--ngpf-text-secondary);
+
+      span {
+        font-weight: 500;
+      }
+
+      input,
+      select {
+        padding: 8px 10px;
+        border: 1px solid var(--ngpf-light-gray-blue);
+        border-radius: var(--ngpf-radius-sm);
+        font-size: 0.95rem;
+        background: #fff;
+        color: var(--ngpf-text-primary);
+
+        &:focus-visible {
+          outline: 2px solid var(--ngpf-sky-blue);
+          outline-offset: 2px;
+          border-color: var(--ngpf-bright-blue);
+        }
+      }
+    }
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--ngpf-spacing-sm);
+  }
+
+  &__line-item {
+    padding: var(--ngpf-spacing-sm);
+    margin-bottom: var(--ngpf-spacing-sm);
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: var(--ngpf-radius-sm);
+    position: relative;
+  }
+
+  &__remove {
+    background: none;
+    border: none;
+    color: var(--ngpf-error);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-top: 4px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+}

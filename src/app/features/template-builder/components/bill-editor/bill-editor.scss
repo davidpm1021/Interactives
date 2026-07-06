@@ -1,0 +1,224 @@
+// Form-specific styles. Shell owns chrome/print rules; form-chrome partial
+// supplies fieldset/row/line-item/remove.
+
+@use '../../utils/form-chrome' as fc;
+
+.bill-editor {
+  @include fc.form-chrome;
+}
+
+.bill-preview {
+  background: #fff;
+  color: #1a1a1a;
+  padding: 0.4in;
+  border: 1px solid var(--ngpf-light-gray-blue);
+  border-radius: var(--ngpf-radius-md);
+  box-shadow: var(--ngpf-shadow-sm);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 10pt;
+  line-height: 1.35;
+  width: 100%;
+  max-width: 8.5in;
+  margin: 0 auto;
+
+  &--v2 {
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #1a1a1a;
+    padding-bottom: 0.12in;
+    margin-bottom: 0.15in;
+    gap: 0.2in;
+
+    &--v2 {
+      border-bottom-color: var(--ngpf-bright-blue);
+      align-items: center;
+    }
+  }
+
+  &__biller {
+    flex: 1;
+
+    &--right {
+      text-align: right;
+    }
+  }
+
+  &__biller-name {
+    font-size: 13pt;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  &__doc {
+    text-align: right;
+  }
+
+  &__doc-title {
+    font-size: 14pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  &__doc-title-large {
+    font-size: 28pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ngpf-bright-blue);
+  }
+
+  &__doc-meta {
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-left: auto;
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      padding: 1px 12px 1px 0;
+      color: #555;
+    }
+
+    td {
+      text-align: right;
+      padding: 1px 0;
+    }
+  }
+
+  &__meta-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.15in;
+    margin-bottom: 0.15in;
+    font-size: 9pt;
+  }
+
+  &__field-label {
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #555;
+    margin-bottom: 2px;
+  }
+
+  &__customer {
+    margin-bottom: 0.18in;
+  }
+
+  &__customer-name {
+    font-size: 11pt;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 0.1in;
+    font-size: 9.5pt;
+
+    thead th {
+      background: #f1f4f8;
+      text-align: left;
+      padding: 4px 10px;
+      border-bottom: 1px solid #999;
+      font-weight: 600;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    tbody td,
+    tbody th {
+      padding: 3px 10px;
+      border-bottom: 1px solid #e5e5e5;
+      font-weight: 400;
+      text-align: right;
+    }
+
+    tbody th {
+      text-align: left;
+    }
+
+    tfoot th,
+    tfoot td {
+      padding: 4px 10px;
+      border-top: 1.5px solid #1a1a1a;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    tfoot th {
+      text-align: left;
+    }
+  }
+
+  &__cg-desc {
+    width: 72%;
+  }
+
+  &__cg-amt {
+    width: 28%;
+  }
+
+  &__col-num {
+    text-align: right !important;
+  }
+
+  &__total {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.08in;
+    background: #1a1a1a;
+    color: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+
+    th,
+    td {
+      padding: 8px 12px;
+      font-size: 11pt;
+      font-weight: 700;
+      background: #1a1a1a;
+      color: #fff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    th {
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      text-align: right;
+    }
+  }
+
+  &--v2 &__total {
+    background: var(--ngpf-bright-blue);
+
+    th,
+    td {
+      background: var(--ngpf-bright-blue);
+    }
+  }
+}
+
+@media print {
+  .bill-preview {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+}

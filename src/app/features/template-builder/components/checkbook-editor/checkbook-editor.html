@@ -1,0 +1,122 @@
+<app-editor-shell
+  title="Checkbook Register"
+  singularLabel="register"
+  [(docs)]="checkbooks"
+  [previewTpl]="previewTpl"
+  [randomFn]="randomFnRef"
+  [clearFn]="clearFnRef"
+>
+  <fieldset class="checkbook-editor__section">
+    <legend>Account</legend>
+    <label>
+      <span>Account holder</span>
+      <input type="text" [ngModel]="current().accountHolder" (ngModelChange)="updateField('accountHolder', $event)" />
+    </label>
+    <label>
+      <span>Account number (or last 4)</span>
+      <input type="text" [ngModel]="current().accountNumber" (ngModelChange)="updateField('accountNumber', $event)" />
+    </label>
+    <label>
+      <span>Opening balance ($)</span>
+      <input type="number" step="0.01" [ngModel]="current().openingBalance" (ngModelChange)="updateField('openingBalance', parseNumber($event))" />
+    </label>
+  </fieldset>
+
+  <fieldset class="checkbook-editor__section">
+    <legend>Entries</legend>
+    @for (entry of current().entries; track $index) {
+      <div class="checkbook-editor__line-item">
+        <div class="checkbook-editor__row">
+          <label>
+            <span>Date</span>
+            <input type="date" [ngModel]="entry.date" (ngModelChange)="updateEntry($index, { date: $event })" />
+          </label>
+          <label>
+            <span>Check # / type</span>
+            <input type="text" [ngModel]="entry.reference" (ngModelChange)="updateEntry($index, { reference: $event })" />
+          </label>
+        </div>
+        <label>
+          <span>Description</span>
+          <input type="text" [ngModel]="entry.description" (ngModelChange)="updateEntry($index, { description: $event })" />
+        </label>
+        <div class="checkbook-editor__row">
+          <label>
+            <span>Debit ($)</span>
+            <input type="number" step="0.01" [ngModel]="entry.debit" (ngModelChange)="updateEntry($index, { debit: parseNumber($event) })" />
+          </label>
+          <label>
+            <span>Credit ($)</span>
+            <input type="number" step="0.01" [ngModel]="entry.credit" (ngModelChange)="updateEntry($index, { credit: parseNumber($event) })" />
+          </label>
+        </div>
+        <button type="button" class="checkbook-editor__remove" (click)="removeEntry($index)" aria-label="Remove entry">Remove</button>
+      </div>
+    }
+    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addEntry()">+ Add entry</button>
+  </fieldset>
+</app-editor-shell>
+
+<ng-template #previewTpl let-checkbook>
+  <article class="checkbook-preview" id="checkbook-preview">
+    <header class="checkbook-preview__header">
+      <div class="checkbook-preview__title">Checkbook Register</div>
+      <div class="checkbook-preview__meta">
+        <div><span class="checkbook-preview__label">Account holder:</span> {{ checkbook.accountHolder }}</div>
+        <div><span class="checkbook-preview__label">Account:</span> {{ checkbook.accountNumber }}</div>
+      </div>
+    </header>
+
+    <table class="checkbook-preview__table">
+      <caption class="sr-only">Register entries</caption>
+      <colgroup>
+        <col class="checkbook-preview__cg-date" />
+        <col class="checkbook-preview__cg-ref" />
+        <col class="checkbook-preview__cg-desc" />
+        <col class="checkbook-preview__cg-num" />
+        <col class="checkbook-preview__cg-num" />
+        <col class="checkbook-preview__cg-num" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Check #</th>
+          <th scope="col">Description</th>
+          <th scope="col" class="checkbook-preview__col-num">Debit</th>
+          <th scope="col" class="checkbook-preview__col-num">Credit</th>
+          <th scope="col" class="checkbook-preview__col-num">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="checkbook-preview__opening">
+          <td></td>
+          <td></td>
+          <th scope="row">Opening balance</th>
+          <td></td>
+          <td></td>
+          <td>{{ checkbook.openingBalance | currency }}</td>
+        </tr>
+        @for (entry of checkbook.entries; track $index; let i = $index) {
+          <tr>
+            <td>{{ entry.date ? (entry.date | date: 'M/d') : '' }}</td>
+            <td>{{ entry.reference }}</td>
+            <th scope="row">{{ entry.description }}</th>
+            <td>{{ entry.debit ? (entry.debit | currency) : '' }}</td>
+            <td>{{ entry.credit ? (entry.credit | currency) : '' }}</td>
+            <td>{{ runningBalancesOf(checkbook)[i] | currency }}</td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <th scope="row">Ending balance</th>
+          <td></td>
+          <td></td>
+          <td>{{ endingBalanceOf(checkbook) | currency }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </article>
+</ng-template>

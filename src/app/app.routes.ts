@@ -39,5 +39,10 @@ export const routes: Routes = [
     title: 'Cost of Borrowing | NGPF',
     loadComponent: () => import('./features/cost-of-borrowing/cost-of-borrowing').then((m) => m.CostOfBorrowing),
   },
+  {
+    path: 'template-builder',
+    title: 'Template Builder | NGPF',
+    loadComponent: () => import('./features/template-builder/template-builder').then((m) => m.TemplateBuilder),
+  },
   { path: '**', redirectTo: '' },
 ];

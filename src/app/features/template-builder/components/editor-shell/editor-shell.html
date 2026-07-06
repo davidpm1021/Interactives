@@ -1,0 +1,93 @@
+<div class="editor-shell">
+  <aside class="editor-shell__form" aria-label="Form">
+    <div class="editor-shell__form-header">
+      <h2>{{ title() }}</h2>
+      <div class="editor-shell__actions no-print">
+        <div class="editor-shell__actions-group">
+          <label class="editor-shell__count">
+            <span class="editor-shell__count-label">Count</span>
+            <input
+              type="number"
+              min="1"
+              [max]="maxBatch()"
+              [ngModel]="batchCount()"
+              (ngModelChange)="setBatchCount($event)"
+              aria-label="Number of random documents to generate"
+            />
+          </label>
+          <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="generateBatch()">
+            Generate {{ batchCount() }} random {{ singularLabel() }}{{ batchCount() === 1 ? '' : 's' }}
+          </button>
+        </div>
+        <div class="editor-shell__actions-group">
+          <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="clearAll()">
+            Clear all
+          </button>
+          <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="print()">
+            Print / Save as PDF
+          </button>
+        </div>
+      </div>
+      <div class="editor-shell__copies no-print" role="radiogroup" aria-label="Copies per page">
+        <span class="editor-shell__copies-label">Copies per page:</span>
+        <label>
+          <input
+            type="radio"
+            name="shell-copies"
+            [checked]="copiesPerPage() === 1"
+            (change)="setCopiesPerPage(1)"
+          />
+          <span>1</span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="shell-copies"
+            [checked]="copiesPerPage() === 2"
+            (change)="setCopiesPerPage(2)"
+          />
+          <span>2 (stacked)</span>
+        </label>
+        @if (docs().length > 1) {
+          <span class="editor-shell__page-count">
+            {{ pageCount() }} page{{ pageCount() === 1 ? '' : 's' }} total
+          </span>
+        }
+      </div>
+    </div>
+
+    <ng-content></ng-content>
+  </aside>
+
+  <section
+    class="editor-shell__preview-wrapper"
+    [class.editor-shell__preview-wrapper--two-up]="copiesPerPage() === 2"
+    aria-label="Preview"
+  >
+    <div class="editor-shell__preview-label no-print">
+      Print preview
+      @if (docs().length > 1) {
+        <span class="editor-shell__preview-count">
+          ({{ docs().length }} unique, {{ pageCount() }} page{{ pageCount() === 1 ? '' : 's' }})
+        </span>
+      }
+    </div>
+    @for (doc of renderedDocs(); track $index; let i = $index) {
+      <div
+        class="editor-shell__doc-frame"
+        [appFitToHeight]="previewFitHeight()"
+        [appFitToHeightEnabled]="copiesPerPage() === 2"
+      >
+        <ng-container
+          [ngTemplateOutlet]="previewTpl()"
+          [ngTemplateOutletContext]="{ $implicit: doc }"
+        ></ng-container>
+      </div>
+      @if (showCutLine(i)) {
+        <div class="editor-shell__cut-line" aria-hidden="true"><span>cut here</span></div>
+      } @else if (showPageBreak(i)) {
+        <div class="editor-shell__page-break" aria-hidden="true">page break</div>
+      }
+    }
+  </section>
+</div>

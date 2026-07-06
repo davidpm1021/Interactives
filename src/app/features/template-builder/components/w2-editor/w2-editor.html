@@ -1,0 +1,314 @@
+<app-editor-shell
+  title="W-2 Builder"
+  singularLabel="W-2"
+  [(docs)]="w2s"
+  [previewTpl]="previewTpl"
+  [randomFn]="randomFnRef"
+  [clearFn]="clearFnRef"
+>
+  <fieldset class="w2-editor__section">
+    <legend>Identifying info</legend>
+    <div class="w2-editor__row">
+      <label>
+        <span>Tax year</span>
+        <input type="number" [ngModel]="current().taxYear" (ngModelChange)="updateField('taxYear', parseInt($event))" />
+      </label>
+      <label>
+        <span>Control number (box d)</span>
+        <input type="text" [ngModel]="current().controlNumber" (ngModelChange)="updateField('controlNumber', $event)" />
+      </label>
+    </div>
+    <label>
+      <span>Employee SSN (box a)</span>
+      <input type="text" [ngModel]="current().employeeSSN" (ngModelChange)="updateField('employeeSSN', $event)" />
+    </label>
+    <label>
+      <span>Employer EIN (box b)</span>
+      <input type="text" [ngModel]="current().employerEIN" (ngModelChange)="updateField('employerEIN', $event)" />
+    </label>
+  </fieldset>
+
+  <fieldset class="w2-editor__section">
+    <legend>Employer (box c)</legend>
+    <label>
+      <span>Name</span>
+      <input type="text" [ngModel]="current().employer.name" (ngModelChange)="updateEmployer('name', $event)" />
+    </label>
+    <label>
+      <span>Address line 1</span>
+      <input type="text" [ngModel]="current().employer.addressLine1" (ngModelChange)="updateEmployer('addressLine1', $event)" />
+    </label>
+    <label>
+      <span>Address line 2</span>
+      <input type="text" [ngModel]="current().employer.addressLine2" (ngModelChange)="updateEmployer('addressLine2', $event)" />
+    </label>
+  </fieldset>
+
+  <fieldset class="w2-editor__section">
+    <legend>Employee (boxes e, f)</legend>
+    <div class="w2-editor__row">
+      <label>
+        <span>First name</span>
+        <input type="text" [ngModel]="current().employee.firstName" (ngModelChange)="updateEmployee('firstName', $event)" />
+      </label>
+      <label>
+        <span>Last name</span>
+        <input type="text" [ngModel]="current().employee.lastName" (ngModelChange)="updateEmployee('lastName', $event)" />
+      </label>
+    </div>
+    <label>
+      <span>Address line 1</span>
+      <input type="text" [ngModel]="current().employee.addressLine1" (ngModelChange)="updateEmployee('addressLine1', $event)" />
+    </label>
+    <label>
+      <span>Address line 2</span>
+      <input type="text" [ngModel]="current().employee.addressLine2" (ngModelChange)="updateEmployee('addressLine2', $event)" />
+    </label>
+  </fieldset>
+
+  <fieldset class="w2-editor__section">
+    <legend>Wages and federal tax</legend>
+    <div class="w2-editor__row">
+      <label>
+        <span>1. Wages, tips, other comp.</span>
+        <input type="number" step="0.01" [ngModel]="current().wages" (ngModelChange)="updateField('wages', parseNumber($event))" />
+      </label>
+      <label>
+        <span>2. Federal tax withheld</span>
+        <input type="number" step="0.01" [ngModel]="current().fedTaxWithheld" (ngModelChange)="updateField('fedTaxWithheld', parseNumber($event))" />
+      </label>
+    </div>
+    <div class="w2-editor__row">
+      <label>
+        <span>3. SS wages</span>
+        <input type="number" step="0.01" [ngModel]="current().ssWages" (ngModelChange)="updateField('ssWages', parseNumber($event))" />
+      </label>
+      <label>
+        <span>4. SS tax withheld</span>
+        <input type="number" step="0.01" [ngModel]="current().ssTaxWithheld" (ngModelChange)="updateField('ssTaxWithheld', parseNumber($event))" />
+      </label>
+    </div>
+    <div class="w2-editor__row">
+      <label>
+        <span>5. Medicare wages</span>
+        <input type="number" step="0.01" [ngModel]="current().medicareWages" (ngModelChange)="updateField('medicareWages', parseNumber($event))" />
+      </label>
+      <label>
+        <span>6. Medicare tax withheld</span>
+        <input type="number" step="0.01" [ngModel]="current().medicareTaxWithheld" (ngModelChange)="updateField('medicareTaxWithheld', parseNumber($event))" />
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="w2-editor__section">
+    <legend>Box 12 codes (up to 4)</legend>
+    @for (b of current().box12; track $index) {
+      <div class="w2-editor__line-item">
+        <div class="w2-editor__row">
+          <label>
+            <span>Code</span>
+            <input type="text" [ngModel]="b.code" (ngModelChange)="updateBox12($index, { code: $event })" />
+          </label>
+          <label>
+            <span>Amount ($)</span>
+            <input type="number" step="0.01" [ngModel]="b.amount" (ngModelChange)="updateBox12($index, { amount: parseNumber($event) })" />
+          </label>
+        </div>
+        <button type="button" class="w2-editor__remove" (click)="removeBox12($index)" aria-label="Remove box 12 entry">Remove</button>
+      </div>
+    }
+    @if (current().box12.length < 4) {
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addBox12()">+ Add code</button>
+    }
+  </fieldset>
+
+  <fieldset class="w2-editor__section">
+    <legend>Box 13 and Box 14</legend>
+    <label class="w2-editor__checkbox">
+      <input type="checkbox" [ngModel]="current().statutoryEmployee" (ngModelChange)="updateField('statutoryEmployee', $event)" />
+      <span>Statutory employee</span>
+    </label>
+    <label class="w2-editor__checkbox">
+      <input type="checkbox" [ngModel]="current().retirementPlan" (ngModelChange)="updateField('retirementPlan', $event)" />
+      <span>Retirement plan</span>
+    </label>
+    <label class="w2-editor__checkbox">
+      <input type="checkbox" [ngModel]="current().thirdPartySickPay" (ngModelChange)="updateField('thirdPartySickPay', $event)" />
+      <span>Third-party sick pay</span>
+    </label>
+    <label>
+      <span>Box 14 Other</span>
+      <input type="text" [ngModel]="current().box14" (ngModelChange)="updateField('box14', $event)" />
+    </label>
+  </fieldset>
+
+  <fieldset class="w2-editor__section">
+    <legend>State info (boxes 15-17)</legend>
+    <div class="w2-editor__row">
+      <label>
+        <span>State</span>
+        <input type="text" [ngModel]="current().stateAbbr" (ngModelChange)="updateField('stateAbbr', $event)" />
+      </label>
+      <label>
+        <span>Employer state ID</span>
+        <input type="text" [ngModel]="current().employerStateIdNumber" (ngModelChange)="updateField('employerStateIdNumber', $event)" />
+      </label>
+    </div>
+    <div class="w2-editor__row">
+      <label>
+        <span>16. State wages</span>
+        <input type="number" step="0.01" [ngModel]="current().stateWages" (ngModelChange)="updateField('stateWages', parseNumber($event))" />
+      </label>
+      <label>
+        <span>17. State tax withheld</span>
+        <input type="number" step="0.01" [ngModel]="current().stateTaxWithheld" (ngModelChange)="updateField('stateTaxWithheld', parseNumber($event))" />
+      </label>
+    </div>
+  </fieldset>
+</app-editor-shell>
+
+<ng-template #previewTpl let-w2>
+  <article class="w2-preview" id="w2-preview">
+    <div class="w2-preview__title-row">
+      <div class="w2-preview__form-title">
+        <div class="w2-preview__form-name">Form W-2</div>
+        <div class="w2-preview__form-subtitle">Wage and Tax Statement</div>
+      </div>
+      <div class="w2-preview__year">{{ w2.taxYear }}</div>
+      <div class="w2-preview__agency">Dept. of the Treasury<br />Internal Revenue Service</div>
+    </div>
+
+    <div class="w2-preview__grid">
+      <div class="w2-preview__box w2-preview__box--span-2">
+        <div class="w2-preview__box-label">a Employee's social security number</div>
+        <div class="w2-preview__box-value">{{ w2.employeeSSN }}</div>
+      </div>
+
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">b Employer identification number (EIN)</div>
+        <div class="w2-preview__box-value">{{ w2.employerEIN }}</div>
+      </div>
+
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">1 Wages, tips, other compensation</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.wages | currency }}</div>
+      </div>
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">2 Federal income tax withheld</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.fedTaxWithheld | currency }}</div>
+      </div>
+
+      <div class="w2-preview__box w2-preview__box--span-2 w2-preview__box--tall">
+        <div class="w2-preview__box-label">c Employer's name, address, and ZIP code</div>
+        <div class="w2-preview__box-value">
+          <strong>{{ w2.employer.name }}</strong><br />
+          {{ w2.employer.addressLine1 }}<br />
+          {{ w2.employer.addressLine2 }}
+        </div>
+      </div>
+
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">3 Social security wages</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.ssWages | currency }}</div>
+      </div>
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">4 Social security tax withheld</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.ssTaxWithheld | currency }}</div>
+      </div>
+
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">5 Medicare wages and tips</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.medicareWages | currency }}</div>
+      </div>
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">6 Medicare tax withheld</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.medicareTaxWithheld | currency }}</div>
+      </div>
+
+      <div class="w2-preview__box w2-preview__box--span-2">
+        <div class="w2-preview__box-label">d Control number</div>
+        <div class="w2-preview__box-value">{{ w2.controlNumber }}</div>
+      </div>
+
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">7 Social security tips</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+      </div>
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">8 Allocated tips</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+      </div>
+
+      <div class="w2-preview__box w2-preview__box--span-2 w2-preview__box--tall">
+        <div class="w2-preview__box-label">e Employee's first name, last name, and address</div>
+        <div class="w2-preview__box-value">
+          <strong>{{ w2.employee.firstName }} {{ w2.employee.lastName }}</strong><br />
+          {{ w2.employee.addressLine1 }}<br />
+          {{ w2.employee.addressLine2 }}
+        </div>
+      </div>
+
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">10 Dependent care benefits</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+      </div>
+      <div class="w2-preview__box">
+        <div class="w2-preview__box-label">11 Nonqualified plans</div>
+        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+      </div>
+
+      <div class="w2-preview__box w2-preview__box--span-2">
+        <div class="w2-preview__box-label">12 Codes</div>
+        <div class="w2-preview__box12">
+          @for (b of w2.box12; track $index) {
+            <div class="w2-preview__box12-row">
+              <span class="w2-preview__box12-code">{{ b.code }}</span>
+              <span class="w2-preview__box12-amt">{{ b.amount | currency }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="w2-preview__box w2-preview__box--span-2">
+        <div class="w2-preview__box-label">13 Checkboxes</div>
+        <div class="w2-preview__box13">
+          <label>
+            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.statutoryEmployee"></span>
+            Statutory employee
+          </label>
+          <label>
+            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.retirementPlan"></span>
+            Retirement plan
+          </label>
+          <label>
+            <span class="w2-preview__cb" [class.w2-preview__cb--checked]="w2.thirdPartySickPay"></span>
+            Third-party sick pay
+          </label>
+        </div>
+        <div class="w2-preview__box-label" style="margin-top: 4px;">14 Other</div>
+        <div class="w2-preview__box-value">{{ w2.box14 }}</div>
+      </div>
+
+      <div class="w2-preview__box w2-preview__box--span-6 w2-preview__state">
+        <div class="w2-preview__state-row">
+          <div class="w2-preview__state-cell">
+            <div class="w2-preview__box-label">15 State</div>
+            <div class="w2-preview__box-value">{{ w2.stateAbbr }}</div>
+          </div>
+          <div class="w2-preview__state-cell w2-preview__state-cell--wide">
+            <div class="w2-preview__box-label">Employer's state ID number</div>
+            <div class="w2-preview__box-value">{{ w2.employerStateIdNumber }}</div>
+          </div>
+          <div class="w2-preview__state-cell">
+            <div class="w2-preview__box-label">16 State wages, tips, etc.</div>
+            <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.stateWages | currency }}</div>
+          </div>
+          <div class="w2-preview__state-cell">
+            <div class="w2-preview__box-label">17 State income tax</div>
+            <div class="w2-preview__box-value w2-preview__box-value--num">{{ w2.stateTaxWithheld | currency }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</ng-template>
