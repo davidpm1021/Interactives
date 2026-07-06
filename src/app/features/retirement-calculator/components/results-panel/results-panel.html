@@ -5,17 +5,11 @@
     <div class="results-panel__tile results-panel__tile--primary">
       <span class="results-panel__label">Projected nest egg</span>
       <app-stat-counter [value]="projection().finalBalance" prefix="$" />
-      <span class="results-panel__sub">
-        Supports ~${{ projection().projectedMonthlyIncome | number: '1.0-0' }}/mo in today's dollars
-      </span>
     </div>
 
     <div class="results-panel__tile">
       <span class="results-panel__label">Target nest egg</span>
       <app-stat-counter [value]="projection().targetNestEgg" prefix="$" />
-      <span class="results-panel__sub">
-        Funds your budget through age 95, adjusted 3%/yr for inflation
-      </span>
     </div>
 
     <div class="results-panel__tile"
@@ -25,11 +19,6 @@
         @if (hasGap()) { You're short } @else { You're on track }
       </span>
       <app-stat-counter [value]="projection().gapAtRetirement" prefix="$" />
-      @if (hasGap()) {
-        <span class="results-panel__sub">{{ gapPercent() }}% below target</span>
-      } @else {
-        <span class="results-panel__sub">Nest egg meets or exceeds target</span>
-      }
     </div>
 
     <div class="results-panel__tile"
@@ -37,13 +26,6 @@
          [class.results-panel__tile--ok]="!saveMore()">
       <span class="results-panel__label">To hit target, save</span>
       <app-stat-counter [value]="projection().requiredMonthlyToHitGoal" prefix="$" suffix="/mo" />
-      @if (saveMore()) {
-        <span class="results-panel__sub">
-          That's ${{ (projection().requiredMonthlyToHitGoal - monthlyContribution()) | number: '1.0-0' }} more per month
-        </span>
-      } @else {
-        <span class="results-panel__sub">Your current pace works</span>
-      }
     </div>
   </div>
 </section>
