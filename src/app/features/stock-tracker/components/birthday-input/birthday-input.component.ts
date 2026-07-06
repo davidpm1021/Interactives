@@ -28,6 +28,19 @@ export class BirthdayInputComponent {
     'July', 'August', 'September', 'October', 'November', 'December',
   ];
 
+  // Bounds for the birth-year field. Must be born on or before (today - 11 years)
+  // for the 10th birthday to be at least a year in the past.
+  private readonly today = new Date();
+  protected readonly minBirthYear = 1970;
+  protected readonly maxBirthYear = this.today.getFullYear() - 11;
+  protected readonly maxBirthDateDisplay = this.formatMaxDate();
+
+  private formatMaxDate(): string {
+    const d = new Date(this.today);
+    d.setFullYear(d.getFullYear() - 11);
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
   protected onFieldChange(): void {
     this.error.set('');
     this.tenthBirthdayDisplay.set('');
@@ -49,8 +62,10 @@ export class BirthdayInputComponent {
       return;
     }
 
-    if (year < 1960 || year > new Date().getFullYear()) {
-      this.error.set(`Please enter a year between 1960 and ${new Date().getFullYear()}.`);
+    if (year < this.minBirthYear || year > this.maxBirthYear) {
+      this.error.set(
+        `Please enter the year you were born. It should be between ${this.minBirthYear} and ${this.maxBirthYear}.`,
+      );
       return;
     }
 
@@ -69,7 +84,9 @@ export class BirthdayInputComponent {
     const oneYearAgo = new Date(now);
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     if (tenthBirthday > oneYearAgo) {
-      this.error.set('Your 10th birthday must be at least 1 year in the past so there\'s enough data to track.');
+      this.error.set(
+        `That would put your 10th birthday on ${tenthBirthday.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}, which isn't at least a year in the past. Enter the year you were born — you'd need to be born on or before ${this.maxBirthDateDisplay}.`,
+      );
       return;
     }
 

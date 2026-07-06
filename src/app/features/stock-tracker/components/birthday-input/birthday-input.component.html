@@ -1,5 +1,8 @@
 <div class="birthday-input">
-  <h3 class="birthday-input__title">When is your birthday?</h3>
+  <h3 class="birthday-input__title">When were you born?</h3>
+  <p class="birthday-input__hint">
+    Enter your own date of birth — we'll use it to figure out when your 10th birthday was.
+  </p>
 
   <div class="birthday-input__fields">
     <div class="birthday-input__field">
@@ -36,9 +39,9 @@
       <input id="birth-year"
              type="number"
              class="birthday-input__input"
-             placeholder="Year"
-             min="1960"
-             [max]="2020"
+             placeholder="Birth year"
+             [min]="minBirthYear"
+             [max]="maxBirthYear"
              [ngModel]="yearValue()"
              (ngModelChange)="yearValue.set($event); onFieldChange()"
              [attr.aria-invalid]="error() ? 'true' : null"
@@ -53,9 +56,9 @@
   <button class="ngpf-btn ngpf-btn-primary birthday-input__submit"
           (click)="onSubmit()">
     @if (confirmed()) {
-      Birthday Confirmed
+      Date of Birth Confirmed
     } @else {
-      Confirm Birthday
+      Confirm Date of Birth
     }
   </button>
 
