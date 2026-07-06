@@ -211,6 +211,42 @@
       background: var(--ngpf-bright-blue);
     }
   }
+
+  &__table--carryover {
+    margin-bottom: 0.14in;
+
+    thead th {
+      background: #eef2f8;
+    }
+  }
+
+  &__stub {
+    margin-top: 0.35in;
+    padding-top: 0.15in;
+    border-top: 2px dashed #666;
+    font-size: 9pt;
+
+    &-note {
+      text-align: center;
+      color: #666;
+      font-size: 8.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.1in;
+    }
+
+    &-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.15in;
+    }
+
+    &-grid > div:last-child {
+      grid-column: 1 / -1;
+      border-top: 1px solid #ccc;
+      padding-top: 0.08in;
+    }
+  }
 }
 
 @media print {

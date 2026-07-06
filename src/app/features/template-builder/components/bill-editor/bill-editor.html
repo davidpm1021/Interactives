@@ -75,11 +75,21 @@
     <div class="bill-editor__row">
       <label>
         <span>Previous balance ($)</span>
-        <input type="number" step="0.01" [ngModel]="current().previousBalance" (ngModelChange)="updateField('previousBalance', parseNumber($event))" />
+        <input type="number" step="0.01" min="0" [ngModel]="current().previousBalance" (ngModelChange)="updateField('previousBalance', parseNumber($event))" />
       </label>
       <label>
         <span>Payments received ($)</span>
-        <input type="number" step="0.01" [ngModel]="current().paymentsReceived" (ngModelChange)="updateField('paymentsReceived', parseNumber($event))" />
+        <input type="number" step="0.01" min="0" [ngModel]="current().paymentsReceived" (ngModelChange)="updateField('paymentsReceived', parseNumber($event))" />
+      </label>
+    </div>
+    <div class="bill-editor__row">
+      <label>
+        <span>Late fee ($)</span>
+        <input type="number" step="0.01" min="0" [ngModel]="current().lateFee" (ngModelChange)="updateField('lateFee', parseNumber($event))" />
+      </label>
+      <label>
+        <span>Minimum payment ($)</span>
+        <input type="number" step="0.01" min="0" [ngModel]="current().minimumPayment" (ngModelChange)="updateField('minimumPayment', parseNumber($event))" />
       </label>
     </div>
   </fieldset>
@@ -166,31 +176,58 @@
       <div>{{ bill.customer.addressLine2 }}</div>
     </section>
 
+    @if (bill.previousBalance || bill.paymentsReceived) {
+      <table class="bill-preview__table bill-preview__table--carryover">
+        <caption class="sr-only">Balance forward from prior statement</caption>
+        <colgroup>
+          <col class="bill-preview__cg-desc" />
+          <col class="bill-preview__cg-amt" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">Balance forward</th>
+            <th scope="col" class="bill-preview__col-num">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (bill.previousBalance) {
+            <tr><th scope="row">Previous balance</th><td>{{ bill.previousBalance | currency }}</td></tr>
+          }
+          @if (bill.paymentsReceived) {
+            <tr><th scope="row">Payments received</th><td>{{ -bill.paymentsReceived | currency }}</td></tr>
+          }
+          @if (isPastDue(bill) && bill.lateFee) {
+            <tr><th scope="row">Late fee (past-due)</th><td>{{ bill.lateFee | currency }}</td></tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row">Carry-over subtotal</th>
+            <td>{{ (bill.previousBalance - bill.paymentsReceived + (isPastDue(bill) ? bill.lateFee : 0)) | currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    }
+
     <table class="bill-preview__table">
-      <caption class="sr-only">Charges</caption>
+      <caption class="sr-only">New charges this statement</caption>
       <colgroup>
         <col class="bill-preview__cg-desc" />
         <col class="bill-preview__cg-amt" />
       </colgroup>
       <thead>
         <tr>
-          <th scope="col">Description</th>
+          <th scope="col">New charges this statement</th>
           <th scope="col" class="bill-preview__col-num">Amount</th>
         </tr>
       </thead>
       <tbody>
-        @if (bill.previousBalance) {
-          <tr><th scope="row">Previous balance</th><td>{{ bill.previousBalance | currency }}</td></tr>
-        }
-        @if (bill.paymentsReceived) {
-          <tr><th scope="row">Payments received</th><td>{{ -bill.paymentsReceived | currency }}</td></tr>
-        }
         @for (item of bill.lineItems; track $index) {
           <tr><th scope="row">{{ item.description }}</th><td>{{ item.amount | currency }}</td></tr>
         }
       </tbody>
       <tfoot>
-        <tr><th scope="row">New charges</th><td>{{ newChargesOf(bill) | currency }}</td></tr>
+        <tr><th scope="row">Total new charges</th><td>{{ newChargesOf(bill) | currency }}</td></tr>
       </tfoot>
     </table>
 
@@ -202,7 +239,37 @@
           </th>
           <td>{{ balanceDueOf(bill) | currency }}</td>
         </tr>
+        @if (minimumDueOf(bill) > 0 && minimumDueOf(bill) < balanceDueOf(bill)) {
+          <tr>
+            <th scope="row">Minimum payment due</th>
+            <td>{{ minimumDueOf(bill) | currency }}</td>
+          </tr>
+        }
       </tbody>
     </table>
+
+    <div class="bill-preview__stub">
+      <div class="bill-preview__stub-note">Please detach and return with your payment</div>
+      <div class="bill-preview__stub-grid">
+        <div>
+          <div class="bill-preview__field-label">Account #</div>
+          <div>{{ bill.customer.accountNumber }}</div>
+        </div>
+        <div>
+          <div class="bill-preview__field-label">Amount due</div>
+          <div>{{ balanceDueOf(bill) | currency }}</div>
+        </div>
+        <div>
+          <div class="bill-preview__field-label">Due by</div>
+          <div>{{ bill.dueDate ? (bill.dueDate | date: 'MMM d, y') : '' }}</div>
+        </div>
+        <div>
+          <div class="bill-preview__field-label">Make check payable to</div>
+          <div>{{ bill.biller.name }}</div>
+          <div>{{ bill.biller.addressLine1 }}</div>
+          <div>{{ bill.biller.addressLine2 }}</div>
+        </div>
+      </div>
+    </div>
   </article>
 </ng-template>

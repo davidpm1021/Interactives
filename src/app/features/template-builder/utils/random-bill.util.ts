@@ -148,10 +148,10 @@ const BILLERS: BillerPreset[] = [
     addressLine2: 'San Diego, CA 92103',
     phone: '(619) 555-0166',
     buildItems: () => [
-      { description: 'Liability coverage (6-month)', amount: round2(280 + Math.random() * 120) },
-      { description: 'Comprehensive and collision', amount: round2(180 + Math.random() * 110) },
-      { description: 'Roadside assistance', amount: 24.0 },
-      { description: 'Multi-policy discount', amount: round2(-(20 + Math.random() * 25)) },
+      { description: 'Liability coverage — monthly premium', amount: round2(46 + Math.random() * 20) },
+      { description: 'Comprehensive and collision', amount: round2(30 + Math.random() * 18) },
+      { description: 'Roadside assistance', amount: 4.0 },
+      { description: 'Multi-policy discount', amount: round2(-(3 + Math.random() * 4)) },
     ],
   },
 ];
@@ -167,7 +167,8 @@ export function randomBill(now: Date = new Date()): Bill {
   const customerStreet = `${randInt(100, 9999)} ${pick(STREETS)}`;
 
   const statementDate = shiftDays(now, -randInt(0, 18));
-  const dueDate = shiftDays(statementDate, 25 + randInt(0, 7));
+  // Give students at least two weeks between "today" and the due date.
+  const dueDate = shiftDays(statementDate, 28 + randInt(0, 7));
   const servicePeriodEnd = shiftDays(statementDate, -randInt(2, 7));
   const servicePeriodStart = shiftDays(servicePeriodEnd, -randInt(28, 32));
 
@@ -175,7 +176,24 @@ export function randomBill(now: Date = new Date()): Bill {
 
   const hadPriorBalance = Math.random() < 0.7;
   const previousBalance = hadPriorBalance ? round2(40 + Math.random() * 140) : 0;
-  const paymentsReceived = hadPriorBalance && Math.random() < 0.85 ? previousBalance : 0;
+  // Sometimes the prior balance is fully paid, sometimes partially, sometimes
+  // not paid at all — the last case triggers the past-due flow.
+  const paymentDice = Math.random();
+  let paymentsReceived = 0;
+  if (hadPriorBalance) {
+    if (paymentDice < 0.7) paymentsReceived = previousBalance;
+    else if (paymentDice < 0.9) paymentsReceived = round2(previousBalance * 0.6);
+    else paymentsReceived = 0;
+  }
+  const isPastDue = previousBalance - paymentsReceived > 0;
+  const lateFee = isPastDue ? 25 : 0;
+  // Only surface a minimum payment when past-due (bills without a carry-over
+  // typically require the full amount).
+  const newChargesTotal = lineItems.reduce((s, l) => s + l.amount, 0);
+  const balanceDue = previousBalance - paymentsReceived + lateFee + newChargesTotal;
+  const minimumPayment = isPastDue
+    ? round2(Math.max(25, Math.min(balanceDue, previousBalance - paymentsReceived + lateFee + newChargesTotal * 0.1)))
+    : 0;
 
   return {
     biller: {
@@ -197,5 +215,7 @@ export function randomBill(now: Date = new Date()): Bill {
     previousBalance,
     paymentsReceived,
     lineItems,
+    lateFee,
+    minimumPayment,
   };
 }

@@ -23,6 +23,9 @@ export interface Bill {
   previousBalance: number;
   paymentsReceived: number;
   lineItems: BillLineItem[];
+  /** Only assessed when previousBalance - paymentsReceived > 0. */
+  lateFee: number;
+  minimumPayment: number;
 }
 
 export function emptyBillLineItem(): BillLineItem {
@@ -55,5 +58,7 @@ export function sampleBill(): Bill {
       { description: 'Delivery charges', amount: 18.7 },
       { description: 'State energy tax', amount: 2.41 },
     ],
+    lateFee: 0,
+    minimumPayment: 0,
   };
 }
