@@ -4,7 +4,7 @@ import { CurrencyPipe } from '@angular/common';
 import { W2, W2Box12, emptyBox12, sampleW2 } from '../../models/w2.model';
 import { randomW2 } from '../../utils/random-w2.util';
 import { FirstItemMutator } from '../../utils/first-item-mutator.util';
-import { parseNumber, parseYear } from '../../utils/input-parsers.util';
+import { parseNonNegative, parseYear } from '../../utils/input-parsers.util';
 import { EditorShell } from '../editor-shell/editor-shell';
 
 function emptyW2(): W2 {
@@ -18,6 +18,7 @@ function emptyW2(): W2 {
     wages: 0, fedTaxWithheld: 0,
     ssWages: 0, ssTaxWithheld: 0,
     medicareWages: 0, medicareTaxWithheld: 0,
+    ssTips: 0, allocatedTips: 0, dependentCareBenefits: 0, nonqualifiedPlans: 0,
     box12: [],
     statutoryEmployee: false, retirementPlan: false, thirdPartySickPay: false,
     box14: '',
@@ -46,9 +47,11 @@ export class W2Editor {
     this.mutator.mutate(fn);
   }
 
-  protected readonly parseNumber = parseNumber;
+  protected readonly parseNumber = parseNonNegative;
   protected parseInt(value: string): number {
-    return parseYear(value, new Date().getFullYear() - 1);
+    // Clamp to a plausible tax-year range so a mid-edit partial value doesn't
+    // render as year "202" or "20".
+    return parseYear(value, new Date().getFullYear() - 1, 1980, new Date().getFullYear());
   }
 
   protected updateField<K extends keyof W2>(key: K, value: W2[K]): void {

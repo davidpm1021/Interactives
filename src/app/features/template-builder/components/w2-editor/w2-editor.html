@@ -98,6 +98,26 @@
         <input type="number" step="0.01" [ngModel]="current().medicareTaxWithheld" (ngModelChange)="updateField('medicareTaxWithheld', parseNumber($event))" />
       </label>
     </div>
+    <div class="w2-editor__row">
+      <label>
+        <span>7. Social security tips</span>
+        <input type="number" step="0.01" [ngModel]="current().ssTips" (ngModelChange)="updateField('ssTips', parseNumber($event))" />
+      </label>
+      <label>
+        <span>8. Allocated tips</span>
+        <input type="number" step="0.01" [ngModel]="current().allocatedTips" (ngModelChange)="updateField('allocatedTips', parseNumber($event))" />
+      </label>
+    </div>
+    <div class="w2-editor__row">
+      <label>
+        <span>10. Dependent care benefits</span>
+        <input type="number" step="0.01" [ngModel]="current().dependentCareBenefits" (ngModelChange)="updateField('dependentCareBenefits', parseNumber($event))" />
+      </label>
+      <label>
+        <span>11. Nonqualified plans</span>
+        <input type="number" step="0.01" [ngModel]="current().nonqualifiedPlans" (ngModelChange)="updateField('nonqualifiedPlans', parseNumber($event))" />
+      </label>
+    </div>
   </fieldset>
 
   <fieldset class="w2-editor__section">
@@ -232,11 +252,15 @@
 
       <div class="w2-preview__box">
         <div class="w2-preview__box-label">7 Social security tips</div>
-        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">
+          @if (w2.ssTips) { {{ w2.ssTips | currency }} }
+        </div>
       </div>
       <div class="w2-preview__box">
         <div class="w2-preview__box-label">8 Allocated tips</div>
-        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">
+          @if (w2.allocatedTips) { {{ w2.allocatedTips | currency }} }
+        </div>
       </div>
 
       <div class="w2-preview__box w2-preview__box--span-2 w2-preview__box--tall">
@@ -250,11 +274,15 @@
 
       <div class="w2-preview__box">
         <div class="w2-preview__box-label">10 Dependent care benefits</div>
-        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">
+          @if (w2.dependentCareBenefits) { {{ w2.dependentCareBenefits | currency }} }
+        </div>
       </div>
       <div class="w2-preview__box">
         <div class="w2-preview__box-label">11 Nonqualified plans</div>
-        <div class="w2-preview__box-value w2-preview__box-value--num"></div>
+        <div class="w2-preview__box-value w2-preview__box-value--num">
+          @if (w2.nonqualifiedPlans) { {{ w2.nonqualifiedPlans | currency }} }
+        </div>
       </div>
 
       <div class="w2-preview__box w2-preview__box--span-2">

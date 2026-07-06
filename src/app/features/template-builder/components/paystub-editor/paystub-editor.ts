@@ -14,7 +14,10 @@ import {
 } from '../../models/paystub.model';
 import { randomPaystub } from '../../utils/random-paystub.util';
 import { FirstItemMutator } from '../../utils/first-item-mutator.util';
-import { parseNullableNumber, parseNumber } from '../../utils/input-parsers.util';
+import {
+  parseNonNegative,
+  parseNullableNonNegative,
+} from '../../utils/input-parsers.util';
 import { EditorShell } from '../editor-shell/editor-shell';
 
 function emptyPaystub(): Paystub {
@@ -109,8 +112,8 @@ export class PaystubEditor {
     this.mutator.mutate(fn);
   }
 
-  protected readonly parseNumber = parseNumber;
-  protected readonly parseNullableNumber = parseNullableNumber;
+  protected readonly parseNumber = parseNonNegative;
+  protected readonly parseNullableNumber = parseNullableNonNegative;
 
   protected updateEmployer<K extends keyof Paystub['employer']>(key: K, value: string): void {
     this.mutateFirst((p) => ({ ...p, employer: { ...p.employer, [key]: value } }));
@@ -165,7 +168,15 @@ export class PaystubEditor {
     this.mutateFirst((p) => ({ ...p, deductions: p.deductions.filter((_, i) => i !== index) }));
   }
 
+  /**
+   * Show the flat-amount input only when BOTH hours and rate are blank.
+   * If either is filled, the earning is hours*rate and the flat amount is
+   * unreachable (would silently override).
+   */
   protected showAmountField(e: PaystubEarning): boolean {
-    return e.hours === null || e.rate === null;
+    return e.hours === null && e.rate === null;
   }
+
+  /** Sanity readout: annualized gross implied by current × periodsYTD. */
+  protected readonly ytdGrossReadout = computed(() => this.grossYTDOf(this.current()));
 }

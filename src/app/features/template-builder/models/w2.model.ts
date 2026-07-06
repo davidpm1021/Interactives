@@ -16,6 +16,10 @@ export interface W2 {
   ssTaxWithheld: number;
   medicareWages: number;
   medicareTaxWithheld: number;
+  ssTips: number;               // Box 7
+  allocatedTips: number;         // Box 8
+  dependentCareBenefits: number; // Box 10
+  nonqualifiedPlans: number;     // Box 11
   box12: W2Box12[];
   statutoryEmployee: boolean;
   retirementPlan: boolean;
@@ -54,6 +58,10 @@ export function sampleW2(): W2 {
     ssTaxWithheld: 2415.15,
     medicareWages: 38954.0,
     medicareTaxWithheld: 564.83,
+    ssTips: 0,
+    allocatedTips: 0,
+    dependentCareBenefits: 0,
+    nonqualifiedPlans: 0,
     box12: [
       { code: 'D', amount: 1500.0 },
       { code: 'DD', amount: 6240.0 },

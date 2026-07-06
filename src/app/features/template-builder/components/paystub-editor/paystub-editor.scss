@@ -8,6 +8,13 @@
 .paystub-editor {
   @include fc.form-chrome;
 
+  &__hint {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--ngpf-text-secondary);
+    margin-top: 0.25rem;
+  }
+
   &__calc-note {
     background: var(--ngpf-soft-blue-tint);
     border-left: 3px solid var(--ngpf-bright-blue);

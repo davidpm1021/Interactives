@@ -14,6 +14,21 @@ const EMPLOYERS = [
   { name: 'Pioneer Outfitters', addr1: '38 Mountain View Road', addr2: 'Bozeman, MT 59715', stateAbbr: 'MT' },
 ];
 
+/**
+ * Generate a plausible SSN. Excludes SSA-reserved area numbers (666, 900-999)
+ * and never issues a group of 00 or a serial of 0000.
+ */
+function randomSSN(): string {
+  let area: number;
+  do {
+    area = randInt(1, 899);
+  } while (area === 666);
+  const group = randInt(1, 99);
+  const serial = randInt(1, 9999);
+  const pad = (n: number, w: number) => String(n).padStart(w, '0');
+  return `${pad(area, 3)}-${pad(group, 2)}-${pad(serial, 4)}`;
+}
+
 export function randomW2(now: Date = new Date()): W2 {
   const employer = pick(EMPLOYERS);
   const firstName = pick(FIRST_NAMES);
@@ -25,7 +40,6 @@ export function randomW2(now: Date = new Date()): W2 {
     ? round2(4000 + Math.random() * 11000)
     : round2(randInt(22000, 68000) + Math.random() * 1000);
 
-  const fed = round2(annualWages * effectiveFederalRate(annualWages));
   const has401k = !isLowWage && Math.random() < 0.5;
   const contrib401k = has401k ? round2(annualWages * pick([0.03, 0.04, 0.05, 0.06])) : 0;
 
@@ -34,8 +48,11 @@ export function randomW2(now: Date = new Date()): W2 {
   const ssTax = round2(ssWages * 0.062);
   const medicareTax = round2(ssWages * 0.0145);
 
+  // FIT withholds against Box 1 wages (post-401(k)), not the pre-401(k) total.
+  const fed = round2(wagesBox1 * effectiveFederalRate(wagesBox1));
+
   const stateTax = stateHasTax
-    ? round2(wagesBox1 * effectiveStateRate(employer.stateAbbr, annualWages))
+    ? round2(wagesBox1 * effectiveStateRate(employer.stateAbbr, wagesBox1))
     : 0;
 
   const employerHealth = isLowWage
@@ -55,7 +72,7 @@ export function randomW2(now: Date = new Date()): W2 {
 
   return {
     taxYear: now.getFullYear() - 1,
-    employeeSSN: `${randInt(100, 999)}-${randInt(10, 99)}-${randInt(1000, 9999)}`,
+    employeeSSN: randomSSN(),
     employerEIN: `${randInt(10, 99)}-${randInt(1000000, 9999999)}`,
     employer: { name: employer.name, addressLine1: employer.addr1, addressLine2: employer.addr2 },
     controlNumber: `A${randInt(1000, 9999)}-${randInt(10, 99)}`,
@@ -71,6 +88,10 @@ export function randomW2(now: Date = new Date()): W2 {
     ssTaxWithheld: ssTax,
     medicareWages: ssWages,
     medicareTaxWithheld: medicareTax,
+    ssTips: 0,
+    allocatedTips: 0,
+    dependentCareBenefits: 0,
+    nonqualifiedPlans: 0,
     box12,
     statutoryEmployee: false,
     retirementPlan: has401k,

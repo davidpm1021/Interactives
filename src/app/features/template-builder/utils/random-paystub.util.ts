@@ -69,27 +69,17 @@ export function randomPaystub(now: Date = new Date()): Paystub {
   }
 
   const grossPerPeriod = earnings.reduce((s, e) => s + (e.hours ?? 0) * (e.rate ?? 0), 0);
-  const annualizedGross = grossPerPeriod * 26;
 
-  const fedRate = effectiveFederalRate(annualizedGross);
-  const otherTaxes: PaystubLineItem[] = [
-    { description: 'Federal Income Tax', current: round2(grossPerPeriod * fedRate) },
-  ];
-
-  if (hasStateIncomeTax(employer.stateAbbr)) {
-    const stateRate = effectiveStateRate(employer.stateAbbr, annualizedGross);
-    otherTaxes.push({
-      description: `State Income Tax (${employer.stateAbbr})`,
-      current: round2(grossPerPeriod * stateRate),
-    });
-  }
-
+  // Build deductions first so we can subtract the pre-tax ones (401(k))
+  // from the FIT/state tax base. Matches the W-2's treatment of Box 1.
   const deductions: PaystubLineItem[] = [];
+  let contrib401kPerPeriod = 0;
   if (Math.random() < 0.6) {
     const pct = pick([0.03, 0.04, 0.05, 0.06]);
+    contrib401kPerPeriod = round2(grossPerPeriod * pct);
     deductions.push({
       description: '401(k) Contribution',
-      current: round2(grossPerPeriod * pct),
+      current: contrib401kPerPeriod,
     });
   }
   if (Math.random() < 0.55) {
@@ -102,6 +92,22 @@ export function randomPaystub(now: Date = new Date()): Paystub {
     deductions.push({
       description: 'Dental Insurance',
       current: pick([8, 12, 18]),
+    });
+  }
+
+  const taxablePerPeriod = grossPerPeriod - contrib401kPerPeriod;
+  const annualizedTaxable = taxablePerPeriod * 26;
+
+  const fedRate = effectiveFederalRate(annualizedTaxable);
+  const otherTaxes: PaystubLineItem[] = [
+    { description: 'Federal Income Tax', current: round2(taxablePerPeriod * fedRate) },
+  ];
+
+  if (hasStateIncomeTax(employer.stateAbbr)) {
+    const stateRate = effectiveStateRate(employer.stateAbbr, annualizedTaxable);
+    otherTaxes.push({
+      description: `State Income Tax (${employer.stateAbbr})`,
+      current: round2(taxablePerPeriod * stateRate),
     });
   }
 

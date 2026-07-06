@@ -77,6 +77,9 @@
     <label>
       <span>Pay periods completed YTD (including this one)</span>
       <input type="number" min="1" step="1" [ngModel]="current().periodsYTD" (ngModelChange)="updatePeriodsYTD($event)" />
+      <small class="paystub-editor__hint">
+        Implied YTD gross: {{ ytdGrossReadout() | currency }}
+      </small>
     </label>
   </fieldset>
 
