@@ -1,13 +1,12 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { StockTableComponent } from '../stock-table/stock-table.component';
-import { CombinedTableComponent } from '../combined-table/combined-table.component';
 import { StockTrackerStateService } from '../../services/stock-tracker-state.service';
 import { StockDataService } from '../../services/stock-data.service';
 
 @Component({
   selector: 'app-track-step',
   standalone: true,
-  imports: [StockTableComponent, CombinedTableComponent],
+  imports: [StockTableComponent],
   templateUrl: './track-step.component.html',
   styleUrl: './track-step.component.scss',
 })

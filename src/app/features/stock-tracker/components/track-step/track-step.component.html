@@ -31,10 +31,7 @@
     }
   }
 
-  <!-- Combined table -->
   @if (state.allDataLoaded()) {
-    <app-combined-table [picks]="state.picks()"></app-combined-table>
-
     <div class="track-step__actions">
       <button class="ngpf-btn ngpf-btn-primary" (click)="onAdvance()">
         Compare My Stocks

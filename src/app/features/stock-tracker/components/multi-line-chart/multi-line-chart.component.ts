@@ -79,7 +79,7 @@ export class MultiLineChartComponent implements AfterViewInit, OnDestroy {
     const startYear = rows[0].year;
     const endYear = rows[rows.length - 1].year;
     const tickers = picks.map((p) => p.ticker).join(', ');
-    return `Line chart. Value of 100 shares from ${startYear} to ${endYear} for ${tickers}. Exact yearly values are available in the combined table on this page.`;
+    return `Line chart. Value of 100 shares from ${startYear} to ${endYear} for ${tickers}. Exact final values are in the ROI summary table on this page.`;
   });
 
   constructor() {
