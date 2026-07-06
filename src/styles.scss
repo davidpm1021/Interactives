@@ -429,6 +429,49 @@ kbd {
 }
 
 // ==========================================
+// Skip Link (visually hidden until keyboard-focused)
+// ==========================================
+
+.skip-link {
+  // Same visually-hidden treatment as .sr-only by default.
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+
+  // On keyboard focus, un-hide and pin to the top-left of the viewport.
+  // Sits above the sticky top-header (z-index: 100) so it's reachable.
+  &:focus,
+  &:focus-visible {
+    position: fixed;
+    top: var(--ngpf-spacing-sm);
+    left: var(--ngpf-spacing-sm);
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    overflow: visible;
+    clip: auto;
+    background: var(--ngpf-royal-blue);
+    color: white;
+    text-decoration: none;
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--ngpf-radius-md);
+    box-shadow: var(--ngpf-shadow-md);
+    z-index: 1000;
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+}
+
+// ==========================================
 // Reduced Motion
 // ==========================================
 
