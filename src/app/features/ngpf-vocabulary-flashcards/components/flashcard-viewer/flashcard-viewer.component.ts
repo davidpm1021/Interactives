@@ -93,8 +93,12 @@ export class FlashcardViewerComponent {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboard(event: KeyboardEvent): void {
-    const tag = (event.target as HTMLElement)?.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const target = event.target as HTMLElement | null;
+    const tag = target?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    // Skip when a real <button>/<a> owns focus so Space/Enter activate it, not the card.
+    // (The flashcard itself is a <div role="button">, so its tag is 'DIV' — still handled here.)
+    if (tag === 'BUTTON' || tag === 'A') return;
 
     if (this.isSessionComplete()) return;
 

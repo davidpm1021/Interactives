@@ -65,7 +65,9 @@ export class NgpfVocabularyFlashcards implements OnInit {
     };
     this.liveAnnouncement.set(announcements[view]);
     afterNextRender(() => {
-      const heading = this.elementRef.nativeElement.querySelector('h2');
+      const heading =
+        this.elementRef.nativeElement.querySelector('h2') ||
+        this.elementRef.nativeElement.querySelector('h1');
       if (heading) {
         heading.setAttribute('tabindex', '-1');
         heading.focus();

@@ -14,7 +14,7 @@
   id="loanFormWrapper"
   class="loan-form__wrapper"
   [class.loan-form__wrapper--hidden]="!isFormVisible()"
-  [attr.aria-hidden]="!isFormVisible()"
+  [attr.inert]="!isFormVisible() ? '' : null"
 >
   <form class="loan-form" (submit)="$event.preventDefault(); onSubmit()">
     <div class="loan-form__section">
@@ -106,7 +106,7 @@
       }
     </div>
 
-    <div class="loan-form__error" role="alert" aria-live="polite" [class.loan-form__error--visible]="hasError()">
+    <div class="loan-form__error" role="alert" [class.loan-form__error--visible]="hasError()">
       @if (hasError()) {
         {{ errorMessage() }}
       }

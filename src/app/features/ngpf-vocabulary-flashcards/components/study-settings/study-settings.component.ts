@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, ElementRef, inject, input, output, signal, computed } from '@angular/core';
 import { Unit, StudyMode } from '../../models/flashcard.models';
 
 export interface StudySettings {
@@ -21,6 +21,9 @@ export class StudySettingsComponent {
   protected readonly studyMode = signal<StudyMode>('term-first');
   protected readonly isSpanish = signal(false);
 
+  private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+  protected readonly modeOrder: readonly StudyMode[] = ['term-first', 'definition-first', 'mixed'];
+
   protected readonly totalTerms = computed(() =>
     this.selectedUnits().reduce((sum, unit) => sum + unit.terms.length, 0)
   );
@@ -29,6 +32,32 @@ export class StudySettingsComponent {
 
   protected setStudyMode(mode: StudyMode): void {
     this.studyMode.set(mode);
+  }
+
+  protected onModeKeydown(event: KeyboardEvent): void {
+    const key = event.key;
+    const currentIdx = this.modeOrder.indexOf(this.studyMode());
+    let nextIdx = currentIdx;
+    if (key === 'ArrowRight' || key === 'ArrowDown') {
+      nextIdx = (currentIdx + 1) % this.modeOrder.length;
+    } else if (key === 'ArrowLeft' || key === 'ArrowUp') {
+      nextIdx = (currentIdx - 1 + this.modeOrder.length) % this.modeOrder.length;
+    } else if (key === 'Home') {
+      nextIdx = 0;
+    } else if (key === 'End') {
+      nextIdx = this.modeOrder.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    const nextMode = this.modeOrder[nextIdx];
+    this.setStudyMode(nextMode);
+    requestAnimationFrame(() => {
+      const el = this.host.nativeElement.querySelector<HTMLButtonElement>(
+        `button[data-mode="${nextMode}"]`,
+      );
+      el?.focus();
+    });
   }
 
   protected toggleSpanish(): void {

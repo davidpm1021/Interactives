@@ -9,30 +9,39 @@
     <app-profile-card [profile]="profileB()" [revealedStages]="emptySet" [teaserMode]="true" />
   </div>
 
-  <div class="predict-view__prompt" role="radiogroup" aria-label="Prediction">
+  <div class="predict-view__prompt" role="radiogroup" aria-labelledby="predict-heading" (keydown)="onChoiceKeydown($event)">
     <button
       type="button"
+      data-choice="a"
       class="predict-view__choice"
       [class.predict-view__choice--selected]="selected() === 'a'"
-      [attr.aria-pressed]="selected() === 'a'"
+      role="radio"
+      [attr.aria-checked]="selected() === 'a'"
+      [attr.tabindex]="(selected() ?? 'a') === 'a' ? '0' : '-1'"
       (click)="select('a')"
     >
       {{ profileA().name }}
     </button>
     <button
       type="button"
+      data-choice="b"
       class="predict-view__choice"
       [class.predict-view__choice--selected]="selected() === 'b'"
-      [attr.aria-pressed]="selected() === 'b'"
+      role="radio"
+      [attr.aria-checked]="selected() === 'b'"
+      [attr.tabindex]="selected() === 'b' ? '0' : '-1'"
       (click)="select('b')"
     >
       {{ profileB().name }}
     </button>
     <button
       type="button"
+      data-choice="same"
       class="predict-view__choice"
       [class.predict-view__choice--selected]="selected() === 'same'"
-      [attr.aria-pressed]="selected() === 'same'"
+      role="radio"
+      [attr.aria-checked]="selected() === 'same'"
+      [attr.tabindex]="selected() === 'same' ? '0' : '-1'"
       (click)="select('same')"
     >
       About the same

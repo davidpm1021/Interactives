@@ -33,6 +33,17 @@ export class ComparisonView {
   protected readonly stageLabels = STAGE_LABELS;
   protected readonly revealOrder = REVEAL_ORDER;
 
+  /** The most-recently added stage, used for the sr-only live region. */
+  protected readonly latestRevealedLabel = computed(() => {
+    const stages = this.revealedStages();
+    if (stages.size === 0) return '';
+    for (let i = REVEAL_ORDER.length - 1; i >= 0; i--) {
+      const stage = REVEAL_ORDER[i];
+      if (stages.has(stage)) return `${STAGE_LABELS[stage]} revealed`;
+    }
+    return '';
+  });
+
   /** Show the "your prediction vs reality" summary text after the final stage. */
   protected readonly predictionSummary = computed(() => {
     if (!this.revealComplete()) return null;

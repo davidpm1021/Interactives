@@ -1,7 +1,7 @@
 <section class="comparison-view" aria-labelledby="comparison-heading">
   <h2 id="comparison-heading" class="comparison-view__heading">The full picture</h2>
 
-  <div class="comparison-view__stages" role="status" aria-live="polite">
+  <div class="comparison-view__stages">
     @for (stage of revealOrder; track stage) {
       <span
         class="comparison-view__stage"
@@ -11,6 +11,7 @@
       </span>
     }
   </div>
+  <div class="sr-only" aria-live="polite">{{ latestRevealedLabel() }}</div>
 
   <div class="comparison-view__grid">
     <app-profile-card [profile]="profileA()" [revealedStages]="revealedStages()" />
@@ -20,8 +21,7 @@
   @if (revealComplete() && predictionSummary(); as ps) {
     <div class="comparison-view__predict-summary"
          [class.comparison-view__predict-summary--correct]="ps.correct"
-         [class.comparison-view__predict-summary--wrong]="!ps.correct"
-         aria-live="polite">
+         [class.comparison-view__predict-summary--wrong]="!ps.correct">
       <p>
         <strong>{{ ps.higherName }}</strong> has the higher net worth.
         You guessed <strong>{{ ps.guessedName }}</strong>.
