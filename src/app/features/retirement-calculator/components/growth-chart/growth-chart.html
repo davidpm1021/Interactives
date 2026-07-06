@@ -8,7 +8,7 @@
       [attr.aria-selected]="view() === 'graph'"
       (click)="view.set('graph')"
     >
-      Graph view
+      Chart
     </button>
     <button
       type="button"
@@ -18,7 +18,7 @@
       [attr.aria-selected]="view() === 'table'"
       (click)="view.set('table')"
     >
-      Summary view
+      Table
     </button>
   </div>
 
@@ -27,11 +27,11 @@
     <div class="growth-chart__legend">
       <span class="growth-chart__legend-item">
         <span class="growth-chart__legend-swatch growth-chart__legend-swatch--actual" aria-hidden="true"></span>
-        What you'll have
+        Projected balance
       </span>
       <span class="growth-chart__legend-item">
         <span class="growth-chart__legend-swatch growth-chart__legend-swatch--target" aria-hidden="true"></span>
-        What you'll need
+        Target balance
       </span>
     </div>
   } @else {
@@ -42,8 +42,8 @@
           <tr>
             <th scope="col">Age</th>
             <th scope="col">Phase</th>
-            <th scope="col">What you'll have</th>
-            <th scope="col">What you'll need</th>
+            <th scope="col">Projected balance</th>
+            <th scope="col">Target balance</th>
           </tr>
         </thead>
         <tbody>
@@ -65,8 +65,8 @@
     <thead>
       <tr>
         <th scope="col">Age</th>
-        <th scope="col">What you'll have</th>
-        <th scope="col">What you'll need</th>
+        <th scope="col">Projected balance</th>
+        <th scope="col">Target balance</th>
       </tr>
     </thead>
     <tbody>

@@ -159,7 +159,7 @@ export class GrowthChart {
         .text(`Retirement (age ${retirementAge})`);
     }
 
-    // Area under "What you'll have".
+    // Area under the projected-balance line.
     const areaGen = d3
       .area<ChartPoint>()
       .x((d) => scales.x(d.age))
@@ -172,10 +172,10 @@ export class GrowthChart {
     areaLayer
       .append('path')
       .attr('d', areaGen(data))
-      .attr('fill', 'var(--ngpf-success, #2e7d32)')
-      .attr('opacity', 0.15);
+      .attr('fill', 'var(--ngpf-royal-blue, #1f3b9b)')
+      .attr('opacity', 0.12);
 
-    // "What you'll have" solid line.
+    // Projected balance: solid royal-blue.
     const actualLine = d3
       .line<ChartPoint>()
       .x((d) => scales.x(d.age))
@@ -188,10 +188,10 @@ export class GrowthChart {
       .append('path')
       .attr('d', actualLine(data))
       .attr('fill', 'none')
-      .attr('stroke', 'var(--ngpf-success, #2e7d32)')
+      .attr('stroke', 'var(--ngpf-royal-blue, #1f3b9b)')
       .attr('stroke-width', 2.5);
 
-    // "What you'll need" dashed line.
+    // Target balance: dashed orange.
     const targetLine = d3
       .line<ChartPoint>()
       .x((d) => scales.x(d.age))
@@ -204,15 +204,15 @@ export class GrowthChart {
       .append('path')
       .attr('d', targetLine(data))
       .attr('fill', 'none')
-      .attr('stroke', 'var(--ngpf-royal-blue, #1f3b9b)')
-      .attr('stroke-width', 2)
+      .attr('stroke', 'var(--ngpf-orange, #f78219)')
+      .attr('stroke-width', 2.5)
       .attr('stroke-dasharray', '6 4');
 
     this.svg
       .attr('role', 'img')
       .attr(
         'aria-label',
-        `Two lines from age ${minAge} to age ${maxAge}. What you'll have peaks at ${formatCurrency(p.finalBalance)} at retirement. What you'll need peaks at ${formatCurrency(p.targetNestEgg)}.`,
+        `Two lines from age ${minAge} to age ${maxAge}. Projected balance peaks at ${formatCurrency(p.finalBalance)} at retirement. Target balance peaks at ${formatCurrency(p.targetNestEgg)}.`,
       );
   }
 }

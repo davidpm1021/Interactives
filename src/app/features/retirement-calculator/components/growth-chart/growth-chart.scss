@@ -4,40 +4,41 @@
   box-shadow: var(--ngpf-shadow-sm);
   padding: var(--ngpf-spacing-md);
 
+  // Segmented control (pill toggle), not underlined tabs.
   &__tabs {
-    display: flex;
-    gap: var(--ngpf-spacing-sm);
-    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    display: inline-flex;
+    padding: 4px;
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: 999px;
+    gap: 2px;
     margin-bottom: var(--ngpf-spacing-md);
   }
 
   &__tab {
-    background: none;
+    background: transparent;
     border: none;
-    border-bottom: 2px solid transparent;
-    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
-    font-family: var(--ngpf-font-heading);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    padding: 6px 18px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--ngpf-text-secondary);
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-    margin-bottom: -1px;
+    border-radius: 999px;
+    transition: background 0.15s, color 0.15s;
 
-    &:hover {
+    &:hover:not(&--active) {
       color: var(--ngpf-text-primary);
     }
 
     &:focus-visible {
       outline: 2px solid var(--ngpf-royal-blue);
       outline-offset: 2px;
-      border-radius: var(--ngpf-radius-sm);
     }
 
     &--active {
-      color: var(--ngpf-success);
-      border-bottom-color: var(--ngpf-success);
+      background: white;
+      color: var(--ngpf-royal-blue);
+      box-shadow: var(--ngpf-shadow-sm);
     }
   }
 
@@ -74,13 +75,13 @@
     height: 10px;
 
     &--actual {
-      background: var(--ngpf-success);
+      background: var(--ngpf-royal-blue);
       border-radius: 2px;
     }
 
     &--target {
       background: transparent;
-      border-top: 2px dashed var(--ngpf-royal-blue);
+      border-top: 2px dashed var(--ngpf-orange);
       height: 0;
       margin-top: 4px;
     }
