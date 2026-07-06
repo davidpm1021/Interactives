@@ -59,14 +59,14 @@ describe('RetirementService', () => {
     // ~$467K, matching NerdWallet within rounding.
     expect(p.finalBalance).toBeGreaterThan(465_000);
     expect(p.finalBalance).toBeLessThan(470_000);
-    // Target nest egg falls in the same neighborhood as NerdWallet's $1.27M.
-    expect(p.targetNestEgg).toBeGreaterThan(1_200_000);
-    expect(p.targetNestEgg).toBeLessThan(1_300_000);
+    // NerdWallet reports $1,267,661. We match within tens of dollars.
+    expect(p.targetNestEgg).toBeGreaterThan(1_267_000);
+    expect(p.targetNestEgg).toBeLessThan(1_268_500);
   });
 
   it('exposes hardcoded years in retirement based on life expectancy 95', () => {
     const p = service.project({ ...DEFAULT_INPUTS, retirementAge: 67 });
-    expect(p.yearsInRetirement).toBe(LIFE_EXPECTANCY - 67);
+    expect(p.yearsInRetirement).toBe(LIFE_EXPECTANCY - 67 + 1);
   });
 
   it('inflates the target budget to retirement year', () => {
@@ -88,7 +88,7 @@ describe('RetirementService', () => {
       targetMonthlyBudget: 3000,
     };
     const p = service.project(inputs);
-    const n = LIFE_EXPECTANCY - 67;
+    const n = LIFE_EXPECTANCY - 67 + 1;
     const P = 3000 * 12;
     const r = POST_RETIREMENT_RETURN;
     const g = INFLATION;
@@ -158,7 +158,7 @@ describe('RetirementService', () => {
       currentAge: 67,
       retirementAge: 67,
     });
-    const n = LIFE_EXPECTANCY - 67;
+    const n = LIFE_EXPECTANCY - 67 + 1;
     const r = POST_RETIREMENT_RETURN;
     const g = INFLATION;
     const expectedFirstYearAnnual = (1_000_000 * (r - g)) / (1 - Math.pow((1 + g) / (1 + r), n));

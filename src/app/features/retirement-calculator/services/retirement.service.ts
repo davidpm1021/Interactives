@@ -30,7 +30,9 @@ export class RetirementService {
    */
   project(inputs: RetirementInputs): RetirementProjection {
     const yearsToRetirement = Math.max(0, inputs.retirementAge - inputs.currentAge);
-    const yearsInRetirement = Math.max(0, LIFE_EXPECTANCY - inputs.retirementAge);
+    // 29 years to fund from age 67 through age 95 inclusive (matches
+    // NerdWallet's empirical output).
+    const yearsInRetirement = Math.max(0, LIFE_EXPECTANCY - inputs.retirementAge + 1);
     const r = PRE_RETIREMENT_RETURN;
     const g = INCOME_GROWTH;
 
