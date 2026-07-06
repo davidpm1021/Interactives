@@ -64,8 +64,8 @@
     border-bottom: none;
   }
 
-  // Short-text answers get more ruled writing space than short answers.
-  // Q3 and Q5 in the current worksheet are DOK-2 and DOK-3 short-text.
+  // Short-text answers (Q3, Q5) get more blank writing space than short
+  // answers.
   .question-stack__list > app-question-item:nth-child(3) .question-item::after,
   .question-stack__list > app-question-item:nth-child(5) .question-item::after {
     min-height: 90pt;

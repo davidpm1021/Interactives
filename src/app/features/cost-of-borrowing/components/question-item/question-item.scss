@@ -339,20 +339,14 @@
       display: none !important;
     }
 
-    // Ruled writing space grows to fill remaining vertical room in each
-    // grid cell so Q1 and Q2 end at the same height.
+    // Blank answer space (no ruled lines — just free room to write). Grows
+    // to fill remaining vertical space in each grid cell so Q1 and Q2 end
+    // at the same height.
     &::after {
       content: '';
       display: block;
       flex: 1 0 auto;
       min-height: 46pt;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0,
-        transparent 14pt,
-        #999 14pt,
-        #999 calc(14pt + 1pt)
-      );
     }
   }
 }
