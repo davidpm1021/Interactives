@@ -11,6 +11,12 @@ function emptyCheckbook(): Checkbook {
   return { accountHolder: '', accountNumber: '', openingBalance: 0, entries: [emptyEntry()] };
 }
 
+/** One checkbook row enriched with its running balance and a sort index. */
+export interface CheckbookRow extends CheckbookEntry {
+  origIndex: number;
+  runningBalance: number;
+}
+
 @Component({
   selector: 'app-checkbook-editor',
   standalone: true,
@@ -26,16 +32,41 @@ export class CheckbookEditor {
   protected readonly randomFnRef = (): Checkbook => randomCheckbook();
   protected readonly clearFnRef = (): Checkbook => emptyCheckbook();
 
-  protected runningBalancesOf(c: Checkbook): number[] {
-    let balance = c.openingBalance;
-    return c.entries.map((e) => {
-      balance = balance + (e.credit || 0) - (e.debit || 0);
-      return balance;
+  // Cache computed rows per Checkbook object so the preview doesn't rerun the
+  // O(N) prefix-sum for every row on every change detection cycle.
+  private readonly rowsCache = new WeakMap<Checkbook, CheckbookRow[]>();
+
+  /**
+   * Rows sorted chronologically with a running balance per row. Undated rows
+   * stay in insertion order at the bottom.
+   */
+  protected rowsOf(c: Checkbook): CheckbookRow[] {
+    const cached = this.rowsCache.get(c);
+    if (cached) return cached;
+
+    const withIndex = c.entries.map((e, i) => ({ ...e, origIndex: i }));
+    withIndex.sort((a, b) => {
+      const da = a.date || '';
+      const db = b.date || '';
+      if (da === db) return a.origIndex - b.origIndex;
+      if (!da) return 1;
+      if (!db) return -1;
+      return da < db ? -1 : 1;
     });
+
+    let balance = c.openingBalance;
+    const rows: CheckbookRow[] = withIndex.map((e) => {
+      balance = balance + (e.credit || 0) - (e.debit || 0);
+      return { ...e, runningBalance: balance };
+    });
+
+    this.rowsCache.set(c, rows);
+    return rows;
   }
+
   protected endingBalanceOf(c: Checkbook): number {
-    const bals = this.runningBalancesOf(c);
-    return bals.length ? bals[bals.length - 1] : c.openingBalance;
+    const rows = this.rowsOf(c);
+    return rows.length ? rows[rows.length - 1].runningBalance : c.openingBalance;
   }
 
   private readonly mutator = new FirstItemMutator(this.checkbooks, sampleCheckbook);
@@ -60,5 +91,4 @@ export class CheckbookEditor {
   protected removeEntry(index: number): void {
     this.mutateFirst((c) => ({ ...c, entries: c.entries.filter((_, i) => i !== index) }));
   }
-
 }

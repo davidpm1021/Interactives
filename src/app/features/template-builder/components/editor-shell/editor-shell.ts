@@ -54,8 +54,16 @@ export class EditorShell {
 
   protected readonly renderedDocs = computed(() => {
     const docs = this.docs();
-    if (docs.length === 1 && this.copiesPerPage() === 2) {
+    const copies = this.copiesPerPage();
+    if (copies !== 2) return docs;
+    if (docs.length === 1) {
+      // 1 doc, 2-up → duplicate to fill the sheet.
       return [docs[0], docs[0]];
+    }
+    if (docs.length % 2 === 1) {
+      // Odd count in 2-up mode → duplicate the last doc so the final sheet
+      // is a matched pair instead of half-blank.
+      return [...docs, docs[docs.length - 1]];
     }
     return docs;
   });

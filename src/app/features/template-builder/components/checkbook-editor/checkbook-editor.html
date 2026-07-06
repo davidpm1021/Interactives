@@ -96,14 +96,14 @@
           <td></td>
           <td>{{ checkbook.openingBalance | currency }}</td>
         </tr>
-        @for (entry of checkbook.entries; track $index; let i = $index) {
-          <tr>
-            <td>{{ entry.date ? (entry.date | date: 'M/d') : '' }}</td>
-            <td>{{ entry.reference }}</td>
-            <th scope="row">{{ entry.description }}</th>
-            <td>{{ entry.debit ? (entry.debit | currency) : '' }}</td>
-            <td>{{ entry.credit ? (entry.credit | currency) : '' }}</td>
-            <td>{{ runningBalancesOf(checkbook)[i] | currency }}</td>
+        @for (row of rowsOf(checkbook); track row.origIndex) {
+          <tr [class.checkbook-preview__row--negative]="row.runningBalance < 0">
+            <td>{{ row.date ? (row.date | date: 'M/d') : '' }}</td>
+            <td>{{ row.reference }}</td>
+            <th scope="row">{{ row.description }}</th>
+            <td>{{ row.debit ? (row.debit | currency) : '' }}</td>
+            <td>{{ row.credit ? (row.credit | currency) : '' }}</td>
+            <td>{{ row.runningBalance | currency }}</td>
           </tr>
         }
       </tbody>

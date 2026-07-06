@@ -31,6 +31,7 @@ export class FitToHeightDirective implements OnInit, OnDestroy {
   private mutationObserver: MutationObserver | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private rafHandle: number | null = null;
+  private readonly onWindowResize = () => this.scheduleFit();
 
   constructor() {
     effect(() => {
@@ -48,13 +49,20 @@ export class FitToHeightDirective implements OnInit, OnDestroy {
       subtree: true,
       characterData: true,
     });
+    // Observe the host element itself so we react to layout-only reflows
+    // (font swaps, sidebar collapses, etc.) that don't change body height.
     this.resizeObserver = new ResizeObserver(() => this.scheduleFit());
+    this.resizeObserver.observe(this.elementRef.nativeElement);
     this.resizeObserver.observe(document.body);
+    // Belt-and-suspenders: catch viewport width changes in browsers where the
+    // body-height ResizeObserver doesn't fire.
+    window.addEventListener('resize', this.onWindowResize);
   }
 
   ngOnDestroy(): void {
     this.mutationObserver?.disconnect();
     this.resizeObserver?.disconnect();
+    window.removeEventListener('resize', this.onWindowResize);
     if (this.rafHandle !== null) cancelAnimationFrame(this.rafHandle);
   }
 
