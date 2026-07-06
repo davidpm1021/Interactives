@@ -6,7 +6,7 @@
       <span class="results-panel__label">Projected nest egg</span>
       <app-stat-counter [value]="projection().finalBalance" prefix="$" />
       <span class="results-panel__sub">
-        ~${{ projection().projectedMonthlyIncome | number: '1.0-0' }}/mo using the 4% rule
+        Supports ~${{ projection().projectedMonthlyIncome | number: '1.0-0' }}/mo in today's dollars
       </span>
     </div>
 
@@ -14,7 +14,7 @@
       <span class="results-panel__label">Target nest egg</span>
       <app-stat-counter [value]="projection().targetNestEgg" prefix="$" />
       <span class="results-panel__sub">
-        To fund your ${{ (projection().targetNestEgg * 0.04 / 12) | number: '1.0-0' }}/mo budget
+        Funds your budget through age 95, adjusted 3%/yr for inflation
       </span>
     </div>
 

@@ -86,19 +86,4 @@
     </span>
   </label>
 
-  <label class="inputs-panel__field inputs-panel__field--slim">
-    <span class="inputs-panel__label">Expected return (annual)</span>
-    <span class="inputs-panel__input-with-suffix">
-      <input
-        type="number"
-        inputmode="decimal"
-        min="0"
-        max="15"
-        step="0.5"
-        [ngModel]="returnPct()"
-        (ngModelChange)="updateReturnPct($event)"
-      />
-      <span class="inputs-panel__suffix">%</span>
-    </span>
-  </label>
 </section>

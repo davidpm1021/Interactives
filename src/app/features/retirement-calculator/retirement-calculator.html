@@ -25,10 +25,12 @@
   <div class="retirement-calculator__assumptions">
     <h2>Assumptions</h2>
     <ul>
-      <li><strong>Expected return:</strong> {{ (inputs().expectedReturn * 100).toFixed(1) }}% real return per year, compounded monthly.</li>
-      <li><strong>Withdrawal rate:</strong> 4% of the nest egg per year (a rough industry rule of thumb).</li>
-      <li><strong>Retirement horizon:</strong> {{ inputs().yearsInRetirement }} years, ending around age {{ inputs().retirementAge + inputs().yearsInRetirement }}.</li>
-      <li><strong>What's not modeled:</strong> Social Security, employer match, taxes, inflation on your target budget, market volatility.</li>
+      <li><strong>Life expectancy:</strong> 95 years old.</li>
+      <li><strong>Pre-retirement return:</strong> 6% per year, compounded monthly.</li>
+      <li><strong>Post-retirement return:</strong> 5% per year on the balance you haven't withdrawn yet.</li>
+      <li><strong>Inflation:</strong> 3% per year. Your target budget is inflated to retirement year, and the yearly withdrawal grows 3% each year of retirement.</li>
+      <li><strong>Salary growth:</strong> 2% per year.</li>
+      <li><strong>What's not modeled:</strong> Social Security, employer match, taxes, market volatility.</li>
     </ul>
   </div>
 </main>
