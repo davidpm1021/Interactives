@@ -25,7 +25,27 @@
     margin: 0 0 8pt;
   }
 
+  // Mimic the source worksheet's layout: the two DOK-1 questions sit side
+  // by side, the DOK-2 and DOK-3 questions take a full-width row each.
   .question-stack__list {
-    gap: 8pt;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8pt 12pt;
+  }
+
+  .question-stack__list > app-question-item:nth-child(1),
+  .question-stack__list > app-question-item:nth-child(2) {
+    // First two questions share the row.
+  }
+
+  .question-stack__list > app-question-item:nth-child(n+3) {
+    grid-column: 1 / -1;
+  }
+
+  // Short-text answers get more ruled writing space than short answers.
+  // Q3 and Q5 in the current worksheet are DOK-2 and DOK-3 short-text.
+  .question-stack__list > app-question-item:nth-child(3) .question-item::after,
+  .question-stack__list > app-question-item:nth-child(5) .question-item::after {
+    height: 90pt;
   }
 }

@@ -126,3 +126,42 @@
     }
   }
 }
+
+@media print {
+  .trend-chart {
+    box-shadow: none;
+    padding: 6pt;
+    background: white;
+    border: 1px solid #999;
+    page-break-inside: avoid;
+
+    &__legend {
+      font-size: 8.5pt;
+      color: #1a1a1a;
+      gap: 12pt;
+      margin-bottom: 4pt;
+    }
+
+    &__tooltip {
+      display: none;
+    }
+
+    &__container {
+      min-height: 200pt;
+    }
+
+    :host ::ng-deep {
+      .x-axis text,
+      .y-axis text {
+        fill: #333;
+      }
+
+      .x-axis line,
+      .x-axis path,
+      .y-axis line,
+      .y-axis path {
+        stroke: #666;
+      }
+    }
+  }
+}

@@ -22,8 +22,8 @@
     <aside class="cost-of-borrowing__data" aria-labelledby="data-heading">
       <h2 id="data-heading" class="cost-of-borrowing__section-heading">Current national averages</h2>
       <div class="cost-of-borrowing__data-inner">
-        <app-rate-table [series]="rateSeries" />
-        <app-trend-chart [series]="rateSeries" class="no-print" />
+        <app-rate-table [series]="rateSeries" class="cost-of-borrowing__rate-table" />
+        <app-trend-chart [series]="rateSeries" class="cost-of-borrowing__trend-chart" />
       </div>
     </aside>
 

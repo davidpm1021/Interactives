@@ -181,6 +181,16 @@
       page-break-inside: avoid;
     }
 
+    // Print worksheet uses the chart (matches the source worksheet's layout),
+    // not the data table.
+    &__rate-table {
+      display: none !important;
+    }
+
+    &__trend-chart {
+      display: block;
+    }
+
     &__section-heading {
       font-size: 11pt;
       color: #1a1a1a;
