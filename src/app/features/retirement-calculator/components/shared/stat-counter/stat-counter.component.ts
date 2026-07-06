@@ -18,17 +18,30 @@ import {
     <span
       class="stat-counter"
       [style.color]="'var(--counter-color, var(--ngpf-navy-blue))'"
-      aria-live="polite"
+      aria-hidden="true"
     >
       {{ prefix() }}{{ displayValue() }}{{ suffix() }}
     </span>
+    <span class="sr-only" aria-live="polite">{{ finalAnnouncement() }}</span>
   `,
   styles: `
+    :host { display: inline-block; }
     .stat-counter {
       font-family: var(--ngpf-font-heading);
       font-size: 1.6rem;
       font-weight: 700;
       display: inline-block;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   `,
 })
@@ -40,6 +53,7 @@ export class StatCounterComponent implements OnDestroy {
   readonly duration = input(800);
 
   protected readonly displayValue = signal('0');
+  protected readonly finalAnnouncement = signal('');
 
   private readonly injector = inject(Injector);
   private animationFrameId: number | null = null;
@@ -73,8 +87,11 @@ export class StatCounterComponent implements OnDestroy {
       cancelAnimationFrame(this.animationFrameId);
     }
 
+    const finalFormatted = `${this.prefix()}${this.formatNumber(target)}${this.suffix()}`;
+
     if (this.reducedMotion) {
       this.displayValue.set(this.formatNumber(target));
+      this.finalAnnouncement.set(finalFormatted);
       return;
     }
 
@@ -94,6 +111,7 @@ export class StatCounterComponent implements OnDestroy {
         this.animationFrameId = requestAnimationFrame(tick);
       } else {
         this.animationFrameId = null;
+        this.finalAnnouncement.set(finalFormatted);
       }
     };
 

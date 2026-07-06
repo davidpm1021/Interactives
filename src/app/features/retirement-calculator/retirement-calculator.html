@@ -1,5 +1,5 @@
 <app-top-header></app-top-header>
-<main class="retirement-calculator">
+<main class="retirement-calculator" id="main-content">
   <div class="retirement-calculator__intro">
     <h1>Retirement Calculator</h1>
     <p>
@@ -23,7 +23,7 @@
   </div>
 
   <div class="retirement-calculator__assumptions">
-    <h3>Assumptions</h3>
+    <h2>Assumptions</h2>
     <ul>
       <li><strong>Expected return:</strong> {{ (inputs().expectedReturn * 100).toFixed(1) }}% real return per year, compounded monthly.</li>
       <li><strong>Withdrawal rate:</strong> 4% of the nest egg per year (a rough industry rule of thumb).</li>
