@@ -54,6 +54,53 @@ export class CreditReportEditor {
     return ((s - 300) / 550) * 100;
   }
 
+  /**
+   * Revolving accounts (cards) — the only kind for which "utilization" is
+   * meaningful. Installment loans use "balance / original amount" as loan
+   * progress, but that's not part of the utilization ratio.
+   */
+  private static readonly REVOLVING_TYPES = new Set([
+    'Credit Card',
+    'Store Card',
+    'Retail Card',
+    'Line of Credit',
+  ]);
+
+  protected isRevolving(type: string): boolean {
+    return CreditReportEditor.REVOLVING_TYPES.has(type);
+  }
+
+  /** Per-account utilization percentage, or null when not applicable. */
+  protected utilizationPctOf(acct: CreditAccount): number | null {
+    if (!this.isRevolving(acct.type)) return null;
+    if (!acct.creditLimit || acct.creditLimit <= 0) return null;
+    return Math.round((acct.balance / acct.creditLimit) * 100);
+  }
+
+  /**
+   * Aggregate utilization across all OPEN revolving accounts:
+   *   sum(balance) / sum(limit) of open cards.
+   */
+  protected aggregateUtilizationOf(r: CreditReport): number | null {
+    let totalBal = 0;
+    let totalLim = 0;
+    for (const a of r.accounts) {
+      if (!this.isRevolving(a.type)) continue;
+      if (a.status !== 'Open') continue;
+      totalBal += a.balance;
+      totalLim += a.creditLimit;
+    }
+    if (totalLim <= 0) return null;
+    return Math.round((totalBal / totalLim) * 100);
+  }
+
+  protected utilizationBandOf(pct: number): { label: string; color: string } {
+    if (pct <= 10) return { label: 'Excellent', color: '#2e7d32' };
+    if (pct <= 30) return { label: 'Good', color: '#558b2f' };
+    if (pct <= 50) return { label: 'Elevated', color: '#ef6c00' };
+    return { label: 'High', color: '#c62828' };
+  }
+
   private readonly mutator = new FirstItemMutator(this.reports, sampleCreditReport);
   private mutateFirst(fn: (r: CreditReport) => CreditReport): void {
     this.mutator.mutate(fn);

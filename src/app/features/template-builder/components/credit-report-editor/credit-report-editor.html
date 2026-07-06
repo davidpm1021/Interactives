@@ -168,6 +168,15 @@
         <div class="credit-preview__score-bar">
           <div class="credit-preview__score-bar-fill" [style.width.%]="scoreFractionOf(report)" [style.background]="scoreCategoryOf(report).color"></div>
         </div>
+        @if (aggregateUtilizationOf(report) !== null) {
+          <div class="credit-preview__util">
+            <span class="credit-preview__util-label">Revolving utilization:</span>
+            <strong [style.color]="utilizationBandOf(aggregateUtilizationOf(report)!).color">
+              {{ aggregateUtilizationOf(report) }}%
+              ({{ utilizationBandOf(aggregateUtilizationOf(report)!).label }})
+            </strong>
+          </div>
+        }
       </div>
     </section>
 
@@ -202,21 +211,25 @@
       <h3>Accounts</h3>
       <table class="credit-preview__table">
         <colgroup>
-          <col style="width: 24%" />
-          <col style="width: 16%" />
-          <col style="width: 16%" />
-          <col style="width: 11%" />
-          <col style="width: 11%" />
+          <col style="width: 20%" />
+          <col style="width: 13%" />
+          <col style="width: 14%" />
+          <col style="width: 9%" />
           <col style="width: 10%" />
-          <col style="width: 12%" />
+          <col style="width: 10%" />
+          <col style="width: 8%" />
+          <col style="width: 8%" />
+          <col style="width: 8%" />
         </colgroup>
         <thead>
           <tr>
             <th scope="col">Creditor</th>
             <th scope="col">Type</th>
             <th scope="col">Account #</th>
+            <th scope="col">Opened</th>
             <th scope="col" class="credit-preview__col-num">Balance</th>
             <th scope="col" class="credit-preview__col-num">Limit / Orig</th>
+            <th scope="col" class="credit-preview__col-num">Util.</th>
             <th scope="col">Status</th>
             <th scope="col">Payment</th>
           </tr>
@@ -227,8 +240,10 @@
               <th scope="row">{{ acct.creditor }}</th>
               <td>{{ acct.type }}</td>
               <td>{{ acct.accountNumber }}</td>
+              <td>{{ acct.openedDate ? (acct.openedDate | date: 'MMM y') : '' }}</td>
               <td>{{ acct.balance | currency }}</td>
               <td>{{ acct.creditLimit | currency }}</td>
+              <td>{{ utilizationPctOf(acct) !== null ? utilizationPctOf(acct) + '%' : '—' }}</td>
               <td>{{ acct.status }}</td>
               <td>{{ acct.paymentStatus }}</td>
             </tr>

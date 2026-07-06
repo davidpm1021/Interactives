@@ -24,40 +24,80 @@ function maskedLoan(): string {
   return `****${randInt(1000, 9999)}`;
 }
 
+/**
+ * Sample a random date between minYearsBack and maxYearsBack. Clamps so that
+ * max is at least min; falls back to exactly `min` years ago if the caller's
+ * range collapsed (previous behavior would silently pin to minYearsBack).
+ */
 function randomPastDate(now: Date, minYearsBack: number, maxYearsBack: number): Date {
-  const yearsBack = minYearsBack + Math.random() * Math.max(0, maxYearsBack - minYearsBack);
+  const min = Math.max(0, minYearsBack);
+  const max = Math.max(min, maxYearsBack);
+  const yearsBack = min + Math.random() * (max - min);
   return shiftDays(now, -Math.floor(yearsBack * 365));
 }
 
-/**
- * Box-Muller transform: returns a sample from N(0, 1).
- */
+/** Box-Muller transform: returns a sample from N(0, 1). */
 function gaussianSample(): number {
   const u = 1 - Math.random();
   const v = Math.random();
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
 
-/**
- * Credit score sampled from a bell curve centered around 700.
- */
+/** Credit score sampled from a bell curve centered around 700. */
 function gaussianScore(): number {
   const raw = 700 + gaussianSample() * 85;
   return Math.max(300, Math.min(850, Math.round(raw)));
 }
 
+/**
+ * Probability weights over payment-status buckets, keyed to the consumer's
+ * overall score band. Higher-scoring reports show almost exclusively
+ * "Current" accounts; lower-scoring reports mix in late-pay history.
+ */
+function paymentStatusForScore(score: number): PaymentStatus {
+  const roll = Math.random();
+  if (score >= 800) {
+    return 'Current';
+  }
+  if (score >= 740) {
+    return roll < 0.98 ? 'Current' : '30 days late';
+  }
+  if (score >= 670) {
+    if (roll < 0.9) return 'Current';
+    if (roll < 0.98) return '30 days late';
+    return '60 days late';
+  }
+  if (score >= 580) {
+    if (roll < 0.6) return 'Current';
+    if (roll < 0.85) return '30 days late';
+    if (roll < 0.95) return '60 days late';
+    return '90+ days late';
+  }
+  // Poor (< 580): mostly delinquent history.
+  if (roll < 0.35) return 'Current';
+  if (roll < 0.6) return '30 days late';
+  if (roll < 0.85) return '60 days late';
+  return '90+ days late';
+}
+
 interface AccountConstraints {
-  minOpenAge: number;
   maxAccountAge: number;
 }
 
-function buildAccount(now: Date, kind: 'card' | 'auto' | 'student' | 'store', limits: AccountConstraints): CreditAccount {
+function buildAccount(
+  now: Date,
+  kind: 'card' | 'auto' | 'student' | 'store',
+  limits: AccountConstraints,
+  score: number,
+): CreditAccount {
   const maxYearsBack = Math.max(0.25, limits.maxAccountAge);
 
   if (kind === 'card') {
     const limit = pick([1000, 1500, 2000, 2500, 5000, 7500]);
-    const utilization = Math.random() * 0.5;
-    const balance = randFloat(0, limit * utilization);
+    // Consumers with lower scores tend to carry higher utilization; higher
+    // scores keep utilization low.
+    const maxUtil = score >= 740 ? 0.15 : score >= 670 ? 0.35 : score >= 580 ? 0.65 : 0.9;
+    const balance = randFloat(0, limit * maxUtil);
     return {
       creditor: pick(CARD_ISSUERS),
       type: 'Credit Card',
@@ -66,7 +106,7 @@ function buildAccount(now: Date, kind: 'card' | 'auto' | 'student' | 'store', li
       balance,
       creditLimit: limit,
       status: 'Open',
-      paymentStatus: pick(['Current', 'Current', 'Current', 'Current', '30 days late']) as PaymentStatus,
+      paymentStatus: paymentStatusForScore(score),
     };
   }
   if (kind === 'auto') {
@@ -80,7 +120,7 @@ function buildAccount(now: Date, kind: 'card' | 'auto' | 'student' | 'store', li
       balance,
       creditLimit: original,
       status: 'Open',
-      paymentStatus: 'Current',
+      paymentStatus: paymentStatusForScore(score),
     };
   }
   if (kind === 'student') {
@@ -94,7 +134,7 @@ function buildAccount(now: Date, kind: 'card' | 'auto' | 'student' | 'store', li
       balance,
       creditLimit: original,
       status: 'Open',
-      paymentStatus: pick(['Current', 'Current', 'Current']) as PaymentStatus,
+      paymentStatus: paymentStatusForScore(score),
     };
   }
   const limit = pick([500, 800, 1200, 1500]);
@@ -107,7 +147,7 @@ function buildAccount(now: Date, kind: 'card' | 'auto' | 'student' | 'store', li
     balance: isPaid ? 0 : randFloat(0, limit * 0.6),
     creditLimit: limit,
     status: (isPaid ? 'Paid' : 'Open') as AccountStatus,
-    paymentStatus: 'Current',
+    paymentStatus: paymentStatusForScore(score),
   };
 }
 
@@ -117,21 +157,27 @@ export function randomCreditReport(now: Date = new Date()): CreditReport {
 
   const birthYear = randInt(1985, 2007);
   const age = now.getFullYear() - birthYear;
-  const yearsAsAdult = Math.max(0, age - 18);
+  const yearsAsAdult = Math.max(0.5, age - 18);
   const accountConstraints: AccountConstraints = {
-    minOpenAge: 18,
     maxAccountAge: yearsAsAdult,
   };
 
+  const score = gaussianScore();
   const numAccounts = randInt(3, 6);
   const accounts: CreditAccount[] = [];
-  accounts.push(buildAccount(now, 'card', accountConstraints));
+  accounts.push(buildAccount(now, 'card', accountConstraints, score));
+
+  // Kinds a young consumer can plausibly hold: only offer student/auto loans
+  // when there's enough adult time for the account to have originated.
+  const availableKinds = ['card', 'card', 'store'] as (
+    'card' | 'auto' | 'student' | 'store'
+  )[];
+  if (yearsAsAdult >= 0.5) availableKinds.push('auto');
+  if (yearsAsAdult >= 2) availableKinds.push('student');
+
   for (let i = 1; i < numAccounts; i++) {
-    const kind = pick(['card', 'card', 'auto', 'student', 'store']) as 'card' | 'auto' | 'student' | 'store';
-    const c = kind === 'student'
-      ? { ...accountConstraints, maxAccountAge: Math.max(0, age - 17) }
-      : accountConstraints;
-    accounts.push(buildAccount(now, kind, c));
+    const kind = pick(availableKinds);
+    accounts.push(buildAccount(now, kind, accountConstraints, score));
   }
 
   const numInquiries = randInt(0, 4);
@@ -166,7 +212,7 @@ export function randomCreditReport(now: Date = new Date()): CreditReport {
     },
     reportDate: toISO(now),
     bureau: pick(BUREAUS),
-    score: gaussianScore(),
+    score,
     accounts,
     inquiries,
   };

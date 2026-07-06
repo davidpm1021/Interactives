@@ -4,6 +4,16 @@
   @include fc.form-chrome;
 }
 
+.credit-preview__util {
+  margin-top: 0.08in;
+  font-size: 9pt;
+
+  &-label {
+    color: #444;
+    margin-right: 0.25rem;
+  }
+}
+
 .credit-preview {
   background: #fff;
   color: #1a1a1a;
