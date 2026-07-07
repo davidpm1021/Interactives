@@ -1,0 +1,171 @@
+.water-scene {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--ngpf-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--ngpf-shadow-md);
+  background: #e6f2ff;
+
+  // Ground fades OUT as water fades in.
+  &__ground {
+    transition: opacity 900ms ease-out;
+    opacity: 1;
+  }
+  &--water &__ground {
+    opacity: 0;
+  }
+
+  // Water fades IN from transparent.
+  &__water,
+  &__wave,
+  &__waterline,
+  &__zero-pill {
+    opacity: 0;
+    transition: opacity 900ms ease-out;
+  }
+  &--water &__water,
+  &--water &__wave,
+  &--water &__waterline,
+  &--water &__zero-pill {
+    opacity: 1;
+  }
+
+  // Ground rectangle sits under water, so water shows on top once revealed.
+  &__wave {
+    animation: wave-glisten 6s ease-in-out infinite;
+  }
+
+  // Character SVG animation — translateY drives the "settle" step.
+  &__character {
+    transition: transform 1500ms cubic-bezier(0.34, 1.42, 0.64, 1);
+    transform-origin: center;
+  }
+
+  // Attachments (assets/debts) — hidden container until phase advances.
+  // Individual attachments fade + slide from behind the character with a
+  // staggered delay so each item pops one after the other.
+  &__attachments {
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+  }
+  &__attachments--visible {
+    opacity: 1;
+  }
+
+  &__attach {
+    transition: transform 1500ms cubic-bezier(0.34, 1.42, 0.64, 1);
+    transform-origin: center;
+    animation: attach-pop 700ms cubic-bezier(0.22, 1.68, 0.5, 1) both;
+    animation-delay: var(--stagger, 0ms);
+  }
+
+  &__attachments:not(&__attachments--visible) &__attach {
+    animation: none;
+    opacity: 0;
+  }
+
+  // Net worth callout: hidden until the final phase.
+  &__nw-callout {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 500ms ease-out 200ms, transform 500ms ease-out 200ms;
+  }
+  &--final &__nw-callout {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  // Bottom caption: appears in the final phase.
+  &__caption {
+    opacity: 0;
+    transition: opacity 800ms ease-out 400ms;
+  }
+  &--final &__caption {
+    opacity: 1;
+  }
+
+  // Salary tether (dashed line connecting the salary bar to the character):
+  // invisible until the final phase — this is when the "salary ≠ net worth"
+  // reveal lands.
+  &__tether {
+    opacity: 0;
+    transition: opacity 600ms ease-out 300ms;
+  }
+  &--final &__tether {
+    opacity: 0.6;
+  }
+
+  // The salary bar itself always shows. We fade opacity only — a transform
+  // animation would clobber the outer SVG `translate(centerX, y)` transform
+  // and drop both salary groups onto the origin (top-left corner).
+  &__salary {
+    animation: salary-fade-in 900ms ease-out 200ms both;
+  }
+
+  &__clouds ellipse:nth-of-type(odd) {
+    animation: cloud-drift-a 30s ease-in-out infinite;
+  }
+  &__clouds ellipse:nth-of-type(even) {
+    animation: cloud-drift-b 40s ease-in-out infinite;
+  }
+}
+
+@keyframes attach-pop {
+  0% { opacity: 0; transform: scale(0.6); }
+  60% { transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+// Opacity-only fade. NEVER animate `transform` on this element — it would
+// overwrite the SVG `transform="translate(centerX, y)"` attribute and drop
+// the group onto the origin (top-left of the canvas).
+@keyframes salary-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes wave-glisten {
+  0%, 100% { transform: translateX(0); opacity: 0.7; }
+  50% { transform: translateX(-8px); opacity: 1; }
+}
+
+@keyframes cloud-drift-a {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+@keyframes cloud-drift-b {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .water-scene {
+    &__character,
+    &__attach,
+    &__ground,
+    &__water,
+    &__wave,
+    &__waterline,
+    &__zero-pill,
+    &__nw-callout,
+    &__caption,
+    &__tether,
+    &__salary,
+    &__attachments {
+      animation: none !important;
+      transition: none !important;
+    }
+    &--water &__water,
+    &--water &__wave,
+    &--water &__waterline,
+    &--water &__zero-pill,
+    &__attachments--visible,
+    &--final &__nw-callout,
+    &--final &__caption,
+    &--final &__tether {
+      opacity: 1;
+    }
+    &--water &__ground { opacity: 0; }
+  }
+}

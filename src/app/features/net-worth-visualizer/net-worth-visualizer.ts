@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TopHeader } from '../../shared/top-header/top-header';
 import { PROFILE_A, PROFILE_B } from './data/profiles';
-import { WealthScene } from './components/wealth-scene/wealth-scene';
+import { WaterScene } from './components/water-scene/water-scene';
 
 @Component({
   selector: 'app-net-worth-visualizer',
   standalone: true,
-  imports: [TopHeader, WealthScene],
+  imports: [TopHeader, WaterScene],
   templateUrl: './net-worth-visualizer.html',
   styleUrl: './net-worth-visualizer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

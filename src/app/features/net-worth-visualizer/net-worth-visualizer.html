@@ -1,16 +1,15 @@
 <app-top-header></app-top-header>
 <main class="net-worth-visualizer" id="main-content">
   <div class="net-worth-visualizer__intro">
-    <h1>Salary is not net worth</h1>
+    <h1>Same photo. Different question.</h1>
     <p>
-      Two real-looking people. Marcus earns twice what Priya does. Look at what
-      happens when you add up everything each of them actually owns and owes.
+      Marcus makes twice what Priya makes. Look up. His salary bar is nearly
+      double hers. Now watch what happens when the ground turns to water.
     </p>
   </div>
 
-  <div class="net-worth-visualizer__scenes">
-    <app-wealth-scene [profile]="profileA" />
-    <app-wealth-scene [profile]="profileB" />
+  <div class="net-worth-visualizer__scene">
+    <app-water-scene [profileA]="profileA" [profileB]="profileB" />
   </div>
 
   <aside class="net-worth-visualizer__takeaway" aria-labelledby="takeaway-heading">
@@ -18,7 +17,7 @@
     <div class="net-worth-visualizer__takeaway-grid">
       <div class="net-worth-visualizer__concept">
         <div class="net-worth-visualizer__concept-tag">Salary</div>
-        <p>A <strong>rate</strong>. How fast money comes in over a year.</p>
+        <p>A <strong>rate</strong>. How fast money comes in over a year. Marcus's is twice Priya's.</p>
       </div>
       <div class="net-worth-visualizer__concept">
         <div class="net-worth-visualizer__concept-tag">Cash on hand</div>
@@ -29,10 +28,5 @@
         <p>A <strong>balance</strong>. Everything you own minus everything you owe. This is the one that tells you where you actually stand.</p>
       </div>
     </div>
-    <p class="net-worth-visualizer__caption">
-      Marcus's paychecks are twice as big, but he stands under water because his
-      debts add up to more than his single asset. Priya's smaller salary bought
-      her a house, and that house is why she's above the line.
-    </p>
   </aside>
 </main>

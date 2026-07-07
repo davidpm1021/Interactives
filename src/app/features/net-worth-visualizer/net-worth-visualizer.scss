@@ -1,7 +1,9 @@
 .net-worth-visualizer {
   min-height: calc(100vh - 80px);
   padding: var(--ngpf-spacing-xl) var(--ngpf-spacing-lg);
-  background: var(--ngpf-soft-blue-tint);
+  background:
+    radial-gradient(1200px 400px at 50% -100px, rgba(255, 215, 128, 0.28), transparent 55%),
+    linear-gradient(180deg, #eaf3fb 0%, #cfe4f7 100%);
   max-width: 1200px;
   margin: 0 auto;
 
@@ -13,22 +15,20 @@
     h1 {
       font-family: var(--ngpf-font-heading);
       color: var(--ngpf-royal-blue);
-      font-size: 2.1rem;
+      font-size: 2.4rem;
       margin: 0 0 var(--ngpf-spacing-sm);
+      letter-spacing: -0.01em;
     }
 
     p {
       color: var(--ngpf-text-primary);
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       line-height: 1.55;
       margin: 0;
     }
   }
 
-  &__scenes {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--ngpf-spacing-xl);
+  &__scene {
     margin-bottom: var(--ngpf-spacing-xxl);
   }
 
@@ -52,7 +52,6 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--ngpf-spacing-lg);
-    margin-bottom: var(--ngpf-spacing-lg);
   }
 
   &__concept {
@@ -79,36 +78,13 @@
     font-size: 0.98rem;
     line-height: 1.55;
   }
-
-  &__caption {
-    text-align: center;
-    font-size: 1rem;
-    color: var(--ngpf-text-primary);
-    line-height: 1.6;
-    margin: 0;
-    padding: var(--ngpf-spacing-lg) 0 0;
-    border-top: 1px dashed var(--ngpf-light-gray-blue);
-    max-width: 780px;
-    margin-left: auto;
-    margin-right: auto;
-
-    strong {
-      color: var(--ngpf-royal-blue);
-    }
-  }
 }
 
 @media (max-width: 900px) {
   .net-worth-visualizer {
     padding: var(--ngpf-spacing-lg) var(--ngpf-spacing-md);
 
-    &__intro h1 {
-      font-size: 1.6rem;
-    }
-
-    &__scenes,
-    &__takeaway-grid {
-      grid-template-columns: 1fr;
-    }
+    &__intro h1 { font-size: 1.7rem; }
+    &__takeaway-grid { grid-template-columns: 1fr; }
   }
 }
