@@ -27,33 +27,25 @@
     print-color-adjust: exact;
   }
 
-  // Mimic the source worksheet's layout: the two DOK-1 questions sit side
-  // by side; DOK-2 and DOK-3 questions each take a full-width row. All
-  // questions look like one big joined table.
-  //
-  // Instead of relying on border-color (which some browsers strip when
-  // printing without "background graphics"), we paint the whole grid
-  // container black and set each cell to a white background. The grid
-  // GAPS then show as black divider lines. print-color-adjust forces
-  // the browser to preserve the fills.
+  // 2×4 table: Q1 | Q2 on the top row, Q3, Q4, Q5 each merged full-width
+  // rows underneath. Each cell draws its own outline; where adjacent
+  // outlines meet they visually form the shared table dividers. Outlines
+  // (rather than borders) are used because they print reliably across
+  // Chrome, Safari, Firefox, and Edge regardless of the "Background
+  // graphics" toggle in the print dialog.
   .question-stack__list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5pt;
-    padding: 1.5pt;
-    background: #000 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    gap: 0;
   }
 
   .question-stack__list > app-question-item {
     display: block;
-    background: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    outline: 1.25pt solid #000;
+    outline-offset: -0.5pt; // pull outlines inward so adjacent ones align cleanly
   }
 
-  // Q3, Q4, Q5 span the full width — no vertical divider through them.
+  // Q3, Q4, Q5 span the full width (merged cells).
   .question-stack__list > app-question-item:nth-child(n+3) {
     grid-column: 1 / -1;
   }
