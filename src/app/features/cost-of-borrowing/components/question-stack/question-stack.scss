@@ -29,39 +29,33 @@
 
   // Mimic the source worksheet's layout: the two DOK-1 questions sit side
   // by side; DOK-2 and DOK-3 questions each take a full-width row. All
-  // questions are joined in one ruled table with a single outer border
-  // and internal dividers (no gaps).
+  // questions look like one big joined table.
+  //
+  // Instead of relying on border-color (which some browsers strip when
+  // printing without "background graphics"), we paint the whole grid
+  // container black and set each cell to a white background. The grid
+  // GAPS then show as black divider lines. print-color-adjust forces
+  // the browser to preserve the fills.
   .question-stack__list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border: 1.5pt solid #1a1a1a;
+    gap: 1.5pt;
+    padding: 1.5pt;
+    background: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .question-stack__list > app-question-item {
     display: block;
-    // Every cell gets a right divider by default; the last cell in each
-    // row loses it via the nth-child rule below.
-    border-right: 1pt solid #1a1a1a;
-    // Bottom divider between rows.
-    border-bottom: 1pt solid #1a1a1a;
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
-  // Right-column cell in the Q1/Q2 row has no right divider.
-  .question-stack__list > app-question-item:nth-child(2) {
-    border-right: none;
-  }
-
-  // Q3, Q4, Q5 span the full width — no right divider (they hit the outer
-  // border on both sides).
+  // Q3, Q4, Q5 span the full width — no vertical divider through them.
   .question-stack__list > app-question-item:nth-child(n+3) {
     grid-column: 1 / -1;
-    border-right: none;
-  }
-
-  // Last question sits at the outer bottom border.
-  .question-stack__list > app-question-item:last-child {
-    border-bottom: none;
   }
 
   // Short-text answers (Q3, Q5) get more blank writing space than short
