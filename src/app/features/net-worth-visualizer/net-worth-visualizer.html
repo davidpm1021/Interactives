@@ -1,29 +1,38 @@
 <app-top-header></app-top-header>
 <main class="net-worth-visualizer" id="main-content">
   <div class="net-worth-visualizer__intro">
-    <h1>Salary vs. Bank Balance vs. Net Worth</h1>
-    <p>Three numbers that measure different things. Compare two people and see which one is actually ahead.</p>
+    <h1>Salary is not net worth</h1>
+    <p>
+      Two real-looking people. Marcus earns twice what Priya does. Look at what
+      happens when you add up everything each of them actually owns and owes.
+    </p>
   </div>
 
-  @switch (state.phase()) {
-    @case ('predict') {
-      <app-predict-view
-        [profileA]="profileA"
-        [profileB]="profileB"
-        (predictionMade)="onPredict($event)"
-      />
-    }
-    @case ('reveal') {
-      <app-comparison-view
-        [profileA]="profileA"
-        [profileB]="profileB"
-        [prediction]="state.prediction()"
-        (finish)="onFinishReveal()"
-      />
-    }
-    @case ('summary') {
-      <app-summary (restart)="onRestart()" />
-    }
-  }
-  <div class="sr-only" aria-live="polite">{{ phaseAnnouncement() }}</div>
+  <div class="net-worth-visualizer__scenes">
+    <app-wealth-scene [profile]="profileA" />
+    <app-wealth-scene [profile]="profileB" />
+  </div>
+
+  <aside class="net-worth-visualizer__takeaway" aria-labelledby="takeaway-heading">
+    <h2 id="takeaway-heading">Three numbers, three different meanings</h2>
+    <div class="net-worth-visualizer__takeaway-grid">
+      <div class="net-worth-visualizer__concept">
+        <div class="net-worth-visualizer__concept-tag">Salary</div>
+        <p>A <strong>rate</strong>. How fast money comes in over a year.</p>
+      </div>
+      <div class="net-worth-visualizer__concept">
+        <div class="net-worth-visualizer__concept-tag">Cash on hand</div>
+        <p>A <strong>snapshot</strong> of the money you can spend right now.</p>
+      </div>
+      <div class="net-worth-visualizer__concept">
+        <div class="net-worth-visualizer__concept-tag">Net worth</div>
+        <p>A <strong>balance</strong>. Everything you own minus everything you owe. This is the one that tells you where you actually stand.</p>
+      </div>
+    </div>
+    <p class="net-worth-visualizer__caption">
+      Marcus's paychecks are twice as big, but he stands under water because his
+      debts add up to more than his single asset. Priya's smaller salary bought
+      her a house, and that house is why she's above the line.
+    </p>
+  </aside>
 </main>

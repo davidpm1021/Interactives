@@ -1,7 +1,9 @@
 .net-worth-visualizer {
   min-height: calc(100vh - 80px);
-  padding: var(--ngpf-spacing-lg);
+  padding: var(--ngpf-spacing-xl) var(--ngpf-spacing-lg);
   background: var(--ngpf-soft-blue-tint);
+  max-width: 1200px;
+  margin: 0 auto;
 
   &__intro {
     text-align: center;
@@ -11,26 +13,102 @@
     h1 {
       font-family: var(--ngpf-font-heading);
       color: var(--ngpf-royal-blue);
-      font-size: 2rem;
+      font-size: 2.1rem;
       margin: 0 0 var(--ngpf-spacing-sm);
     }
 
     p {
-      font-family: var(--ngpf-font-body);
       color: var(--ngpf-text-primary);
       font-size: 1.05rem;
       line-height: 1.55;
       margin: 0;
     }
   }
+
+  &__scenes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ngpf-spacing-xl);
+    margin-bottom: var(--ngpf-spacing-xxl);
+  }
+
+  &__takeaway {
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    box-shadow: var(--ngpf-shadow-sm);
+    padding: var(--ngpf-spacing-xl);
+    border-top: 4px solid var(--ngpf-royal-blue);
+
+    h2 {
+      font-family: var(--ngpf-font-heading);
+      color: var(--ngpf-royal-blue);
+      font-size: 1.35rem;
+      margin: 0 0 var(--ngpf-spacing-lg);
+      text-align: center;
+    }
+  }
+
+  &__takeaway-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--ngpf-spacing-lg);
+    margin-bottom: var(--ngpf-spacing-lg);
+  }
+
+  &__concept {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ngpf-spacing-sm);
+  }
+
+  &__concept-tag {
+    font-family: var(--ngpf-font-heading);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: white;
+    background: var(--ngpf-royal-blue);
+    padding: 4px 10px;
+    border-radius: 999px;
+    align-self: flex-start;
+  }
+
+  &__concept p {
+    margin: 0;
+    color: var(--ngpf-text-primary);
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  &__caption {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.6;
+    margin: 0;
+    padding: var(--ngpf-spacing-lg) 0 0;
+    border-top: 1px dashed var(--ngpf-light-gray-blue);
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+
+    strong {
+      color: var(--ngpf-royal-blue);
+    }
+  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .net-worth-visualizer {
-    padding: var(--ngpf-spacing-md);
+    padding: var(--ngpf-spacing-lg) var(--ngpf-spacing-md);
 
     &__intro h1 {
       font-size: 1.6rem;
+    }
+
+    &__scenes,
+    &__takeaway-grid {
+      grid-template-columns: 1fr;
     }
   }
 }

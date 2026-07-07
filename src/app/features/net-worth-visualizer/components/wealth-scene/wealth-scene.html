@@ -1,0 +1,117 @@
+<article class="wealth-scene">
+  <header class="wealth-scene__header">
+    <div class="wealth-scene__avatar" [attr.aria-label]="profile().name + ', ' + profile().age + ', ' + profile().occupation">
+      {{ profile().name.charAt(0) }}
+    </div>
+    <div class="wealth-scene__id">
+      <h2 class="wealth-scene__name">{{ profile().name }}, {{ profile().age }}</h2>
+      <p class="wealth-scene__occupation">{{ profile().occupation }}</p>
+    </div>
+  </header>
+
+  <div class="wealth-scene__badges">
+    <div class="wealth-scene__badge">
+      <span class="wealth-scene__badge-label">Salary</span>
+      <span class="wealth-scene__badge-value">${{ profile().salary | number: '1.0-0' }}<span class="wealth-scene__badge-unit">/yr</span></span>
+    </div>
+    <div class="wealth-scene__badge">
+      <span class="wealth-scene__badge-label">Cash on hand</span>
+      <span class="wealth-scene__badge-value">${{ profile().cashOnHand | number: '1.0-0' }}</span>
+    </div>
+  </div>
+
+  <div class="wealth-scene__chart-wrap">
+    <svg viewBox="0 0 340 400" class="wealth-scene__svg" [attr.aria-label]="ariaLabel()" role="img">
+      <!-- Faint horizontal gridlines every $50k -->
+      @for (y of gridlineYs(); track y) {
+        <line
+          x1="90"
+          [attr.y1]="y"
+          x2="330"
+          [attr.y2]="y"
+          stroke="#eef2f8"
+          stroke-width="1"
+        />
+      }
+
+      <!-- Assets stack (rising above $0 line) -->
+      @for (seg of assetSegments(); track seg.label + $index) {
+        <g class="wealth-scene__seg wealth-scene__seg--asset">
+          <rect
+            x="130"
+            [attr.y]="seg.y"
+            width="70"
+            [attr.height]="seg.height"
+            [attr.fill]="seg.color"
+            rx="2"
+          />
+          <text
+            x="212"
+            [attr.y]="seg.y + seg.height / 2 + 4"
+            class="wealth-scene__seg-label"
+            fill="#1a1a1a"
+          >{{ seg.label }} <tspan font-weight="700" fill="#2e7d32">+${{ seg.value | number: '1.0-0' }}</tspan></text>
+        </g>
+      }
+
+      <!-- Debts stack (dropping below $0 line) -->
+      @for (seg of debtSegments(); track seg.label + $index) {
+        <g class="wealth-scene__seg wealth-scene__seg--debt">
+          <rect
+            x="130"
+            [attr.y]="seg.y"
+            width="70"
+            [attr.height]="seg.height"
+            [attr.fill]="seg.color"
+            rx="2"
+          />
+          <text
+            x="212"
+            [attr.y]="seg.y + seg.height / 2 + 4"
+            class="wealth-scene__seg-label"
+            fill="#1a1a1a"
+          >{{ seg.label }} <tspan font-weight="700" fill="#c62828">−${{ seg.value | number: '1.0-0' }}</tspan></text>
+        </g>
+      }
+
+      <!-- Ground line: $0 net worth reference -->
+      <line x1="10" [attr.y1]="zeroY" x2="330" [attr.y2]="zeroY" stroke="#1a1a1a" stroke-width="2" />
+      <text x="10" [attr.y]="zeroY - 6" class="wealth-scene__zero-label" fill="#1a1a1a">$0 net worth</text>
+
+      <!-- Connector between person marker and stack -->
+      <line
+        x1="72"
+        [attr.y1]="netWorthY()"
+        x2="130"
+        [attr.y2]="netWorthY()"
+        [attr.stroke]="isPositive() ? '#2e7d32' : '#c62828'"
+        stroke-width="1.5"
+        stroke-dasharray="4 4"
+      />
+
+      <!-- Person marker at net-worth level -->
+      <g class="wealth-scene__person" [attr.transform]="'translate(52,' + netWorthY() + ')'">
+        <circle
+          cx="0"
+          cy="0"
+          r="20"
+          [attr.fill]="isPositive() ? '#2e7d32' : '#c62828'"
+          stroke="white"
+          stroke-width="3"
+        />
+        <text x="0" y="6" text-anchor="middle" class="wealth-scene__person-letter" fill="white">
+          {{ profile().name.charAt(0) }}
+        </text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="wealth-scene__result"
+       [class.wealth-scene__result--positive]="isPositive()"
+       [class.wealth-scene__result--negative]="!isPositive()">
+    <span class="wealth-scene__result-label">Net worth</span>
+    <span class="wealth-scene__result-value">
+      {{ isPositive() ? '+' : '−' }}${{ netWorthAbs() | number: '1.0-0' }}
+    </span>
+  </div>
+</article>

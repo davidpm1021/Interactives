@@ -19,12 +19,3 @@ export interface NetWorthBreakdown {
   totalDebts: number;
   netWorth: number;
 }
-
-export type Phase = 'predict' | 'reveal' | 'summary';
-
-/** During reveal, rows fade in one section at a time. */
-export type RevealStage = 'salary-cash' | 'assets' | 'debts' | 'net-worth';
-
-export const REVEAL_ORDER: RevealStage[] = ['salary-cash', 'assets', 'debts', 'net-worth'];
-
-export type PredictionChoice = 'a' | 'b' | 'same';
