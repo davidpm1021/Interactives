@@ -11,20 +11,21 @@
 // ============================================================================
 
 .infographic {
-  // ── Brand colors (aliases of existing site tokens) ────────────────────────
-  --ngpf-primary-blue: #1f3b9b;    // SAME AS --ngpf-royal-blue
-  --ngpf-dark-blue:    #0b1541;    // SAME AS --ngpf-navy-blue
-  --ngpf-bright-blue:  #275ce4;    // SAME (same name in styles.scss)
-  --ngpf-light-blue:   #1db8e8;    // SAME AS --ngpf-sky-blue
-  --ngpf-gold:         #f4ad00;    // SAME
-  --ngpf-orange:       #f78219;    // SAME
+  // ── Brand-color aliases ───────────────────────────────────────────────────
+  // Only aliases live here — vars whose name AND value match a :root token
+  // in src/styles.scss (--ngpf-bright-blue, --ngpf-gold, --ngpf-orange)
+  // cascade in unchanged and are omitted. These aliases exist so ported
+  // infographic CSS can keep its design-system-native vocabulary.
+  --ngpf-primary-blue: #1f3b9b;    // alias of --ngpf-royal-blue
+  --ngpf-dark-blue:    #0b1541;    // alias of --ngpf-navy-blue
+  --ngpf-light-blue:   #1db8e8;    // alias of --ngpf-sky-blue
 
-  // ── Pale tints ─────────────────────────────────────────────────────────────
-  --ngpf-pale-blue:    #edfaff;    // SAME AS --ngpf-soft-blue-tint
-  --ngpf-pale-blue-2:  #d2eff9;    // SAME AS --ngpf-ice-blue
-  --ngpf-pale-navy:    #d2d8e9;    // SAME AS --ngpf-light-gray-blue
-  --ngpf-pale-blue-3:  #dfe9ff;    // NEW — infographic card tints
-  --ngpf-pale-blue-4:  #ddeaff;    // NEW
+  // ── Pale tints ────────────────────────────────────────────────────────────
+  --ngpf-pale-blue:    #edfaff;    // alias of --ngpf-soft-blue-tint
+  --ngpf-pale-blue-2:  #d2eff9;    // alias of --ngpf-ice-blue
+  --ngpf-pale-navy:    #d2d8e9;    // alias of --ngpf-light-gray-blue
+  --ngpf-pale-blue-3:  #dfe9ff;    // new — infographic card tints
+  --ngpf-pale-blue-4:  #ddeaff;    // new
 
   // ── Neutrals ──────────────────────────────────────────────────────────────
   --ngpf-black:        #000000;
