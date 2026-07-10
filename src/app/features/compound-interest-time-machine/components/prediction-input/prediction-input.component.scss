@@ -1,0 +1,66 @@
+.prediction-input {
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.input-prompt {
+  font-family: var(--ngpf-font-body);
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+}
+
+.input-wrapper {
+  display: inline-flex;
+  align-items: center;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 0 16px;
+  transition: border-color 0.2s;
+
+  &:focus-within {
+    border-color: var(--ngpf-royal-blue);
+    box-shadow: 0 0 0 3px rgba(31, 59, 155, 0.1);
+  }
+}
+
+.dollar-prefix {
+  font-family: var(--ngpf-font-heading);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--ngpf-navy-blue);
+  margin-right: 4px;
+}
+
+.money-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--ngpf-font-heading);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--ngpf-navy-blue);
+  padding: 12px 0;
+  width: 180px;
+  text-align: left;
+
+  &::placeholder {
+    color: #ccc;
+  }
+}
+
+.input-hint {
+  font-family: var(--ngpf-font-body);
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0.75rem 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input-wrapper {
+    transition: none;
+  }
+}

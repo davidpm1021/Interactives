@@ -1,0 +1,39 @@
+<div class="summary-panel" role="region" aria-live="polite" aria-label="Investment summary">
+  <div class="stat-cards">
+    <div class="stat-card primary">
+      <span class="stat-label">Balance at Year {{ displayData().year }}</span>
+      <span class="stat-value large">{{ formatCurrency(animatedBalance()) }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Total Contributions</span>
+      <span class="stat-value">{{ formatCurrency(animatedContributions()) }}</span>
+    </div>
+    <div class="stat-card highlight">
+      <span class="stat-label">Interest Earned</span>
+      <span class="stat-value">{{ formatCurrency(animatedInterest()) }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Interest % of Balance</span>
+      <span class="stat-value">{{ animatedInterestPercent() | number: '1.0-1' }}%</span>
+    </div>
+  </div>
+
+  @if (showDoublingCallout()) {
+    <div class="callout doubling">
+      Your money doubled your contributions by Year {{ doublingYear() }}!
+      That means interest earned more than you ever put in.
+    </div>
+  }
+
+  @if (comparisonDelta(); as delta) {
+    <div class="callout comparison">
+      @if (delta > 0) {
+        Starting earlier earned you
+        <strong>{{ formatCurrency(delta) }}</strong> more!
+      } @else {
+        The other scenario earned
+        <strong>{{ formatCurrency(-delta) }}</strong> more.
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,30 @@
+.challenge-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .challenge-title {
+    font-family: var(--ngpf-font-heading);
+    color: var(--ngpf-navy-blue);
+    font-size: 1.6rem;
+    margin: 0 0 1rem;
+  }
+
+  .challenge-setup {
+    font-family: var(--ngpf-font-body);
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0 auto 0.75rem;
+  }
+
+  .challenge-setup-detail {
+    font-family: var(--ngpf-font-body);
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto;
+    font-style: italic;
+  }
+}

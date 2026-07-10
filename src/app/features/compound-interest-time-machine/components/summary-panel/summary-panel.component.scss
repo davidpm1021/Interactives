@@ -1,0 +1,109 @@
+.summary-panel {
+  .stat-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--ngpf-spacing-md);
+    margin-bottom: var(--ngpf-spacing-md);
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: var(--ngpf-spacing-md);
+    box-shadow: var(--ngpf-shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .stat-label {
+      font-family: var(--ngpf-font-body);
+      font-size: 0.78rem;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .stat-value {
+      font-family: var(--ngpf-font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--ngpf-navy-blue);
+
+      &.large {
+        font-size: 1.6rem;
+      }
+    }
+
+    &.primary {
+      background: var(--ngpf-navy-blue);
+
+      .stat-label {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .stat-value {
+        color: white;
+      }
+    }
+
+    &.highlight {
+      border-left: 4px solid var(--ngpf-sky-blue);
+
+      .stat-value {
+        color: var(--ngpf-sky-blue);
+      }
+    }
+  }
+
+  .callout {
+    padding: var(--ngpf-spacing-md);
+    border-radius: 10px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    animation: callout-enter 0.2s ease-out;
+
+    &.doubling {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      color: var(--ngpf-success);
+      border-left: 4px solid var(--ngpf-success);
+      margin-bottom: var(--ngpf-spacing-sm);
+    }
+
+    &.comparison {
+      background: linear-gradient(135deg, #fff8e1, #ffecb3);
+      color: #e65100;
+      border-left: 4px solid var(--ngpf-gold);
+
+      strong {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+@keyframes callout-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summary-panel .callout {
+    animation: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .summary-panel {
+    .stat-cards {
+      grid-template-columns: repeat(2, 1fr);
+      overflow-x: auto;
+    }
+  }
+}

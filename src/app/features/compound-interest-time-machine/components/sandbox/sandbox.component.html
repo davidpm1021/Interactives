@@ -1,0 +1,157 @@
+<div class="sandbox">
+  <div class="sandbox-inputs">
+    <div class="input-group">
+      <label for="sb-principal">{{ content.inputPrompts?.['principal'] }}</label>
+      <div class="input-row">
+        <input
+          id="sb-principal"
+          type="range"
+          min="0"
+          max="100000"
+          step="500"
+          [value]="principal()"
+          (input)="onPrincipalInput($event)"
+          aria-label="Starting amount"
+        />
+        <div class="number-input-wrapper">
+          <span class="prefix">$</span>
+          <input
+            type="number"
+            min="0"
+            max="100000"
+            step="500"
+            [value]="principal()"
+            (input)="onPrincipalInput($event)"
+            aria-label="Starting amount"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="sb-contribution">{{ content.inputPrompts?.['contribution'] }}</label>
+      <div class="input-row">
+        <input
+          id="sb-contribution"
+          type="range"
+          min="0"
+          max="2000"
+          step="10"
+          [value]="contributionAmount()"
+          (input)="onContributionInput($event)"
+          aria-label="Monthly contribution"
+        />
+        <div class="number-input-wrapper">
+          <span class="prefix">$</span>
+          <input
+            type="number"
+            min="0"
+            max="2000"
+            step="10"
+            [value]="contributionAmount()"
+            (input)="onContributionInput($event)"
+            aria-label="Monthly contribution"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="sb-rate">{{ content.inputPrompts?.['rate'] }}</label>
+      <p class="input-hint">{{ content.inputPrompts?.['rateHelper'] }}</p>
+      <div class="input-row">
+        <input
+          id="sb-rate"
+          type="range"
+          min="0"
+          max="15"
+          step="0.5"
+          [value]="interestRatePercent()"
+          (input)="onRateInput($event)"
+          aria-label="Growth rate"
+        />
+        <div class="number-input-wrapper">
+          <input
+            type="number"
+            min="0"
+            max="15"
+            step="0.5"
+            [value]="interestRatePercent()"
+            (input)="onRateInput($event)"
+            aria-label="Growth rate"
+          />
+          <span class="suffix">%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group age-group">
+      <div class="age-field">
+        <label for="sb-start-age">{{ content.inputPrompts?.['startAge'] }}</label>
+        <div class="number-input-wrapper">
+          <input
+            id="sb-start-age"
+            type="number"
+            min="18"
+            [max]="endAge() - 1"
+            step="1"
+            [value]="startAge()"
+            (input)="onStartAgeInput($event)"
+            aria-label="Start age"
+          />
+        </div>
+      </div>
+      <div class="age-field">
+        <label for="sb-end-age">{{ content.inputPrompts?.['endAge'] }}</label>
+        <div class="number-input-wrapper">
+          <input
+            id="sb-end-age"
+            type="number"
+            [min]="startAge() + 1"
+            max="80"
+            step="1"
+            [value]="endAge()"
+            (input)="onEndAgeInput($event)"
+            aria-label="End age"
+          />
+        </div>
+      </div>
+    </div>
+
+    <button
+      class="wait-toggle"
+      [class.active]="showWaitComparison()"
+      (click)="toggleWaitComparison()"
+      [attr.aria-pressed]="showWaitComparison()"
+    >
+      {{ content.waitToggle }}
+    </button>
+  </div>
+
+  <div class="sandbox-chart">
+    <app-growth-chart
+      [result]="result()"
+      [comparisonResult]="waitResult()"
+      [selectedYear]="selectedYear()"
+      [isAutoPlaying]="isAutoPlaying()"
+      (yearHover)="onYearHover($event)"
+    />
+    <app-time-scrubber
+      [maxYear]="timeHorizon()"
+      [currentYear]="selectedYear() ?? timeHorizon()"
+      (yearChange)="onYearChange($event)"
+      (playStateChange)="onPlayStateChange($event)"
+    />
+    <app-summary-panel
+      [result]="result()"
+      [selectedYear]="selectedYear()"
+      [comparisonResult]="waitResult()"
+    />
+  </div>
+
+  <div class="sandbox-finish">
+    <button class="finish-btn" (click)="onFinish()">
+      See My Results
+    </button>
+  </div>
+</div>

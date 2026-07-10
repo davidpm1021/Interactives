@@ -1,0 +1,406 @@
+import {
+  Component,
+  computed,
+  ElementRef,
+  afterNextRender,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+  Injector,
+} from '@angular/core';
+import * as d3 from 'd3';
+import { PredictionPoint } from '../../models/compound-interest.models';
+import { formatCurrency } from '../../utils/formatters';
+import { computeChartDimensions, createScales, ChartDimensions, ChartScales, DEFAULT_MARGIN } from '../../utils/chart-helpers';
+
+@Component({
+  selector: 'app-prediction-chart',
+  standalone: true,
+  imports: [],
+  templateUrl: './prediction-chart.component.html',
+  styleUrl: './prediction-chart.component.scss',
+})
+export class PredictionChartComponent {
+  readonly principal = input(1000);
+  readonly maxYear = input(40);
+
+  readonly predictionChange = output<PredictionPoint[]>();
+  readonly allLocked = output<void>();
+
+  private readonly injector = inject(Injector);
+  private readonly chartContainer = viewChild<ElementRef<HTMLDivElement>>('chartContainer');
+
+  private svg!: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+  private chartGroup!: d3.Selection<SVGGElement, unknown, null, undefined>;
+  private dims!: ChartDimensions;
+  private scales!: ChartScales;
+  private initialized = false;
+
+  private readonly dot10 = signal<PredictionPoint>({ year: 10, value: 2000, locked: false });
+  private readonly dot40 = signal<PredictionPoint>({ year: 40, value: 5000, locked: false });
+  private readonly show40 = signal(false);
+  private draggingDot: 'dot10' | 'dot40' | null = null;
+
+  private readonly SNAP = 100;
+  private readonly DOT_RADIUS = 20;
+  private readonly TOUCH_RADIUS = 28;
+  private dragMoved = false;
+  /** Frozen scale used during a drag to prevent feedback loops. */
+  private dragScaleY: d3.ScaleLinear<number, number> | null = null;
+
+  /** Y-axis max grows dynamically: always 40% headroom above the highest dot. */
+  private readonly dynamicYMax = computed(() => {
+    const highestDot = Math.max(this.dot10().value, this.show40() ? this.dot40().value : 0);
+    const minScale = this.principal() * 5; // Start at 5x principal so chart isn't cramped
+    const headroom = Math.max(minScale, highestDot * 1.4);
+    // Round up to a clean number for nice tick marks
+    const magnitude = Math.pow(10, Math.floor(Math.log10(headroom)));
+    return Math.ceil(headroom / magnitude) * magnitude;
+  });
+
+  // ── Template-bound state ──
+
+  protected readonly instruction = computed(() => {
+    const d10 = this.dot10();
+    const d40 = this.dot40();
+    if (!d10.locked) {
+      return 'Drag the dot up or down to predict the balance at Year 10, then lock your guess.';
+    }
+    if (!d40.locked) {
+      return 'Now predict Year 40. Drag the dot, then lock your guess.';
+    }
+    return 'Both predictions locked! Click "Show me reality" below.';
+  });
+
+  protected readonly showLockButton = computed(() => {
+    const d10 = this.dot10();
+    const d40 = this.dot40();
+    if (!d10.locked) return true;
+    if (this.show40() && !d40.locked) return true;
+    return false;
+  });
+
+  protected readonly activeDotYear = computed(() => {
+    return this.dot10().locked ? 40 : 10;
+  });
+
+  constructor() {
+    afterNextRender(() => {
+      this.initChart();
+      this.initialized = true;
+    }, { injector: this.injector });
+
+    effect(() => {
+      const d10 = this.dot10();
+      const d40 = this.dot40();
+      const s40 = this.show40();
+      if (this.initialized) {
+        if (this.draggingDot) {
+          // Mid-drag: only update line + dots using existing scales (no axis rescale)
+          this.renderLine();
+          this.renderDots();
+        } else {
+          // Full re-render with dynamic scale
+          this.render();
+        }
+      }
+    });
+  }
+
+  private initChart(): void {
+    const container = this.chartContainer()?.nativeElement;
+    if (!container) return;
+
+    this.svg = d3.select(container).append('svg').attr('class', 'prediction-svg');
+    this.chartGroup = this.svg.append('g')
+      .attr('transform', `translate(${DEFAULT_MARGIN.left},${DEFAULT_MARGIN.top})`);
+
+    this.chartGroup.append('g').attr('class', 'x-axis axis');
+    this.chartGroup.append('g').attr('class', 'y-axis axis');
+    this.chartGroup.append('g').attr('class', 'line-layer');
+    this.chartGroup.append('g').attr('class', 'dot-layer');
+
+    const ro = new ResizeObserver(() => {
+      if (this.initialized) this.render();
+    });
+    ro.observe(container);
+
+    this.render();
+  }
+
+  private render(): void {
+    const container = this.chartContainer()?.nativeElement;
+    if (!container || !this.svg) return;
+
+    const rect = container.getBoundingClientRect();
+    if (rect.width <= 0) return;
+
+    this.dims = computeChartDimensions(rect.width, DEFAULT_MARGIN, 0.55, 300, 460);
+    this.svg.attr('viewBox', `0 0 ${this.dims.width} ${this.dims.height}`);
+
+    this.scales = createScales(
+      this.dims.innerWidth,
+      this.dims.innerHeight,
+      [0, this.maxYear()],
+      [0, this.dynamicYMax()],
+    );
+
+    // Axes
+    const xAxis = d3.axisBottom(this.scales.x)
+      .ticks(Math.min(this.maxYear(), 10))
+      .tickFormat((d) => `Yr ${d}`);
+    const yAxis = d3.axisLeft(this.scales.y)
+      .ticks(6)
+      .tickFormat((d) => formatCurrency(d as number, true));
+
+    this.chartGroup.select<SVGGElement>('.x-axis')
+      .attr('transform', `translate(0,${this.dims.innerHeight})`)
+      .call(xAxis);
+    this.chartGroup.select<SVGGElement>('.y-axis').call(yAxis);
+
+    this.renderLine();
+    this.renderDots();
+  }
+
+  private renderLine(): void {
+    const lineLayer = this.chartGroup.select('.line-layer');
+    lineLayer.selectAll('*').remove();
+
+    const points: [number, number][] = [
+      [this.scales.x(0), this.scales.y(this.principal())],
+      [this.scales.x(this.dot10().year), this.scales.y(this.dot10().value)],
+    ];
+
+    if (this.show40()) {
+      points.push([this.scales.x(this.dot40().year), this.scales.y(this.dot40().value)]);
+    }
+
+    const lineGen = d3.line<[number, number]>().x((d) => d[0]).y((d) => d[1]);
+
+    lineLayer.append('path')
+      .attr('d', lineGen(points))
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--ngpf-royal-blue)')
+      .attr('stroke-width', 2.5)
+      .attr('stroke-dasharray', '8,5')
+      .attr('opacity', 0.7);
+
+    // Fixed start dot
+    lineLayer.append('circle')
+      .attr('cx', this.scales.x(0))
+      .attr('cy', this.scales.y(this.principal()))
+      .attr('r', 6)
+      .attr('fill', 'var(--ngpf-navy-blue)');
+
+    // Start label
+    lineLayer.append('text')
+      .attr('class', 'value-label')
+      .attr('x', this.scales.x(0) + 10)
+      .attr('y', this.scales.y(this.principal()) - 10)
+      .text(formatCurrency(this.principal()));
+  }
+
+  private renderDots(): void {
+    const dotLayer = this.chartGroup.select<SVGGElement>('.dot-layer');
+    dotLayer.selectAll('*').remove();
+
+    this.renderDraggableDot(dotLayer, this.dot10(), 'dot10');
+
+    if (this.show40()) {
+      this.renderDraggableDot(dotLayer, this.dot40(), 'dot40');
+    }
+  }
+
+  private renderDraggableDot(
+    layer: d3.Selection<SVGGElement, unknown, null, undefined>,
+    point: PredictionPoint,
+    id: 'dot10' | 'dot40',
+  ): void {
+    const cx = this.scales.x(point.year);
+    const cy = this.scales.y(point.value);
+
+    const group = layer.append('g')
+      .attr('class', `prediction-dot ${point.locked ? 'locked-dot' : ''}`)
+      .attr('transform', `translate(${cx},${cy})`)
+      .attr('tabindex', point.locked ? '-1' : '0')
+      .attr('role', 'slider')
+      .attr('aria-label', `Year ${point.year} prediction: ${formatCurrency(point.value)}`)
+      .attr('aria-valuemin', '0')
+      .attr('aria-valuemax', String(this.dynamicYMax()))
+      .attr('aria-valuenow', String(point.value))
+      .attr('aria-valuetext', formatCurrency(point.value));
+
+    // Glow ring
+    group.append('circle')
+      .attr('class', 'dot-glow')
+      .attr('r', 24)
+      .attr('fill', 'var(--ngpf-royal-blue)')
+      .attr('opacity', 0.25);
+
+    // Touch target (invisible)
+    group.append('circle')
+      .attr('r', this.TOUCH_RADIUS)
+      .attr('fill', 'transparent');
+
+    // Visible dot
+    group.append('circle')
+      .attr('class', 'dot-ring')
+      .attr('r', this.DOT_RADIUS)
+      .attr('fill', point.locked ? 'var(--ngpf-navy-blue)' : 'var(--ngpf-royal-blue)')
+      .attr('stroke', 'white')
+      .attr('stroke-width', 3);
+
+    // Inner icon
+    if (point.locked) {
+      // Checkmark
+      group.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
+        .attr('fill', 'white')
+        .attr('font-size', '14px')
+        .attr('pointer-events', 'none')
+        .text('\u2713');
+    } else {
+      // Up/down arrows
+      group.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
+        .attr('fill', 'white')
+        .attr('font-size', '16px')
+        .attr('pointer-events', 'none')
+        .text('\u2195');
+    }
+
+    // Value label above
+    group.append('text')
+      .attr('class', 'value-label')
+      .attr('text-anchor', 'middle')
+      .attr('y', -(this.DOT_RADIUS + 12))
+      .text(formatCurrency(point.value));
+
+    // Lock hint below
+    if (!point.locked) {
+      group.append('text')
+        .attr('class', 'lock-hint')
+        .attr('text-anchor', 'middle')
+        .attr('y', this.DOT_RADIUS + 18)
+        .text('Press Enter to lock');
+    }
+
+    if (!point.locked) {
+      // Drag behavior - track movement to distinguish click from drag
+      const drag = d3.drag<SVGGElement, unknown>()
+        .on('start', () => {
+          this.draggingDot = id;
+          this.dragMoved = false;
+          // Freeze the Y scale so it doesn't shift mid-drag
+          this.dragScaleY = this.scales.y.copy();
+        })
+        .on('drag', (event: d3.D3DragEvent<SVGGElement, unknown, unknown>) => {
+          this.dragMoved = true;
+          this.onDrag(id, event.y);
+        })
+        .on('end', () => {
+          this.dragScaleY = null;
+          this.draggingDot = null;
+          // Click without drag movement = lock
+          if (!this.dragMoved) {
+            this.lockDot(id);
+          } else {
+            // Full re-render so the scale adjusts to the new value
+            this.render();
+          }
+        });
+
+      group.call(drag);
+
+      // Keyboard
+      group.on('keydown', (event: KeyboardEvent) => {
+        this.onKeydown(id, event);
+      });
+    }
+  }
+
+  private onDrag(id: 'dot10' | 'dot40', svgY: number): void {
+    // Use the frozen scale from drag start to prevent feedback loops
+    const scale = this.dragScaleY ?? this.scales.y;
+    // Clamp to chart boundaries so the dot can't leave the visible area
+    const clampedY = Math.max(0, Math.min(this.dims.innerHeight, svgY));
+    const rawValue = scale.invert(clampedY);
+    const snapped = Math.round(rawValue / this.SNAP) * this.SNAP;
+    const clamped = Math.max(0, snapped);
+    this.updateDot(id, clamped);
+  }
+
+  private onKeydown(id: 'dot10' | 'dot40', event: KeyboardEvent): void {
+    const step = event.shiftKey ? 1000 : this.SNAP;
+    const sig = id === 'dot10' ? this.dot10 : this.dot40;
+    let val = sig().value;
+
+    switch (event.key) {
+      case 'ArrowUp':
+        event.preventDefault();
+        val = val + step;
+        this.updateDot(id, val);
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        val = Math.max(0, val - step);
+        this.updateDot(id, val);
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        this.lockDot(id);
+        break;
+    }
+  }
+
+  private updateDot(id: 'dot10' | 'dot40', value: number): void {
+    const sig = id === 'dot10' ? this.dot10 : this.dot40;
+    sig.set({ ...sig(), value });
+    this.emitPredictions();
+  }
+
+  private lockDot(id: 'dot10' | 'dot40'): void {
+    const sig = id === 'dot10' ? this.dot10 : this.dot40;
+    if (sig().locked) return;
+    sig.set({ ...sig(), locked: true });
+
+    if (id === 'dot10' && !this.show40()) {
+      this.show40.set(true);
+      // Focus the Year 40 dot after render
+      setTimeout(() => {
+        const dot40El = this.chartGroup?.select('.dot-layer .prediction-dot:not(.locked-dot)')?.node();
+        if (dot40El instanceof HTMLElement || dot40El instanceof SVGElement) {
+          (dot40El as HTMLElement).focus();
+        }
+      }, 50);
+    }
+
+    if (id === 'dot40') {
+      this.allLocked.emit();
+    }
+
+    this.emitPredictions();
+  }
+
+  protected onLockClick(): void {
+    if (!this.dot10().locked) {
+      this.lockDot('dot10');
+    } else if (this.show40() && !this.dot40().locked) {
+      this.lockDot('dot40');
+    }
+  }
+
+  private emitPredictions(): void {
+    const points = [this.dot10()];
+    if (this.show40()) {
+      points.push(this.dot40());
+    }
+    this.predictionChange.emit(points);
+  }
+}

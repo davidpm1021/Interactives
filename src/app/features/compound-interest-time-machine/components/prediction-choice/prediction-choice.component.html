@@ -1,0 +1,19 @@
+<div class="prediction-choice">
+  <p class="choice-prompt">{{ prompt() }}</p>
+  <div class="choice-options" role="radiogroup" aria-label="Prediction choices">
+    @for (opt of options(); track opt.id; let i = $index) {
+      <button
+        class="choice-option"
+        [class.selected]="selectedId() === opt.id"
+        role="radio"
+        [attr.aria-checked]="selectedId() === opt.id"
+        [attr.tabindex]="selectedId() === opt.id || (selectedId() === null && i === 0) ? 0 : -1"
+        (click)="onSelect(opt.id)"
+        (keydown)="onKeydown($event, i)"
+      >
+        <span class="option-id">{{ opt.id }}</span>
+        <span class="option-label">{{ opt.label }}</span>
+      </button>
+    }
+  </div>
+</div>

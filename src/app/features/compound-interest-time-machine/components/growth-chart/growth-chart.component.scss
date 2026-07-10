@@ -1,0 +1,58 @@
+.growth-chart-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+
+  .growth-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .chart-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(11, 21, 65, 0.92);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-family: var(--ngpf-font-body);
+    line-height: 1.5;
+    z-index: 10;
+    transition: opacity 0.15s;
+    max-width: 220px;
+
+    strong {
+      font-weight: 600;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// d3 axis styling
+:host ::ng-deep {
+  .x-axis,
+  .y-axis {
+    text {
+      font-family: var(--ngpf-font-body);
+      font-size: 0.75rem;
+      fill: #666;
+    }
+
+    line,
+    path {
+      stroke: #ddd;
+    }
+  }
+
+  .y-axis {
+    .domain {
+      display: none;
+    }
+  }
+}

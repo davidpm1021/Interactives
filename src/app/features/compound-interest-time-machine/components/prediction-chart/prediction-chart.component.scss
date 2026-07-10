@@ -1,0 +1,121 @@
+.prediction-chart-area {
+  text-align: center;
+}
+
+.chart-instruction {
+  font-family: var(--ngpf-font-body);
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0 auto 0.75rem;
+  max-width: 480px;
+}
+
+.prediction-chart-wrapper {
+  position: relative;
+  min-height: 340px;
+  touch-action: none;
+  user-select: none;
+
+  svg {
+    width: 100%;
+    display: block;
+  }
+}
+
+.lock-btn {
+  display: inline-block;
+  margin-top: 0.75rem;
+  background: var(--ngpf-bright-blue);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-family: var(--ngpf-font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+
+  &:hover {
+    background: var(--ngpf-royal-blue);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ngpf-sky-blue);
+    outline-offset: 2px;
+  }
+}
+
+:host ::ng-deep {
+  .axis text {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.75rem;
+    fill: #888;
+  }
+
+  .axis line,
+  .axis path {
+    stroke: #ddd;
+  }
+
+  .prediction-dot {
+    cursor: grab;
+    outline: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &:focus-visible .dot-ring {
+      stroke: var(--ngpf-sky-blue);
+      stroke-width: 3;
+    }
+  }
+
+  .dot-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .locked-dot .dot-glow {
+    animation: none;
+    opacity: 0;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.2; r: 24; }
+    50% { opacity: 0.45; r: 30; }
+  }
+
+  .value-label {
+    font-family: var(--ngpf-font-heading);
+    font-size: 0.85rem;
+    fill: var(--ngpf-navy-blue);
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .lock-hint {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.7rem;
+    fill: #999;
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host ::ng-deep .dot-glow {
+    animation: none;
+    opacity: 0.3;
+  }
+
+  .lock-btn {
+    transition: none;
+  }
+}

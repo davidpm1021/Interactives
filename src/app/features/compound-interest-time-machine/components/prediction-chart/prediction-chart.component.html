@@ -1,0 +1,9 @@
+<div class="prediction-chart-area">
+  <p class="chart-instruction">{{ instruction() }}</p>
+  <div class="prediction-chart-wrapper" #chartContainer></div>
+  @if (showLockButton()) {
+    <button class="lock-btn" (click)="onLockClick()">
+      Lock my Year {{ activeDotYear() }} prediction
+    </button>
+  }
+</div>

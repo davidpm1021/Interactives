@@ -1,0 +1,116 @@
+.challenge-progress {
+  padding: 1rem 0 1.5rem;
+
+  .progress-track {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      transition: all 0.3s ease;
+
+      .step-number {
+        font-family: var(--ngpf-font-heading);
+        font-size: 0.8rem;
+        color: #999;
+      }
+
+      .check-icon {
+        width: 14px;
+        height: 14px;
+        color: white;
+      }
+    }
+
+    .step-label {
+      font-family: var(--ngpf-font-body);
+      font-size: 0.7rem;
+      color: #999;
+      text-align: center;
+      max-width: 60px;
+    }
+
+    &.current .step-dot {
+      border-color: var(--ngpf-royal-blue);
+      background: var(--ngpf-royal-blue);
+      box-shadow: 0 0 0 4px rgba(31, 59, 155, 0.15);
+
+      .step-number {
+        color: white;
+        font-weight: 600;
+      }
+    }
+
+    &.current .step-label {
+      color: var(--ngpf-royal-blue);
+      font-weight: 600;
+    }
+
+    &.completed .step-dot {
+      border-color: var(--ngpf-sky-blue);
+      background: var(--ngpf-sky-blue);
+    }
+
+    &.completed .step-label {
+      color: var(--ngpf-navy-blue);
+    }
+  }
+
+  .step-connector {
+    flex: 1;
+    height: 2px;
+    background: #ddd;
+    margin-top: 16px;
+    min-width: 20px;
+    max-width: 60px;
+    transition: background 0.3s ease;
+
+    &.filled {
+      background: var(--ngpf-sky-blue);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .challenge-progress {
+    .progress-step .step-dot {
+      transition: none;
+    }
+
+    .step-connector {
+      transition: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .challenge-progress {
+    .progress-step .step-label {
+      font-size: 0.6rem;
+      max-width: 50px;
+    }
+
+    .step-connector {
+      min-width: 12px;
+    }
+  }
+}

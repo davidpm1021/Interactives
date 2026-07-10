@@ -1,0 +1,38 @@
+<div class="reveal-stats" role="region" aria-label="Results">
+  <div class="stats-row">
+    @if (guessValue() !== null) {
+      <div class="stat-card guess">
+        <span class="stat-label">Your Guess</span>
+        <app-stat-counter [value]="guessValue()!" prefix="$" />
+      </div>
+    }
+    <div class="stat-card actual">
+      <span class="stat-label">{{ label() }}</span>
+      <app-stat-counter [value]="actualValue()" prefix="$" />
+    </div>
+    @if (guessValue() !== null) {
+      <div class="stat-card delta">
+        <span class="stat-label">Difference</span>
+        <app-stat-counter
+          [value]="actualValue() - guessValue()!"
+          prefix="$"
+          [showSign]="true"
+        />
+      </div>
+    }
+  </div>
+  @if (additionalStats().length > 0) {
+    <div class="stats-row additional">
+      @for (stat of additionalStats(); track stat.label) {
+        <div class="stat-card">
+          <span class="stat-label">{{ stat.label }}</span>
+          <app-stat-counter
+            [value]="stat.value"
+            [prefix]="stat.prefix ?? ''"
+            [suffix]="stat.suffix ?? ''"
+          />
+        </div>
+      }
+    </div>
+  }
+</div>

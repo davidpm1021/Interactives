@@ -1,0 +1,20 @@
+<div class="prediction-input">
+  <p class="input-prompt">{{ prompt() }}</p>
+  <div class="input-wrapper">
+    <span class="dollar-prefix">$</span>
+    <input
+      type="text"
+      inputmode="numeric"
+      class="money-input"
+      [value]="rawValue()"
+      (input)="onInput($event)"
+      (keydown.enter)="$event.preventDefault()"
+      aria-label="Your prediction in dollars"
+      [attr.aria-describedby]="hint() ? 'prediction-hint' : null"
+      placeholder="0"
+    />
+  </div>
+  @if (hint()) {
+    <p class="input-hint" id="prediction-hint">{{ hint() }}</p>
+  }
+</div>

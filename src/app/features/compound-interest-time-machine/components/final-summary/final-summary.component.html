@@ -1,0 +1,42 @@
+<div class="final-summary">
+  <h2>Your Results</h2>
+
+  <div class="recap-table-wrapper">
+    <table class="recap-table" aria-label="Prediction recap">
+      <thead>
+        <tr>
+          <th scope="col">Challenge</th>
+          <th scope="col">Your Guess</th>
+          <th scope="col">Reality</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of recapRows(); track row.challenge) {
+          <tr>
+            <td class="challenge-cell">
+              <span class="challenge-num">{{ row.challenge }}</span>
+              {{ row.title }}
+            </td>
+            <td class="guess-cell">{{ row.guess }}</td>
+            <td class="reality-cell">{{ row.reality }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="takeaways">
+    <h3>Key Takeaways</h3>
+    <ol>
+      @for (takeaway of takeaways; track $index) {
+        <li>{{ takeaway }}</li>
+      }
+    </ol>
+  </div>
+
+  <div class="print-action">
+    <button class="print-btn" (click)="onPrint()">
+      Print My Results
+    </button>
+  </div>
+</div>

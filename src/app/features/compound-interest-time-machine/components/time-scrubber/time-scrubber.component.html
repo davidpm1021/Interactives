@@ -1,0 +1,39 @@
+<div class="time-scrubber">
+  <button
+    class="play-btn"
+    (click)="togglePlay()"
+    [attr.aria-label]="isPlaying() ? 'Pause timeline' : 'Play timeline'"
+  >
+    @if (isPlaying()) {
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16" rx="1" />
+        <rect x="14" y="4" width="4" height="16" rx="1" />
+      </svg>
+    } @else {
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+        <polygon points="6,4 20,12 6,20" />
+      </svg>
+    }
+  </button>
+
+  <div class="scrubber-track">
+    <input
+      type="range"
+      min="0"
+      [max]="maxYear()"
+      step="1"
+      [value]="currentYear()"
+      (input)="onSliderInput($event)"
+      (keydown)="onKeydown($event)"
+      role="slider"
+      [attr.aria-valuemin]="0"
+      [attr.aria-valuemax]="maxYear()"
+      [attr.aria-valuenow]="currentYear()"
+      [attr.aria-label]="'Timeline scrubber, Year ' + currentYear() + ' of ' + maxYear()"
+    />
+  </div>
+
+  <div class="year-display">
+    Year {{ currentYear() }} of {{ maxYear() }}
+  </div>
+</div>

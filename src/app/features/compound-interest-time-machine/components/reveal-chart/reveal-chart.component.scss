@@ -1,0 +1,29 @@
+.reveal-chart-wrapper {
+  position: relative;
+  min-height: 340px;
+
+  svg {
+    width: 100%;
+    display: block;
+  }
+}
+
+:host ::ng-deep {
+  .axis text {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.75rem;
+    fill: #888;
+  }
+
+  .axis line,
+  .axis path {
+    stroke: #ddd;
+  }
+
+  .gap-bracket {
+    font-family: var(--ngpf-font-heading);
+    font-size: 0.8rem;
+    fill: var(--ngpf-navy-blue);
+    font-weight: 600;
+  }
+}

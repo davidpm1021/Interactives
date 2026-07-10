@@ -1,0 +1,228 @@
+<app-top-header></app-top-header>
+<main class="compound-interest-time-machine" id="main-content">
+  <div class="content">
+    @if (!showingIntro()) {
+      <app-challenge-progress
+        [currentChallenge]="currentChallenge()"
+        [completedChallenges]="completedChallenges()"
+      />
+    }
+
+    @if (showingIntro()) {
+      <app-intro (begin)="onStartChallenges()" />
+    } @else if (showingSummary()) {
+      <app-final-summary />
+    } @else {
+      @switch (currentChallenge()) {
+        @case (1) {
+          <div class="challenge-container">
+            @if (currentPhase() === 'predict') {
+              <app-challenge-intro [content]="currentContent()" />
+              <app-prediction-chart
+                [principal]="1000"
+                [maxYear]="40"
+                (predictionChange)="onChallenge1PredictionChange($event)"
+                (allLocked)="onChallenge1AllLocked()"
+              />
+              <div class="predict-action">
+                <button
+                  class="show-me-btn"
+                  [disabled]="!challenge1Ready()"
+                  (click)="onChallenge1ShowMe()"
+                >
+                  {{ currentContent().revealButton ?? 'Show me' }}
+                </button>
+              </div>
+            } @else {
+              <h2>{{ currentContent().title }}</h2>
+              <app-reveal-chart
+                [result]="challenge1Result()"
+                [predictionPoints]="challenge1PredictionPoints()"
+                [principal]="1000"
+                mode="single"
+                (animationComplete)="onAdvanceToReflect()"
+              />
+              <app-reveal-stats
+                [actualValue]="challenge1Result().summary.finalBalance"
+                [guessValue]="predictions().challenge1Year40 ?? null"
+                label="Reality"
+              />
+              @if (currentPhase() === 'reflect') {
+                <app-reflect-card
+                  [challengeId]="currentChallenge()"
+                  [insightText]="challenge1Insight()"
+                  (nextChallenge)="onNextChallenge()"
+                />
+              }
+            }
+          </div>
+        }
+
+        @case (2) {
+          <div class="challenge-container">
+            @if (currentPhase() === 'predict') {
+              <app-challenge-intro [content]="currentContent()" />
+              <app-prediction-choice
+                [prompt]="currentContent().predictPrompt ?? ''"
+                [options]="currentContent().options ?? []"
+                (selectionChanged)="onChallenge2Select($event)"
+              />
+              <div class="predict-action">
+                <button
+                  class="show-me-btn"
+                  [disabled]="!challenge2Ready()"
+                  (click)="onChallenge2ShowMe()"
+                >
+                  {{ currentContent().revealButton ?? 'Show me' }}
+                </button>
+              </div>
+            } @else {
+              <h2>{{ currentContent().title }}</h2>
+              <app-reveal-chart
+                [result]="challenge2LowResult()"
+                [resultB]="challenge2HighResult()"
+                mode="dual"
+                (animationComplete)="onAdvanceToReflect()"
+              />
+              <div class="dual-stats">
+                <app-reveal-stats
+                  [actualValue]="challenge2LowResult().summary.finalBalance"
+                  label="5% Account"
+                />
+                <app-reveal-stats
+                  [actualValue]="challenge2HighResult().summary.finalBalance"
+                  label="10% Account"
+                />
+              </div>
+              <div class="guess-vs-reality">
+                <div class="ratio-result">
+                  The 10% account is <strong>{{ challenge2Ratio() | number:'1.1-1' }}x</strong> the 5% account
+                </div>
+                @if (challenge2GuessLabel()) {
+                  <div class="your-guess">You guessed: {{ challenge2GuessLabel() }}</div>
+                }
+              </div>
+              @if (currentPhase() === 'reflect') {
+                <app-reflect-card
+                  [challengeId]="currentChallenge()"
+                  [insightText]="getReflectInsight()"
+                  (nextChallenge)="onNextChallenge()"
+                />
+              }
+            }
+          </div>
+        }
+
+        @case (3) {
+          <div class="challenge-container">
+            @if (currentPhase() === 'predict') {
+              <app-challenge-intro [content]="currentContent()" />
+              <app-prediction-input
+                [prompt]="currentContent().predictPrompt ?? ''"
+                [min]="10000"
+                [max]="1000000"
+                hint="Enter a dollar amount between $10,000 and $1,000,000"
+                (valueChanged)="onChallenge3Input($event)"
+              />
+              <div class="predict-action">
+                <button
+                  class="show-me-btn"
+                  [disabled]="!challenge3Ready()"
+                  (click)="onChallenge3ShowMe()"
+                >
+                  {{ currentContent().revealButton ?? 'Show me' }}
+                </button>
+              </div>
+            } @else {
+              <h2>{{ currentContent().title }}</h2>
+              <app-reveal-chart
+                [result]="challenge3Result()"
+                [resultB]="challenge1Result()"
+                mode="stacked"
+                (animationComplete)="onAdvanceToReflect()"
+              />
+              <app-reveal-stats
+                [actualValue]="challenge3Result().summary.finalBalance"
+                [guessValue]="predictions().challenge3ContributionGuess ?? null"
+                label="With $100/month"
+              />
+              @if (currentPhase() === 'reflect') {
+                <app-reflect-card
+                  [challengeId]="currentChallenge()"
+                  [insightText]="getReflectInsight()"
+                  (nextChallenge)="onNextChallenge()"
+                />
+              }
+            }
+          </div>
+        }
+
+        @case (4) {
+          <div class="challenge-container">
+            @if (currentPhase() === 'predict') {
+              <app-challenge-intro [content]="currentContent()" />
+              <app-prediction-choice
+                [prompt]="currentContent().predictPrompt ?? ''"
+                [options]="currentContent().options ?? []"
+                (selectionChanged)="onChallenge4Select($event)"
+              />
+              <div class="predict-action">
+                <button
+                  class="show-me-btn"
+                  [disabled]="!challenge4Ready()"
+                  (click)="onChallenge4ShowMe()"
+                >
+                  {{ currentContent().revealButton ?? 'Show me' }}
+                </button>
+              </div>
+            } @else {
+              <h2>{{ currentContent().title }}</h2>
+              <app-reveal-chart
+                [result]="challenge4EarlyResult()"
+                [resultB]="challenge4LateResult()"
+                mode="dual"
+                (animationComplete)="onAdvanceToReflect()"
+              />
+              <div class="dual-stats">
+                <app-reveal-stats
+                  [actualValue]="challenge4EarlyResult().summary.finalBalance"
+                  label="Alex (started at 22)"
+                />
+                <app-reveal-stats
+                  [actualValue]="challenge4LateResult().summary.finalBalance"
+                  label="Jordan (started at 32)"
+                />
+              </div>
+              <div class="guess-vs-reality">
+                <div class="ratio-result">
+                  Alex ends up with <strong>{{ challenge4Gap() | currency:'USD':'symbol':'1.0-0' }}</strong> more than Jordan
+                </div>
+                @if (challenge4GuessLabel()) {
+                  <div class="your-guess">You guessed: {{ challenge4GuessLabel() }}</div>
+                }
+              </div>
+              @if (currentPhase() === 'reflect') {
+                <app-reflect-card
+                  [challengeId]="currentChallenge()"
+                  [insightText]="getReflectInsight()"
+                  [isLastChallenge]="true"
+                  (nextChallenge)="onNextChallenge()"
+                />
+              }
+            }
+          </div>
+        }
+
+        @case (5) {
+          <div class="sandbox-layout">
+            <h2>{{ challengeContent['challenge5'].title }}</h2>
+            <p class="sandbox-setup">{{ challengeContent['challenge5'].setup }}</p>
+            <app-sandbox (finish)="onFinishSandbox()" />
+          </div>
+        }
+      }
+    }
+
+    <div class="sr-only" aria-live="polite">{{ liveAnnouncement() }}</div>
+  </div>
+</main>

@@ -1,0 +1,35 @@
+<div
+  class="challenge-progress"
+  role="progressbar"
+  [attr.aria-valuenow]="progressPercent()"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-label]="'Challenge ' + currentChallenge() + ' of 5'"
+>
+  <div class="progress-track">
+    @for (step of steps; track step.id) {
+      <div
+        class="progress-step"
+        [class.completed]="isCompleted(step.id)"
+        [class.current]="isCurrent(step.id)"
+      >
+        <div class="step-dot">
+          @if (isCompleted(step.id)) {
+            <svg viewBox="0 0 16 16" class="check-icon" aria-hidden="true">
+              <path d="M3 8l3 3 7-7" stroke="currentColor" stroke-width="2" fill="none" />
+            </svg>
+          } @else {
+            <span class="step-number">{{ step.id }}</span>
+          }
+        </div>
+        <span class="step-label">{{ step.label }}</span>
+      </div>
+      @if (step.id < 5) {
+        <div
+          class="step-connector"
+          [class.filled]="isCompleted(step.id)"
+        ></div>
+      }
+    }
+  </div>
+</div>

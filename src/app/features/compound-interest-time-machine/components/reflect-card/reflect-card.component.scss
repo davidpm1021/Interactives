@@ -1,0 +1,64 @@
+.reflect-card {
+  text-align: center;
+  padding: 2rem;
+  margin-top: 1.5rem;
+  animation: reflect-fade-in 0.4s ease-out;
+
+  .insight-text {
+    font-family: var(--ngpf-font-body);
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto 2rem;
+  }
+
+  .next-btn {
+    display: inline-block;
+    background: var(--ngpf-bright-blue);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-family: var(--ngpf-font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+
+    &:hover {
+      background: var(--ngpf-royal-blue);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+}
+
+@keyframes reflect-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reflect-card {
+    animation: none;
+
+    .next-btn {
+      transition: none;
+    }
+  }
+}
