@@ -19,6 +19,23 @@
       margin-bottom: var(--ngpf-spacing-xxl);
     }
 
+    // Section heading between category groups (e.g. before "Infographics").
+    .section-heading {
+      color: var(--ngpf-royal-blue);
+      font-size: 28px;
+      margin: var(--ngpf-spacing-xxl) 0 var(--ngpf-spacing-sm);
+      text-align: left;
+      padding-top: var(--ngpf-spacing-lg);
+      border-top: 1px solid var(--ngpf-light-gray-blue);
+    }
+
+    .section-heading + p {
+      text-align: left;
+      font-size: 18px;
+      color: var(--ngpf-text-secondary);
+      margin-bottom: var(--ngpf-spacing-lg);
+    }
+
     .links {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

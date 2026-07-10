@@ -1,0 +1,300 @@
+/* ============================================================
+   NGPF Design System — Colors & Type
+   ------------------------------------------------------------
+   Primary brand palette (from NGPF Full Brand Guidelines):
+     Primary Blue     #1f3b9b
+     Dark Blue        #0b1541
+     Bright Blue      #275ce4
+     Light Blue       #1db8e8
+     Gold             #f4ad00
+     Orange           #f78219
+
+   Typography:
+     Titles — PT Sans Bold (upper + lower case)
+     Subheaders — Montserrat SemiBold / Bold (often ALL CAPS)
+     Body — Montserrat Regular (Light for long copy)
+   ============================================================ */
+
+/* PT Sans still pulled from Google Fonts (no local file uploaded). */
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/* Montserrat served from local brand files — matches what the team distributes. */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url("fonts/Montserrat-Thin.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("fonts/Montserrat-Light.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/Montserrat-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/Montserrat-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("fonts/Montserrat-Black.ttf") format("truetype");
+}
+
+:root {
+  /* --- Brand Colors ------------------------------------------------ */
+  --ngpf-primary-blue: #1f3b9b;   /* TRUE / PRIMARY BLUE */
+  --ngpf-dark-blue:    #0b1541;   /* MIDNIGHT BLUE */
+  --ngpf-bright-blue:  #275ce4;   /* PACIFIC / BRIGHT BLUE */
+  --ngpf-light-blue:   #1db8e8;   /* SKY BLUE */
+  --ngpf-gold:         #f4ad00;
+  --ngpf-orange:       #f78219;
+
+  /* --- Pale tints (tinted backgrounds pulled from UI-Library) ------ */
+  --ngpf-pale-blue:    #edfaff;
+  --ngpf-pale-blue-2:  #d2eff9;
+  --ngpf-pale-navy:    #d2d8e9;
+  --ngpf-pale-blue-3:  #dfe9ff;
+  --ngpf-pale-blue-4:  #ddeaff;
+
+  /* --- Neutrals ---------------------------------------------------- */
+  --ngpf-black:        #000000;
+  --ngpf-ink:          #231f20;   /* Near-black used in body text */
+  --ngpf-gray-900:     #424242;
+  --ngpf-gray-700:     #858585;
+  --ngpf-gray-500:     #c3c3c3;
+  --ngpf-gray-400:     #d2d2d2;
+  --ngpf-gray-300:     #d9d9d9;
+  --ngpf-gray-200:     #e7ebee;
+  --ngpf-gray-100:     #f3f0f0;
+  --ngpf-white:        #ffffff;
+
+  /* --- Semantic (foreground / background / stroke) ----------------- */
+  --fg-1:   var(--ngpf-dark-blue);      /* primary text on light */
+  --fg-2:   var(--ngpf-gray-900);       /* secondary text */
+  --fg-3:   var(--ngpf-gray-700);       /* tertiary / meta */
+  --fg-on-dark: var(--ngpf-white);
+  --link:   var(--ngpf-bright-blue);
+  --link-hover: var(--ngpf-primary-blue);
+
+  --bg-page:    var(--ngpf-white);
+  --bg-tint:    var(--ngpf-pale-blue);
+  --bg-dark:    var(--ngpf-dark-blue);
+  --bg-brand:   var(--ngpf-primary-blue);
+
+  --stroke-1:   var(--ngpf-gray-300);
+  --stroke-2:   var(--ngpf-gray-400);
+
+  --accent-warm-1: var(--ngpf-orange);
+  --accent-warm-2: var(--ngpf-gold);
+
+  /* --- Typography ------------------------------------------------- */
+  --font-display: "PT Sans", Helvetica, Arial, sans-serif;   /* titles only */
+  --font-sans:    "Montserrat", Helvetica, Arial, sans-serif; /* everything else */
+
+  /* Weights — only the 5 shipped with NGPF's brand font package are real.
+     Medium/SemiBold/ExtraBold map to the nearest available weight so any
+     existing rule like `font-weight: 600` still renders cleanly. */
+  --fw-thin:      100;
+  --fw-light:     300;
+  --fw-regular:   400;
+  --fw-medium:    400;   /* no 500 file — falls back to Regular */
+  --fw-semibold:  700;   /* no 600 file — falls back to Bold */
+  --fw-bold:      700;
+  --fw-extrabold: 900;   /* no 800 file — falls back to Black */
+  --fw-black:     900;
+
+  /* Semantic type scale (matches Figma Typography frame) */
+  --h1-size: 48px;   --h1-weight: 700; --h1-family: var(--font-display);
+  --h2-size: 36px;   --h2-weight: 700; --h2-family: var(--font-sans);
+  --h3-size: 24px;   --h3-weight: 700; --h3-family: var(--font-sans);
+  --h4-size: 20px;   --h4-weight: 700; --h4-family: var(--font-sans); /* ALL CAPS */
+  --h5-size: 18px;   --h5-weight: 700; --h5-family: var(--font-sans); /* ALL CAPS */
+  --h6-size: 16px;   --h6-weight: 700; --h6-family: var(--font-sans); /* ALL CAPS */
+
+  --body-lg:     20px;
+  --body:        16px;
+  --body-sm:     14px;
+  --body-xs:     12px;
+  --line-height: 1.4;
+
+  /* --- Spacing / Radii / Shadow ----------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 10px;       /* buttons */
+  --radius-xl: 16px;       /* cards */
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md: 0 2px 4px rgba(0,0,0,0.25);        /* nav bar — matches figma */
+  --shadow-lg: 0 6px 20px rgba(11,21,65,0.15);
+}
+
+/* -----------------------------------------------------------------
+   Base element styles — use these classes or element tags directly.
+   ----------------------------------------------------------------- */
+html, body {
+  font-family: var(--font-sans);
+  font-size: var(--body);
+  line-height: var(--line-height);
+  color: var(--fg-1);
+  background: var(--bg-page);
+}
+
+h1, .h1 {
+  font-family: var(--h1-family);
+  font-weight: var(--h1-weight);
+  font-size: var(--h1-size);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+  margin: 0 0 0.4em;
+}
+h2, .h2 {
+  font-family: var(--h2-family);
+  font-weight: var(--h2-weight);
+  font-size: var(--h2-size);
+  line-height: 1.15;
+  color: var(--fg-1);
+  margin: 0 0 0.4em;
+}
+h3, .h3 {
+  font-family: var(--h3-family);
+  font-weight: var(--h3-weight);
+  font-size: var(--h3-size);
+  line-height: 1.2;
+  color: var(--fg-1);
+  margin: 0 0 0.4em;
+}
+h4, .h4 {
+  font-family: var(--h4-family);
+  font-weight: var(--h4-weight);
+  font-size: var(--h4-size);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-1);
+  margin: 0 0 0.5em;
+}
+h5, .h5 {
+  font-family: var(--h5-family);
+  font-weight: var(--h5-weight);
+  font-size: var(--h5-size);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-1);
+  margin: 0 0 0.5em;
+}
+h6, .h6 {
+  font-family: var(--h6-family);
+  font-weight: var(--h6-weight);
+  font-size: var(--h6-size);
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-1);
+  margin: 0 0 0.5em;
+}
+
+p, .p {
+  font-family: var(--font-sans);
+  font-size: var(--body);
+  line-height: var(--line-height);
+  color: var(--fg-2);
+  margin: 0 0 1em;
+}
+.p-lg { font-size: var(--body-lg); }
+.p-sm { font-size: var(--body-sm); }
+.p-light { font-weight: var(--fw-light); }
+
+a, .link {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a:hover { color: var(--link-hover); }
+
+/* -----------------------------------------------------------------
+   Reusable element styles
+   ----------------------------------------------------------------- */
+.ngpf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-lg);
+  background: var(--ngpf-bright-blue);
+  color: var(--ngpf-white);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);    /* Bold (700) for primary CTAs */
+  font-size: 18px;
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 120ms ease;
+}
+.ngpf-btn:hover  { background: #1f4ec4; }
+.ngpf-btn:active { background: #1e44a5; }
+
+.ngpf-btn--outline {
+  background: var(--ngpf-white);
+  color: var(--ngpf-bright-blue);
+  border: 2px solid var(--ngpf-bright-blue);
+}
+.ngpf-btn--outline:hover  { background: #f4f7ff; }
+.ngpf-btn--outline:active { color: var(--ngpf-primary-blue); border-color: var(--ngpf-primary-blue); }
+
+.ngpf-btn--small {
+  padding: 9px 18px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+.ngpf-btn--tiny {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  font-weight: var(--fw-bold);
+}
+
+/* Pattern backgrounds */
+.ngpf-bg-pattern-primary {
+  background-color: var(--ngpf-primary-blue);
+  background-image: url('./assets/pattern-primary-blue.png');
+  background-size: 600px;
+  background-repeat: repeat;
+  color: var(--ngpf-white);
+}
+.ngpf-bg-pattern-bright {
+  background-color: var(--ngpf-bright-blue);
+  background-image: url('./assets/pattern-bright-blue.png');
+  background-size: 600px;
+  background-repeat: repeat;
+  color: var(--ngpf-white);
+}

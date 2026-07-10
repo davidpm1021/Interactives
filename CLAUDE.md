@@ -2,14 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## CRITICAL: Feature Isolation Rule
+## CRITICAL: Isolation Rules
 
-**DO NOT modify files outside of the specific feature folder without explicit user permission.**
+**DO NOT modify files outside of the specific feature or infographic folder without explicit user permission.**
+
+The project has two content categories, each with its own isolation rule:
+
+### Feature Isolation Rule
 
 Each interactive feature must be self-contained within its folder under `src/app/features/<feature-name>/`. This includes:
 - All components, services, and models specific to the feature
 - Feature-specific scripts (e.g., data parsers) in a `scripts/` subfolder
 - Feature-specific assets in `public/features/<feature-name>/`
+
+### Infographic Isolation Rule
+
+Each infographic must be self-contained within its folder under `src/app/infographics/<name>/`. Infographics are static print-ready posters with **their own visual system** — they may freely deviate from the global styling used by features, but must NOT touch `src/styles.scss` or `src/app/shared/`.
+
+- Infographics use the **NGPF token superset** in `src/app/infographics/_infographic-tokens.scss` (all vars are aliases of the same brand colors used in the global sheet, so nothing renders inconsistently).
+- Shared infographic helpers (coverage bars, tradeoff arrows, etc.) live in `src/app/infographics/_infographic-base.scss`.
+- Full-bleed page — no `TopHeader` or `BottomHeader`.
+- Assets in `public/infographics/<name>/`.
+- 800-px fixed poster width per the design spec; page background frames the poster.
 
 ### What belongs IN the feature folder:
 - Components, services, models, pipes specific to this feature
@@ -63,25 +77,34 @@ Reserved names that cannot be used: test, app, core, shared, common, node_module
 ```
 src/
 ├── app/
-│   ├── features/                    # Each interactive is self-contained here
+│   ├── features/                        # Interactive features, self-contained
 │   │   └── <feature-name>/
-│   │       ├── components/          # Feature-specific components
-│   │       ├── services/            # Feature-specific services
-│   │       ├── models/              # Feature-specific interfaces/types
-│   │       ├── scripts/             # Feature-specific build/data scripts
-│   │       ├── <feature-name>.ts    # Main feature component
+│   │       ├── components/              # Feature-specific components
+│   │       ├── services/                # Feature-specific services
+│   │       ├── models/                  # Feature-specific interfaces/types
+│   │       ├── scripts/                 # Feature-specific build/data scripts
+│   │       ├── <feature-name>.ts        # Main feature component
 │   │       ├── <feature-name>.html
 │   │       └── <feature-name>.scss
-│   ├── shared/                      # Components used by ALL features
-│   └── app.routes.ts                # Route definitions
-├── styles.scss                      # Global styles (CSS variables, reusable classes)
+│   ├── infographics/                    # Static print-ready posters
+│   │   ├── _infographic-tokens.scss     # Full NGPF token superset
+│   │   ├── _infographic-base.scss       # Shared poster helpers
+│   │   └── <name>/
+│   │       ├── <name>.ts
+│   │       ├── <name>.html
+│   │       └── <name>.scss
+│   ├── shared/                          # Components used by ALL features
+│   └── app.routes.ts                    # Route definitions
+├── styles.scss                          # Global styles (CSS variables, reusable classes)
 public/
-├── features/                        # Feature-specific static assets
+├── features/                            # Feature-specific static assets
 │   └── <feature-name>/
-│       └── data/                    # Feature-specific data files
-├── ngpf-logo.svg                    # Shared assets
+│       └── data/                        # Feature-specific data files
+├── infographics/                        # Infographic-specific static assets
+│   └── <name>/                          # (photos, logos, pattern tiles)
+├── ngpf-logo.svg                        # Shared assets
 └── favicon.ico
-config/                              # Credentials (git-ignored)
+config/                                  # Credentials (git-ignored)
 ```
 
 ### Component Pattern

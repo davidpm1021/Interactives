@@ -39,5 +39,16 @@ export const routes: Routes = [
     title: 'Template Builder | NGPF',
     loadComponent: () => import('./features/template-builder/template-builder').then((m) => m.TemplateBuilder),
   },
+
+  // ── Infographics ─────────────────────────────────────────────────────────
+  {
+    path: 'infographics/premiums-deductibles-limits',
+    title: 'Premiums, Deductibles & Limits | NGPF',
+    loadComponent: () =>
+      import('./infographics/premiums-deductibles-limits/premiums-deductibles-limits').then(
+        (m) => m.PremiumsDeductiblesLimits,
+      ),
+  },
+
   { path: '**', redirectTo: '' },
 ];

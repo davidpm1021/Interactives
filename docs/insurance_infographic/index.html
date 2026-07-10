@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NGPF — Premiums, Deductibles, and Limits (design reference)</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&family=Montserrat:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap" />
+<!-- Line Awesome icons (badge glyphs) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css" />
+
+<!-- ===== NGPF design tokens (colors_and_type.css) ===== -->
+<style>
+/* ============================================================
+   NGPF Design System — Colors & Type
+   ------------------------------------------------------------
+   Primary brand palette (from NGPF Full Brand Guidelines):
+     Primary Blue     #1f3b9b
+     Dark Blue        #0b1541
+     Bright Blue      #275ce4
+     Light Blue       #1db8e8
+     Gold             #f4ad00
+     Orange           #f78219
+
+   Typography:
+     Titles — PT Sans Bold (upper + lower case)
+     Subheaders — Montserrat SemiBold / Bold (often ALL CAPS)
+     Body — Montserrat Regular (Light for long copy)
+   ============================================================ */
+
+/* PT Sans still pulled from Google Fonts (no local file uploaded). */
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/* Montserrat served from local brand files — matches what the team distributes. */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url("fonts/Montserrat-Thin.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("fonts/Montserrat-Light.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/Montserrat-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/Montserrat-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("fonts/Montserrat-Black.ttf") format("truetype");
+}
+
+:root {
+  /* --- Brand Colors ------------------------------------------------ */
+  --ngpf-primary-blue: #1f3b9b;   /* TRUE / PRIMARY BLUE */
+  --ngpf-dark-blue:    #0b1541;   /* MIDNIGHT BLUE */
+  --ngpf-bright-blue:  #275ce4;   /* PACIFIC / BRIGHT BLUE */
+  --ngpf-light-blue:   #1db8e8;   /* SKY BLUE */
+  --ngpf-gold:         #f4ad00;
+  --ngpf-orange:       #f78219;
+
+  /* --- Pale tints (tinted backgrounds pulled from UI-Library) ------ */
+  --ngpf-pale-blue:    #edfaff;
+  --ngpf-pale-blue-2:  #d2eff9;
+  --ngpf-pale-navy:    #d2d8e9;
+  --ngpf-pale-blue-3:  #dfe9ff;
+  --ngpf-pale-blue-4:  #ddeaff;
+
+  /* --- Neutrals ---------------------------------------------------- */
+  --ngpf-black:        #000000;
+  --ngpf-ink:          #231f20;   /* Near-black used in body text */
+  --ngpf-gray-900:     #424242;
+  --ngpf-gray-700:     #858585;
+  --ngpf-gray-500:     #c3c3c3;
+  --ngpf-gray-400:     #d2d2d2;
+  --ngpf-gray-300:     #d9d9d9;
+  --ngpf-gray-200:     #e7ebee;
+  --ngpf-gray-100:     #f3f0f0;
+  --ngpf-white:        #ffffff;
+
+  /* --- Semantic (foreground / background / stroke) ----------------- */
+  --fg-1:   var(--ngpf-dark-blue);      /* primary text on light */
+  --fg-2:   var(--ngpf-gray-900);       /* secondary text */
+  --fg-3:   var(--ngpf-gray-700);       /* tertiary / meta */
+  --fg-on-dark: var(--ngpf-white);
+  --link:   var(--ngpf-bright-blue);
+  --link-hover: var(--ngpf-primary-blue);
+
+  --bg-page:    var(--ngpf-white);
+  --bg-tint:    var(--ngpf-pale-blue);
+  --bg-dark:    var(--ngpf-dark-blue);
+  --bg-brand:   var(--ngpf-primary-blue);
+
+  --stroke-1:   var(--ngpf-gray-300);
+  --stroke-2:   var(--ngpf-gray-400);
+
+  --accent-warm-1: var(--ngpf-orange);
+  --accent-warm-2: var(--ngpf-gold);
+
+  /* --- Typography ------------------------------------------------- */
+  --font-display: "PT Sans", Helvetica, Arial, sans-serif;   /* titles only */
+  --font-sans:    "Montserrat", Helvetica, Arial, sans-serif; /* everything else */
+
+  /* Weights — only the 5 shipped with NGPF's brand font package are real.
+     Medium/SemiBold/ExtraBold map to the nearest available weight so any
+     existing rule like `font-weight: 600` still renders cleanly. */
+  --fw-thin:      100;
+  --fw-light:     300;
+  --fw-regular:   400;
+  --fw-medium:    400;   /* no 500 file — falls back to Regular */
+  --fw-semibold:  700;   /* no 600 file — falls back to Bold */
+  --fw-bold:      700;
+  --fw-extrabold: 900;   /* no 800 file — falls back to Black */
+  --fw-black:     900;
+
+  /* Semantic type scale (matches Figma Typography frame) */
+  --h1-size: 48px;   --h1-weight: 700; --h1-family: var(--font-display);
+  --h2-size: 36px;   --h2-weight: 700; --h2-family: var(--font-sans);
+  --h3-size: 24px;   --h3-weight: 700; --h3-family: var(--font-sans);
+  --h4-size: 20px;   --h4-weight: 700; --h4-family: var(--font-sans); /* ALL CAPS */
+  --h5-size: 18px;   --h5-weight: 700; --h5-family: var(--font-sans); /* ALL CAPS */
+  --h6-size: 16px;   --h6-weight: 700; --h6-family: var(--font-sans); /* ALL CAPS */
+
+  --body-lg:     20px;
+  --body:        16px;
+  --body-sm:     14px;
+  --body-xs:     12px;
+  --line-height: 1.4;
+
+  /* --- Spacing / Radii / Shadow ----------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 10px;       /* buttons */
+  --radius-xl: 16px;       /* cards */
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md: 0 2px 4px rgba(0,0,0,0.25);        /* nav bar — matches figma */
+  --shadow-lg: 0 6px 20px rgba(11,21,65,0.15);
+}
+
+/* -----------------------------------------------------------------
+   Base element styles — use these classes or element tags directly.
+   ----------------------------------------------------------------- */
+html, body {
+  font-family: var(--font-sans);
+  font-size: var(--body);
+  line-height: var(--line-height);
+  color: var(--fg-1);
+  background: var(--bg-page);
+}
+
+h1, .h1 {
+  font-family: var(--h1-family);
+  font-weight: var(--h1-weight);
+  font-size: var(--h1-size);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--fg-1);
+  margin: 0 0 0.4em;
+}
+h2, .h2 {
+  font-family: var(--h2-family);
+  font-weight: var(--h2-weight);
+  font-size: var(--h2-size);
+  line-height: 1.15;
+  color: var(--fg-1);
+  margin: 0 0 0.4em;
+}
+h3, .h3 {
+  font-family: var(--h3-family);
+  font-weight: var(--h3-weight);
+  font-size: var(--h3-size);
+  line-height: 1.2;
+  color: var(--fg-1);
+  margin: 0 0 0.4em;
+}
+h4, .h4 {
+  font-family: var(--h4-family);
+  font-weight: var(--h4-weight);
+  font-size: var(--h4-size);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-1);
+  margin: 0 0 0.5em;
+}
+h5, .h5 {
+  font-family: var(--h5-family);
+  font-weight: var(--h5-weight);
+  font-size: var(--h5-size);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-1);
+  margin: 0 0 0.5em;
+}
+h6, .h6 {
+  font-family: var(--h6-family);
+  font-weight: var(--h6-weight);
+  font-size: var(--h6-size);
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-1);
+  margin: 0 0 0.5em;
+}
+
+p, .p {
+  font-family: var(--font-sans);
+  font-size: var(--body);
+  line-height: var(--line-height);
+  color: var(--fg-2);
+  margin: 0 0 1em;
+}
+.p-lg { font-size: var(--body-lg); }
+.p-sm { font-size: var(--body-sm); }
+.p-light { font-weight: var(--fw-light); }
+
+a, .link {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a:hover { color: var(--link-hover); }
+
+/* -----------------------------------------------------------------
+   Reusable element styles
+   ----------------------------------------------------------------- */
+.ngpf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-lg);
+  background: var(--ngpf-bright-blue);
+  color: var(--ngpf-white);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);    /* Bold (700) for primary CTAs */
+  font-size: 18px;
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 120ms ease;
+}
+.ngpf-btn:hover  { background: #1f4ec4; }
+.ngpf-btn:active { background: #1e44a5; }
+
+.ngpf-btn--outline {
+  background: var(--ngpf-white);
+  color: var(--ngpf-bright-blue);
+  border: 2px solid var(--ngpf-bright-blue);
+}
+.ngpf-btn--outline:hover  { background: #f4f7ff; }
+.ngpf-btn--outline:active { color: var(--ngpf-primary-blue); border-color: var(--ngpf-primary-blue); }
+
+.ngpf-btn--small {
+  padding: 9px 18px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+.ngpf-btn--tiny {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  font-weight: var(--fw-bold);
+}
+
+/* Pattern backgrounds */
+.ngpf-bg-pattern-primary {
+  background-color: var(--ngpf-primary-blue);
+  background-image: url('./assets/pattern-primary-blue.png');
+  background-size: 600px;
+  background-repeat: repeat;
+  color: var(--ngpf-white);
+}
+.ngpf-bg-pattern-bright {
+  background-color: var(--ngpf-bright-blue);
+  background-image: url('./assets/pattern-bright-blue.png');
+  background-size: 600px;
+  background-repeat: repeat;
+  color: var(--ngpf-white);
+}
+
+</style>
+<!-- ===== Infographic shared styles (infographic.css) ===== -->
+<style>
+/* ============================================================
+   NGPF Insurance Infographic — shared helper styles
+   Built on NGPF design tokens (colors_and_type.css).
+   Width baseline: 800px tall poster.
+   ============================================================ */
+
+/* Re-point pattern backgrounds at this project's copied assets
+   (the bound _ds folder ships no assets/ subfolder). */
+.ngpf-bg-pattern-primary {
+  background-color: var(--ngpf-primary-blue);
+  background-image: url('assets/pattern-primary-blue.png');
+  background-size: 600px;
+  background-repeat: repeat;
+  color: #fff;
+}
+.ngpf-bg-pattern-bright {
+  background-color: var(--ngpf-bright-blue);
+  background-image: url('assets/pattern-bright-blue.png');
+  background-size: 600px;
+  background-repeat: repeat;
+  color: #fff;
+}
+
+.ig {
+  width: 800px;
+  box-sizing: border-box;
+  background: var(--ngpf-white);
+  color: var(--ngpf-dark-blue);
+  font-family: var(--font-sans);
+  position: relative;
+  overflow: hidden;
+}
+.ig *, .ig *::before, .ig *::after { box-sizing: border-box; }
+
+.ig-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.ig-kicker {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.ig-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 13px;
+}
+.ig-h {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+.ig-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+.ig-body--light { font-weight: 300; }
+
+/* ---- Coverage bar ------------------------------------------ */
+.cov {
+  --cov-h: 62px;
+  position: relative;
+  margin-top: 40px;
+}
+.cov-limit-flag {
+  position: absolute;
+  top: -24px;
+  left: var(--cov-limit-x, 74%);
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 3;
+}
+.cov-limit-flag .cov-limit-label {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+  color: var(--ngpf-orange);
+  white-space: nowrap;
+  line-height: 1.1;
+}
+.cov-limit-flag .cov-limit-tick {
+  width: 6px;
+  height: 26px;
+  background: var(--ngpf-orange);
+  margin: 6px auto 0;
+  border-radius: 3px;
+}
+.cov-row {
+  display: flex;
+  align-items: stretch;
+  height: var(--cov-h);
+  margin-top: 56px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+.cov-seg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  line-height: 1.05;
+  position: relative;
+}
+.cov-seg .cov-seg-t {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 16px;
+}
+.cov-seg .cov-seg-s {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 11px;
+  opacity: 0.92;
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+.cov-deductible { background: var(--cov-deductible-bg, var(--ngpf-gold)); color: var(--ngpf-dark-blue); flex: 0 0 26%; }
+.cov-deductible .cov-seg-t { color: var(--ngpf-dark-blue); }
+.cov-coverage  { background: var(--ngpf-bright-blue); flex: 1 1 auto; }
+.cov-beyond {
+  flex: 0 0 22%;
+  background: var(--cov-beyond-bg, #dfe9ff);
+  border-left: 6px solid var(--ngpf-orange);
+  color: var(--ngpf-dark-blue);
+}
+.cov-beyond .cov-beyond-t {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+  color: var(--ngpf-dark-blue);
+}
+.cov-legend {
+  display: flex;
+  gap: 28px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.cov-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+}
+.cov-legend-item b { font-weight: 700; }
+.cov-dot { width: 14px; height: 14px; border-radius: 3px; flex: 0 0 auto; }
+
+/* ---- Tradeoff arrows --------------------------------------- */
+.trade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.trade-card {
+  border-radius: var(--radius-md);
+  padding: 26px 22px 28px;
+  text-align: center;
+}
+.trade-scenario {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  margin: 0 0 4px;
+}
+.trade-arrows {
+  display: flex;
+  justify-content: center;
+  gap: 34px;
+  margin: 22px 0 18px;
+}
+.trade-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.arrow {
+  width: 56px;
+  height: 118px;
+  position: relative;
+}
+.arrow-up   { clip-path: polygon(50% 0, 100% 38%, 72% 38%, 72% 100%, 28% 100%, 28% 38%, 0 38%); }
+.arrow-down { clip-path: polygon(28% 0, 72% 0, 72% 62%, 100% 62%, 50% 100%, 0 62%, 28% 62%); }
+.arrow-ded  { background: var(--ngpf-primary-blue); }
+.arrow-lim  { background: var(--ngpf-bright-blue); }
+.arrow-prem { background: var(--ngpf-light-blue); }
+.arrow-lbl {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+}
+.arrow-amt {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+}
+.amt-ded  { color: var(--ngpf-primary-blue); }
+.amt-lim  { color: var(--ngpf-bright-blue); }
+.amt-prem { color: var(--ngpf-light-blue); }
+.trade-takeaway {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  margin: 6px 0 0;
+}
+
+/* ---- Paired relationship groups (deductible & limit vs premium) ---- */
+.rel-group + .rel-group { margin-top: 38px; padding-top: 34px; }
+.rel-subh {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 4px;
+}
+.rel-subh-term {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 18px;
+}
+.rel-subh-tag {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+}
+.rel-tag-opposite { background: rgba(255,255,255,0.16); }
+.rel-tag-together { background: var(--ngpf-light-blue); color: var(--ngpf-dark-blue); }
+
+/* ---- Footer ------------------------------------------------ */
+.ig-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.ig-foot img { display: block; }
+.ig-foot-note {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: right;
+}
+
+</style>
+<!-- ===== Ellie-branch styles (layout-c-ellie.css) ===== -->
+<style>
+/* ============================================================
+   Layout C — Bold alternating color blocks
+   ============================================================ */.ig-ellie .ig-c { background: var(--ngpf-white); }.ig-ellie .c-hero {
+  display: block;
+  padding: 42px 56px 46px;
+}.ig-ellie .c-hero-logo { width: 150px; display: block; margin-bottom: 28px; filter: brightness(0) invert(1); }.ig-ellie .c-hero-copy { min-width: 0; }.ig-ellie .c-hero-title { font-size: 56px; color: #fff; line-height: 1.0; }.ig-ellie .c-hero-intro { color: rgba(255,255,255,0.95); font-size: 17px; max-width: none; margin-top: 22px; }.ig-ellie .c-hero-aside {
+  display: none;
+}.ig-ellie .c-hero-ill {
+  width: 170px;
+}.ig-ellie .c-term {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  align-items: stretch;
+}.ig-ellie .c-term-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 34px 32px;
+  color: #fff;
+}.ig-ellie .c-term-panel--primary { background: var(--ngpf-primary-blue); }.ig-ellie .c-term-panel--bright { background: var(--ngpf-bright-blue); }.ig-ellie .c-term-panel--sky { background: var(--ngpf-light-blue); }.ig-ellie .c-term-num {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  opacity: 0.85;
+}.ig-ellie .c-term-name {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.05;
+}.ig-ellie .c-term-text {
+  padding: 34px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}.ig-ellie .c-term-gloss {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+  color: var(--ngpf-bright-blue);
+  margin: 0 0 10px;
+}.ig-ellie .c-term-body { font-size: 16px; color: var(--fg-2); }
+.ig-ellie .c-terms-chunk { padding: 40px 56px 44px; }
+.ig-ellie .c-term-item {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 24px;
+  padding: 26px 0;
+  align-items: start;
+}
+.ig-ellie .c-term-item + .c-term-item { border-top: 1px solid var(--ngpf-pale-navy); }
+.ig-ellie .c-term-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+}
+.ig-ellie .c-term-badge.badge--primary { background: var(--ngpf-primary-blue); }
+.ig-ellie .c-term-badge.badge--bright { background: var(--ngpf-bright-blue); }
+.ig-ellie .c-term-badge.badge--sky { background: var(--ngpf-light-blue); }
+.ig-ellie .c-term-badge i { font-size: 30px; line-height: 1; }
+.ig-ellie .c-term-itext { min-width: 0; }
+.ig-ellie .c-term-name2 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.05;
+  color: var(--ngpf-primary-blue);
+  margin: 0 0 6px;
+}
+.ig-ellie .c-cov { padding: 44px 56px 48px; }.ig-ellie .c-cov-h { font-size: 22px; color: #fff; margin-bottom: 6px; }.ig-ellie .c-cov-intro { color: rgba(255,255,255,0.9); font-size: 15px; max-width: none; white-space: nowrap; }.ig-ellie .c-trade { padding: 44px 56px 40px; }.ig-ellie .c-trade-h { font-size: 22px; color: var(--ngpf-primary-blue); margin-bottom: 6px; }.ig-ellie .c-trade-lede { font-size: 16px; color: var(--fg-2); max-width: 600px; margin-bottom: 26px; }.ig-ellie .c-rel-divider { border-top: 2px solid var(--ngpf-pale-navy); }.ig-ellie .c-trade .rel-group .c-trade-lede { margin: 8px 0 22px; }.ig-ellie .c-tag-opposite { background: var(--ngpf-pale-blue-3); color: var(--ngpf-primary-blue); }.ig-ellie .c-foot {
+  padding: 22px 56px 30px;
+  border-top: 2px solid var(--ngpf-pale-navy);
+}.ig-ellie .c-foot-sources {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+}.ig-ellie .c-foot-sources-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-2);
+}.ig-ellie .c-foot-sources a {
+  color: var(--ngpf-bright-blue);
+  text-decoration: none;
+  font-weight: 700;
+}.ig-ellie .c-foot-sources a:hover { color: var(--ngpf-primary-blue); }.ig-ellie .c-foot-sep { color: var(--ngpf-gray-500); }.ig-ellie .c-foot-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}.ig-ellie .c-foot-logo { width: 150px; display: block; }.ig-ellie .c-foot-right { text-align: right; }.ig-ellie .c-foot-tag {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--fg-3);
+  margin-bottom: 4px;
+}.ig-ellie .c-foot-url {
+  display: block;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ngpf-bright-blue);
+  text-decoration: none;
+}.ig-ellie .c-foot-url:hover { color: var(--ngpf-primary-blue); }
+
+/* ---- Coverage-bar brackets + definitions (Ellie) ---------- */
+.ig-ellie .cov-brackets {
+  display: flex;
+  margin-top: 14px;
+  align-items: flex-start;
+}
+.ig-ellie .cov-bracket-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 12px;
+}
+.ig-ellie .cov-bracket-cell.cell-ded { flex: 0 0 26%; }
+.ig-ellie .cov-bracket-cell.cell-cov { flex: 1 1 auto; }
+.ig-ellie .cov-bracket-cell.cell-beyond { flex: 0 0 22%; }
+.ig-ellie .cov-bracket {
+  width: 100%;
+  height: 12px;
+  border: 2px solid rgba(255,255,255,0.45);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+.ig-ellie .cov-def {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.32;
+  margin: 12px 0 0;
+  text-align: center;
+  color: rgba(255,255,255,0.92);
+}
+.ig-ellie .cov-def b { font-weight: 700; }
+
+</style>
+
+<style>
+  body { margin: 0; background: #e9edf5; padding: 40px; display: flex; justify-content: center; }
+  #root { box-shadow: 0 10px 40px rgba(11,21,65,0.18); }
+  a { color: var(--ngpf-bright-blue); }
+  a:hover { color: var(--ngpf-primary-blue); }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- ===== content-ellie.jsx (copy data + reusable blocks) ===== -->
+<script type="text/babel" data-presets="react">
+/* content-ellie.jsx — Ellie's independent copy. All globals suffixed -E so
+   they don't collide with content-v2.jsx in the shared Babel scope. */
+
+const IG_CONTENT_E = {
+  title: ["Premiums, Deductibles", "& Limits"],
+  intro: "Premiums, deductibles, and limits all shape what insurance costs you \u2014 and how much coverage you actually get. Here\u2019s what each one means.",
+  terms: [
+  {
+    key: "premium",
+    n: "01",
+    term: "Premium",
+    gloss: "What you pay to have insurance",
+    body: "A premium is the amount you pay for your insurance policy \u2014 usually every month, every six months, or once a year. Paying your premium on time keeps your policy active."
+  },
+  {
+    key: "deductible",
+    n: "02",
+    term: "Deductible",
+    gloss: "What you pay before coverage kicks in",
+    body: "If you file a claim for a covered loss, the deductible is the amount you pay out of pocket first. Your insurance starts paying only after you\u2019ve met it."
+  },
+  {
+    key: "limit",
+    n: "03",
+    term: "Coverage Limit",
+    gloss: "The most your policy will pay",
+    body: "A coverage limit is the maximum amount your policy will pay for a covered loss. Many policies bundle several types of coverage, each with its own limit."
+  }],
+
+
+  // Relationship 1 — deductible & premium move in OPPOSITE directions.
+  tradeoffLede: "Your deductible and your premium work like a see-saw: when one goes up, the other usually comes down.",
+  tradeoff: [
+  { scenario: "Choose a HIGHER deductible", aDir: "up", aAmt: "$$$", bDir: "down", bAmt: "$", takeaway: "Pay less each month, but more out of pocket if you file a claim." },
+  { scenario: "Choose a LOWER deductible", aDir: "down", aAmt: "$", bDir: "up", bAmt: "$$$", takeaway: "Pay more each month, but less out of pocket if you file a claim." }],
+
+
+  // Relationship 2 — limit & premium move in the SAME direction.
+  limitLede: "Your coverage limit and your premium climb together: the more your policy could pay out, the more it costs to insure.",
+  limit: [
+  { scenario: "Choose a HIGHER limit", aDir: "up", aAmt: "$$$", bDir: "up", bAmt: "$$$", takeaway: "More protection if you file a claim for a higher cost each month." },
+  { scenario: "Choose a LOWER limit", aDir: "down", aAmt: "$", bDir: "down", bAmt: "$", takeaway: "A lower cost each month, but less protection if you file a claim." }]
+
+};
+
+// Coverage bar — Deductible (you pay) | Insurance coverage | Limit cap.
+function CoverageBarE({ tone = "light", beyondColor = "var(--ngpf-pale-blue-3)" }) {
+  const legendColor = tone === "dark" ? "rgba(255,255,255,0.92)" : "var(--fg-2)";
+  return (
+    <div className="cov" style={{ "--cov-limit-x": "calc(78% + 3px)" }}>
+      <div className="cov-limit-flag">
+        <div className="cov-limit-label">Coverage limit</div>
+        <div className="cov-limit-tick"></div>
+      </div>
+      <div className="cov-row">
+        <div className="cov-seg cov-deductible">
+          <span className="cov-seg-t">Deductible</span>
+        </div>
+        <div className="cov-seg cov-coverage">
+          <span className="cov-seg-t">Insurance Coverage</span>
+        </div>
+        <div className="cov-seg cov-beyond" style={{ background: beyondColor }}>
+          <span className="cov-beyond-t">Above limit</span>
+        </div>
+      </div>
+      <div className="cov-brackets">
+        <div className="cov-bracket-cell cell-ded">
+          <div className="cov-bracket"></div>
+          <p className="cov-def">What <b>you</b> pay first</p>
+        </div>
+        <div className="cov-bracket-cell cell-cov">
+          <div className="cov-bracket"></div>
+          <p className="cov-def">What your <b>insurer</b> pays, up to your limit</p>
+        </div>
+        <div className="cov-bracket-cell cell-beyond">
+          <div className="cov-bracket"></div>
+          <p className="cov-def">You cover the remaining costs <b>above</b> the limit</p>
+        </div>
+      </div>
+    </div>);
+
+}
+
+function TradeArrowE({ dir, kind }) {
+  const kindCls = kind === "ded" ? "arrow-ded" : kind === "lim" ? "arrow-lim" : "arrow-prem";
+  const cls = "arrow " + (dir === "up" ? "arrow-up" : "arrow-down") + " " + kindCls;
+  return <div className={cls}></div>;
+}
+
+// Generic two-factor relationship: two scenario cards, each with two arrows.
+function RelationPairE({ items, aKind, aLabel, bKind, bLabel, cardStyle = {}, textColor }) {
+  return (
+    <div className="trade">
+      {items.map((s, i) =>
+      <div className="trade-card" key={i} style={{ ...cardStyle, color: textColor }}>
+          <p className="trade-scenario" style={{ color: textColor }}>{s.scenario}</p>
+          <div className="trade-arrows">
+            <div className="trade-col">
+              <TradeArrowE dir={s.aDir} kind={aKind} />
+              <span className={"arrow-lbl amt-" + aKind}>{aLabel}</span>
+              <span className={"arrow-amt amt-" + aKind}>{s.aAmt}</span>
+            </div>
+            <div className="trade-col">
+              <TradeArrowE dir={s.bDir} kind={bKind} />
+              <span className={"arrow-lbl amt-" + bKind}>{bLabel}</span>
+              <span className={"arrow-amt amt-" + bKind}>{s.bAmt}</span>
+            </div>
+          </div>
+          <p className="trade-takeaway" style={{ color: textColor }}>{s.takeaway}</p>
+        </div>
+      )}
+    </div>);
+
+}
+
+function TradeoffE(props) {
+  return <RelationPairE items={IG_CONTENT_E.tradeoff} aKind="ded" aLabel="Deductible" bKind="prem" bLabel="Premium" {...props} />;
+}
+function LimitPremiumE(props) {
+  return <RelationPairE items={IG_CONTENT_E.limit} aKind="lim" aLabel="Limit" bKind="prem" bLabel="Premium" {...props} />;
+}
+
+Object.assign(window, { IG_CONTENT_E, CoverageBarE, TradeoffE, LimitPremiumE, RelationPairE, TradeArrowE });
+
+</script>
+
+<!-- ===== layout-c-ellie.jsx (page component) ===== -->
+<script type="text/babel" data-presets="react">
+/* layout-c.jsx — "Bold alternating color blocks" */
+function InfographicCEllie({ tweaks = {} }) {
+  const C = window.IG_CONTENT_E;
+  const panels = ["c-term-panel--primary", "c-term-panel--bright", "c-term-panel--sky"];
+  const badges = ["badge--primary", "badge--bright", "badge--sky"];
+  const termIcons = ["la-file-invoice-dollar", "la-wallet", "la-shield-alt"];
+
+  const heroClass = tweaks.heroColor === "true" ? "ngpf-bg-pattern-primary" : "ngpf-bg-pattern-bright";
+  const umbAlign = tweaks.umbrellaAlign === "top" ? "flex-start" : "center";
+  const umbSize = tweaks.umbrellaSize || 170;
+  const accent = tweaks.deductibleAccent === "orange" ? "var(--ngpf-orange)" : "var(--ngpf-gold)";
+  const showTagline = tweaks.showTagline !== false;
+  const beyondColor = tweaks.beyondLimitColor || "var(--ngpf-pale-blue-3)";
+  const rootStyle = { "--cov-deductible-bg": accent };
+
+  return (
+    <div className="ig ig-c ig-ellie" style={rootStyle}>
+      {/* HERO */}
+      <header className={"c-hero " + heroClass} style={{ backgroundImage: "url('assets/hero-insurance.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>
+        <img className="c-hero-logo" src="assets/ngpf-horizontal-primary-ko.svg" alt="NGPF" />
+        <div className="c-hero-copy">
+          <h1 className="ig-title c-hero-title">Premiums, Deductibles,<br />and Limits</h1>
+          <p className="ig-body c-hero-intro">Premiums, deductibles, and limits all shape what insurance costs you — and how much coverage you actually get.</p>
+        </div>
+      </header>
+
+      {/* TERMS — all three together in one chunk */}
+      <section className="c-terms-chunk">
+        {C.terms.map((t, i) =>
+        <div className="c-term-item" key={t.key}>
+            <span className={"c-term-badge " + badges[i]}><i className={"las " + termIcons[i]}></i></span>
+            <div className="c-term-itext">
+              <h3 className="c-term-name2">{t.term}</h3>
+              <p className="c-term-gloss">{t.gloss}</p>
+              <p className="ig-body c-term-body">{t.body}</p>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* COVERAGE BAR — dark block */}
+      <section className="ngpf-bg-pattern-primary c-cov">
+        <h2 className="ig-h c-cov-h">How a claim gets paid</h2>
+        <p className="ig-body c-cov-intro">You cover the deductible first. Your insurer pays the rest — up to your coverage limit.</p>
+        <CoverageBarE tone="dark" beyondColor={beyondColor} />
+      </section>
+
+      {/* WHAT CHANGES YOUR PREMIUM — two paired relationships */}
+      <section className="c-trade">
+        <h2 className="ig-h c-trade-h">What changes your premium?</h2>
+        <p className="ig-body c-trade-lede">Two of your choices pull on your premium, but in opposite ways.</p>
+
+        <div className="rel-group">
+          <div className="rel-subh">
+            <span className="rel-subh-term" style={{ color: "var(--ngpf-primary-blue)" }}>{"DEDUCTIBLE"}</span>
+          </div>
+          <p className="ig-body c-trade-lede">{C.tradeoffLede}</p>
+          <TradeoffE cardStyle={{ background: "var(--ngpf-pale-blue)" }} textColor="var(--ngpf-dark-blue)" />
+        </div>
+
+        <div className="rel-group c-rel-divider">
+          <div className="rel-subh">
+            <span className="rel-subh-term" style={{ color: "var(--ngpf-primary-blue)" }}>{"COVERAGE LIMIT"}</span>
+          </div>
+          <p className="ig-body c-trade-lede">{C.limitLede}</p>
+          <LimitPremiumE cardStyle={{ background: "var(--ngpf-pale-blue)" }} textColor="var(--ngpf-dark-blue)" />
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="c-foot">
+        <div className="c-foot-main">
+          <img className="c-foot-logo" src="assets/ngpf-horizontal-primary.png" alt="NGPF" />
+          <div className="c-foot-sources">
+            <span className="c-foot-sources-label">Sources</span>
+            <a href="https://www.allstate.com/resources/Allstate/images/tools-resources-articles/insurance-basics/premium-limits-deductibles-infographic-desktop.jpg?v=40eb2a5e-d4e5-12f0-d905-e3b2f172119f" target="_blank" rel="noopener">Allstate</a>
+            <span className="c-foot-sep">|</span>
+            <a href="https://www.njm.com/ask/what-is-an-insurance-premium" target="_blank" rel="noopener">NJM</a>
+          </div>
+        </div>
+      </footer>
+    </div>);
+
+}
+window.InfographicCEllie = InfographicCEllie;
+</script>
+
+<script type="text/babel" data-presets="react">
+  ReactDOM.createRoot(document.getElementById('root')).render(<window.InfographicCEllie tweaks={{}} />);
+</script>
+</body>
+</html>

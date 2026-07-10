@@ -1,0 +1,197 @@
+<!-- Full-bleed grey framing page; the 800px poster is centred and drop-shadowed. -->
+<div class="infographic-page">
+  <article class="infographic" aria-label="Insurance infographic: Premiums, Deductibles, and Limits">
+    <!-- ────────────────────────────────────────────────────────────────
+         HERO — hero photo with brand-pattern fallback
+         ──────────────────────────────────────────────────────────────── -->
+    <header class="c-hero ngpf-bg-pattern-bright">
+      <img
+        class="c-hero-logo"
+        src="/infographics/premiums-deductibles-limits/ngpf-horizontal-primary-ko.svg"
+        alt="NGPF"
+      />
+      <div class="c-hero-copy">
+        <h1 class="ig-title c-hero-title">
+          Premiums, Deductibles,<br />and Limits
+        </h1>
+        <p class="ig-body c-hero-intro">
+          Premiums, deductibles, and limits all shape what insurance costs you — and how much
+          coverage you actually get.
+        </p>
+      </div>
+    </header>
+
+    <!-- ────────────────────────────────────────────────────────────────
+         TERMS — three vocabulary rows in a single chunk
+         ──────────────────────────────────────────────────────────────── -->
+    <section class="c-terms-chunk">
+      @for (t of terms; track t.key) {
+        <div class="c-term-item">
+          <span class="c-term-badge" [class]="'c-term-badge badge--' + t.badge">
+            @switch (t.icon) {
+              @case ('invoice') {
+                <svg class="c-term-icon" viewBox="0 0 32 40" aria-hidden="true">
+                  <path
+                    d="M4 2 h16 l8 8 v26 a2 2 0 0 1-2 2 h-22 a2 2 0 0 1-2-2 v-32 a2 2 0 0 1 2-2z"
+                    fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"
+                  />
+                  <path d="M20 2 v8 h8" fill="none" stroke="white" stroke-width="2.5" />
+                  <path d="M9 20 h14 M9 25 h14" stroke="white" stroke-width="2" stroke-linecap="round" />
+                  <text x="16" y="35" text-anchor="middle" font-family="'PT Sans', serif" font-weight="700" font-size="10" fill="white">$</text>
+                </svg>
+              }
+              @case ('wallet') {
+                <svg class="c-term-icon" viewBox="0 0 36 30" aria-hidden="true">
+                  <path
+                    d="M4 8 h26 a2 2 0 0 1 2 2 v16 a2 2 0 0 1-2 2 h-26 a2 2 0 0 1-2-2 v-16 a2 2 0 0 1 2-2z"
+                    fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"
+                  />
+                  <path d="M4 8 l6-4 h20" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round" />
+                  <circle cx="25" cy="18" r="2.5" fill="white" />
+                </svg>
+              }
+              @case ('shield') {
+                <svg class="c-term-icon" viewBox="0 0 30 34" aria-hidden="true">
+                  <path
+                    d="M15 2 L27 6 v10 c0 8-6 12-12 15 -6-3-12-7-12-15 V6 z"
+                    fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"
+                  />
+                  <path d="M10 17 l4 4 l7-8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              }
+            }
+          </span>
+          <div class="c-term-itext">
+            <h3 class="c-term-name2">{{ t.name }}</h3>
+            <p class="c-term-gloss">{{ t.gloss }}</p>
+            <p class="ig-body c-term-body">{{ t.body }}</p>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────
+         COVERAGE BAR — dark block
+         ──────────────────────────────────────────────────────────────── -->
+    <section class="ngpf-bg-pattern-primary c-cov">
+      <h2 class="ig-h c-cov-h">How a claim gets paid</h2>
+      <p class="ig-body c-cov-intro">
+        You cover the deductible first. Your insurer pays the rest — up to your coverage limit.
+      </p>
+      <div class="cov" style="--cov-limit-x: calc(78% + 3px);">
+        <div class="cov-limit-flag">
+          <div class="cov-limit-label">Coverage limit</div>
+          <div class="cov-limit-tick"></div>
+        </div>
+        <div class="cov-row">
+          <div class="cov-seg cov-deductible">
+            <span class="cov-seg-t">Deductible</span>
+          </div>
+          <div class="cov-seg cov-coverage">
+            <span class="cov-seg-t">Insurance Coverage</span>
+          </div>
+          <div class="cov-seg cov-beyond">
+            <span class="cov-beyond-t">Above limit</span>
+          </div>
+        </div>
+        <div class="cov-brackets">
+          <div class="cov-bracket-cell cell-ded">
+            <div class="cov-bracket"></div>
+            <p class="cov-def">What <b>you</b> pay first</p>
+          </div>
+          <div class="cov-bracket-cell cell-cov">
+            <div class="cov-bracket"></div>
+            <p class="cov-def">What your <b>insurer</b> pays, up to your limit</p>
+          </div>
+          <div class="cov-bracket-cell cell-beyond">
+            <div class="cov-bracket"></div>
+            <p class="cov-def">You cover the remaining costs <b>above</b> the limit</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────
+         WHAT CHANGES YOUR PREMIUM — two paired relationships
+         ──────────────────────────────────────────────────────────────── -->
+    <section class="c-trade">
+      <h2 class="ig-h c-trade-h">What changes your premium?</h2>
+      <p class="ig-body c-trade-lede">
+        Two of your choices pull on your premium, but in opposite ways.
+      </p>
+
+      <div class="rel-group">
+        <div class="rel-subh"><span class="rel-subh-term">DEDUCTIBLE</span></div>
+        <p class="ig-body c-trade-lede">{{ tradeoffLede }}</p>
+        <div class="trade">
+          @for (s of tradeoff; track s.scenario) {
+            <div class="trade-card">
+              <p class="trade-scenario">{{ s.scenario }}</p>
+              <div class="trade-arrows">
+                <div class="trade-col">
+                  <div [class]="arrowClass(s.aDir, 'ded')"></div>
+                  <span class="arrow-lbl amt-ded">Deductible</span>
+                  <span class="arrow-amt amt-ded">{{ s.aAmt }}</span>
+                </div>
+                <div class="trade-col">
+                  <div [class]="arrowClass(s.bDir, 'prem')"></div>
+                  <span class="arrow-lbl amt-prem">Premium</span>
+                  <span class="arrow-amt amt-prem">{{ s.bAmt }}</span>
+                </div>
+              </div>
+              <p class="trade-takeaway">{{ s.takeaway }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="rel-group c-rel-divider">
+        <div class="rel-subh"><span class="rel-subh-term">COVERAGE LIMIT</span></div>
+        <p class="ig-body c-trade-lede">{{ limitLede }}</p>
+        <div class="trade">
+          @for (s of limit; track s.scenario) {
+            <div class="trade-card">
+              <p class="trade-scenario">{{ s.scenario }}</p>
+              <div class="trade-arrows">
+                <div class="trade-col">
+                  <div [class]="arrowClass(s.aDir, 'lim')"></div>
+                  <span class="arrow-lbl amt-lim">Limit</span>
+                  <span class="arrow-amt amt-lim">{{ s.aAmt }}</span>
+                </div>
+                <div class="trade-col">
+                  <div [class]="arrowClass(s.bDir, 'prem')"></div>
+                  <span class="arrow-lbl amt-prem">Premium</span>
+                  <span class="arrow-amt amt-prem">{{ s.bAmt }}</span>
+                </div>
+              </div>
+              <p class="trade-takeaway">{{ s.takeaway }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────
+         FOOTER
+         ──────────────────────────────────────────────────────────────── -->
+    <footer class="c-foot">
+      <div class="c-foot-main">
+        <img
+          class="c-foot-logo"
+          src="/infographics/premiums-deductibles-limits/ngpf-horizontal-primary.png"
+          alt="NGPF"
+        />
+        <div class="c-foot-sources">
+          <span class="c-foot-sources-label">Sources</span>
+          <a
+            href="https://www.allstate.com/resources/Allstate/images/tools-resources-articles/insurance-basics/premium-limits-deductibles-infographic-desktop.jpg?v=40eb2a5e-d4e5-12f0-d905-e3b2f172119f"
+            target="_blank"
+            rel="noopener"
+          >Allstate</a>
+          <span class="c-foot-sep">|</span>
+          <a href="https://www.njm.com/ask/what-is-an-insurance-premium" target="_blank" rel="noopener">NJM</a>
+        </div>
+      </div>
+    </footer>
+  </article>
+</div>
