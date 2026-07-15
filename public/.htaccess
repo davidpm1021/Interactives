@@ -1,9 +1,10 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # If the request matches an existing file or directory, serve it.
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
+  # If the request matches an existing file, serve it.
+  # Directories fall through to the SPA so route paths that collide with
+  # asset folders (e.g. /infographics/<name>) still route via Angular.
+  RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
   # Otherwise, route everything to the Angular SPA entrypoint.
