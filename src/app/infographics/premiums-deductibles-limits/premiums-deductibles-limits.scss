@@ -19,14 +19,14 @@
   // Pattern tile URLs — resolved from the public/ root.
   .ngpf-bg-pattern-primary {
     background-color: var(--ngpf-primary-blue);
-    background-image: url('infographics/premiums-deductibles-limits/pattern-primary-blue.png');
+    background-image: url('/interactives/infographics/premiums-deductibles-limits/pattern-primary-blue.png');
     background-size: 600px;
     background-repeat: repeat;
     color: #fff;
   }
   .ngpf-bg-pattern-bright {
     background-color: var(--ngpf-bright-blue);
-    background-image: url('infographics/premiums-deductibles-limits/pattern-bright-blue.png');
+    background-image: url('/interactives/infographics/premiums-deductibles-limits/pattern-bright-blue.png');
     background-size: 600px;
     background-repeat: repeat;
     color: #fff;
@@ -36,7 +36,7 @@
   .c-hero {
     display: block;
     padding: 42px 56px 46px;
-    background-image: url('infographics/premiums-deductibles-limits/hero-insurance.jpg');
+    background-image: url('/interactives/infographics/premiums-deductibles-limits/hero-insurance.jpg');
     background-size: cover;
     background-position: center;
   }
