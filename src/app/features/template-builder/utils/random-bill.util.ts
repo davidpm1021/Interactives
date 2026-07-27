@@ -148,7 +148,7 @@ const BILLERS: BillerPreset[] = [
     addressLine2: 'San Diego, CA 92103',
     phone: '(619) 555-0166',
     buildItems: () => [
-      { description: 'Liability coverage — monthly premium', amount: round2(46 + Math.random() * 20) },
+      { description: 'Liability coverage (monthly premium)', amount: round2(46 + Math.random() * 20) },
       { description: 'Comprehensive and collision', amount: round2(30 + Math.random() * 18) },
       { description: 'Roadside assistance', amount: 4.0 },
       { description: 'Multi-policy discount', amount: round2(-(3 + Math.random() * 4)) },

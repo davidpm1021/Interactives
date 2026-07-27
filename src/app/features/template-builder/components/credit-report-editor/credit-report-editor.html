@@ -243,7 +243,7 @@
               <td>{{ acct.openedDate ? (acct.openedDate | date: 'MMM y') : '' }}</td>
               <td>{{ acct.balance | currency }}</td>
               <td>{{ acct.creditLimit | currency }}</td>
-              <td>{{ utilizationPctOf(acct) !== null ? utilizationPctOf(acct) + '%' : '—' }}</td>
+              <td>{{ utilizationPctOf(acct) !== null ? utilizationPctOf(acct) + '%' : '-' }}</td>
               <td>{{ acct.status }}</td>
               <td>{{ acct.paymentStatus }}</td>
             </tr>

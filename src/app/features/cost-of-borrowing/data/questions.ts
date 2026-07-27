@@ -50,7 +50,7 @@ export const QUESTIONS: Question[] = [
     tolerance: 1,
     unit: 'points',
     explanation:
-      'The mortgage line drops to around 2.7% in 2020 and rises to about 6.4% by 2026 — a jump of about 3.8 percentage points, which rounds to 4.',
+      'The mortgage line drops to around 2.7% in 2020 and rises to about 6.4% by 2026. That is a jump of about 3.8 percentage points, which rounds to 4.',
   },
   {
     id: 'q5-history-cc',

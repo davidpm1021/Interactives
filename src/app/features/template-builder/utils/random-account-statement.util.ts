@@ -14,7 +14,7 @@ const BANKS = [
 function txnFromVendor(date: Date, vendor: VendorPreset, isDebit: boolean): AccountTransaction {
   const amount = randFloat(vendor.amtMin, vendor.amtMax);
   const channel = REF_LABELS[vendor.refKind];
-  const desc = channel ? `${channel} — ${vendor.description}` : vendor.description;
+  const desc = channel ? `${channel}: ${vendor.description}` : vendor.description;
   return {
     date: toISO(date),
     description: desc,
@@ -73,7 +73,7 @@ export function randomChecking(now: Date = new Date()): AccountStatement {
   if (Math.random() < 0.15) {
     transactions.push({
       date: toISO(shiftDays(periodStart, randInt(5, 22))),
-      description: 'ATM fee — out-of-network',
+      description: 'ATM fee: out-of-network',
       amount: 3.5,
       kind: 'debit',
     });
@@ -129,9 +129,9 @@ export function randomSavings(now: Date = new Date()): AccountStatement {
     transactions.push({
       date: toISO(shiftDays(periodStart, randInt(10, 24))),
       description: pick([
-        'Withdrawal — emergency car repair',
-        'Withdrawal — medical co-pay',
-        'Withdrawal — security deposit',
+        'Withdrawal: emergency car repair',
+        'Withdrawal: medical co-pay',
+        'Withdrawal: security deposit',
       ]),
       amount: randFloat(120, 480),
       kind: 'debit',

@@ -43,14 +43,14 @@ export class CostOfBorrowing {
   protected onExportAnswers(): void {
     const answers = this.stateService.answers();
     const lines: string[] = [
-      'Cost of Borrowing — Data Crunch',
+      'Cost of Borrowing (Data Crunch)',
       'Name: ______________________________',
       'Date: ______________________________',
       '',
     ];
 
     this.questions.forEach((q, i) => {
-      lines.push(`Q${i + 1} (DOK ${q.dok}) — ${q.prompt}`);
+      lines.push(`Q${i + 1} (DOK ${q.dok}): ${q.prompt}`);
       const record = answers[q.id];
       if (!record) {
         lines.push('Your answer: (not answered)');

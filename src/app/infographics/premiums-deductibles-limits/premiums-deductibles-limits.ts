@@ -34,7 +34,7 @@ export class PremiumsDeductiblesLimits {
       key: 'premium',
       name: 'Premium',
       gloss: 'What you pay to have insurance',
-      body: 'A premium is the amount you pay for your insurance policy — usually every month, every six months, or once a year. Paying your premium on time keeps your policy active.',
+      body: 'A premium is the amount you pay for your insurance policy, usually every month, every six months, or once a year. Paying your premium on time keeps your policy active.',
       badge: 'primary',
       icon: 'invoice',
     },
