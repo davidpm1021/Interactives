@@ -34,10 +34,6 @@ export class QuestionStack {
   protected readonly total = computed(() => this.questions().length);
   protected readonly onReview = computed(() => this.currentIndex() >= this.total());
   protected readonly canGoPrev = computed(() => this.currentIndex() > 0);
-  protected readonly nextLabel = computed(() => {
-    if (this.currentIndex() >= this.total() - 1) return 'Review answers';
-    return 'Next question';
-  });
 
   protected readonly reviewRows = computed<ReviewRow[]>(() => {
     const answers = this.state.answers();

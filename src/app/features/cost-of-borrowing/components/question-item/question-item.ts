@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   MultipleChoiceQuestion,
@@ -19,6 +19,12 @@ import { CostOfBorrowingStateService } from '../../services/state.service';
 export class QuestionItem {
   readonly question = input.required<Question>();
   readonly index = input.required<number>();
+  /** Label for the "advance" state of the primary button (after full reveal). */
+  readonly advanceLabel = input<string>('Next question →');
+  /** True when this is the last question; hides the advance button after reveal so the parent can render the Review step instead. */
+  readonly isLast = input<boolean>(false);
+
+  readonly advanceRequested = output<void>();
 
   private readonly state = inject(CostOfBorrowingStateService);
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
@@ -127,6 +133,10 @@ export class QuestionItem {
 
     // First wrong attempt — soft nudge, no highlight on correct, no explanation.
     this.nudge.set(true);
+  }
+
+  protected onAdvance(): void {
+    this.advanceRequested.emit();
   }
 
   protected onReset(): void {

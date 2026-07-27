@@ -19,7 +19,13 @@
         [class.question-stack__slot--active]="i === currentIndex()"
         [attr.aria-hidden]="i === currentIndex() ? null : 'true'"
       >
-        <app-question-item [question]="q" [index]="i" />
+        <app-question-item
+          [question]="q"
+          [index]="i"
+          [isLast]="i === total() - 1"
+          [advanceLabel]="i === total() - 1 ? 'Review answers →' : 'Next question →'"
+          (advanceRequested)="onNext()"
+        />
       </div>
     }
   </div>
@@ -62,14 +68,5 @@
     >
       ← Previous
     </button>
-    @if (!onReview()) {
-      <button
-        type="button"
-        class="question-stack__nav-btn question-stack__nav-btn--next ngpf-btn ngpf-btn-primary"
-        (click)="onNext()"
-      >
-        {{ nextLabel() }} →
-      </button>
-    }
   </div>
 </section>

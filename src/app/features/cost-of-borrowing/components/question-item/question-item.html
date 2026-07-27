@@ -71,29 +71,7 @@
     }
   }
 
-  @if (!submitted()) {
-    @if (nudge()) {
-      <p class="question-item__nudge" role="status">
-        Not quite. Take another look at the data and try again.
-      </p>
-    }
-    <div class="question-item__actions">
-      <button
-        type="button"
-        class="ngpf-btn ngpf-btn-primary"
-        [disabled]="!canCheck()"
-        (click)="onCheck()"
-      >
-        @if (question().answerType === 'short-text') {
-          Show model answer
-        } @else if (nudge()) {
-          Check again
-        } @else {
-          Check
-        }
-      </button>
-    </div>
-  } @else {
+  @if (submitted()) {
     <div class="question-item__reveal" [id]="'q-' + question().id + '-reveal'" aria-live="polite">
       @if (question().answerType === 'short-text') {
         <div class="question-item__model">
@@ -116,5 +94,36 @@
         }
       </button>
     </div>
+  } @else if (nudge()) {
+    <p class="question-item__nudge" role="status">
+      Not quite. Take another look at the data and try again.
+    </p>
   }
+
+  <div class="question-item__actions">
+    @if (submitted()) {
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-primary"
+        (click)="onAdvance()"
+      >
+        {{ advanceLabel() }}
+      </button>
+    } @else {
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-primary"
+        [disabled]="!canCheck()"
+        (click)="onCheck()"
+      >
+        @if (question().answerType === 'short-text') {
+          Show model answer
+        } @else if (nudge()) {
+          Check again
+        } @else {
+          Check
+        }
+      </button>
+    }
+  </div>
 </article>
