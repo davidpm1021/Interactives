@@ -35,6 +35,9 @@
     @case ('numeric') {
       <div class="question-item__numeric">
         <label class="sr-only" [attr.for]="'q-' + question().id + '-numeric'">{{ question().prompt }}</label>
+        @if (asNumeric(question()).unit === '$') {
+          <span class="question-item__numeric-unit question-item__numeric-unit--prefix" aria-hidden="true">$</span>
+        }
         <input
           [id]="'q-' + question().id + '-numeric'"
           type="text"
@@ -47,7 +50,7 @@
           [attr.aria-invalid]="submitted() && correct() === false ? 'true' : null"
           [attr.aria-describedby]="submitted() ? 'q-' + question().id + '-reveal' : null"
         />
-        @if (asNumeric(question()).unit) {
+        @if (asNumeric(question()).unit && asNumeric(question()).unit !== '$') {
           <span class="question-item__numeric-unit">{{ asNumeric(question()).unit }}</span>
         }
       </div>
