@@ -8,6 +8,39 @@
     flex-wrap: wrap;
     gap: 6px;
   }
+
+  // Flash briefly after a preview-row click so the teacher sees which
+  // editor row was jumped to.
+  &__line-item--highlight {
+    animation: account-editor-flash 1.4s ease-out;
+  }
+}
+
+@keyframes account-editor-flash {
+  0%   { background: rgba(31, 59, 155, 0.18); box-shadow: 0 0 0 2px var(--ngpf-royal-blue); }
+  100% { background: transparent;               box-shadow: 0 0 0 0 transparent; }
+}
+
+.account-preview__row-clickable {
+  cursor: pointer;
+
+  &:hover td,
+  &:hover th {
+    background: rgba(31, 59, 155, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ngpf-sky-blue);
+    outline-offset: -2px;
+  }
+}
+
+// Screen-only affordance; the printed statement should look untouched.
+@media print {
+  .account-preview__row-clickable {
+    cursor: default;
+    &:hover td, &:hover th { background: transparent; }
+  }
 }
 
 .account-preview__row--negative td {

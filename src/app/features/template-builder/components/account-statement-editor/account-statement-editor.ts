@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  input,
+  signal,
+  viewChildren,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
@@ -56,6 +65,29 @@ export class AccountStatementEditor {
   protected readonly clearFnRef = (): AccountStatement => emptyStatement(this.variant() === 'savings');
 
   private lastVariant: 'checking' | 'savings' | null = null;
+
+  /** One ref per editor transaction row; used to scroll + focus on preview click. */
+  private readonly txnRowRefs = viewChildren<ElementRef<HTMLElement>>('editorTxn');
+
+  /** Which row is currently "highlighted" by a preview click; nulled after the flash animation. */
+  protected readonly highlightedTxn = signal<number | null>(null);
+  private highlightTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /**
+   * Scroll the editor row for `index` into view, focus its first input, and
+   * briefly highlight it. Called when the teacher clicks the matching row in
+   * the preview.
+   */
+  protected jumpToTxn(index: number): void {
+    const el = this.txnRowRefs()[index]?.nativeElement;
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Focus the first editable input inside the row, if any.
+    el.querySelector<HTMLInputElement | HTMLSelectElement>('input, select')?.focus();
+    this.highlightedTxn.set(index);
+    if (this.highlightTimer !== null) clearTimeout(this.highlightTimer);
+    this.highlightTimer = setTimeout(() => this.highlightedTxn.set(null), 1500);
+  }
 
   constructor() {
     effect(() => {
