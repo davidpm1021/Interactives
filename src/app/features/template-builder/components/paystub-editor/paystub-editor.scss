@@ -30,6 +30,29 @@
     }
   }
 
+  &__add-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  &__preset-picker {
+    margin: 0;
+    display: inline-flex;
+
+    select {
+      font-family: inherit;
+      font-size: 0.875rem;
+      padding: 6px 10px;
+      border: 1px solid var(--ngpf-light-gray-blue);
+      border-radius: var(--ngpf-radius-sm);
+      background: white;
+      color: var(--ngpf-text-primary);
+      cursor: pointer;
+    }
+  }
+
   &__line-meta {
     display: flex;
     flex-wrap: wrap;
@@ -288,6 +311,13 @@
     font-size: 8.5pt;
     font-weight: 400;
     color: #c5d3e3;
+  }
+
+  &__sub {
+    font-size: 7.5pt;
+    color: #666;
+    font-weight: 400;
+    margin-left: 4px;
   }
 }
 

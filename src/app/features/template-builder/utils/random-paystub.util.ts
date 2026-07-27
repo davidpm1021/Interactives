@@ -1,7 +1,7 @@
 import { Paystub, PaystubEarning, PaystubLineItem } from '../models/paystub.model';
 import { pick, randInt, round2, shiftDays, toISO } from './random-helpers.util';
 import { FIRST_NAMES, LAST_NAMES, NEIGHBOR_CITIES, STREETS } from './pools.util';
-import { effectiveFederalRate, effectiveStateRate, hasStateIncomeTax } from './tax-rates.util';
+import { hasStateIncomeTax } from './tax-rates.util';
 
 interface EmployerPool {
   name: string;
@@ -102,22 +102,6 @@ export function randomPaystub(now: Date = new Date()): Paystub {
     });
   }
 
-  const taxablePerPeriod = grossPerPeriod - contrib401kPerPeriod;
-  const annualizedTaxable = taxablePerPeriod * 26;
-
-  const fedRate = effectiveFederalRate(annualizedTaxable);
-  const otherTaxes: PaystubLineItem[] = [
-    { description: 'Federal Income Tax', current: round2(taxablePerPeriod * fedRate) },
-  ];
-
-  if (hasStateIncomeTax(employer.stateAbbr)) {
-    const stateRate = effectiveStateRate(employer.stateAbbr, annualizedTaxable);
-    otherTaxes.push({
-      description: `State Income Tax (${employer.stateAbbr})`,
-      current: round2(taxablePerPeriod * stateRate),
-    });
-  }
-
   return {
     employer: {
       name: employer.name,
@@ -139,7 +123,9 @@ export function randomPaystub(now: Date = new Date()): Paystub {
     periodsYTD,
     earnings,
     includeFICA: true,
-    otherTaxes,
+    includeFederalTax: true,
+    stateForTax: hasStateIncomeTax(employer.stateAbbr) ? employer.stateAbbr : '',
+    otherTaxes: [],
     deductions,
   };
 }
