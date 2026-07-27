@@ -6,12 +6,10 @@
     <span class="inputs-panel__input-with-prefix">
       <span class="inputs-panel__prefix">$</span>
       <input
-        type="number"
+        type="text"
         inputmode="numeric"
-        min="0"
-        step="1000"
-        [ngModel]="inputs().currentSalary"
-        (ngModelChange)="updateNumber('currentSalary', $event)"
+        [value]="formatMoney(inputs().currentSalary)"
+        (input)="onMoneyInput('currentSalary', $event)"
       />
     </span>
   </label>
@@ -46,12 +44,10 @@
     <span class="inputs-panel__input-with-prefix">
       <span class="inputs-panel__prefix">$</span>
       <input
-        type="number"
+        type="text"
         inputmode="numeric"
-        min="0"
-        step="100"
-        [ngModel]="inputs().targetMonthlyBudget"
-        (ngModelChange)="updateNumber('targetMonthlyBudget', $event)"
+        [value]="formatMoney(inputs().targetMonthlyBudget)"
+        (input)="onMoneyInput('targetMonthlyBudget', $event)"
       />
     </span>
   </label>
@@ -61,12 +57,10 @@
     <span class="inputs-panel__input-with-prefix">
       <span class="inputs-panel__prefix">$</span>
       <input
-        type="number"
+        type="text"
         inputmode="numeric"
-        min="0"
-        step="1000"
-        [ngModel]="inputs().currentSavings"
-        (ngModelChange)="updateNumber('currentSavings', $event)"
+        [value]="formatMoney(inputs().currentSavings)"
+        (input)="onMoneyInput('currentSavings', $event)"
       />
     </span>
   </label>
@@ -76,12 +70,10 @@
     <span class="inputs-panel__input-with-prefix">
       <span class="inputs-panel__prefix">$</span>
       <input
-        type="number"
+        type="text"
         inputmode="numeric"
-        min="0"
-        step="50"
-        [ngModel]="inputs().monthlyContribution"
-        (ngModelChange)="updateNumber('monthlyContribution', $event)"
+        [value]="formatMoney(inputs().monthlyContribution)"
+        (input)="onMoneyInput('monthlyContribution', $event)"
       />
     </span>
   </label>
