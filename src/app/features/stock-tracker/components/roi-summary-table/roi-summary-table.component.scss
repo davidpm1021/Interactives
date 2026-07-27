@@ -90,6 +90,14 @@
     font-weight: 700;
   }
 
+  &__as-of {
+    margin: 6px 4px 0;
+    font-size: 0.75rem;
+    color: var(--ngpf-text-muted);
+    font-style: italic;
+    text-align: right;
+  }
+
   &__th-info {
     position: relative;
     display: inline-flex;

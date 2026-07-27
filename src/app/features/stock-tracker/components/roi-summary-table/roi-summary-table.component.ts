@@ -3,6 +3,7 @@ import { StockPick } from '../../models/stock-tracker.models';
 import { formatCurrency, formatPercent, formatDate, STOCK_COLORS } from '../../services/format.utils';
 import { ExportService } from '../../services/export.service';
 import { DownloadButtonComponent } from '../download-button/download-button.component';
+import { REFRESHED_AT_DISPLAY } from '../../data/stock-prices.generated';
 
 @Component({
   selector: 'app-roi-summary-table',
@@ -18,6 +19,7 @@ export class RoiSummaryTableComponent {
   protected readonly formatPercent = formatPercent;
   protected readonly formatDate = formatDate;
   protected readonly STOCK_COLORS = STOCK_COLORS;
+  protected readonly refreshedAt = REFRESHED_AT_DISPLAY;
 
   private readonly exportService = inject(ExportService);
   private readonly tableRef = viewChild<ElementRef<HTMLElement>>('tableEl');
