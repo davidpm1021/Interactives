@@ -5,6 +5,26 @@
         {{ field.label }}
       </label>
       <p class="reflection-form__prompt">{{ field.prompt }}</p>
+
+      @if (field.pickField; as pickField) {
+        <div class="reflection-form__chips" role="radiogroup" [attr.aria-label]="field.label + ': pick a stock'">
+          @for (pick of picks(); track pick.ticker; let i = $index) {
+            <button
+              type="button"
+              class="reflection-form__chip"
+              [class.reflection-form__chip--picked]="report()[pickField] === pick.ticker"
+              role="radio"
+              [attr.aria-checked]="report()[pickField] === pick.ticker"
+              (click)="onPickChange(pickField, pick.ticker)"
+            >
+              <span class="reflection-form__chip-dot" [style.background]="STOCK_COLORS[i]" aria-hidden="true"></span>
+              <span class="reflection-form__chip-ticker">{{ pick.ticker }}</span>
+              <span class="reflection-form__chip-name">{{ pick.companyName }}</span>
+            </button>
+          }
+        </div>
+      }
+
       <textarea
         [id]="'reflect-' + field.key"
         class="reflection-form__textarea"

@@ -52,7 +52,9 @@ export interface AnnualDataPoint {
 export interface StockReport {
   bestPerformerAnalysis: string;
   mostValuableAnalysis: string;
+  mostValuablePick: string;
   biggestSurprise: string;
+  biggestSurprisePick: string;
   lessonsLearned: string;
   generatedAt: Date;
 }

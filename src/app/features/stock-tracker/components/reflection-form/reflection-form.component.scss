@@ -23,6 +23,61 @@
     line-height: 1.4;
   }
 
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+    color: var(--ngpf-text-primary);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+
+    &:hover {
+      border-color: var(--ngpf-royal-blue);
+      background: var(--ngpf-soft-blue-tint);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+
+    &--picked {
+      border-color: var(--ngpf-royal-blue);
+      background: var(--ngpf-soft-blue-tint);
+      font-weight: 600;
+    }
+  }
+
+  &__chip-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__chip-ticker {
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+  }
+
+  &__chip-name {
+    color: var(--ngpf-text-secondary);
+  }
+
   &__textarea {
     width: 100%;
     font-family: var(--ngpf-font-body);

@@ -13,6 +13,7 @@
   <!-- Reflection questions grounded in what's on screen -->
   <app-reflection-form
     [report]="state.report()"
+    [picks]="state.picks()"
     [fields]="compareFields"
     (reportChange)="onReportChange($event)">
   </app-reflection-form>
