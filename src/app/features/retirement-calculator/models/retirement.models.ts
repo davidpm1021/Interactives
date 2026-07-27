@@ -46,12 +46,36 @@ export interface RetirementProjection {
   chartData: ChartPoint[];
 }
 
-// ── Hardcoded model assumptions ─────────────────────────────
+// ── Hardcoded model constants (not user-editable) ───────────
 export const LIFE_EXPECTANCY = 95;
-export const PRE_RETIREMENT_RETURN = 0.06;
-export const POST_RETIREMENT_RETURN = 0.05;
-export const INFLATION = 0.03;
-export const INCOME_GROWTH = 0.02;
+
+/** Editable macro assumptions surfaced under the results panel. */
+export interface RetirementAssumptions {
+  /** Annual real return on the balance while working. */
+  preReturn: number;
+  /** Annual return on the remaining balance during drawdown. */
+  postReturn: number;
+  /** Annual inflation rate applied to the target budget + withdrawals. */
+  inflation: number;
+  /** Annual salary/contribution growth. */
+  incomeGrowth: number;
+}
+
+export const DEFAULT_ASSUMPTIONS: RetirementAssumptions = {
+  preReturn: 0.06,
+  postReturn: 0.05,
+  inflation: 0.03,
+  incomeGrowth: 0.02,
+};
+
+/**
+ * Kept for tests that import the raw constants. Prefer passing an assumptions
+ * object into service.project().
+ */
+export const PRE_RETIREMENT_RETURN = DEFAULT_ASSUMPTIONS.preReturn;
+export const POST_RETIREMENT_RETURN = DEFAULT_ASSUMPTIONS.postReturn;
+export const INFLATION = DEFAULT_ASSUMPTIONS.inflation;
+export const INCOME_GROWTH = DEFAULT_ASSUMPTIONS.incomeGrowth;
 
 export const DEFAULT_INPUTS: RetirementInputs = {
   currentAge: 30,

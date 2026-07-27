@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
   ChartPoint,
-  INCOME_GROWTH,
-  INFLATION,
+  DEFAULT_ASSUMPTIONS,
   LIFE_EXPECTANCY,
-  POST_RETIREMENT_RETURN,
-  PRE_RETIREMENT_RETURN,
+  RetirementAssumptions,
   RetirementInputs,
   RetirementProjection,
   YearlyBalance,
@@ -29,13 +27,18 @@ export class RetirementService {
    * deflated back to today's dollars so it can be compared directly with
    * the entered budget.
    */
-  project(inputs: RetirementInputs): RetirementProjection {
+  project(
+    inputs: RetirementInputs,
+    assumptions: RetirementAssumptions = DEFAULT_ASSUMPTIONS,
+  ): RetirementProjection {
     const yearsToRetirement = Math.max(0, inputs.retirementAge - inputs.currentAge);
     // 29 years to fund from age 67 through age 95 inclusive (matches
     // NerdWallet's empirical output).
     const yearsInRetirement = Math.max(0, LIFE_EXPECTANCY - inputs.retirementAge + 1);
-    const r = PRE_RETIREMENT_RETURN;
-    const g = INCOME_GROWTH;
+    const r = assumptions.preReturn;
+    const g = assumptions.incomeGrowth;
+    const postR = assumptions.postReturn;
+    const inflation = assumptions.inflation;
 
     // Year-by-year accumulation. Annual compounding; end-of-year contribution
     // (ordinary annuity). The monthly contribution grows 2% at the start of
@@ -67,15 +70,15 @@ export class RetirementService {
 
     // Inflate today's monthly budget to retirement year.
     const budgetAtRetirement =
-      inputs.targetMonthlyBudget * Math.pow(1 + INFLATION, yearsToRetirement);
+      inputs.targetMonthlyBudget * Math.pow(1 + inflation, yearsToRetirement);
     const firstYearAnnualBudget = budgetAtRetirement * 12;
 
     // Nest egg needed at retirement to fund a growing-annuity withdrawal
     // over yearsInRetirement.
     const targetNestEgg = this.growingAnnuityPV(
       firstYearAnnualBudget,
-      POST_RETIREMENT_RETURN,
-      INFLATION,
+      postR,
+      inflation,
       yearsInRetirement,
     );
 
@@ -94,12 +97,12 @@ export class RetirementService {
     // support over the drawdown?
     const firstYearIncomeNominal = this.solveFirstYearWithdrawal(
       finalBalance,
-      POST_RETIREMENT_RETURN,
-      INFLATION,
+      postR,
+      inflation,
       yearsInRetirement,
     );
     const projectedMonthlyIncome =
-      firstYearIncomeNominal / 12 / Math.pow(1 + INFLATION, yearsToRetirement);
+      firstYearIncomeNominal / 12 / Math.pow(1 + inflation, yearsToRetirement);
 
     const chartData = this.buildChartData(
       inputs,
@@ -111,6 +114,8 @@ export class RetirementService {
       requiredMonthlyToHitGoal,
       r,
       g,
+      postR,
+      inflation,
     );
 
     return {
@@ -152,6 +157,8 @@ export class RetirementService {
     requiredMonthly: number,
     r: number,
     g: number,
+    postR: number,
+    inflation: number,
   ): ChartPoint[] {
     const out: ChartPoint[] = [];
     // If the user is already on track or over, "target" contribution equals
@@ -199,15 +206,15 @@ export class RetirementService {
     let withdrawal = budgetAtRetirement * 12;
 
     for (let k = 1; k <= yearsInRetirement; k++) {
-      actualDraw = Math.max(0, actualDraw * (1 + POST_RETIREMENT_RETURN) - withdrawal);
-      targetDraw = Math.max(0, targetDraw * (1 + POST_RETIREMENT_RETURN) - withdrawal);
+      actualDraw = Math.max(0, actualDraw * (1 + postR) - withdrawal);
+      targetDraw = Math.max(0, targetDraw * (1 + postR) - withdrawal);
       out.push({
         age: inputs.retirementAge + k,
         actual: actualDraw,
         target: targetDraw,
         phase: 'drawdown',
       });
-      withdrawal *= 1 + INFLATION;
+      withdrawal *= 1 + inflation;
     }
 
     return out;
