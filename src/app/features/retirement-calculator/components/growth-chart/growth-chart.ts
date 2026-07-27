@@ -16,6 +16,13 @@ import { ChartPoint, RetirementProjection } from '../../models/retirement.models
 import { formatCurrency } from '../../utils/formatters';
 import { computeChartDimensions, createScales, DEFAULT_MARGIN } from '../../utils/chart-helpers';
 
+interface HoverPoint {
+  age: number;
+  actual: number;
+  target: number;
+  phase: ChartPoint['phase'];
+}
+
 @Component({
   selector: 'app-growth-chart',
   standalone: true,
@@ -28,6 +35,14 @@ export class GrowthChart {
   readonly projection = input.required<RetirementProjection>();
 
   protected readonly view = signal<'graph' | 'table'>('graph');
+  protected readonly hover = signal<HoverPoint | null>(null);
+  protected readonly tooltipPos = signal<{ left: number; top: number } | null>(null);
+  protected readonly tooltipAnchor = signal<'left' | 'center' | 'right'>('center');
+  protected readonly hoverAnnouncement = signal('');
+
+  protected formatCurrencyFull(v: number): string {
+    return formatCurrency(v);
+  }
 
   private readonly injector = inject(Injector);
   private readonly container = viewChild<ElementRef<HTMLDivElement>>('container');
@@ -35,6 +50,12 @@ export class GrowthChart {
   private svg?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   private chartGroup?: d3.Selection<SVGGElement, unknown, null, undefined>;
   private readonly initialized = signal(false);
+  private renderState?: {
+    minAge: number;
+    maxAge: number;
+    setHoverAtAge: (age: number) => void;
+    clearHover: () => void;
+  };
 
   constructor() {
     afterNextRender(
@@ -78,6 +99,12 @@ export class GrowthChart {
     this.chartGroup.append('g').attr('class', 'target-line-layer');
     this.chartGroup.append('g').attr('class', 'actual-line-layer');
     this.chartGroup.append('g').attr('class', 'retirement-marker-layer');
+    this.chartGroup.append('g').attr('class', 'hover-layer');
+    // Invisible mouse-capture rect covering the plot area.
+    this.chartGroup
+      .append('rect')
+      .attr('class', 'hover-capture')
+      .attr('fill', 'transparent');
 
     const ro = new ResizeObserver(() => this.render(this.projection()));
     ro.observe(el);
@@ -214,5 +241,120 @@ export class GrowthChart {
         'aria-label',
         `Two lines from age ${minAge} to age ${maxAge}. Projected balance peaks at ${formatCurrency(p.finalBalance)} at retirement. Target balance peaks at ${formatCurrency(p.targetNestEgg)}.`,
       );
+
+    // ── Hover interaction ────────────────────────────────────────────────
+    const capture = this.chartGroup
+      .select<SVGRectElement>('.hover-capture')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', dims.innerWidth)
+      .attr('height', dims.innerHeight);
+
+    const hoverLayer = this.chartGroup.select('.hover-layer');
+    const containerEl = el;
+
+    const setHoverAtAge = (rawAge: number) => {
+      const clampedAge = Math.max(minAge, Math.min(maxAge, Math.round(rawAge)));
+      const point = data.find((d) => d.age === clampedAge);
+      if (!point) return;
+
+      this.hover.set({
+        age: clampedAge,
+        actual: point.actual,
+        target: point.target,
+        phase: point.phase,
+      });
+      this.hoverAnnouncement.set(
+        `Age ${clampedAge}: projected ${formatCurrency(point.actual)}, target ${formatCurrency(point.target)}.`,
+      );
+
+      hoverLayer.selectAll('*').remove();
+      const cx = scales.x(clampedAge);
+      hoverLayer
+        .append('line')
+        .attr('x1', cx)
+        .attr('x2', cx)
+        .attr('y1', 0)
+        .attr('y2', dims.innerHeight)
+        .attr('stroke', 'var(--ngpf-text-muted, #888)')
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '3 3');
+
+      hoverLayer
+        .append('circle')
+        .attr('cx', cx)
+        .attr('cy', scales.y(point.actual))
+        .attr('r', 5)
+        .attr('fill', 'var(--ngpf-royal-blue, #1f3b9b)')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2);
+
+      hoverLayer
+        .append('circle')
+        .attr('cx', cx)
+        .attr('cy', scales.y(point.target))
+        .attr('r', 5)
+        .attr('fill', 'var(--ngpf-orange, #f78219)')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2);
+
+      // Position tooltip in container-relative px so it survives viewBox scaling.
+      const containerRect = containerEl.getBoundingClientRect();
+      const scaleX = containerRect.width / dims.width;
+      const scaleY = containerRect.height / dims.height;
+      const leftPx = (DEFAULT_MARGIN.left + cx) * scaleX;
+      const topPx = DEFAULT_MARGIN.top * scaleY;
+      this.tooltipPos.set({ left: leftPx, top: topPx });
+
+      // Flip anchor near the edges so the tooltip body stays inside the container.
+      const edgeBudget = 130;
+      if (leftPx < edgeBudget) this.tooltipAnchor.set('left');
+      else if (containerRect.width - leftPx < edgeBudget) this.tooltipAnchor.set('right');
+      else this.tooltipAnchor.set('center');
+    };
+
+    const clearHover = () => {
+      this.hover.set(null);
+      this.tooltipPos.set(null);
+      this.hoverAnnouncement.set('');
+      hoverLayer.selectAll('*').remove();
+    };
+
+    const handleMove = (event: MouseEvent) => {
+      const [mx] = d3.pointer(event, capture.node()!);
+      const age = scales.x.invert(mx);
+      setHoverAtAge(age);
+    };
+
+    capture.on('mousemove', handleMove).on('mouseleave', clearHover);
+
+    this.renderState = { minAge, maxAge, setHoverAtAge, clearHover };
+
+    this.svg
+      .attr('tabindex', 0)
+      .on('keydown', (event: KeyboardEvent) => this.onSvgKeydown(event))
+      .on('focus', () => {
+        const state = this.renderState;
+        if (!state) return;
+        const current = this.hover()?.age ?? state.minAge;
+        state.setHoverAtAge(current);
+      })
+      .on('blur', () => this.renderState?.clearHover());
+  }
+
+  private onSvgKeydown(event: KeyboardEvent): void {
+    const state = this.renderState;
+    if (!state) return;
+    const current = this.hover()?.age ?? state.minAge;
+    let next = current;
+    const key = event.key;
+    if (key === 'ArrowRight' || key === 'ArrowUp') next = Math.min(state.maxAge, current + 1);
+    else if (key === 'ArrowLeft' || key === 'ArrowDown') next = Math.max(state.minAge, current - 1);
+    else if (key === 'Home') next = state.minAge;
+    else if (key === 'End') next = state.maxAge;
+    else if (key === 'Escape') { state.clearHover(); event.preventDefault(); return; }
+    else return;
+    event.preventDefault();
+    state.setHoverAtAge(next);
   }
 }
