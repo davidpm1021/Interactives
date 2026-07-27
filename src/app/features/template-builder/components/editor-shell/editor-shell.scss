@@ -191,6 +191,15 @@
     position: static;
   }
 
+  .editor-shell__doc-frame {
+    // Reset any live "fit to height" zoom the FitToHeight directive may have
+    // set for the on-screen 2-up view; zoom applied at 1.5x or 0.5x compounds
+    // with print scaling and can push the preview onto extra blank pages.
+    zoom: 1 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
   .editor-shell__cut-line {
     margin: 0.15in 0;
     page-break-inside: avoid;

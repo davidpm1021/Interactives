@@ -131,5 +131,10 @@
     padding: 0;
     max-width: 100%;
     page-break-inside: avoid;
+    break-inside: avoid;
+    // The preview naturally fits within a single Letter page; anything past
+    // the box grid is either editor scaffolding or accumulated margin and
+    // must not spill onto a second page.
+    &::after { content: none !important; }
   }
 }
