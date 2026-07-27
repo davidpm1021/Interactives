@@ -28,6 +28,11 @@ export class FinalSummaryComponent {
     const preds = this.stateService.predictions();
     const rows: RecapRow[] = [];
     const fmt = (n: number) => formatCurrency(Math.round(n));
+    const optionLabel = (key: 'challenge2' | 'challenge4', id: string | null | undefined) => {
+      if (!id) return 'N/A';
+      const match = CHALLENGE_CONTENT[key].options?.find(o => o.id === id);
+      return match ? `${id}: ${match.label}` : `Option ${id}`;
+    };
 
     // Challenge 1
     const c1Actual = this.service.calculateChallenge1().summary.finalBalance;
@@ -47,9 +52,7 @@ export class FinalSummaryComponent {
     rows.push({
       challenge: 2,
       title: CHALLENGE_CONTENT['challenge2'].title,
-      guess: preds.challenge2RateGuess
-        ? `Option ${preds.challenge2RateGuess}`
-        : 'N/A',
+      guess: optionLabel('challenge2', preds.challenge2RateGuess),
       reality: `${ratio.toFixed(1)}x (${fmt(c2High)} vs ${fmt(c2Low)})`,
     });
 
@@ -71,9 +74,7 @@ export class FinalSummaryComponent {
     rows.push({
       challenge: 4,
       title: CHALLENGE_CONTENT['challenge4'].title,
-      guess: preds.challenge4WaitGuess
-        ? `Option ${preds.challenge4WaitGuess}`
-        : 'N/A',
+      guess: optionLabel('challenge4', preds.challenge4WaitGuess),
       reality: `${fmt(gap)} more by starting early`,
     });
 
