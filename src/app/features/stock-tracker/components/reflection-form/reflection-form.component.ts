@@ -19,8 +19,7 @@ const FIELDS: FieldDef[] = [
   {
     key: 'bestPerformerAnalysis',
     label: 'Best Performer Analysis',
-    prompt:
-      "Why do you think your top performer did so well over the years? A guess or hunch is fine — you don't need to know the industry inside and out.",
+    prompt: "What's your best guess for why your top performer did so well over the years?",
   },
   {
     key: 'mostValuableAnalysis',
