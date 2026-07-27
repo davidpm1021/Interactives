@@ -15,9 +15,42 @@
           <th scope="col">Year</th>
           <th scope="col">Age</th>
           <th scope="col">Date Used</th>
-          <th scope="col">Adj. Close</th>
-          <th scope="col">100 Shares Value</th>
-          <th scope="col">YoY Change</th>
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Adjusted closing price: the day's closing price, adjusted for stock splits and dividends so it can be compared across years">
+              Adj. Close
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>Adjusted closing price.</strong> The day's closing
+                price, adjusted for stock splits and dividends so prices
+                from different years can be compared apples-to-apples.
+              </span>
+            </span>
+          </th>
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Value of 100 shares: what 100 shares would be worth at this price">
+              100 Shares Value
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>100 shares value.</strong> What 100 shares would be
+                worth at this price — the Adj. Close × 100. Assumes you
+                bought at age 10 and held.
+              </span>
+            </span>
+          </th>
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Year-over-year change: how much the share value went up or down compared to the previous year">
+              YoY Change
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>Year-over-year change.</strong> How much the share
+                value went up or down compared to the previous year, as a
+                percent.
+              </span>
+            </span>
+          </th>
         </tr>
       </thead>
       <tbody>
