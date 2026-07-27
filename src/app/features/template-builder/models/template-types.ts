@@ -1,11 +1,10 @@
-// Checkbook Register and Bill (Invoice) are intentionally omitted from the
-// catalog but the CheckbookEditor + bill-editor variant=2 code still exist
+// Checkbook Register, Bill (Invoice), and Savings Statement are intentionally
+// omitted from the catalog. Their editor components + generators still exist
 // on disk in case a teacher requests them back.
 export type TemplateKey =
   | 'paystub'
   | 'w2'
   | 'bank-statement'
-  | 'savings-statement'
   | 'bill-1'
   | 'credit-report';
 
@@ -37,13 +36,6 @@ export const TEMPLATE_CATALOG: TemplateDescriptor[] = [
     title: 'Bank Statement',
     category: 'Banking & Accounts',
     description: 'Monthly checking statement with transactions and ending balance.',
-    available: true,
-  },
-  {
-    key: 'savings-statement',
-    title: 'Savings Statement',
-    category: 'Banking & Accounts',
-    description: 'Savings account activity with APY and interest earned.',
     available: true,
   },
   {
