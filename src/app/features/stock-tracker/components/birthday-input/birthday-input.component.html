@@ -1,8 +1,5 @@
 <div class="birthday-input">
   <h3 class="birthday-input__title">When were you born?</h3>
-  <p class="birthday-input__hint">
-    Enter your date of birth.
-  </p>
 
   <div class="birthday-input__fields">
     <div class="birthday-input__field">
@@ -53,14 +50,12 @@
     <p id="birthday-error" class="birthday-input__error" role="alert">{{ error() }}</p>
   }
 
-  <button class="ngpf-btn ngpf-btn-primary birthday-input__submit"
-          (click)="onSubmit()">
-    @if (confirmed()) {
-      Date of Birth Confirmed
-    } @else {
+  @if (!confirmed()) {
+    <button class="ngpf-btn ngpf-btn-primary birthday-input__submit"
+            (click)="onSubmit()">
       Confirm Date of Birth
-    }
-  </button>
+    </button>
+  }
 
   @if (confirmed()) {
     <div class="birthday-input__result">
