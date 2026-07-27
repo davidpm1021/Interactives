@@ -64,21 +64,14 @@
         rows="3"
         [ngModel]="textInput()"
         (ngModelChange)="textInput.set($event)"
-        [disabled]="submitted()"
         placeholder="Type your answer..."
-        [attr.aria-describedby]="submitted() ? 'q-' + question().id + '-reveal' : null"
       ></textarea>
     }
   }
 
-  @if (submitted()) {
+  @if (submitted() && question().answerType !== 'short-text') {
     <div class="question-item__reveal" [id]="'q-' + question().id + '-reveal'" aria-live="polite">
-      @if (question().answerType === 'short-text') {
-        <div class="question-item__model">
-          <div class="question-item__model-label">Model answer</div>
-          <p>{{ asShortText(question()).modelAnswer }}</p>
-        </div>
-      } @else if (correct() === true) {
+      @if (correct() === true) {
         <div class="question-item__verdict">Correct.</div>
       } @else if (correct() === false) {
         <div class="question-item__verdict">Not quite.</div>
@@ -87,11 +80,7 @@
       <div class="question-item__explanation">{{ question().explanation }}</div>
 
       <button type="button" class="question-item__reset" (click)="onReset()">
-        @if (question().answerType === 'short-text') {
-          Edit my answer
-        } @else {
-          Try again
-        }
+        Try again
       </button>
     </div>
   } @else if (nudge()) {
@@ -101,11 +90,20 @@
   }
 
   <div class="question-item__actions">
-    @if (submitted()) {
+    @if (submitted() && question().answerType !== 'short-text') {
       <button
         type="button"
         class="ngpf-btn ngpf-btn-primary"
         (click)="onAdvance()"
+      >
+        {{ advanceLabel() }}
+      </button>
+    } @else if (question().answerType === 'short-text') {
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-primary"
+        [disabled]="!canCheck()"
+        (click)="onCheck()"
       >
         {{ advanceLabel() }}
       </button>
@@ -116,13 +114,7 @@
         [disabled]="!canCheck()"
         (click)="onCheck()"
       >
-        @if (question().answerType === 'short-text') {
-          Show model answer
-        } @else if (nudge()) {
-          Check again
-        } @else {
-          Check
-        }
+        @if (nudge()) { Check again } @else { Check }
       </button>
     }
   </div>

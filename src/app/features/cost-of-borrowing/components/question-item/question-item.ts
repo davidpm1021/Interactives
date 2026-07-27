@@ -111,10 +111,13 @@ export class QuestionItem {
     const q = this.question();
 
     if (q.answerType === 'short-text') {
-      // Short-text is not graded; go straight to the model answer.
+      // Short-text is not graded and no model answer is shown — clicking the
+      // primary button submits the response and advances in one step. The
+      // parent listens for advanceRequested to move on.
       this.attempts.set(1);
       this.reveal.set(true);
       this.state.submit(q.id, this.textInput(), null, 1);
+      this.advanceRequested.emit();
       return;
     }
 
