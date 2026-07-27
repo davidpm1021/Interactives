@@ -109,7 +109,7 @@ describe('RetirementService', () => {
     expect(p.finalBalance).toBeLessThan(p.targetNestEgg);
   });
 
-  it('reports zero gap when projection meets target', () => {
+  it('reports negative gap (surplus) when projection exceeds target', () => {
     const p = service.project({
       ...DEFAULT_INPUTS,
       currentAge: 22,
@@ -119,7 +119,8 @@ describe('RetirementService', () => {
       targetMonthlyBudget: 3000,
     });
     expect(p.finalBalance).toBeGreaterThan(p.targetNestEgg);
-    expect(p.gapAtRetirement).toBe(0);
+    expect(p.gapAtRetirement).toBeLessThan(0);
+    expect(p.gapAtRetirement).toBe(p.targetNestEgg - p.finalBalance);
   });
 
   it('solves required (year-1) monthly contribution that would hit the target exactly', () => {

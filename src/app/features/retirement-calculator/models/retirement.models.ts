@@ -30,6 +30,7 @@ export interface RetirementProjection {
   finalBalance: number;
   /** Lump sum needed at retirement to fund the drawdown, in nominal (future) dollars. */
   targetNestEgg: number;
+  /** Signed: positive = shortfall, negative = surplus over target. */
   gapAtRetirement: number;
   requiredMonthlyToHitGoal: number;
   /** Monthly income the projected nest egg supports, expressed in today's dollars. */

@@ -79,7 +79,8 @@ export class RetirementService {
       yearsInRetirement,
     );
 
-    const gapAtRetirement = Math.max(0, targetNestEgg - finalBalance);
+    // Signed: positive = shortfall, negative = surplus over target.
+    const gapAtRetirement = targetNestEgg - finalBalance;
 
     const requiredMonthlyToHitGoal = this.solveMonthlyContribution(
       inputs.currentSavings,

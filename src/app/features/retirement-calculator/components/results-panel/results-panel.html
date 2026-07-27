@@ -16,9 +16,9 @@
          [class.results-panel__tile--warn]="hasGap()"
          [class.results-panel__tile--ok]="!hasGap()">
       <span class="results-panel__label">
-        @if (hasGap()) { You're short } @else { You're on track }
+        @if (hasGap()) { You're short } @else { Surplus over target }
       </span>
-      <app-stat-counter [value]="projection().gapAtRetirement" prefix="$" />
+      <app-stat-counter [value]="gapMagnitude()" prefix="$" />
     </div>
 
     <div class="results-panel__tile"
