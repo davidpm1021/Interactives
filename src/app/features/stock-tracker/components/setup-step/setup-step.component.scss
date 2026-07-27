@@ -61,61 +61,10 @@
     gap: var(--ngpf-spacing-sm);
   }
 
-  // ── Summary ──
-  &__summary {
+  &__advance-row {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--ngpf-spacing-md);
+    justify-content: center;
     animation: fadeIn 0.3s ease-out;
-  }
-
-  &__summary-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  &__summary-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-    background: white;
-    border-radius: var(--ngpf-radius-md);
-    overflow: hidden;
-    box-shadow: var(--ngpf-shadow-sm);
-
-    th, td {
-      padding: 0.625rem 0.75rem;
-      text-align: left;
-    }
-
-    th {
-      background: var(--ngpf-royal-blue);
-      color: var(--ngpf-text-on-dark);
-      font-family: var(--ngpf-font-heading);
-      font-weight: 700;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    td {
-      border-bottom: 1px solid var(--ngpf-light-gray-blue);
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    tbody tr:nth-child(even) {
-      background: var(--ngpf-soft-blue-tint);
-    }
-  }
-
-  &__ticker {
-    font-family: var(--ngpf-font-heading);
-    font-weight: 700;
-    color: var(--ngpf-royal-blue);
   }
 
   &__advance {

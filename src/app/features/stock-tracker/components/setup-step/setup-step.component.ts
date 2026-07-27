@@ -3,7 +3,6 @@ import { BirthdayInputComponent } from '../birthday-input/birthday-input.compone
 import { StockPickerComponent } from '../stock-picker/stock-picker.component';
 import { StockTrackerStateService } from '../../services/stock-tracker-state.service';
 import { StockPick, StudentProfile } from '../../models/stock-tracker.models';
-import { formatCurrency, formatDate } from '../../services/format.utils';
 import { REFRESHED_AT_DISPLAY } from '../../services/mock-data';
 
 @Component({
@@ -15,8 +14,6 @@ import { REFRESHED_AT_DISPLAY } from '../../services/mock-data';
 })
 export class SetupStepComponent {
   protected readonly state = inject(StockTrackerStateService);
-  protected readonly formatCurrency = formatCurrency;
-  protected readonly formatDate = formatDate;
   protected readonly refreshedAt = REFRESHED_AT_DISPLAY;
 
   protected readonly pickerSlots = computed(() => {

@@ -39,36 +39,9 @@
       </div>
     </div>
 
-    <!-- Summary & Advance -->
+    <!-- Advance -->
     @if (state.allPicksComplete()) {
-      <div class="setup-step__summary">
-        <h3 class="setup-step__section-title">Your 5 Stock Picks</h3>
-        <div class="setup-step__summary-table-wrapper">
-          <table class="setup-step__summary-table">
-            <caption class="sr-only">Your 5 stock picks with prices on your 10th birthday</caption>
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Company</th>
-                <th scope="col">Ticker</th>
-                <th scope="col">Price on 10th Birthday</th>
-                <th scope="col">100 Shares Cost</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (pick of state.picks(); track pick.ticker; let i = $index) {
-                <tr>
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ pick.companyName }}</td>
-                  <td class="setup-step__ticker">{{ pick.ticker }}</td>
-                  <td>{{ formatCurrency(pick.priceOnBirthday) }}</td>
-                  <td>{{ formatCurrency(pick.priceOnBirthday * 100) }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
+      <div class="setup-step__advance-row">
         <button class="ngpf-btn ngpf-btn-primary setup-step__advance"
                 (click)="onAdvance()">
           Track My Stocks

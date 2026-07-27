@@ -14,6 +14,7 @@
         <span class="stock-picker__price-label">Price on 10th Birthday</span>
         <span class="stock-picker__price-value">{{ formatCurrency(displayPick.priceOnBirthday) }}</span>
         <span class="stock-picker__price-date">{{ formatDate(displayPick.dateUsed) }}</span>
+        <span class="stock-picker__shares-cost">100 shares: {{ formatCurrency(displayPick.priceOnBirthday * 100) }}</span>
       </div>
       <button class="stock-picker__remove"
               aria-label="Remove {{ displayPick.companyName }}"
