@@ -18,12 +18,6 @@
   @if (state.profile()) {
     <div class="setup-step__section">
       <h3 class="setup-step__section-title">Pick your 5 companies</h3>
-      <p class="setup-step__section-hint">
-        Over 500 companies are available. Search by name or ticker, or grab a chip below to get started.
-      </p>
-      <p class="setup-step__data-note">
-        Historical prices are annual snapshots (closest to mid-year). Dataset last refreshed {{ refreshedAt }}.
-      </p>
 
       <app-suggestion-chips
         [tenthBirthdayYear]="tenthBirthdayYear()"

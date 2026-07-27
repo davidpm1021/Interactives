@@ -5,7 +5,6 @@ import { SuggestionChipsComponent } from '../suggestion-chips/suggestion-chips.c
 import { StockTrackerStateService } from '../../services/stock-tracker-state.service';
 import { StockDataService } from '../../services/stock-data.service';
 import { StockPick, StudentProfile } from '../../models/stock-tracker.models';
-import { REFRESHED_AT_DISPLAY } from '../../services/mock-data';
 
 @Component({
   selector: 'app-setup-step',
@@ -17,7 +16,6 @@ import { REFRESHED_AT_DISPLAY } from '../../services/mock-data';
 export class SetupStepComponent {
   protected readonly state = inject(StockTrackerStateService);
   private readonly stockDataService = inject(StockDataService);
-  protected readonly refreshedAt = REFRESHED_AT_DISPLAY;
 
   protected readonly pickerSlots = computed(() => {
     const picks = this.state.picks();
