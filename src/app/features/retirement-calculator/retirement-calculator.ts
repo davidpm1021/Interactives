@@ -25,4 +25,8 @@ export class RetirementCalculator {
   protected onInputsChange(next: RetirementInputs): void {
     this.inputs.set(next);
   }
+
+  protected onPrint(): void {
+    window.print();
+  }
 }
