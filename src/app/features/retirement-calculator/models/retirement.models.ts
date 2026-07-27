@@ -92,15 +92,6 @@ export const DEFAULT_ASSUMPTIONS: RetirementAssumptions = {
   incomeGrowth: 0.02,
 };
 
-/**
- * Kept for tests that import the raw constants. Prefer passing an assumptions
- * object into service.project().
- */
-export const PRE_RETIREMENT_RETURN = DEFAULT_ASSUMPTIONS.preReturn;
-export const POST_RETIREMENT_RETURN = DEFAULT_ASSUMPTIONS.postReturn;
-export const INFLATION = DEFAULT_ASSUMPTIONS.inflation;
-export const INCOME_GROWTH = DEFAULT_ASSUMPTIONS.incomeGrowth;
-
 export const DEFAULT_INPUTS: RetirementInputs = {
   currentAge: 30,
   retirementAge: 67,

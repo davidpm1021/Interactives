@@ -18,7 +18,11 @@ import { computeChartDimensions, DEFAULT_MARGIN } from '../../utils/chart-helper
 // fit inside the chart's viewBox instead of getting clipped.
 const CHART_MARGIN = { ...DEFAULT_MARGIN, right: 58 };
 
-const SERIES_COLORS: Record<string, string> = {
+/**
+ * Chart colors per series. Exported so the rate table can render column
+ * swatches that match the chart lines.
+ */
+export const SERIES_COLORS: Record<string, string> = {
   'credit-card': '#c62828',
   'personal-loan': '#e28f10',
   'auto-loan': '#1f78b4',

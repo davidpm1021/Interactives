@@ -49,6 +49,36 @@ export function formatYear(year: number): string {
 }
 
 /**
+ * Human-facing rendering of a student's submitted answer:
+ *  - multiple-choice: resolves the option text from the stored index.
+ *  - numeric: prefixes "$" or suffixes the unit.
+ *  - short-text: passed through.
+ *
+ * Kept string-in / string-out so it's reusable from the review recap, the
+ * print worksheet, and the .txt export without dragging Angular in.
+ */
+import type {
+  MultipleChoiceQuestion,
+  NumericQuestion,
+  Question,
+} from '../models/question.models';
+
+export function formatAnswerValue(q: Question, value: string | number): string {
+  if (q.answerType === 'multiple-choice') {
+    const idx = Number(value);
+    const options = (q as MultipleChoiceQuestion).options;
+    return options[idx] ?? `Option ${idx}`;
+  }
+  if (q.answerType === 'numeric') {
+    const unit = (q as NumericQuestion).unit;
+    if (unit === '$') return `$${value}`;
+    if (unit) return `${value} ${unit}`;
+    return String(value);
+  }
+  return String(value);
+}
+
+/**
  * Pluralize: "1 year" vs "2 years"
  */
 export function pluralize(count: number, singular: string, plural?: string): string {

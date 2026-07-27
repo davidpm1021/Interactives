@@ -1,10 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
-import {
-  MultipleChoiceQuestion,
-  NumericQuestion,
-  Question,
-} from '../../models/question.models';
+import { Question } from '../../models/question.models';
 import { CostOfBorrowingStateService } from '../../services/state.service';
+import { formatAnswerValue } from '../../utils/formatters';
 import { QuestionItem } from '../question-item/question-item';
 
 interface ReviewRow {
@@ -42,7 +39,7 @@ export class QuestionStack {
       if (!record) {
         return { index: i, prompt: q.prompt, answered: false, answerText: '', verdict: 'skipped' };
       }
-      const answerText = this.formatAnswerValue(q, record.value);
+      const answerText = formatAnswerValue(q, record.value);
       let verdict: ReviewRow['verdict'];
       if (record.correct === true) verdict = 'correct';
       else if (record.correct === false) verdict = 'wrong';
@@ -62,20 +59,5 @@ export class QuestionStack {
   protected goTo(i: number): void {
     if (i < 0 || i > this.total()) return;
     this.currentIndex.set(i);
-  }
-
-  private formatAnswerValue(q: Question, value: string | number): string {
-    if (q.answerType === 'multiple-choice') {
-      const idx = Number(value);
-      const options = (q as MultipleChoiceQuestion).options;
-      return options[idx] ?? `Option ${idx}`;
-    }
-    if (q.answerType === 'numeric') {
-      const unit = (q as NumericQuestion).unit;
-      if (unit === '$') return `$${value}`;
-      if (unit) return `${value} ${unit}`;
-      return String(value);
-    }
-    return String(value);
   }
 }

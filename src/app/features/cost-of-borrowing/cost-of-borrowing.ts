@@ -7,7 +7,7 @@ import { RateTable } from './components/rate-table/rate-table';
 import { TrendChart } from './components/trend-chart/trend-chart';
 import { QuestionStack } from './components/question-stack/question-stack';
 import { BehindTheNumbers } from './components/behind-the-numbers/behind-the-numbers';
-import { MultipleChoiceQuestion, NumericQuestion, Question } from './models/question.models';
+import { formatAnswerValue } from './utils/formatters';
 
 @Component({
   selector: 'app-cost-of-borrowing',
@@ -58,7 +58,7 @@ export class CostOfBorrowing {
         lines.push('Your answer:');
         lines.push(String(record.value));
       } else {
-        lines.push(`Your answer: ${this.formatAnswerValue(q, record.value)}`);
+        lines.push(`Your answer: ${formatAnswerValue(q, record.value)}`);
         if (record.correct === true) lines.push('Correct.');
         else if (record.correct === false) lines.push('Not the model answer.');
         if (record.attempts > 1) lines.push(`Attempts: ${record.attempts}`);
@@ -85,18 +85,4 @@ export class CostOfBorrowing {
     URL.revokeObjectURL(url);
   }
 
-  private formatAnswerValue(q: Question, value: string | number): string {
-    if (q.answerType === 'multiple-choice') {
-      const idx = Number(value);
-      const options = (q as MultipleChoiceQuestion).options;
-      return options[idx] ?? `Option ${idx}`;
-    }
-    if (q.answerType === 'numeric') {
-      const unit = (q as NumericQuestion).unit;
-      if (unit === '$') return `$${value}`;
-      if (unit) return `${value} ${unit}`;
-      return String(value);
-    }
-    return String(value);
-  }
 }

@@ -40,9 +40,8 @@ export class GrowthChart {
   protected readonly tooltipAnchor = signal<'left' | 'center' | 'right'>('center');
   protected readonly hoverAnnouncement = signal('');
 
-  protected formatCurrencyFull(v: number): string {
-    return formatCurrency(v);
-  }
+  /** Bound so the template can call {{ formatCurrency(x) }} directly. */
+  protected readonly formatCurrency = formatCurrency;
 
   private readonly injector = inject(Injector);
   private readonly container = viewChild<ElementRef<HTMLDivElement>>('container');

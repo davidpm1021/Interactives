@@ -7,6 +7,7 @@ import {
   ShortTextQuestion,
 } from '../../models/question.models';
 import { CostOfBorrowingStateService } from '../../services/state.service';
+import { formatAnswerValue } from '../../utils/formatters';
 
 @Component({
   selector: 'app-question-item',
@@ -85,19 +86,7 @@ export class QuestionItem {
   protected readonly printAnswer = computed<string>(() => {
     const record = this.state.answers()[this.question().id];
     if (!record || !record.submitted) return '';
-    const q = this.question();
-    if (q.answerType === 'multiple-choice') {
-      const idx = Number(record.value);
-      const opt = (q as MultipleChoiceQuestion).options[idx];
-      return opt ?? '';
-    }
-    if (q.answerType === 'numeric') {
-      const unit = (q as NumericQuestion).unit;
-      if (unit === '$') return `$${record.value}`;
-      if (unit) return `${record.value} ${unit}`;
-      return String(record.value);
-    }
-    return String(record.value);
+    return formatAnswerValue(this.question(), record.value);
   });
 
   protected onSelect(i: number): void {

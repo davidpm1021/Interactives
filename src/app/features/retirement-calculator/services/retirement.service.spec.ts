@@ -1,13 +1,13 @@
 import { RetirementService } from './retirement.service';
 import {
+  DEFAULT_ASSUMPTIONS,
   DEFAULT_INPUTS,
-  INCOME_GROWTH,
-  INFLATION,
   LIFE_EXPECTANCY,
-  POST_RETIREMENT_RETURN,
-  PRE_RETIREMENT_RETURN,
   RetirementInputs,
 } from '../models/retirement.models';
+
+const { preReturn: PRE_RETIREMENT_RETURN, postReturn: POST_RETIREMENT_RETURN,
+        inflation: INFLATION, incomeGrowth: INCOME_GROWTH } = DEFAULT_ASSUMPTIONS;
 
 describe('RetirementService', () => {
   let service: RetirementService;

@@ -37,12 +37,7 @@ export class AssumptionsPanel {
 
   protected isDefault(): boolean {
     const a = this.assumptions();
-    return (
-      a.preReturn === DEFAULT_ASSUMPTIONS.preReturn &&
-      a.postReturn === DEFAULT_ASSUMPTIONS.postReturn &&
-      a.inflation === DEFAULT_ASSUMPTIONS.inflation &&
-      a.incomeGrowth === DEFAULT_ASSUMPTIONS.incomeGrowth
-    );
+    return this.fields.every((f) => a[f.key] === DEFAULT_ASSUMPTIONS[f.key]);
   }
 
   /**

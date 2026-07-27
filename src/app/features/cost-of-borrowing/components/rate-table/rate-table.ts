@@ -1,20 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RateSeries } from '../../models/rates.models';
+import { SERIES_COLORS } from '../trend-chart/trend-chart';
 
 interface YearRow {
   year: number;
   values: (number | null)[];
 }
-
-// Kept in sync with SERIES_COLORS in trend-chart so the table column swatch
-// matches the chart line for the same product.
-const SERIES_COLORS: Record<string, string> = {
-  'credit-card': '#c62828',
-  'personal-loan': '#e28f10',
-  'auto-loan': '#1f78b4',
-  'mortgage': '#33a02c',
-};
 
 // Trim the parenthetical qualifier ("(avg)", "(24mo)", …) so column headers
 // fit inside a narrow data column without wrapping onto three lines.
