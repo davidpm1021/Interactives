@@ -15,7 +15,20 @@
           <th scope="col">Price at Age 10</th>
           <th scope="col">Price Today</th>
           <th scope="col">100 Shares Value</th>
-          <th scope="col">ROI</th>
+          <th scope="col">
+            <span class="roi-summary-table__th-info"
+                  tabindex="0"
+                  aria-label="Return on Investment: how much the shares gained or lost as a percent of what they originally cost">
+              ROI
+              <span class="roi-summary-table__info-mark" aria-hidden="true">?</span>
+              <span class="roi-summary-table__info-tooltip" role="tooltip">
+                <strong>Return on Investment.</strong> The gain or loss as a
+                percent of what you paid.
+                <br />
+                <em>((Current value − Cost) ÷ Cost) × 100</em>
+              </span>
+            </span>
+          </th>
         </tr>
       </thead>
       <tbody>
