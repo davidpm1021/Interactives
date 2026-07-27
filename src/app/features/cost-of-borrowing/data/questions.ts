@@ -15,7 +15,7 @@ export const QUESTIONS: Question[] = [
     options: ['Credit card', 'Personal loan', 'Auto loan', 'Mortgage'],
     correctIndex: 0,
     explanation:
-      'Credit cards top the list. Take a look at the rate table to see how far above the others they sit. You will unpack why in a later question.',
+      'Credit cards have the highest current interest rate of the four products.',
   },
   {
     id: 'q2-gap-cc-auto',
