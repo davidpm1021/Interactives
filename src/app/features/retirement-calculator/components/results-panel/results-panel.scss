@@ -1,11 +1,4 @@
 .results-panel {
-  &__title {
-    font-family: var(--ngpf-font-heading);
-    color: var(--ngpf-royal-blue);
-    font-size: 1.35rem;
-    margin: 0 0 var(--ngpf-spacing-md);
-  }
-
   &__tiles {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

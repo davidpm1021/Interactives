@@ -7,13 +7,6 @@
   flex-direction: column;
   gap: var(--ngpf-spacing-md);
 
-  &__title {
-    font-family: var(--ngpf-font-heading);
-    color: var(--ngpf-royal-blue);
-    font-size: 1.25rem;
-    margin: 0 0 var(--ngpf-spacing-xs);
-  }
-
   &__field {
     display: flex;
     flex-direction: column;
