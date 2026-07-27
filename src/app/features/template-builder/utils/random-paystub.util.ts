@@ -8,21 +8,28 @@ interface EmployerPool {
   addr1: string;
   addr2: string;
   stateAbbr: string;
+  /**
+   * Whether the employer plausibly offers a 401(k). Small independent shops
+   * (coffee, grocery, pizzeria, bookstore, daycare, etc.) usually don't; a
+   * logistics/parts-chain operation does. Random paystub only rolls a 401(k)
+   * deduction when this is true.
+   */
+  offers401k: boolean;
 }
 
 const EMPLOYERS: EmployerPool[] = [
-  { name: 'Riverside Coffee Co.', addr1: '482 Market Street', addr2: 'Portland, OR 97204', stateAbbr: 'OR' },
-  { name: 'Greenleaf Grocery', addr1: '215 Oak Avenue', addr2: 'Boulder, CO 80302', stateAbbr: 'CO' },
-  { name: 'Crescent Hardware', addr1: '88 Industrial Way', addr2: 'Asheville, NC 28801', stateAbbr: 'NC' },
-  { name: 'Brightline Logistics', addr1: '1450 Cedar Road', addr2: 'Tacoma, WA 98402', stateAbbr: 'WA' },
-  { name: 'Northside Veterinary', addr1: '602 Elm Street', addr2: 'Madison, WI 53703', stateAbbr: 'WI' },
-  { name: 'Sunset Pizzeria', addr1: '74 Beach Boulevard', addr2: 'San Diego, CA 92103', stateAbbr: 'CA' },
-  { name: 'Ironwood Books', addr1: '301 Main Street', addr2: 'Burlington, VT 05401', stateAbbr: 'VT' },
-  { name: 'Atlas Print Shop', addr1: '155 Lakeview Drive', addr2: 'Minneapolis, MN 55402', stateAbbr: 'MN' },
-  { name: 'Lone Star Auto Parts', addr1: '720 Crockett Lane', addr2: 'Austin, TX 78704', stateAbbr: 'TX' },
-  { name: 'Bayfront Dental', addr1: '95 Harbor Drive', addr2: 'Tampa, FL 33602', stateAbbr: 'FL' },
-  { name: 'Maple Hill Daycare', addr1: '11 Sycamore Place', addr2: 'Concord, NH 03301', stateAbbr: 'NH' },
-  { name: 'Pioneer Outfitters', addr1: '38 Mountain View Road', addr2: 'Bozeman, MT 59715', stateAbbr: 'MT' },
+  { name: 'Riverside Coffee Co.',   addr1: '482 Market Street',      addr2: 'Portland, OR 97204',   stateAbbr: 'OR', offers401k: false },
+  { name: 'Greenleaf Grocery',      addr1: '215 Oak Avenue',         addr2: 'Boulder, CO 80302',    stateAbbr: 'CO', offers401k: false },
+  { name: 'Crescent Hardware',      addr1: '88 Industrial Way',      addr2: 'Asheville, NC 28801',  stateAbbr: 'NC', offers401k: false },
+  { name: 'Brightline Logistics',   addr1: '1450 Cedar Road',        addr2: 'Tacoma, WA 98402',     stateAbbr: 'WA', offers401k: true  },
+  { name: 'Northside Veterinary',   addr1: '602 Elm Street',         addr2: 'Madison, WI 53703',    stateAbbr: 'WI', offers401k: false },
+  { name: 'Sunset Pizzeria',        addr1: '74 Beach Boulevard',     addr2: 'San Diego, CA 92103',  stateAbbr: 'CA', offers401k: false },
+  { name: 'Ironwood Books',         addr1: '301 Main Street',        addr2: 'Burlington, VT 05401', stateAbbr: 'VT', offers401k: false },
+  { name: 'Atlas Print Shop',       addr1: '155 Lakeview Drive',     addr2: 'Minneapolis, MN 55402', stateAbbr: 'MN', offers401k: false },
+  { name: 'Lone Star Auto Parts',   addr1: '720 Crockett Lane',      addr2: 'Austin, TX 78704',     stateAbbr: 'TX', offers401k: true  },
+  { name: 'Bayfront Dental',        addr1: '95 Harbor Drive',        addr2: 'Tampa, FL 33602',      stateAbbr: 'FL', offers401k: false },
+  { name: 'Maple Hill Daycare',     addr1: '11 Sycamore Place',      addr2: 'Concord, NH 03301',    stateAbbr: 'NH', offers401k: false },
+  { name: 'Pioneer Outfitters',     addr1: '38 Mountain View Road',  addr2: 'Bozeman, MT 59715',    stateAbbr: 'MT', offers401k: false },
 ];
 
 const RATE_CHOICES = [
@@ -74,7 +81,7 @@ export function randomPaystub(now: Date = new Date()): Paystub {
   // from the FIT/state tax base. Matches the W-2's treatment of Box 1.
   const deductions: PaystubLineItem[] = [];
   let contrib401kPerPeriod = 0;
-  if (Math.random() < 0.6) {
+  if (employer.offers401k && Math.random() < 0.6) {
     const pct = pick([0.03, 0.04, 0.05, 0.06]);
     contrib401kPerPeriod = round2(grossPerPeriod * pct);
     deductions.push({
