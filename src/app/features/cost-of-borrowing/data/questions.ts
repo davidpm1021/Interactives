@@ -27,7 +27,7 @@ export const QUESTIONS: Question[] = [
     tolerance: 1,
     unit: 'points',
     explanation:
-      'Credit card APRs currently run around 21% while auto loan rates are around 7%. The gap is roughly 14 percentage points. Anything within 1 point counts.',
+      'Credit card APRs currently run around 21% while auto loan rates are around 7%. The gap is roughly 14 percentage points.',
   },
   {
     id: 'q3-why-higher',
