@@ -98,6 +98,38 @@
     gap: var(--ngpf-spacing-md);
   }
 
+  &__table-toggle {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__table-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    padding: 6px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__rate-table--hidden {
+    display: none;
+  }
+
   &__questions {
     min-width: 0;
   }
@@ -226,7 +258,8 @@
 
     // Print worksheet uses the chart (matches the source worksheet's layout),
     // not the data table.
-    &__rate-table {
+    &__rate-table,
+    &__table-toggle {
       display: none !important;
     }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TopHeader } from '../../shared/top-header/top-header';
 import { RATE_SERIES, REFRESHED_AT_DISPLAY } from './data/rates.generated';
 import { QUESTIONS } from './data/questions';
@@ -24,6 +24,11 @@ export class CostOfBorrowing {
   protected readonly rateSeries = RATE_SERIES;
   protected readonly questions = QUESTIONS;
   protected readonly refreshedAt = REFRESHED_AT_DISPLAY;
+  protected readonly showTable = signal(false);
+
+  protected toggleTable(): void {
+    this.showTable.update((v) => !v);
+  }
 
   protected onPrint(): void {
     window.print();

@@ -1,87 +1,146 @@
 .rate-table {
+  &__wrapper {
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    box-shadow: var(--ngpf-shadow-sm);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  border-radius: var(--ngpf-radius-lg);
-  box-shadow: var(--ngpf-shadow-sm);
-  overflow: hidden;
   font-family: var(--ngpf-font-body);
 
   thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     background: var(--ngpf-royal-blue);
     color: white;
-    padding: 12px 16px;
-    font-size: 0.8rem;
+    padding: 8px 10px;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     font-weight: 600;
-    text-align: left;
+    text-align: right;
+    white-space: nowrap;
 
-    &.rate-table__col-num {
-      text-align: right;
+    &.rate-table__col-year {
+      text-align: left;
     }
   }
 
-  tbody th {
-    color: var(--ngpf-text-primary);
-    font-weight: 600;
-    text-align: left;
-  }
-
-  tbody tr {
+  tbody tr,
+  tfoot tr {
     border-bottom: 1px solid var(--ngpf-light-gray-blue);
+  }
 
-    &:last-child {
-      border-bottom: none;
-    }
+  tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.015);
   }
 
   tbody td,
-  tbody th {
-    padding: 12px 16px;
-    font-size: 0.95rem;
+  tbody th,
+  tfoot td,
+  tfoot th {
+    padding: 5px 10px;
+    font-size: 0.85rem;
     color: var(--ngpf-text-primary);
+  }
+
+  tfoot {
+    border-top: 2px solid var(--ngpf-royal-blue);
+  }
+
+  &__year {
+    color: var(--ngpf-text-secondary);
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
   }
 
   &__num {
     text-align: right;
     font-variant-numeric: tabular-nums;
-    color: var(--ngpf-text-secondary);
+    color: var(--ngpf-text-primary);
+    white-space: nowrap;
+  }
+
+  &__row--latest {
+    background: var(--ngpf-soft-blue-tint) !important;
+
+    .rate-table__year,
+    .rate-table__num {
+      font-weight: 700;
+      color: var(--ngpf-royal-blue);
+    }
+  }
+
+  &__row--summary {
+    background: rgba(0, 0, 0, 0.03) !important;
+
+    .rate-table__year {
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.72rem;
+      color: var(--ngpf-text-secondary);
+    }
   }
 
   &__num--current {
-    color: var(--ngpf-text-primary);
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
   }
 }
 
 @media print {
   .rate-table {
-    box-shadow: none;
-    border: 1px solid #999;
-    border-radius: 0;
+    &__wrapper {
+      box-shadow: none;
+      border: 1px solid #999;
+      border-radius: 0;
+      overflow: visible;
+    }
+
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 10pt;
+    font-size: 8.5pt;
 
     thead th {
+      position: static;
       background: #1a1a1a;
       color: white;
-      padding: 6pt 8pt;
-      font-size: 9pt;
+      padding: 4pt 6pt;
+      font-size: 8pt;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
+    tbody tr:nth-child(even),
+    &__row--latest,
+    &__row--summary {
+      background: transparent !important;
+    }
+
     tbody td,
-    tbody th {
-      padding: 5pt 8pt;
+    tbody th,
+    tfoot td,
+    tfoot th {
+      padding: 3pt 6pt;
       color: #1a1a1a;
       border-bottom: 1px solid #ccc;
     }
 
     &__num,
-    &__num--current {
+    &__num--current,
+    &__year {
       color: #1a1a1a;
+      font-weight: 400;
+    }
+
+    &__row--latest .rate-table__num,
+    &__row--latest .rate-table__year,
+    &__num--current {
+      font-weight: 700;
     }
   }
 }

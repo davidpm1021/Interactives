@@ -1,18 +1,40 @@
-<table class="rate-table" aria-label="Current consumer credit rates">
-  <thead>
-    <tr>
-      <th scope="col" class="rate-table__col-product">Product</th>
-      <th scope="col" class="rate-table__col-num">Current APR</th>
-      <th scope="col" class="rate-table__col-num">20-year average</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (s of series(); track s.id) {
+<div class="rate-table__wrapper">
+  <table class="rate-table" aria-label="Historical annual interest rates by product">
+    <thead>
       <tr>
-        <th scope="row" class="rate-table__product">{{ s.label }}</th>
-        <td class="rate-table__num rate-table__num--current">{{ s.currentRate | number: '1.2-2' }}%</td>
-        <td class="rate-table__num">{{ s.twentyYearAverage | number: '1.2-2' }}%</td>
+        <th scope="col" class="rate-table__col-year">Year</th>
+        @for (s of series(); track s.id) {
+          <th scope="col" class="rate-table__col-num">{{ s.label }}</th>
+        }
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.year) {
+        <tr [class.rate-table__row--latest]="row.year === latestYear()">
+          <th scope="row" class="rate-table__year">{{ row.year }}</th>
+          @for (v of row.values; track $index) {
+            <td class="rate-table__num">
+              @if (v === null) { — } @else { {{ v | number: '1.1-2' }}% }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr class="rate-table__row--summary">
+        <th scope="row" class="rate-table__year">Latest</th>
+        @for (s of series(); track s.id) {
+          <td class="rate-table__num rate-table__num--current">
+            {{ s.currentRate | number: '1.1-2' }}%
+          </td>
+        }
+      </tr>
+      <tr class="rate-table__row--summary">
+        <th scope="row" class="rate-table__year">20-yr avg</th>
+        @for (s of series(); track s.id) {
+          <td class="rate-table__num">{{ s.twentyYearAverage | number: '1.1-2' }}%</td>
+        }
+      </tr>
+    </tfoot>
+  </table>
+</div>
