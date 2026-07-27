@@ -19,7 +19,8 @@ const FIELDS: FieldDef[] = [
   {
     key: 'bestPerformerAnalysis',
     label: 'Best Performer Analysis',
-    prompt: 'Which stock had the best ROI? Why do you think it performed so well?',
+    prompt:
+      "Why do you think your top performer did so well over the years? A guess or hunch is fine — you don't need to know the industry inside and out.",
   },
   {
     key: 'mostValuableAnalysis',
