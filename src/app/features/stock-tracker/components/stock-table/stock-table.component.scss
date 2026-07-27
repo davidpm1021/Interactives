@@ -30,7 +30,10 @@
   }
 
   &__wrapper {
-    overflow-x: auto;
+    // Not overflow-x:auto — that also clips overflow-y, which cuts off the
+    // header tooltips when the table is short. Any horizontal scrolling is
+    // handled by the outer page.
+    overflow: visible;
     background: white;
     border-radius: var(--ngpf-radius-md);
     box-shadow: var(--ngpf-shadow-sm);
@@ -124,7 +127,8 @@
 
   &__info-tooltip {
     position: absolute;
-    top: calc(100% + 8px);
+    // Open above the header cell so short tables don't clip it below.
+    bottom: calc(100% + 8px);
     right: 0;
     z-index: 5;
     display: none;
