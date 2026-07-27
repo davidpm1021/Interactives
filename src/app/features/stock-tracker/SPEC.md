@@ -257,7 +257,6 @@ StockBirthdayComponent (host, manages state + routing between steps)
 │   └── CombinedTableComponent (all 5 side-by-side)
 ├── CompareComponent (Part 3)
 │   ├── MultiLineChartComponent (all 5 stocks over time)
-│   ├── RoiBarChartComponent (ROI comparison)
 │   ├── RoiSummaryTableComponent (overview table)
 │   └── CalloutCardsComponent (best ROI, highest value, most volatile)
 └── ReportComponent (Part 4)
@@ -272,7 +271,6 @@ StockBirthdayComponent (host, manages state + routing between steps)
 - **StepIndicatorComponent**: Horizontal progress bar with 4 labeled steps. Clickable to navigate back to completed steps. Current step is highlighted; future steps are disabled.
 - **StockPickerComponent**: Reusable search + validate + display widget. Emits a `StockPick` on successful selection. Shows loading state while fetching price data. Shows error state if ticker is invalid or not available on the target date.
 - **MultiLineChartComponent**: Accepts an array of `StockPick[]` and renders a multi-series line chart. Configurable for showing value of 100 shares (Part 3) or raw price. Supports hover tooltips. Includes a small download icon button in the top-right corner that saves the chart as a PNG via `ExportService.downloadChartAsImage()`.
-- **RoiBarChartComponent**: Accepts `StockPick[]` and renders a bar chart of ROI percentages. Highlights the highest bar. Includes the same download icon button as MultiLineChartComponent.
 - **DownloadButtonComponent**: Small icon button (download/arrow-down icon) positioned in the top-right corner of its parent container. Accepts an `exportType` input (`'chart'` or `'table'`) and a reference to the target element. On click, calls the appropriate `ExportService` method. Shows a brief "Saved!" toast or checkmark animation after download completes. The button should be visually subtle (muted gray, small) so it doesn't compete with the data content, but clearly discoverable on hover.
 
 ---
@@ -374,7 +372,7 @@ export class ExportService {
 
 - For charts, Chart.js provides `toBase64Image()` natively, so no extra library is needed. Create a temporary `<a>` element with `href` set to the base64 data and `download` set to the filename, then programmatically click it.
 - For tables, use **html2canvas** (add as a dependency) to render the DOM element to a `<canvas>`, then convert to PNG via `canvas.toDataURL('image/png')` and trigger the same download pattern.
-- Filenames should be descriptive and include the student's context, e.g., `stock-comparison-chart.png`, `roi-bar-chart.png`, `annual-prices-AAPL.png`, `roi-summary-table.png`.
+- Filenames should be descriptive and include the student's context, e.g., `stock-comparison-chart.png`, `annual-prices-AAPL.png`, `roi-summary-table.png`.
 - Downloaded images should have a white background (not transparent) so they paste cleanly into Google Docs or other report tools.
 - For html2canvas table rendering, apply a small amount of padding around the table so the image doesn't crop tightly against the edges.
 

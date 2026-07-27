@@ -1,7 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { RoiSummaryTableComponent } from '../roi-summary-table/roi-summary-table.component';
 import { MultiLineChartComponent } from '../multi-line-chart/multi-line-chart.component';
-import { RoiBarChartComponent } from '../roi-bar-chart/roi-bar-chart.component';
 import { ReflectionFormComponent } from '../reflection-form/reflection-form.component';
 import { ExportButtonsComponent } from '../export-buttons/export-buttons.component';
 import { StockTrackerStateService } from '../../services/stock-tracker-state.service';
@@ -13,7 +12,6 @@ import { StockReport } from '../../models/stock-tracker.models';
   imports: [
     RoiSummaryTableComponent,
     MultiLineChartComponent,
-    RoiBarChartComponent,
     ReflectionFormComponent,
     ExportButtonsComponent,
   ],
