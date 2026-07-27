@@ -1,8 +1,75 @@
 <section class="question-stack" aria-labelledby="questions-heading">
-  <h2 id="questions-heading" class="question-stack__heading">Questions</h2>
+  <div class="question-stack__heading-row no-print">
+    <h2 id="questions-heading" class="question-stack__heading">Questions</h2>
+    <span class="question-stack__progress" aria-live="polite">
+      @if (onReview()) {
+        Review
+      } @else {
+        Question {{ currentIndex() + 1 }} of {{ total() }}
+      }
+    </span>
+  </div>
+
+  <h2 class="question-stack__heading only-print">Questions</h2>
+
   <div class="question-stack__list">
     @for (q of questions(); track q.id; let i = $index) {
-      <app-question-item [question]="q" [index]="i" />
+      <div
+        class="question-stack__slot"
+        [class.question-stack__slot--active]="i === currentIndex()"
+        [attr.aria-hidden]="i === currentIndex() ? null : 'true'"
+      >
+        <app-question-item [question]="q" [index]="i" />
+      </div>
+    }
+  </div>
+
+  @if (onReview()) {
+    <div class="question-stack__review no-print" aria-labelledby="review-heading">
+      <h3 id="review-heading" class="question-stack__review-heading">Review your answers</h3>
+      <ol class="question-stack__review-list">
+        @for (row of reviewRows(); track row.index) {
+          <li class="question-stack__review-item question-stack__review-item--{{ row.verdict }}">
+            <button type="button" class="question-stack__review-jump" (click)="goTo(row.index)">
+              <span class="question-stack__review-num">Q{{ row.index + 1 }}</span>
+              <span class="question-stack__review-prompt">{{ row.prompt }}</span>
+              @if (row.answered) {
+                <span class="question-stack__review-answer">{{ row.answerText }}</span>
+              } @else {
+                <span class="question-stack__review-answer question-stack__review-answer--skipped">Not answered</span>
+              }
+              <span class="question-stack__review-badge" aria-label="Result">
+                @switch (row.verdict) {
+                  @case ('correct') { Correct }
+                  @case ('wrong') { Not the model answer }
+                  @case ('self-graded') { Self-graded }
+                  @case ('skipped') { — }
+                }
+              </span>
+            </button>
+          </li>
+        }
+      </ol>
+    </div>
+  }
+
+  <div class="question-stack__nav no-print">
+    <button
+      type="button"
+      class="question-stack__nav-btn question-stack__nav-btn--prev"
+      (click)="onPrev()"
+      [disabled]="!canGoPrev()"
+    >
+      ← Previous
+    </button>
+    @if (!onReview()) {
+      <button
+        type="button"
+        class="question-stack__nav-btn question-stack__nav-btn--next ngpf-btn ngpf-btn-primary"
+        (click)="onNext()"
+      >
+        {{ nextLabel() }} →
+      </button>
     }
   </div>
 </section>
