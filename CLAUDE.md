@@ -25,6 +25,8 @@ Each infographic must be self-contained within its folder under `src/app/infogra
 - Assets in `public/infographics/<name>/`.
 - 800-px fixed poster width per the design spec; page background frames the poster.
 
+**NEW infographics: co-locate images in `src/app/infographics/<name>/images/`, not `public/`.** The first infographic (`premiums-deductibles-limits`) puts backgrounds in `public/` and works around it with a hardcoded `/interactives/` prefix in SCSS. From the next infographic on, put component-rendered images (hero photos, pattern tiles, logos referenced from SCSS `background-image` or template `<img>`) *inside* the component folder under an `images/` subfolder. Reference them with relative paths like `url('./images/hero.jpg')`. This lets esbuild hash them for cache-busting, works identically in dev and prod, and avoids the `<base href>` / route-collision issues that bit the first one. Reserve `public/infographics/<name>/` only for fetched data or downloadable files (e.g. a print-ready PDF).
+
 ### What belongs IN the feature folder:
 - Components, services, models, pipes specific to this feature
 - Feature-specific scripts and utilities
