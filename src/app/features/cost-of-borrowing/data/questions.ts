@@ -34,7 +34,7 @@ export const QUESTIONS: Question[] = [
     dok: 2,
     answerType: 'short-text',
     prompt:
-      'In one sentence, explain why credit cards typically charge higher interest rates than auto loans.',
+      'Explain why credit cards typically charge higher interest rates than auto loans.',
     modelAnswer:
       'An auto loan is secured by the car itself (the bank can repossess it if you stop paying), while a credit card is unsecured, so the bank charges more to cover the risk of not getting repaid.',
     explanation:
