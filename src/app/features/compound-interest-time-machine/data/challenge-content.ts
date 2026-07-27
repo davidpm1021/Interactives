@@ -61,7 +61,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
   challenge4: {
     title: 'The Cost of Waiting',
     setup:
-      'Meet two people. Both invest $200/month at 7%. Same plan, same discipline. The only difference is when they start.',
+      'Meet Alex and Jordan. Both invest $200/month at 7%. Same plan, same discipline. The only difference is when they start.',
     setupDetail:
       'Alex starts at age 22. Jordan starts at age 32, just 10 years later. Both invest until age 62.',
     predictPrompt:
