@@ -4,6 +4,7 @@
   background: var(--ngpf-soft-blue-tint);
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
 
   &__intro {
     text-align: center;
@@ -26,8 +27,36 @@
     }
   }
 
-  &__actions {
-    margin-top: var(--ngpf-spacing-md);
+  &__toolbar {
+    position: absolute;
+    top: var(--ngpf-spacing-md);
+    right: var(--ngpf-spacing-lg);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+  }
+
+  &__icon-btn {
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    line-height: 0;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
   }
 
   &__behind {
