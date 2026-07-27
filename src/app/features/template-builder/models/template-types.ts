@@ -1,11 +1,12 @@
+// Checkbook Register and Bill (Invoice) are intentionally omitted from the
+// catalog but the CheckbookEditor + bill-editor variant=2 code still exist
+// on disk in case a teacher requests them back.
 export type TemplateKey =
   | 'paystub'
   | 'w2'
   | 'bank-statement'
   | 'savings-statement'
-  | 'checkbook-register'
   | 'bill-1'
-  | 'bill-2'
   | 'credit-report';
 
 export interface TemplateDescriptor {
@@ -46,24 +47,10 @@ export const TEMPLATE_CATALOG: TemplateDescriptor[] = [
     available: true,
   },
   {
-    key: 'checkbook-register',
-    title: 'Checkbook Register',
-    category: 'Banking & Accounts',
-    description: 'Running ledger of checks, debits, and credits with a live balance.',
-    available: true,
-  },
-  {
     key: 'bill-1',
     title: 'Bill (Statement)',
     category: 'Bills & Expenses',
     description: 'Utility-style statement with vendor info and itemized charges.',
-    available: true,
-  },
-  {
-    key: 'bill-2',
-    title: 'Bill (Invoice)',
-    category: 'Bills & Expenses',
-    description: 'Invoice-style layout with a bold header and amount due callout.',
     available: true,
   },
   {

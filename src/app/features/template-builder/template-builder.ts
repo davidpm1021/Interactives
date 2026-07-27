@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { TopHeader } from '../../shared/top-header/top-header';
 import { PaystubEditor } from './components/paystub-editor/paystub-editor';
 import { BillEditor } from './components/bill-editor/bill-editor';
-import { CheckbookEditor } from './components/checkbook-editor/checkbook-editor';
+// NOTE: CheckbookEditor is not imported here — the checkbook-register
+// template was removed from the catalog per teacher feedback but the
+// component + generator stay on disk for future use.
 import { AccountStatementEditor } from './components/account-statement-editor/account-statement-editor';
 import { W2Editor } from './components/w2-editor/w2-editor';
 import { CreditReportEditor } from './components/credit-report-editor/credit-report-editor';
@@ -15,7 +17,6 @@ import { TEMPLATE_CATALOG, TemplateKey } from './models/template-types';
     TopHeader,
     PaystubEditor,
     BillEditor,
-    CheckbookEditor,
     AccountStatementEditor,
     W2Editor,
     CreditReportEditor,

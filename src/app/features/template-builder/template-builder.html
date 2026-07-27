@@ -5,8 +5,12 @@
       <header class="template-builder__intro">
         <h1>{{ title }}</h1>
         <p>
-          Pick a template to customize for your classroom. Fill in the fields and use
-          <strong>Print / Save as PDF</strong> to produce a print-ready handout.
+          Ready-to-hand-out versions of the documents students see in real financial life
+          (paystubs, W-2s, bank statements, bills, credit reports). Start from a random
+          example or type your own numbers so every class period gets fresh, realistic
+          practice material. Use <strong>Print / Save as PDF</strong> to produce a
+          print-ready handout, or set <strong>Copies per page</strong> to two for a
+          space-saving worksheet layout.
         </p>
       </header>
 
@@ -44,9 +48,7 @@
         @case ('w2') { <app-w2-editor></app-w2-editor> }
         @case ('bank-statement') { <app-account-statement-editor variant="checking"></app-account-statement-editor> }
         @case ('savings-statement') { <app-account-statement-editor variant="savings"></app-account-statement-editor> }
-        @case ('checkbook-register') { <app-checkbook-editor></app-checkbook-editor> }
         @case ('bill-1') { <app-bill-editor [variant]="1"></app-bill-editor> }
-        @case ('bill-2') { <app-bill-editor [variant]="2"></app-bill-editor> }
         @case ('credit-report') { <app-credit-report-editor></app-credit-report-editor> }
       }
     }
