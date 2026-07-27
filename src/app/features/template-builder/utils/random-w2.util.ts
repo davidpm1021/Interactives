@@ -15,18 +15,23 @@ const EMPLOYERS = [
 ];
 
 /**
- * Generate a plausible SSN. Excludes SSA-reserved area numbers (666, 900-999)
- * and never issues a group of 00 or a serial of 0000.
+ * Deliberately-obvious fake SSN. Uses a single repeated digit (e.g.
+ * 222-22-2222) so no student mistakes it for a real number and no
+ * randomly-generated form accidentally resembles a real person's SSN.
+ * NGPF's convention across classroom materials.
  */
 function randomSSN(): string {
-  let area: number;
-  do {
-    area = randInt(1, 899);
-  } while (area === 666);
-  const group = randInt(1, 99);
-  const serial = randInt(1, 9999);
-  const pad = (n: number, w: number) => String(n).padStart(w, '0');
-  return `${pad(area, 3)}-${pad(group, 2)}-${pad(serial, 4)}`;
+  const d = randInt(1, 9);
+  return `${d}${d}${d}-${d}${d}-${d}${d}${d}${d}`;
+}
+
+/**
+ * Deliberately-obvious fake EIN, same repeated-digit convention as randomSSN.
+ * IRS never issues EINs with all-repeated digits.
+ */
+function randomEIN(): string {
+  const d = randInt(1, 9);
+  return `${d}${d}-${d}${d}${d}${d}${d}${d}${d}`;
 }
 
 export function randomW2(now: Date = new Date()): W2 {
@@ -73,7 +78,7 @@ export function randomW2(now: Date = new Date()): W2 {
   return {
     taxYear: now.getFullYear() - 1,
     employeeSSN: randomSSN(),
-    employerEIN: `${randInt(10, 99)}-${randInt(1000000, 9999999)}`,
+    employerEIN: randomEIN(),
     employer: { name: employer.name, addressLine1: employer.addr1, addressLine2: employer.addr2 },
     controlNumber: `A${randInt(1000, 9999)}-${randInt(10, 99)}`,
     employee: {

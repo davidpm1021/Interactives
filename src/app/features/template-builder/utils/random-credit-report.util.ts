@@ -208,7 +208,8 @@ export function randomCreditReport(now: Date = new Date()): CreditReport {
       currentAddressLine2: `${city.city}, ${city.state} ${city.zip}`,
       previousAddress: `${randInt(100, 9999)} ${pick(STREETS)}, ${prevCity.city}, ${prevCity.state} ${prevCity.zip}`,
       dobMasked: `**/**/${birthYear}`,
-      ssnMasked: `***-**-${randInt(1000, 9999)}`,
+      // Repeated-digit last-4 so the masked SSN reads as obviously fake.
+      ssnMasked: (() => { const d = randInt(1, 9); return `***-**-${d}${d}${d}${d}`; })(),
     },
     reportDate: toISO(now),
     bureau: pick(BUREAUS),

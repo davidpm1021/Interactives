@@ -60,7 +60,7 @@ export function sampleCreditReport(): CreditReport {
       currentAddressLine2: 'Portland, OR 97232',
       previousAddress: '88 Birchwood Place, Eugene, OR 97401',
       dobMasked: '**/**/2003',
-      ssnMasked: '***-**-6789',
+      ssnMasked: '***-**-1111',
     },
     reportDate: '2026-06-15',
     bureau: 'Experian',
