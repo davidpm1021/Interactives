@@ -77,6 +77,29 @@ export class QuestionItem {
   protected asNumeric(q: Question): NumericQuestion { return q as NumericQuestion; }
   protected asShortText(q: Question): ShortTextQuestion { return q as ShortTextQuestion; }
 
+  /**
+   * Text that gets rendered inside the answer box on print, if the student
+   * has submitted a response. Empty string means "no answer yet" — the print
+   * stylesheet falls back to a blank hand-write area in that case.
+   */
+  protected readonly printAnswer = computed<string>(() => {
+    const record = this.state.answers()[this.question().id];
+    if (!record || !record.submitted) return '';
+    const q = this.question();
+    if (q.answerType === 'multiple-choice') {
+      const idx = Number(record.value);
+      const opt = (q as MultipleChoiceQuestion).options[idx];
+      return opt ?? '';
+    }
+    if (q.answerType === 'numeric') {
+      const unit = (q as NumericQuestion).unit;
+      if (unit === '$') return `$${record.value}`;
+      if (unit) return `${record.value} ${unit}`;
+      return String(record.value);
+    }
+    return String(record.value);
+  });
+
   protected onSelect(i: number): void {
     if (this.reveal()) return;
     this.selectedIndex.set(i);

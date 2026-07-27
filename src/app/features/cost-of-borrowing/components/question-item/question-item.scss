@@ -217,6 +217,12 @@
       outline-offset: 2px;
     }
   }
+
+  // Only rendered when the student has submitted a response. Hidden on
+  // screen; the print stylesheet promotes it into the answer box.
+  &__print-answer {
+    display: none;
+  }
 }
 
 @keyframes revealFade {
@@ -296,6 +302,30 @@
       flex: 1 0 auto;
       min-height: 46pt;
     }
+
+    // If the student has submitted a response, render it in the answer box
+    // instead of leaving the blank hand-write area.
+    &__print-answer {
+      display: block;
+      flex: 1 0 auto;
+      margin-top: 4pt;
+      padding: 6pt 8pt;
+      border: 0.75pt solid #999;
+      background: #f5f5f5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.35;
+      color: #1a1a1a;
+      white-space: pre-wrap;
+      min-height: 46pt;
+    }
+  }
+
+  // Suppress the blank hand-write area when a rendered answer sits above it.
+  .question-item:has(.question-item__print-answer)::after {
+    display: none !important;
   }
 }
 

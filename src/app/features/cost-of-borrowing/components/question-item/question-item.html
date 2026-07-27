@@ -9,6 +9,10 @@
 
   <p class="question-item__prompt">{{ question().prompt }}</p>
 
+  @if (printAnswer()) {
+    <div class="question-item__print-answer" aria-hidden="true">{{ printAnswer() }}</div>
+  }
+
   @switch (question().answerType) {
     @case ('multiple-choice') {
       <div class="question-item__options" role="radiogroup" [attr.aria-label]="question().prompt" (keydown)="onOptionKeydown($event)">
