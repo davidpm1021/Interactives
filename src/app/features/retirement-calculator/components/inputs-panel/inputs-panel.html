@@ -63,17 +63,52 @@
     </span>
   </label>
 
-  <label class="inputs-panel__field">
-    <span class="inputs-panel__label">Monthly contribution</span>
-    <span class="inputs-panel__input-with-prefix">
-      <span class="inputs-panel__prefix">$</span>
-      <input
-        type="text"
-        inputmode="numeric"
-        [value]="formatMoney(inputs().monthlyContribution)"
-        (input)="onMoneyInput('monthlyContribution', $event)"
-      />
-    </span>
-  </label>
+  <div class="inputs-panel__field">
+    <div class="inputs-panel__label-row">
+      <span class="inputs-panel__label" id="monthly-contribution-label">Monthly contribution</span>
+      <div class="inputs-panel__mode-toggle" role="group" aria-label="Contribution mode">
+        <button
+          type="button"
+          class="inputs-panel__mode-btn"
+          [class.inputs-panel__mode-btn--active]="contributionMode() === '$'"
+          [attr.aria-pressed]="contributionMode() === '$'"
+          (click)="setContributionMode('$')"
+        >$</button>
+        <button
+          type="button"
+          class="inputs-panel__mode-btn"
+          [class.inputs-panel__mode-btn--active]="contributionMode() === '%'"
+          [attr.aria-pressed]="contributionMode() === '%'"
+          (click)="setContributionMode('%')"
+        >%</button>
+      </div>
+    </div>
+
+    @if (contributionMode() === '$') {
+      <label class="inputs-panel__input-with-prefix" aria-labelledby="monthly-contribution-label">
+        <span class="inputs-panel__prefix">$</span>
+        <input
+          type="text"
+          inputmode="numeric"
+          [value]="formatMoney(inputs().monthlyContribution)"
+          (input)="onMoneyInput('monthlyContribution', $event)"
+        />
+      </label>
+    } @else {
+      <label class="inputs-panel__input-with-suffix" aria-labelledby="monthly-contribution-label">
+        <input
+          type="text"
+          inputmode="decimal"
+          [value]="formatPct(contributionPct())"
+          (input)="onPctContributionInput($event)"
+          [disabled]="inputs().currentSalary <= 0"
+        />
+        <span class="inputs-panel__suffix">%</span>
+      </label>
+      <span class="inputs-panel__hint">
+        Percent of gross salary. Equals about ${{ formatMoney(inputs().monthlyContribution) }} per month.
+      </span>
+    }
+  </div>
 
 </section>

@@ -13,11 +13,55 @@
     gap: 6px;
   }
 
+  &__label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ngpf-spacing-sm);
+  }
+
   &__label {
     font-family: var(--ngpf-font-body);
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--ngpf-text-primary);
+  }
+
+  &__mode-toggle {
+    display: inline-flex;
+    background: var(--ngpf-soft-blue-tint);
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    padding: 2px;
+    gap: 2px;
+  }
+
+  &__mode-btn {
+    background: transparent;
+    border: none;
+    color: var(--ngpf-text-secondary);
+    padding: 2px 10px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: calc(var(--ngpf-radius-sm) - 2px);
+    line-height: 1.4;
+
+    &:hover:not(&--active) {
+      color: var(--ngpf-royal-blue);
+    }
+
+    &--active {
+      background: white;
+      color: var(--ngpf-royal-blue);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
   }
 
   &__hint {

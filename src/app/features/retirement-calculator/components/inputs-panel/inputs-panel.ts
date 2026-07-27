@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RetirementInputs } from '../../models/retirement.models';
 
@@ -13,6 +13,40 @@ import { RetirementInputs } from '../../models/retirement.models';
 export class InputsPanel {
   readonly inputs = input.required<RetirementInputs>();
   readonly inputsChange = output<RetirementInputs>();
+
+  /** Display mode for the monthly contribution field. Model always stores $/mo. */
+  protected readonly contributionMode = signal<'$' | '%'>('$');
+
+  /** Derived percent-of-salary for the current $/mo contribution. */
+  protected readonly contributionPct = computed(() => {
+    const salary = this.inputs().currentSalary;
+    if (!Number.isFinite(salary) || salary <= 0) return 0;
+    return (this.inputs().monthlyContribution * 12 * 100) / salary;
+  });
+
+  protected setContributionMode(mode: '$' | '%'): void {
+    this.contributionMode.set(mode);
+  }
+
+  /**
+   * Format the % contribution for display: one decimal, no trailing zeros
+   * beyond that. Zero salary → empty (student needs to fill in salary first).
+   */
+  protected formatPct(v: number): string {
+    if (!Number.isFinite(v) || v <= 0) return '';
+    return v.toFixed(1);
+  }
+
+  /** Parse a "10.0" style input and emit an updated monthlyContribution ($/mo). */
+  protected onPctContributionInput(event: Event): void {
+    const raw = (event.target as HTMLInputElement).value;
+    const pct = parseFloat(raw);
+    if (!Number.isFinite(pct) || pct < 0) return;
+    const salary = this.inputs().currentSalary;
+    if (!Number.isFinite(salary) || salary <= 0) return;
+    const monthly = Math.round((salary * (pct / 100)) / 12);
+    this.update('monthlyContribution', monthly);
+  }
 
   protected update<K extends keyof RetirementInputs>(key: K, value: RetirementInputs[K]): void {
     this.inputsChange.emit({ ...this.inputs(), [key]: value });
