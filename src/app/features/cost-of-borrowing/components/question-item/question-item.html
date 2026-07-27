@@ -18,9 +18,9 @@
             [attr.data-option-index]="i"
             class="question-item__option"
             [class.question-item__option--selected]="selectedIndex() === i"
-            [class.question-item__option--correct-answer]="submitted() && i === asMc(question()).correctIndex"
-            [class.question-item__option--wrong-answer]="submitted() && selectedIndex() === i && i !== asMc(question()).correctIndex"
-            [disabled]="submitted()"
+            [class.question-item__option--correct-answer]="reveal() && i === asMc(question()).correctIndex"
+            [class.question-item__option--wrong-answer]="(reveal() || nudge()) && selectedIndex() === i && i !== asMc(question()).correctIndex"
+            [disabled]="reveal()"
             role="radio"
             [attr.aria-checked]="selectedIndex() === i"
             [attr.tabindex]="(selectedIndex() ?? 0) === i ? '0' : '-1'"
@@ -45,7 +45,7 @@
           class="question-item__numeric-input"
           [ngModel]="numericInput()"
           (ngModelChange)="numericInput.set($event)"
-          [disabled]="submitted()"
+          [disabled]="reveal()"
           [placeholder]="asNumeric(question()).unit === '$' ? 'Amount in dollars' : 'Your answer'"
           [attr.aria-invalid]="submitted() && correct() === false ? 'true' : null"
           [attr.aria-describedby]="submitted() ? 'q-' + question().id + '-reveal' : null"
@@ -72,6 +72,11 @@
   }
 
   @if (!submitted()) {
+    @if (nudge()) {
+      <p class="question-item__nudge" role="status">
+        Not quite. Take another look at the data and try again.
+      </p>
+    }
     <div class="question-item__actions">
       <button
         type="button"
@@ -81,6 +86,8 @@
       >
         @if (question().answerType === 'short-text') {
           Show model answer
+        } @else if (nudge()) {
+          Check again
         } @else {
           Check
         }
