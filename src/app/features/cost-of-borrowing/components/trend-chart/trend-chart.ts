@@ -43,6 +43,7 @@ export class TrendChart {
 
   protected readonly hover = signal<HoverPoint | null>(null);
   protected readonly tooltipPos = signal<{ left: number; top: number } | null>(null);
+  protected readonly tooltipAnchor = signal<'left' | 'center' | 'right'>('center');
   protected readonly hoverAnnouncement = signal('');
 
   private readonly injector = inject(Injector);
@@ -275,6 +276,12 @@ export class TrendChart {
       const leftPx = (CHART_MARGIN.left + cx) * scaleX;
       const topPx = CHART_MARGIN.top * scaleY;
       this.tooltipPos.set({ left: leftPx, top: topPx });
+      // Flip the anchor near the edges so the tooltip stays inside the
+      // container. Rough width budget: half of a wide tooltip is ~120px.
+      const edgeBudget = 120;
+      if (leftPx < edgeBudget) this.tooltipAnchor.set('left');
+      else if (containerRect.width - leftPx < edgeBudget) this.tooltipAnchor.set('right');
+      else this.tooltipAnchor.set('center');
     };
 
     const clearHover = () => {
