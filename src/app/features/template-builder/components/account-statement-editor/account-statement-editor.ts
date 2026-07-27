@@ -138,4 +138,29 @@ export class AccountStatementEditor {
   protected removeTxn(index: number): void {
     this.mutateFirst((s) => ({ ...s, transactions: s.transactions.filter((_, i) => i !== index) }));
   }
+
+  protected addMaintenanceFee(): void {
+    this.addFeeTxn('MONTHLY MAINTENANCE FEE', 12);
+  }
+  protected addAtmFee(): void {
+    this.addFeeTxn('ATM FEE OUT-OF-NETWORK', 3.5);
+  }
+
+  /**
+   * Append a debit transaction with a fixed description + amount, dated the
+   * day before the statement period ends when possible (matches how random
+   * generation places recurring fees). Skips insertion if a transaction with
+   * the same description already exists so the button doesn't double-add.
+   */
+  private addFeeTxn(description: string, amount: number): void {
+    const s = this.current();
+    if (s.transactions.some((t) => t.description === description)) return;
+    const endDate = s.periodEnd
+      ? new Date(new Date(s.periodEnd).getTime() - 86_400_000).toISOString().slice(0, 10)
+      : '';
+    this.mutateFirst((next) => ({
+      ...next,
+      transactions: [...next.transactions, { date: endDate, description, amount, kind: 'debit' }],
+    }));
+  }
 }

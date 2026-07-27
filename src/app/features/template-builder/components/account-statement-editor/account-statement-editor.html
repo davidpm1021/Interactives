@@ -106,7 +106,13 @@
         <button type="button" class="account-editor__remove" (click)="removeTxn($index)" [attr.aria-label]="'Remove transaction ' + ($index + 1) + (txn.description ? ': ' + txn.description : '')">Remove</button>
       </div>
     }
-    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addTxn()">+ Add transaction</button>
+    <div class="account-editor__add-actions">
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addTxn()">+ Add transaction</button>
+      @if (variant() === 'checking') {
+        <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addMaintenanceFee()">+ Monthly fee ($12)</button>
+        <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addAtmFee()">+ ATM fee ($3.50)</button>
+      }
+    </div>
   </fieldset>
 </app-editor-shell>
 
