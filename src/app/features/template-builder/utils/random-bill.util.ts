@@ -55,6 +55,73 @@ const BILLERS: BillerPreset[] = [
       { description: 'Multi-policy discount', amount: round2(-(3 + Math.random() * 4)) },
     ],
   },
+  {
+    name: 'Pinecrest Renters Insurance',
+    addressLine1: 'PO Box 5501',
+    addressLine2: 'Minneapolis, MN 55402',
+    phone: '(612) 555-0139',
+    buildItems: () => [
+      { description: 'Personal property coverage', amount: round2(10 + Math.random() * 8) },
+      { description: 'Liability coverage', amount: round2(4 + Math.random() * 4) },
+      { description: 'Loss of use coverage', amount: 2.0 },
+      { description: 'Policy service fee', amount: 1.5 },
+    ],
+  },
+  {
+    name: 'Northstar Gym & Fitness',
+    addressLine1: '722 Lakeview Drive',
+    addressLine2: 'Denver, CO 80202',
+    phone: '(720) 555-0192',
+    buildItems: () => [
+      { description: 'Monthly membership', amount: pick([29.99, 39.99, 49.99]) },
+      { description: 'Group class add-on', amount: pick([0, 0, 10]) },
+      { description: 'Annual maintenance fee (prorated)', amount: round2(2 + Math.random() * 2) },
+    ],
+  },
+  {
+    name: 'Harbor Trust Home Security',
+    addressLine1: 'PO Box 3320',
+    addressLine2: 'Tampa, FL 33601',
+    phone: '(813) 555-0155',
+    buildItems: () => [
+      { description: '24/7 professional monitoring', amount: pick([34.99, 44.99, 54.99]) },
+      { description: 'Cellular backup', amount: 8.0 },
+      { description: 'Equipment lease', amount: round2(6 + Math.random() * 3) },
+    ],
+  },
+  {
+    name: 'Cascade Waste Services',
+    addressLine1: '1440 Industrial Boulevard',
+    addressLine2: 'Portland, OR 97220',
+    phone: '(503) 555-0148',
+    buildItems: () => [
+      { description: 'Trash and recycling service', amount: pick([26.5, 29.75, 32.0]) },
+      { description: 'Yard debris collection', amount: 8.5 },
+      { description: 'Fuel and environmental fee', amount: round2(2 + Math.random() * 2) },
+    ],
+  },
+  {
+    name: 'Ridgeline HOA',
+    addressLine1: '355 Meadowbrook Circle',
+    addressLine2: 'Asheville, NC 28803',
+    phone: '(828) 555-0117',
+    buildItems: () => [
+      { description: 'Monthly homeowner dues', amount: pick([185, 220, 265, 310]) },
+      { description: 'Reserve fund contribution', amount: round2(18 + Math.random() * 10) },
+      { description: 'Landscaping assessment', amount: 12.0 },
+    ],
+  },
+  {
+    name: 'Atlas Streaming Bundle',
+    addressLine1: '600 Market Street',
+    addressLine2: 'Culver City, CA 90232',
+    phone: '(310) 555-0181',
+    buildItems: () => [
+      { description: 'Standard plan (2 screens, HD)', amount: pick([15.99, 17.99, 19.99]) },
+      { description: 'Add-on: live sports package', amount: pick([0, 9.99, 12.99]) },
+      { description: 'Taxes and regulatory fees', amount: round2(1 + Math.random() * 2) },
+    ],
+  },
 ];
 
 export function randomBill(now: Date = new Date()): Bill {
