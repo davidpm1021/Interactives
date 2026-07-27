@@ -7,7 +7,7 @@ const BANKS = [
   { name: 'Cascade Federal Credit Union', tagline: 'Member-owned since 1962' },
   { name: 'Brightline National Bank', tagline: 'Banking that travels with you' },
   { name: 'Pinecrest Community Bank', tagline: 'Local roots, regional reach' },
-  { name: 'Harbor Trust Savings', tagline: 'Established 1894' },
+  { name: 'Harbor Trust Bank', tagline: 'Established 1894' },
   { name: 'Northstar Bank', tagline: 'Built on trust' },
 ];
 
