@@ -56,6 +56,12 @@
         <span class="growth-chart__legend-swatch growth-chart__legend-swatch--target" aria-hidden="true"></span>
         Target balance
       </span>
+      @if (projection().totalEmployerMatch > 0) {
+        <span class="growth-chart__legend-item">
+          <span class="growth-chart__legend-swatch growth-chart__legend-swatch--match" aria-hidden="true"></span>
+          From employer match
+        </span>
+      }
     </div>
     <div class="sr-only" aria-live="polite">{{ hoverAnnouncement() }}</div>
   } @else {

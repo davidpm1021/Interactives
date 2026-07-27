@@ -111,4 +111,49 @@
     }
   </div>
 
+  <div class="inputs-panel__field inputs-panel__match">
+    <label class="inputs-panel__match-toggle">
+      <input
+        type="checkbox"
+        [checked]="matchEnabled()"
+        (change)="toggleMatch()"
+      />
+      <span>Employer 401(k) match</span>
+    </label>
+
+    @if (matchEnabled()) {
+      <div class="inputs-panel__match-body">
+        <div class="inputs-panel__match-row">
+          <span class="inputs-panel__match-lead">Matches</span>
+          <label class="inputs-panel__input-with-suffix inputs-panel__match-input" aria-label="Employer match rate">
+            <input
+              type="text"
+              inputmode="decimal"
+              [value]="matchRatePct()"
+              (input)="onMatchRateInput($event)"
+            />
+            <span class="inputs-panel__suffix">%</span>
+          </label>
+          <span>of your contribution</span>
+        </div>
+        <div class="inputs-panel__match-row">
+          <span class="inputs-panel__match-lead">Up to</span>
+          <label class="inputs-panel__input-with-suffix inputs-panel__match-input" aria-label="Employer match cap as percent of salary">
+            <input
+              type="text"
+              inputmode="decimal"
+              [value]="matchCapPct()"
+              (input)="onMatchCapInput($event)"
+            />
+            <span class="inputs-panel__suffix">%</span>
+          </label>
+          <span>of your salary</span>
+        </div>
+        <span class="inputs-panel__hint">
+          Common: 50% match up to 6% of salary.
+        </span>
+      </div>
+    }
+  </div>
+
 </section>

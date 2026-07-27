@@ -96,7 +96,9 @@ export class GrowthChart {
     this.chartGroup.append('g').attr('class', 'x-axis');
     this.chartGroup.append('g').attr('class', 'y-axis');
     this.chartGroup.append('g').attr('class', 'actual-area-layer');
+    this.chartGroup.append('g').attr('class', 'match-area-layer');
     this.chartGroup.append('g').attr('class', 'target-line-layer');
+    this.chartGroup.append('g').attr('class', 'no-match-line-layer');
     this.chartGroup.append('g').attr('class', 'actual-line-layer');
     this.chartGroup.append('g').attr('class', 'retirement-marker-layer');
     this.chartGroup.append('g').attr('class', 'hover-layer');
@@ -201,6 +203,46 @@ export class GrowthChart {
       .attr('d', areaGen(data))
       .attr('fill', 'var(--ngpf-royal-blue, #1f3b9b)')
       .attr('opacity', 0.12);
+
+    // Employer-match band: the area between the "with match" and "no match"
+    // lines. Only renders (visibly) when the two series differ, i.e. when
+    // employer match is enabled and has produced a nonzero contribution.
+    const matchActive = data.some((d) => d.actual - d.actualNoMatch > 0.5);
+    const matchLayer = this.chartGroup.select('.match-area-layer');
+    matchLayer.selectAll('*').remove();
+    if (matchActive) {
+      const matchArea = d3
+        .area<ChartPoint>()
+        .x((d) => scales.x(d.age))
+        .y0((d) => scales.y(d.actualNoMatch))
+        .y1((d) => scales.y(d.actual))
+        .curve(d3.curveMonotoneX);
+      matchLayer
+        .append('path')
+        .attr('d', matchArea(data))
+        .attr('fill', 'var(--ngpf-success, #2e7d32)')
+        .attr('opacity', 0.28);
+    }
+
+    // Faint no-match reference line so the shaded area has a lower boundary
+    // that the eye can trace back to "you would have this without the match".
+    const noMatchLayer = this.chartGroup.select('.no-match-line-layer');
+    noMatchLayer.selectAll('*').remove();
+    if (matchActive) {
+      const noMatchLine = d3
+        .line<ChartPoint>()
+        .x((d) => scales.x(d.age))
+        .y((d) => scales.y(d.actualNoMatch))
+        .curve(d3.curveMonotoneX);
+      noMatchLayer
+        .append('path')
+        .attr('d', noMatchLine(data))
+        .attr('fill', 'none')
+        .attr('stroke', 'var(--ngpf-royal-blue, #1f3b9b)')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '2 3')
+        .attr('opacity', 0.7);
+    }
 
     // Projected balance: solid royal-blue.
     const actualLine = d3

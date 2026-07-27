@@ -126,4 +126,64 @@
     font-size: 0.95rem;
     user-select: none;
   }
+
+  &__match {
+    padding: var(--ngpf-spacing-md);
+    background: var(--ngpf-soft-blue-tint);
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+    gap: var(--ngpf-spacing-sm);
+  }
+
+  &__match-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: var(--ngpf-font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ngpf-text-primary);
+
+    input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--ngpf-royal-blue);
+    }
+  }
+
+  &__match-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  &__match-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+    color: var(--ngpf-text-secondary);
+  }
+
+  &__match-lead {
+    color: var(--ngpf-text-primary);
+    font-weight: 600;
+  }
+
+  &__match-input {
+    min-height: 32px;
+    padding: 0 8px;
+    background: white;
+
+    input {
+      max-width: 60px;
+      padding: 4px 4px;
+      text-align: right;
+      font-size: 0.9rem;
+    }
+  }
 }

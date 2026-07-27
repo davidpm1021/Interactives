@@ -5,6 +5,11 @@
          [class.results-panel__tile--ok]="!hasGap()">
       <span class="results-panel__label">You'll have</span>
       <app-stat-counter [value]="projection().finalBalance" prefix="$" />
+      @if (projection().totalEmployerMatch > 0) {
+        <span class="results-panel__sub results-panel__sub--match">
+          Of that, {{ formatCurrency(projection().totalEmployerMatch) }} came from your employer.
+        </span>
+      }
     </div>
 
     <div class="results-panel__tile">

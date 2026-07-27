@@ -1,3 +1,16 @@
+/**
+ * Optional 401(k)-style employer match. Employer matches `matchRate` of the
+ * employee's contribution, but only up to `capPct * salary` of match-eligible
+ * contribution. e.g. { matchRate: 0.5, capPct: 0.06 } = "50% match up to 6%
+ * of salary" — the classic Vanguard/NGPF example.
+ */
+export interface EmployerMatch {
+  matchRate: number;
+  capPct: number;
+}
+
+export const DEFAULT_MATCH: EmployerMatch = { matchRate: 0.5, capPct: 0.06 };
+
 export interface RetirementInputs {
   currentAge: number;
   retirementAge: number;
@@ -6,6 +19,8 @@ export interface RetirementInputs {
   monthlyContribution: number;
   /** In today's dollars. Model inflates this to retirement year internally. */
   targetMonthlyBudget: number;
+  /** Undefined = employer match not enabled. */
+  employerMatch?: EmployerMatch;
 }
 
 export interface YearlyBalance {
@@ -21,6 +36,13 @@ export interface ChartPoint {
   actual: number;
   /** Balance you'd need to have at end of this year to end at zero at 95, nominal. */
   target: number;
+  /**
+   * Balance you'd have at end of this year with your contributions only
+   * (no employer match). Equals `actual` when match is disabled; sits below
+   * `actual` during accumulation when match is active. The area between the
+   * two lines is the value attributable to the employer match.
+   */
+  actualNoMatch: number;
   phase: 'accumulation' | 'drawdown';
 }
 
@@ -38,6 +60,8 @@ export interface RetirementProjection {
   yearsToRetirement: number;
   yearsInRetirement: number;
   totalContributed: number;
+  /** Total dollars contributed by the employer over the working years. Zero when match is disabled. */
+  totalEmployerMatch: number;
   /** Salary at retirement year, in nominal dollars, after INCOME_GROWTH compounding. */
   salaryAtRetirement: number;
   /** targetMonthlyBudget inflated to retirement year, in nominal dollars. */

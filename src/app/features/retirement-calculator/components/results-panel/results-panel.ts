@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RetirementProjection } from '../../models/retirement.models';
 import { StatCounterComponent } from '../shared/stat-counter/stat-counter.component';
+import { formatCurrency } from '../../utils/formatters';
 
 @Component({
   selector: 'app-results-panel',
@@ -18,4 +19,6 @@ export class ResultsPanel {
   protected readonly saveMore = computed(
     () => this.projection().requiredMonthlyToHitGoal > this.monthlyContribution(),
   );
+
+  protected readonly formatCurrency = formatCurrency;
 }

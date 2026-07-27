@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RetirementInputs } from '../../models/retirement.models';
+import { DEFAULT_MATCH, EmployerMatch, RetirementInputs } from '../../models/retirement.models';
 
 @Component({
   selector: 'app-inputs-panel',
@@ -46,6 +46,47 @@ export class InputsPanel {
     if (!Number.isFinite(salary) || salary <= 0) return;
     const monthly = Math.round((salary * (pct / 100)) / 12);
     this.update('monthlyContribution', monthly);
+  }
+
+  // ── Employer match ─────────────────────────────────────────────────────
+
+  protected readonly matchEnabled = computed(() => this.inputs().employerMatch !== undefined);
+
+  protected readonly matchRatePct = computed(() => {
+    const m = this.inputs().employerMatch;
+    return m ? +(m.matchRate * 100).toFixed(1) : DEFAULT_MATCH.matchRate * 100;
+  });
+
+  protected readonly matchCapPct = computed(() => {
+    const m = this.inputs().employerMatch;
+    return m ? +(m.capPct * 100).toFixed(1) : DEFAULT_MATCH.capPct * 100;
+  });
+
+  protected toggleMatch(): void {
+    if (this.matchEnabled()) {
+      this.update('employerMatch', undefined);
+    } else {
+      this.update('employerMatch', { ...DEFAULT_MATCH });
+    }
+  }
+
+  protected onMatchRateInput(event: Event): void {
+    const pct = parseFloat((event.target as HTMLInputElement).value);
+    if (!Number.isFinite(pct) || pct < 0) return;
+    const clamped = Math.min(200, pct);
+    this.updateMatch({ matchRate: clamped / 100 });
+  }
+
+  protected onMatchCapInput(event: Event): void {
+    const pct = parseFloat((event.target as HTMLInputElement).value);
+    if (!Number.isFinite(pct) || pct < 0) return;
+    const clamped = Math.min(25, pct);
+    this.updateMatch({ capPct: clamped / 100 });
+  }
+
+  private updateMatch(partial: Partial<EmployerMatch>): void {
+    const current = this.inputs().employerMatch ?? DEFAULT_MATCH;
+    this.update('employerMatch', { ...current, ...partial });
   }
 
   protected update<K extends keyof RetirementInputs>(key: K, value: RetirementInputs[K]): void {

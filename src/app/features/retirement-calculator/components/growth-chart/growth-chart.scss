@@ -168,6 +168,12 @@
       height: 0;
       margin-top: 4px;
     }
+
+    &--match {
+      background: var(--ngpf-success, #2e7d32);
+      opacity: 0.5;
+      border-radius: 2px;
+    }
   }
 
   &__table-wrap {
