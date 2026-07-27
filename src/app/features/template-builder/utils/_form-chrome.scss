@@ -36,6 +36,10 @@
 
       input,
       select {
+        // font-family: browsers ship type=date / type=number / type=time
+        // controls with a different system font by default; force the same
+        // face used by surrounding text so the fieldset reads as one.
+        font-family: inherit;
         padding: 8px 10px;
         border: 1px solid var(--ngpf-light-gray-blue);
         border-radius: var(--ngpf-radius-sm);
