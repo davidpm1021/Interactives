@@ -8,69 +8,6 @@
   flex-direction: column;
   gap: var(--ngpf-spacing-md);
 
-  &__concepts {
-    background: var(--ngpf-soft-blue-tint);
-    border-radius: var(--ngpf-radius-md);
-    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
-    font-size: 0.9rem;
-
-    &-label {
-      font-family: var(--ngpf-font-heading);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--ngpf-text-secondary);
-      margin-bottom: var(--ngpf-spacing-xs);
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    li {
-      display: flex;
-      align-items: center;
-      gap: var(--ngpf-spacing-xs);
-    }
-
-    &-note {
-      margin: var(--ngpf-spacing-xs) 0 0;
-      font-size: 0.78rem;
-      color: var(--ngpf-text-secondary);
-      font-style: italic;
-    }
-  }
-
-  &__concept-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    font-weight: 700;
-  }
-
-  &__concept--hit &__concept-icon {
-    background: var(--ngpf-success);
-    color: white;
-  }
-
-  &__concept--miss &__concept-icon {
-    background: white;
-    color: var(--ngpf-text-secondary);
-    border: 1px solid var(--ngpf-light-gray-blue);
-  }
-
-  &__concept--miss &__concept-label {
-    color: var(--ngpf-text-secondary);
-  }
-
   &--correct { border-left-color: var(--ngpf-success, #2e7d32); }
   &--wrong { border-left-color: var(--ngpf-error, #c62828); }
   &--self-graded { border-left-color: var(--ngpf-gold, #d68b0a); }

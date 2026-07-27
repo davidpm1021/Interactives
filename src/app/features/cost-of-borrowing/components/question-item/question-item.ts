@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-  KeyConcept,
   MultipleChoiceQuestion,
   NumericQuestion,
   Question,
@@ -55,24 +54,6 @@ export class QuestionItem {
   protected asMc(q: Question): MultipleChoiceQuestion { return q as MultipleChoiceQuestion; }
   protected asNumeric(q: Question): NumericQuestion { return q as NumericQuestion; }
   protected asShortText(q: Question): ShortTextQuestion { return q as ShortTextQuestion; }
-
-  /**
-   * Advisory feedback for short-text answers: shows which concepts from the
-   * model answer the student's response touched on. Not used for scoring —
-   * short-text is still self-graded — just gives structured hints so the
-   * student can see whether they hit the big ideas.
-   */
-  protected readonly conceptHits = computed<{ concept: KeyConcept; hit: boolean }[]>(() => {
-    const q = this.question();
-    if (q.answerType !== 'short-text' || !this.reveal()) return [];
-    const concepts = q.keyConcepts;
-    if (!concepts || concepts.length === 0) return [];
-    const answer = this.textInput().toLowerCase();
-    return concepts.map((concept) => ({
-      concept,
-      hit: concept.matchers.some((m) => answer.includes(m.toLowerCase())),
-    }));
-  });
 
   protected onSelect(i: number): void {
     if (this.reveal()) return;

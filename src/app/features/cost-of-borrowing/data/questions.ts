@@ -37,11 +37,6 @@ export const QUESTIONS: Question[] = [
       'In one sentence, explain why credit cards typically charge higher interest rates than auto loans.',
     modelAnswer:
       'An auto loan is secured by the car itself (the bank can repossess it if you stop paying), while a credit card is unsecured, so the bank charges more to cover the risk of not getting repaid.',
-    keyConcepts: [
-      { label: 'Secured vs. unsecured', matchers: ['secured', 'unsecured'] },
-      { label: 'Collateral (the car)', matchers: ['collateral', 'car', 'vehicle', 'repossess'] },
-      { label: 'Risk to the lender', matchers: ['risk', 'default', 'not get paid', "won't get paid", "won't be paid", 'lose money'] },
-    ],
     explanation:
       'The word to look for is "secured" or "collateral." Auto loans have collateral (the car). Credit cards do not.',
   },
@@ -65,11 +60,6 @@ export const QUESTIONS: Question[] = [
       'Look at the 20-year trend for credit cards. Rates were around 14% for most of that time and are now over 20%. What does that mean for someone who has been carrying a credit card balance the last few years?',
     modelAnswer:
       'The cost of carrying a balance has climbed sharply. Someone who is only paying the minimum is now paying much more in interest each month than they were a few years ago, which makes it even harder to pay off the balance. Paying it down aggressively, or moving it to a lower-rate product, is worth more than it used to be.',
-    keyConcepts: [
-      { label: 'Higher interest cost', matchers: ['higher', 'more interest', 'costs more', 'more expensive', 'sharp', 'sharply', 'climbed', 'increased', 'grown'] },
-      { label: 'Balance is harder to pay off', matchers: ['harder to pay', 'takes longer', 'longer to pay', 'shrinks slower', 'hard to pay off', 'stuck', "can't pay off"] },
-      { label: 'Action: pay down faster', matchers: ['pay down', 'pay off', 'pay more', 'minimum', 'aggressive', 'transfer', 'lower rate', 'consolid', 'refinanc'] },
-    ],
     explanation:
       'Focus on the practical impact: higher interest means more of each payment goes to interest instead of principal, so balances shrink slower unless the person pays more.',
   },

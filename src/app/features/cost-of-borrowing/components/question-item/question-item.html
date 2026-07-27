@@ -79,46 +79,35 @@
         [disabled]="!canCheck()"
         (click)="onCheck()"
       >
-        Check
+        @if (question().answerType === 'short-text') {
+          Show model answer
+        } @else {
+          Check
+        }
       </button>
     </div>
   } @else {
     <div class="question-item__reveal" [id]="'q-' + question().id + '-reveal'" aria-live="polite">
-      @if (correct() === true) {
-        <div class="question-item__verdict">Correct.</div>
-      } @else if (correct() === false) {
-        <div class="question-item__verdict">Not quite.</div>
-      } @else {
-        <div class="question-item__verdict">Compare your answer to the model answer below.</div>
-      }
-
       @if (question().answerType === 'short-text') {
-        @if (conceptHits().length > 0) {
-          <div class="question-item__concepts">
-            <div class="question-item__concepts-label">Concepts your answer touched on</div>
-            <ul>
-              @for (item of conceptHits(); track item.concept.label) {
-                <li [class.question-item__concept--hit]="item.hit" [class.question-item__concept--miss]="!item.hit">
-                  <span class="question-item__concept-icon" aria-hidden="true">{{ item.hit ? '✓' : '·' }}</span>
-                  <span class="question-item__concept-label">{{ item.concept.label }}</span>
-                  <span class="sr-only">{{ item.hit ? 'included' : 'not detected' }}</span>
-                </li>
-              }
-            </ul>
-            <p class="question-item__concepts-note">
-              This is a keyword check, not a grade. Your answer is fine if it makes the point another way.
-            </p>
-          </div>
-        }
         <div class="question-item__model">
           <div class="question-item__model-label">Model answer</div>
           <p>{{ asShortText(question()).modelAnswer }}</p>
         </div>
+      } @else if (correct() === true) {
+        <div class="question-item__verdict">Correct.</div>
+      } @else if (correct() === false) {
+        <div class="question-item__verdict">Not quite.</div>
       }
 
       <div class="question-item__explanation">{{ question().explanation }}</div>
 
-      <button type="button" class="question-item__reset" (click)="onReset()">Try again</button>
+      <button type="button" class="question-item__reset" (click)="onReset()">
+        @if (question().answerType === 'short-text') {
+          Edit my answer
+        } @else {
+          Try again
+        }
+      </button>
     </div>
   }
 </article>
