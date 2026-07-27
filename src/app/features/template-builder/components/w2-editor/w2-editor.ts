@@ -5,7 +5,14 @@ import { W2, W2Box12, emptyBox12, sampleW2 } from '../../models/w2.model';
 import { randomW2 } from '../../utils/random-w2.util';
 import { FirstItemMutator } from '../../utils/first-item-mutator.util';
 import { parseNonNegative, parseYear } from '../../utils/input-parsers.util';
+import { effectiveFederalRate, effectiveStateRate } from '../../utils/tax-rates.util';
 import { EditorShell } from '../editor-shell/editor-shell';
+
+// SSA-published wage bases and FICA rates. Federal + state withholding is
+// approximated per the shared tax-rates util used by paystub randomization.
+const SS_TAX_RATE = 0.062;
+const MEDICARE_TAX_RATE = 0.0145;
+const SS_WAGE_BASE_2025 = 176100;
 
 function emptyW2(): W2 {
   return {
@@ -77,4 +84,32 @@ export class W2Editor {
     this.mutateFirst((w) => ({ ...w, box12: w.box12.filter((_, i) => i !== index) }));
   }
 
+  /**
+   * Fill boxes 3-6, 2, and (if state is set) 16-17 from the value in box 1.
+   * Approximation only — SS/Medicare wages mirror box 1 (which is what
+   * happens when there are no pre-tax deductions like 401(k) or Section 125
+   * health plans), and federal + state tax use the same effective-rate
+   * helpers the paystub generator uses.
+   */
+  protected autoFillFromWages(): void {
+    const w = this.current();
+    if (!w.wages || w.wages <= 0) return;
+    const round = (n: number) => Math.round(n * 100) / 100;
+    const wages = w.wages;
+    const ssWages = Math.min(wages, SS_WAGE_BASE_2025);
+    const medicareWages = wages;
+    const state = w.stateAbbr;
+    const stateRate = state ? effectiveStateRate(state, wages) : 0;
+
+    this.mutateFirst((next) => ({
+      ...next,
+      ssWages: round(ssWages),
+      ssTaxWithheld: round(ssWages * SS_TAX_RATE),
+      medicareWages: round(medicareWages),
+      medicareTaxWithheld: round(medicareWages * MEDICARE_TAX_RATE),
+      fedTaxWithheld: round(wages * effectiveFederalRate(wages)),
+      stateWages: stateRate > 0 ? round(wages) : next.stateWages,
+      stateTaxWithheld: stateRate > 0 ? round(wages * stateRate) : next.stateTaxWithheld,
+    }));
+  }
 }
