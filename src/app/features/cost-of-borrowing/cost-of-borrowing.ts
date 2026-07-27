@@ -24,10 +24,11 @@ export class CostOfBorrowing {
   protected readonly rateSeries = RATE_SERIES;
   protected readonly questions = QUESTIONS;
   protected readonly refreshedAt = REFRESHED_AT_DISPLAY;
-  protected readonly showTable = signal(false);
+  /** Data pane view. Chart is the default; students toggle to the table when they want the raw numbers. */
+  protected readonly dataView = signal<'chart' | 'table'>('chart');
 
-  protected toggleTable(): void {
-    this.showTable.update((v) => !v);
+  protected setDataView(view: 'chart' | 'table'): void {
+    this.dataView.set(view);
   }
 
   protected onPrint(): void {

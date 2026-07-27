@@ -98,26 +98,46 @@
     gap: var(--ngpf-spacing-md);
   }
 
-  &__table-toggle {
+  &__data-heading-row {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ngpf-spacing-sm);
+    margin-bottom: var(--ngpf-spacing-md);
+
+    .cost-of-borrowing__section-heading {
+      margin: 0;
+    }
   }
 
-  &__table-toggle-btn {
-    background: transparent;
+  &__view-toggle {
+    display: inline-flex;
+    background: var(--ngpf-soft-blue-tint);
     border: 1px solid var(--ngpf-light-gray-blue);
     border-radius: var(--ngpf-radius-sm);
-    color: var(--ngpf-text-secondary);
-    padding: 6px 12px;
-    font-family: var(--ngpf-font-body);
-    font-size: 0.85rem;
-    cursor: pointer;
+    padding: 2px;
+    gap: 2px;
+  }
 
-    &:hover,
-    &:focus-visible {
-      background: var(--ngpf-soft-blue-tint);
+  &__view-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--ngpf-text-secondary);
+    padding: 4px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: calc(var(--ngpf-radius-sm) - 2px);
+
+    &:hover:not(&--active) {
       color: var(--ngpf-royal-blue);
-      border-color: var(--ngpf-royal-blue);
+    }
+
+    &--active {
+      background: white;
+      color: var(--ngpf-royal-blue);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     &:focus-visible {
@@ -126,7 +146,7 @@
     }
   }
 
-  &__rate-table--hidden {
+  &__view-panel--hidden {
     display: none;
   }
 
@@ -259,8 +279,14 @@
     // Print worksheet uses the chart (matches the source worksheet's layout),
     // not the data table.
     &__rate-table,
-    &__table-toggle {
+    &__view-toggle {
       display: none !important;
+    }
+
+    // Always render the chart when printing, regardless of the on-screen
+    // toggle state.
+    &__view-panel--hidden {
+      display: block;
     }
 
     &__trend-chart {

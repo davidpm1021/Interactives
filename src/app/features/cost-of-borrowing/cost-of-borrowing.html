@@ -54,24 +54,42 @@
 
   <div class="cost-of-borrowing__layout">
     <aside class="cost-of-borrowing__data" aria-labelledby="data-heading">
-      <h2 id="data-heading" class="cost-of-borrowing__section-heading">Current national averages</h2>
-      <div class="cost-of-borrowing__data-inner">
-        <app-trend-chart [series]="rateSeries" class="cost-of-borrowing__trend-chart" />
-        <div class="cost-of-borrowing__table-toggle no-print">
+      <div class="cost-of-borrowing__data-heading-row">
+        <h2 id="data-heading" class="cost-of-borrowing__section-heading">Current national averages</h2>
+        <div class="cost-of-borrowing__view-toggle no-print" role="tablist" aria-label="Data view">
           <button
             type="button"
-            class="cost-of-borrowing__table-toggle-btn"
-            (click)="toggleTable()"
-            [attr.aria-expanded]="showTable()"
-            aria-controls="rate-table-panel"
+            role="tab"
+            class="cost-of-borrowing__view-toggle-btn"
+            [class.cost-of-borrowing__view-toggle-btn--active]="dataView() === 'chart'"
+            [attr.aria-selected]="dataView() === 'chart'"
+            (click)="setDataView('chart')"
           >
-            {{ showTable() ? 'Hide data table' : 'Show data table' }}
+            Chart
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="cost-of-borrowing__view-toggle-btn"
+            [class.cost-of-borrowing__view-toggle-btn--active]="dataView() === 'table'"
+            [attr.aria-selected]="dataView() === 'table'"
+            (click)="setDataView('table')"
+          >
+            Table
           </button>
         </div>
+      </div>
+
+      <div class="cost-of-borrowing__data-inner">
         <div
-          id="rate-table-panel"
-          class="cost-of-borrowing__rate-table"
-          [class.cost-of-borrowing__rate-table--hidden]="!showTable()"
+          class="cost-of-borrowing__view-panel"
+          [class.cost-of-borrowing__view-panel--hidden]="dataView() !== 'chart'"
+        >
+          <app-trend-chart [series]="rateSeries" class="cost-of-borrowing__trend-chart" />
+        </div>
+        <div
+          class="cost-of-borrowing__view-panel cost-of-borrowing__rate-table"
+          [class.cost-of-borrowing__view-panel--hidden]="dataView() !== 'table'"
         >
           <app-rate-table [series]="rateSeries" />
         </div>

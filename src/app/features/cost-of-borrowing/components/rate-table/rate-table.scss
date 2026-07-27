@@ -1,33 +1,48 @@
 .rate-table {
-  &__wrapper {
-    background: white;
-    border-radius: var(--ngpf-radius-lg);
-    box-shadow: var(--ngpf-shadow-sm);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+  background: white;
+  border-radius: var(--ngpf-radius-lg);
+  box-shadow: var(--ngpf-shadow-sm);
+  overflow: hidden;
   font-family: var(--ngpf-font-body);
 
   thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
     background: var(--ngpf-royal-blue);
     color: white;
-    padding: 8px 10px;
-    font-size: 0.72rem;
+    padding: 6px 4px;
+    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     font-weight: 600;
     text-align: right;
-    white-space: nowrap;
+    line-height: 1.15;
+    vertical-align: bottom;
+  }
 
-    &.rate-table__col-year {
-      text-align: left;
+  &__col-year {
+    width: 46px;
+    text-align: left !important;
+  }
+
+  &__col-num {
+    // Show a small chart-colored swatch stacked above the label so the
+    // student can map columns to chart lines at a glance.
+    display: table-cell;
+
+    .rate-table__col-label {
+      display: block;
+      text-align: right;
     }
+  }
+
+  &__col-swatch {
+    display: block;
+    width: 10px;
+    height: 3px;
+    border-radius: 2px;
+    margin: 0 0 3px auto;
   }
 
   tbody tr,
@@ -36,15 +51,15 @@
   }
 
   tbody tr:nth-child(even) {
-    background: rgba(0, 0, 0, 0.015);
+    background: rgba(0, 0, 0, 0.02);
   }
 
   tbody td,
   tbody th,
   tfoot td,
   tfoot th {
-    padding: 5px 10px;
-    font-size: 0.85rem;
+    padding: 3px 6px;
+    font-size: 0.8rem;
     color: var(--ngpf-text-primary);
   }
 
@@ -82,7 +97,7 @@
     .rate-table__year {
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--ngpf-text-secondary);
     }
   }
@@ -91,22 +106,25 @@
     font-weight: 700;
     color: var(--ngpf-royal-blue);
   }
+
+  &__unit-note {
+    margin: 4px 2px 0;
+    font-size: 0.7rem;
+    color: var(--ngpf-text-muted);
+    font-style: italic;
+    text-align: right;
+  }
 }
 
 @media print {
   .rate-table {
-    &__wrapper {
-      box-shadow: none;
-      border: 1px solid #999;
-      border-radius: 0;
-      overflow: visible;
-    }
-
+    box-shadow: none;
+    border: 1px solid #999;
+    border-radius: 0;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     font-size: 8.5pt;
 
     thead th {
-      position: static;
       background: #1a1a1a;
       color: white;
       padding: 4pt 6pt;
@@ -142,5 +160,8 @@
     &__num--current {
       font-weight: 700;
     }
+
+    &__col-swatch { display: none; }
+    &__unit-note { display: none; }
   }
 }

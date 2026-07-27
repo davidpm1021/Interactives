@@ -7,6 +7,21 @@ interface YearRow {
   values: (number | null)[];
 }
 
+// Kept in sync with SERIES_COLORS in trend-chart so the table column swatch
+// matches the chart line for the same product.
+const SERIES_COLORS: Record<string, string> = {
+  'credit-card': '#c62828',
+  'personal-loan': '#e28f10',
+  'auto-loan': '#1f78b4',
+  'mortgage': '#33a02c',
+};
+
+// Trim the parenthetical qualifier ("(avg)", "(24mo)", …) so column headers
+// fit inside a narrow data column without wrapping onto three lines.
+function stripQualifier(label: string): string {
+  return label.replace(/\s*\([^)]*\)\s*$/, '').trim();
+}
+
 @Component({
   selector: 'app-rate-table',
   standalone: true,
@@ -33,4 +48,12 @@ export class RateTable {
     const rs = this.rows();
     return rs.length === 0 ? null : rs[rs.length - 1].year;
   });
+
+  protected colorFor(id: string): string {
+    return SERIES_COLORS[id] ?? '#666';
+  }
+
+  protected shortLabel(label: string): string {
+    return stripQualifier(label);
+  }
 }
