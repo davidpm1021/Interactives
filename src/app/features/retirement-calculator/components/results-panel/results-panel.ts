@@ -15,7 +15,6 @@ export class ResultsPanel {
   readonly monthlyContribution = input.required<number>();
 
   protected readonly hasGap = computed(() => this.projection().gapAtRetirement > 0);
-  protected readonly gapMagnitude = computed(() => Math.abs(this.projection().gapAtRetirement));
   protected readonly saveMore = computed(
     () => this.projection().requiredMonthlyToHitGoal > this.monthlyContribution(),
   );

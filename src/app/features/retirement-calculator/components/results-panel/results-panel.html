@@ -2,7 +2,9 @@
   <h2 id="results-title" class="results-panel__title">Where you'll land at {{ projection().yearlyBalances[projection().yearlyBalances.length - 1].age }}</h2>
 
   <div class="results-panel__tiles">
-    <div class="results-panel__tile results-panel__tile--primary">
+    <div class="results-panel__tile results-panel__tile--primary"
+         [class.results-panel__tile--warn]="hasGap()"
+         [class.results-panel__tile--ok]="!hasGap()">
       <span class="results-panel__label">You'll have</span>
       <app-stat-counter [value]="projection().finalBalance" prefix="$" />
     </div>
@@ -10,15 +12,6 @@
     <div class="results-panel__tile">
       <span class="results-panel__label">You'll need</span>
       <app-stat-counter [value]="projection().targetNestEgg" prefix="$" />
-    </div>
-
-    <div class="results-panel__tile"
-         [class.results-panel__tile--warn]="hasGap()"
-         [class.results-panel__tile--ok]="!hasGap()">
-      <span class="results-panel__label">
-        @if (hasGap()) { You're short } @else { Surplus over target }
-      </span>
-      <app-stat-counter [value]="gapMagnitude()" prefix="$" />
     </div>
 
     <div class="results-panel__tile"
