@@ -17,73 +17,6 @@
   </p>
 
   <fieldset class="paystub-editor__section">
-    <legend>Employer</legend>
-    <label>
-      <span>Company name</span>
-      <input type="text" [ngModel]="current().employer.name" (ngModelChange)="updateEmployer('name', $event)" />
-    </label>
-    <label>
-      <span>Address line 1</span>
-      <input type="text" [ngModel]="current().employer.addressLine1" (ngModelChange)="updateEmployer('addressLine1', $event)" />
-    </label>
-    <label>
-      <span>Address line 2</span>
-      <input type="text" [ngModel]="current().employer.addressLine2" (ngModelChange)="updateEmployer('addressLine2', $event)" />
-    </label>
-  </fieldset>
-
-  <fieldset class="paystub-editor__section">
-    <legend>Employee</legend>
-    <label>
-      <span>Name</span>
-      <input type="text" [ngModel]="current().employee.name" (ngModelChange)="updateEmployee('name', $event)" />
-    </label>
-    <label>
-      <span>Employee ID</span>
-      <input type="text" [ngModel]="current().employee.employeeId" (ngModelChange)="updateEmployee('employeeId', $event)" />
-    </label>
-    <label>
-      <span>Address line 1</span>
-      <input type="text" [ngModel]="current().employee.addressLine1" (ngModelChange)="updateEmployee('addressLine1', $event)" />
-    </label>
-    <label>
-      <span>Address line 2</span>
-      <input type="text" [ngModel]="current().employee.addressLine2" (ngModelChange)="updateEmployee('addressLine2', $event)" />
-    </label>
-  </fieldset>
-
-  <fieldset class="paystub-editor__section">
-    <legend>Pay period</legend>
-    <div class="paystub-editor__row">
-      <label>
-        <span>Period start</span>
-        <input type="date" [ngModel]="current().period.start" (ngModelChange)="updatePeriod('start', $event)" />
-      </label>
-      <label>
-        <span>Period end</span>
-        <input type="date" [ngModel]="current().period.end" (ngModelChange)="updatePeriod('end', $event)" />
-      </label>
-    </div>
-    <div class="paystub-editor__row">
-      <label>
-        <span>Pay date</span>
-        <input type="date" [ngModel]="current().period.payDate" (ngModelChange)="updatePeriod('payDate', $event)" />
-      </label>
-      <label>
-        <span>Check number</span>
-        <input type="text" [ngModel]="current().period.checkNumber" (ngModelChange)="updatePeriod('checkNumber', $event)" />
-      </label>
-    </div>
-    <label>
-      <span>Pay periods completed YTD (including this one)</span>
-      <input type="number" min="1" step="1" [ngModel]="current().periodsYTD" (ngModelChange)="updatePeriodsYTD($event)" />
-      <small class="paystub-editor__hint">
-        Implied YTD gross: {{ ytdGrossReadout() | currency }}
-      </small>
-    </label>
-  </fieldset>
-
-  <fieldset class="paystub-editor__section">
     <legend>Earnings</legend>
     @for (earning of current().earnings; track $index) {
       <div class="paystub-editor__line-item" role="group" [attr.aria-label]="'Earning row ' + ($index + 1)">
@@ -254,6 +187,90 @@
       </label>
     </div>
   </fieldset>
+
+  <!-- Sections most teachers won't touch after picking a random paystub live
+       in collapsed accordions so Hours + Rate stay near the top. -->
+  <details class="paystub-editor__accordion">
+    <summary>
+      <span>Pay period</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <div class="paystub-editor__row">
+        <label>
+          <span>Period start</span>
+          <input type="date" [ngModel]="current().period.start" (ngModelChange)="updatePeriod('start', $event)" />
+        </label>
+        <label>
+          <span>Period end</span>
+          <input type="date" [ngModel]="current().period.end" (ngModelChange)="updatePeriod('end', $event)" />
+        </label>
+      </div>
+      <div class="paystub-editor__row">
+        <label>
+          <span>Pay date</span>
+          <input type="date" [ngModel]="current().period.payDate" (ngModelChange)="updatePeriod('payDate', $event)" />
+        </label>
+        <label>
+          <span>Check number</span>
+          <input type="text" [ngModel]="current().period.checkNumber" (ngModelChange)="updatePeriod('checkNumber', $event)" />
+        </label>
+      </div>
+      <label>
+        <span>Pay periods completed YTD (including this one)</span>
+        <input type="number" min="1" step="1" [ngModel]="current().periodsYTD" (ngModelChange)="updatePeriodsYTD($event)" />
+        <small class="paystub-editor__hint">
+          Implied YTD gross: {{ ytdGrossReadout() | currency }}
+        </small>
+      </label>
+    </div>
+  </details>
+
+  <details class="paystub-editor__accordion">
+    <summary>
+      <span>Employer</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <label>
+        <span>Company name</span>
+        <input type="text" [ngModel]="current().employer.name" (ngModelChange)="updateEmployer('name', $event)" />
+      </label>
+      <label>
+        <span>Address line 1</span>
+        <input type="text" [ngModel]="current().employer.addressLine1" (ngModelChange)="updateEmployer('addressLine1', $event)" />
+      </label>
+      <label>
+        <span>Address line 2</span>
+        <input type="text" [ngModel]="current().employer.addressLine2" (ngModelChange)="updateEmployer('addressLine2', $event)" />
+      </label>
+    </div>
+  </details>
+
+  <details class="paystub-editor__accordion">
+    <summary>
+      <span>Employee</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <label>
+        <span>Name</span>
+        <input type="text" [ngModel]="current().employee.name" (ngModelChange)="updateEmployee('name', $event)" />
+      </label>
+      <label>
+        <span>Employee ID</span>
+        <input type="text" [ngModel]="current().employee.employeeId" (ngModelChange)="updateEmployee('employeeId', $event)" />
+      </label>
+      <label>
+        <span>Address line 1</span>
+        <input type="text" [ngModel]="current().employee.addressLine1" (ngModelChange)="updateEmployee('addressLine1', $event)" />
+      </label>
+      <label>
+        <span>Address line 2</span>
+        <input type="text" [ngModel]="current().employee.addressLine2" (ngModelChange)="updateEmployee('addressLine2', $event)" />
+      </label>
+    </div>
+  </details>
 </app-editor-shell>
 
 <ng-template #previewTpl let-paystub>
