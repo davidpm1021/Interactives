@@ -310,8 +310,10 @@ export class PredictionChartComponent {
           if (!this.dragMoved) {
             this.lockDot(id);
           } else {
-            // Full re-render so the scale adjusts to the new value
+            // Full re-render so the scale adjusts to the new value.
             this.render();
+            // Focus the newly-rendered dot so Enter/Arrows work without Tab.
+            this.focusUnlockedDot();
           }
         });
 
@@ -386,6 +388,13 @@ export class PredictionChartComponent {
     }
 
     this.emitPredictions();
+  }
+
+  private focusUnlockedDot(): void {
+    const el = this.chartGroup?.select('.dot-layer .prediction-dot:not(.locked-dot)')?.node();
+    if (el instanceof HTMLElement || el instanceof SVGElement) {
+      (el as HTMLElement).focus();
+    }
   }
 
   protected onLockClick(): void {
