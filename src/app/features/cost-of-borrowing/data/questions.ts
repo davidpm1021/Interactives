@@ -30,27 +30,27 @@ export const QUESTIONS: Question[] = [
       'Credit card APRs currently run around 21% while auto loan rates are around 7%. The gap is roughly 14 percentage points.',
   },
   {
-    id: 'q3-why-higher',
+    id: 'q3-biggest-mover',
     dok: 2,
     answerType: 'short-text',
     prompt:
-      'Explain why credit cards typically charge higher interest rates than auto loans.',
+      'Between 2020 and 2026, which product\'s interest rate increased the most? By roughly how many percentage points did it rise?',
     modelAnswer:
-      'An auto loan is secured by the car itself (the bank can repossess it if you stop paying), while a credit card is unsecured, so the bank charges more to cover the risk of not getting repaid.',
+      'Credit cards rose the most. The credit card rate was about 14.7% in 2020 and is now about 21%, a jump of roughly 6 percentage points. No other product on the chart moved by that much over the same window.',
     explanation:
-      'The word to look for is "secured" or "collateral." Auto loans have collateral (the car). Credit cards do not.',
+      'Compare each product\'s 2020 value to its 2026 value on the chart or table. Credit cards moved from about 14.7% to about 21%; that is the largest jump.',
   },
   {
-    id: 'q4-cc-interest-year',
+    id: 'q4-mortgage-rise',
     dok: 2,
     answerType: 'numeric',
     prompt:
-      'If you borrowed $2,000 on a credit card at 21% APR and paid only $50 per month, roughly how much would you pay in interest over one year?',
-    correctValue: 380,
-    tolerance: 80,
-    unit: '$',
+      'The 30-year mortgage rate hit its lowest point of the past 20 years in 2020. By roughly how many percentage points has it risen since then? Round to the nearest whole number.',
+    correctValue: 4,
+    tolerance: 1,
+    unit: 'points',
     explanation:
-      'A rough estimate: $50/month barely covers the interest, so the balance stays close to $2,000 all year. Roughly $2,000 × 21% ≈ $420, minus a bit because the balance does shrink slightly. About $350 to $450 is a reasonable answer.',
+      'The mortgage line drops to around 2.7% in 2020 and rises to about 6.4% by 2026 — a jump of about 3.8 percentage points, which rounds to 4.',
   },
   {
     id: 'q5-history-cc',
