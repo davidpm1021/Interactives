@@ -34,7 +34,8 @@
     line-height: 1.35;
   }
 
-  input[type='number'] {
+  input[type='number'],
+  input[type='text'] {
     font-family: var(--ngpf-font-body);
     font-size: 1rem;
     padding: 10px 12px;
@@ -67,7 +68,8 @@
       outline-offset: 2px;
     }
 
-    input[type='number'] {
+    input[type='number'],
+    input[type='text'] {
       border: none;
       padding: 10px 6px;
       background: transparent;
