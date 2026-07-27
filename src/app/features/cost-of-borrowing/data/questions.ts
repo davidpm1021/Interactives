@@ -15,7 +15,7 @@ export const QUESTIONS: Question[] = [
     options: ['Credit card', 'Personal loan', 'Auto loan', 'Mortgage'],
     correctIndex: 0,
     explanation:
-      'Credit cards charge the highest rates because the debt is unsecured. There is no car or house the bank can take back if you stop paying, so the bank prices in more risk.',
+      'Credit cards top the list. Take a look at the rate table to see how far above the others they sit. You will unpack why in a later question.',
   },
   {
     id: 'q2-gap-cc-auto',
