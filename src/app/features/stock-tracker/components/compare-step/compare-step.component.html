@@ -10,6 +10,13 @@
   <!-- ROI summary table -->
   <app-roi-summary-table [picks]="state.picks()"></app-roi-summary-table>
 
+  <!-- Reflection questions grounded in what's on screen -->
+  <app-reflection-form
+    [report]="state.report()"
+    [fields]="compareFields"
+    (reportChange)="onReportChange($event)">
+  </app-reflection-form>
+
   <!-- Advance -->
   <div class="compare-step__actions">
     <button class="ngpf-btn ngpf-btn-primary" (click)="onAdvance()">

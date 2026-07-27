@@ -93,6 +93,12 @@
           <button type="button" class="track-step__check-reset" (click)="resetGuess()">Try again</button>
         </div>
       }
+
+      <app-reflection-form
+        [report]="state.report()"
+        [fields]="bestPerformerFields"
+        (reportChange)="onReportChange($event)">
+      </app-reflection-form>
     </div>
 
     <div class="track-step__actions">

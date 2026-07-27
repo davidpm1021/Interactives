@@ -1,65 +1,18 @@
 <div class="reflection-form">
-  <div class="reflection-form__section">
-    <label for="best-performer" class="reflection-form__label">
-      Best Performer Analysis
-    </label>
-    <p class="reflection-form__prompt">
-      Which stock had the best ROI? Why do you think it performed so well?
-    </p>
-    <textarea id="best-performer"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().bestPerformerAnalysis"
-              (ngModelChange)="onFieldChange('bestPerformerAnalysis', $event)">
-    </textarea>
-  </div>
-
-  <div class="reflection-form__section">
-    <label for="most-valuable" class="reflection-form__label">
-      Most Valuable Stock
-    </label>
-    <p class="reflection-form__prompt">
-      Which stock is worth the most today? Is this the same as the best ROI? Why or why not?
-    </p>
-    <textarea id="most-valuable"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().mostValuableAnalysis"
-              (ngModelChange)="onFieldChange('mostValuableAnalysis', $event)">
-    </textarea>
-  </div>
-
-  <div class="reflection-form__section">
-    <label for="biggest-surprise" class="reflection-form__label">
-      Biggest Surprise
-    </label>
-    <p class="reflection-form__prompt">
-      Which stock's performance surprised you the most? Explain.
-    </p>
-    <textarea id="biggest-surprise"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().biggestSurprise"
-              (ngModelChange)="onFieldChange('biggestSurprise', $event)">
-    </textarea>
-  </div>
-
-  <div class="reflection-form__section">
-    <label for="lessons-learned" class="reflection-form__label">
-      Lessons Learned
-    </label>
-    <p class="reflection-form__prompt">
-      What did this activity teach you about investing?
-    </p>
-    <textarea id="lessons-learned"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().lessonsLearned"
-              (ngModelChange)="onFieldChange('lessonsLearned', $event)">
-    </textarea>
-  </div>
+  @for (field of visibleFields(); track field.key) {
+    <div class="reflection-form__section">
+      <label [attr.for]="'reflect-' + field.key" class="reflection-form__label">
+        {{ field.label }}
+      </label>
+      <p class="reflection-form__prompt">{{ field.prompt }}</p>
+      <textarea
+        [id]="'reflect-' + field.key"
+        class="reflection-form__textarea"
+        rows="4"
+        placeholder="Write your analysis here..."
+        [ngModel]="report()[field.key]"
+        (ngModelChange)="onFieldChange(field.key, $event)"
+      ></textarea>
+    </div>
+  }
 </div>

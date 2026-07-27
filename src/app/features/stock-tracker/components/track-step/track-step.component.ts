@@ -1,19 +1,27 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { StockTableComponent } from '../stock-table/stock-table.component';
+import { ReflectionFormComponent, ReflectionKey } from '../reflection-form/reflection-form.component';
 import { StockTrackerStateService } from '../../services/stock-tracker-state.service';
 import { StockDataService } from '../../services/stock-data.service';
+import { StockReport } from '../../models/stock-tracker.models';
 import { formatPercent, STOCK_COLORS } from '../../services/format.utils';
 
 @Component({
   selector: 'app-track-step',
   standalone: true,
-  imports: [StockTableComponent],
+  imports: [StockTableComponent, ReflectionFormComponent],
   templateUrl: './track-step.component.html',
   styleUrl: './track-step.component.scss',
 })
 export class TrackStepComponent implements OnInit {
   protected readonly state = inject(StockTrackerStateService);
   private readonly stockDataService = inject(StockDataService);
+
+  protected readonly bestPerformerFields: ReflectionKey[] = ['bestPerformerAnalysis'];
+
+  protected onReportChange(partial: Partial<StockReport>): void {
+    this.state.updateReport(partial);
+  }
 
   protected readonly loadingTickers = signal<Set<string>>(new Set());
   protected readonly failedTickers = signal<Map<string, string>>(new Map());
