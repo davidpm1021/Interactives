@@ -94,6 +94,51 @@
     font-weight: 600;
   }
 
+  &__hidden-row {
+    background: var(--ngpf-soft-blue-tint) !important;
+    text-align: center !important;
+
+    td {
+      padding: 6px 10px !important;
+      text-align: center;
+    }
+  }
+
+  &__hidden-marker {
+    display: inline-block;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--ngpf-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  &__toggle {
+    margin-top: 8px;
+    display: block;
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    padding: 6px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
   // Term-tooltip pattern: "?" mark next to a column header. Hover or
   // keyboard-focus reveals a plain-language definition of the column.
   &__th-info {
