@@ -187,6 +187,15 @@
     .only-print { display: block; }
   }
 
+  // The review recap is a screen-only wayfinding aid; the printed sheet
+  // shows every question with the student's answer inline, which is the
+  // artifact worth keeping.
+  .question-stack__review,
+  .question-stack__nav,
+  .question-stack__heading-row {
+    display: none !important;
+  }
+
   .question-stack__heading {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #000;
