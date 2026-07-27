@@ -61,6 +61,12 @@ export class CostOfBorrowing {
         lines.push(`Your answer: ${this.formatAnswerValue(q, record.value)}`);
         if (record.correct === true) lines.push('Correct.');
         else if (record.correct === false) lines.push('Not the model answer.');
+        if (record.attempts > 1) lines.push(`Attempts: ${record.attempts}`);
+      }
+      if (record && record.resetsAfterReveal > 0) {
+        lines.push(
+          `Redone ${record.resetsAfterReveal} time${record.resetsAfterReveal === 1 ? '' : 's'} after seeing the answer.`,
+        );
       }
       lines.push('');
     });

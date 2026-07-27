@@ -112,8 +112,9 @@ export class QuestionItem {
 
     if (q.answerType === 'short-text') {
       // Short-text is not graded; go straight to the model answer.
+      this.attempts.set(1);
       this.reveal.set(true);
-      this.state.submit(q.id, this.textInput(), null);
+      this.state.submit(q.id, this.textInput(), null, 1);
       return;
     }
 
@@ -127,7 +128,7 @@ export class QuestionItem {
       this.reveal.set(true);
       const value =
         q.answerType === 'multiple-choice' ? (this.selectedIndex() ?? -1) : this.numericInput();
-      this.state.submit(q.id, value, isCorrect);
+      this.state.submit(q.id, value, isCorrect, nextAttempts);
       return;
     }
 
