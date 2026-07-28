@@ -75,6 +75,10 @@
                 [options]="currentContent().options ?? []"
                 (selectionChanged)="onChallenge2Select($event)"
               />
+              <app-guess-preview-chart
+                [baseline]="challenge2LowResult()"
+                [multiple]="challenge2SelectedMultiple()"
+              />
               <div class="predict-action">
                 @if (canGoBack()) {
                   <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onGoBack()">
@@ -204,6 +208,7 @@
               <app-reveal-chart
                 [result]="challenge4EarlyResult()"
                 [resultB]="challenge4LateResult()"
+                [resultBStartYear]="10"
                 mode="dual"
                 (animationComplete)="onAdvanceToReflect()"
               />

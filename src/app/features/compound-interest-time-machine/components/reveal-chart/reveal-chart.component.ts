@@ -38,6 +38,11 @@ export type RevealMode = 'single' | 'dual' | 'stacked';
 export class RevealChartComponent {
   readonly result = input.required<SimulationResult>();
   readonly resultB = input<SimulationResult | null>(null);
+  /**
+   * X-axis offset for resultB. Used on Challenge 4 (Alex vs Jordan) so
+   * Jordan's curve starts at year 10 instead of collapsing to year 0.
+   */
+  readonly resultBStartYear = input(0);
   readonly predictionPoints = input<PredictionPoint[]>([]);
   readonly mode = input<RevealMode>('single');
   readonly principal = input(1000);
@@ -110,7 +115,9 @@ export class RevealChartComponent {
 
     const data = this.result().dataPoints;
     const dataB = this.resultB()?.dataPoints ?? [];
-    const allData = [...data, ...dataB];
+    const offset = this.resultBStartYear();
+    const shiftedB = dataB.map((d) => ({ ...d, year: d.year + offset }));
+    const allData = [...data, ...shiftedB];
 
     const maxYear = Math.max(...allData.map((d) => d.year));
     // Include prediction points in Y domain
@@ -315,12 +322,13 @@ export class RevealChartComponent {
     const dataA = this.result().dataPoints;
     const lastA = dataA[dataA.length - 1];
     const lastB = dataB[dataB.length - 1];
+    const offset = this.resultBStartYear();
     const gap = lastB.compoundBalance - lastA.compoundBalance;
     if (Math.abs(gap) < 100) return;
 
     this.drawBracket(
       scales,
-      scales.x(Math.max(lastA.year, lastB.year)),
+      scales.x(Math.max(lastA.year, lastB.year + offset)),
       scales.y(lastA.compoundBalance),
       scales.y(lastB.compoundBalance),
       gap,
@@ -373,9 +381,10 @@ export class RevealChartComponent {
 
     const lineLayer = this.chartGroup.select('.line-layer');
     const m = this.mode();
+    const offset = this.resultBStartYear();
 
     const lineGen = d3.line<YearlyDataPoint>()
-      .x((d) => scales.x(d.year))
+      .x((d) => scales.x(d.year + offset))
       .y((d) => scales.y(d.compoundBalance))
       .curve(d3.curveMonotoneX);
 
@@ -395,7 +404,7 @@ export class RevealChartComponent {
       // Add reference label
       const lastPoint = dataB[dataB.length - 1];
       lineLayer.append('text')
-        .attr('x', scales.x(lastPoint.year) - 8)
+        .attr('x', scales.x(lastPoint.year + offset) - 8)
         .attr('y', scales.y(lastPoint.compoundBalance) - 10)
         .attr('text-anchor', 'end')
         .attr('font-family', 'var(--ngpf-font-body)')

@@ -11,11 +11,13 @@ import { PredictionChartComponent } from './components/prediction-chart/predicti
 import { PredictionChoiceComponent } from './components/prediction-choice/prediction-choice.component';
 import { PredictionInputComponent } from './components/prediction-input/prediction-input.component';
 import { RevealChartComponent } from './components/reveal-chart/reveal-chart.component';
+import { GuessPreviewChartComponent } from './components/guess-preview-chart/guess-preview-chart.component';
 import { SandboxComponent } from './components/sandbox/sandbox.component';
 import { FinalSummaryComponent } from './components/final-summary/final-summary.component';
 import { IntroComponent } from './components/intro/intro.component';
-import { CHALLENGE_CONTENT } from './data/challenge-content';
+import { CHALLENGE_CONTENT, ChallengeContent } from './data/challenge-content';
 import { ChallengeId, ChallengePredictions, PredictionPoint } from './models/compound-interest.models';
+import { formatCurrency, formatPercent } from './utils/formatters';
 
 @Component({
   selector: 'app-compound-interest-time-machine',
@@ -32,6 +34,7 @@ import { ChallengeId, ChallengePredictions, PredictionPoint } from './models/com
     PredictionChoiceComponent,
     PredictionInputComponent,
     RevealChartComponent,
+    GuessPreviewChartComponent,
     SandboxComponent,
     FinalSummaryComponent,
     IntroComponent,
@@ -60,18 +63,41 @@ export class CompoundInterestTimeMachine {
   protected readonly showingIntro = this.stateService.showingIntro;
   protected readonly canGoBack = this.stateService.canGoBack;
 
-  protected readonly currentContent = computed(
-    () => CHALLENGE_CONTENT[`challenge${this.currentChallenge()}`],
-  );
+  protected readonly sessionRate = this.stateService.sessionRate;
 
   // ── Challenge results (computed from service) ──────
 
-  protected readonly challenge1Result = computed(() => this.service.calculateChallenge1());
+  protected readonly challenge1Result = computed(() => this.service.calculateChallenge1(this.sessionRate()));
   protected readonly challenge2LowResult = computed(() => this.service.calculateChallenge2Low());
   protected readonly challenge2HighResult = computed(() => this.service.calculateChallenge2High());
-  protected readonly challenge3Result = computed(() => this.service.calculateChallenge3());
-  protected readonly challenge4EarlyResult = computed(() => this.service.calculateChallenge4Early());
-  protected readonly challenge4LateResult = computed(() => this.service.calculateChallenge4Late());
+  protected readonly challenge3Result = computed(() => this.service.calculateChallenge3(this.sessionRate()));
+  protected readonly challenge4EarlyResult = computed(() => this.service.calculateChallenge4Early(this.sessionRate()));
+  protected readonly challenge4LateResult = computed(() => this.service.calculateChallenge4Late(this.sessionRate()));
+
+  protected readonly currentContent = computed<ChallengeContent>(() => {
+    const raw = CHALLENGE_CONTENT[`challenge${this.currentChallenge()}`];
+    return this.interpolate(raw);
+  });
+
+  private interpolate(content: ChallengeContent): ChallengeContent {
+    const tokens: Record<string, string> = {
+      '{{rate}}': formatPercent(this.sessionRate()),
+      '{{c1Final}}': formatCurrency(Math.round(this.challenge1Result().summary.finalBalance)),
+      '{{c3Final}}': formatCurrency(Math.round(this.challenge3Result().summary.finalBalance)),
+    };
+    const swap = (s: string | undefined): string | undefined =>
+      s === undefined ? s : Object.entries(tokens).reduce((acc, [k, v]) => acc.split(k).join(v), s);
+    return {
+      ...content,
+      setup: swap(content.setup) ?? '',
+      setupDetail: swap(content.setupDetail),
+      predictPrompt: swap(content.predictPrompt),
+      predictPrompt10: swap(content.predictPrompt10),
+      predictPrompt40: swap(content.predictPrompt40),
+      reflectInsight: swap(content.reflectInsight),
+      reflectInsightAccurate: swap(content.reflectInsightAccurate),
+    };
+  }
 
   // ── Challenge 1 specifics ──────────────────────────
 
@@ -165,6 +191,13 @@ export class CompoundInterestTimeMachine {
 
   protected readonly challenge2Selection = signal<string | null>(null);
   protected readonly challenge2Ready = computed(() => this.challenge2Selection() !== null);
+
+  protected readonly challenge2SelectedMultiple = computed(() => {
+    const id = this.challenge2Selection();
+    if (!id) return null;
+    const opt = CHALLENGE_CONTENT['challenge2'].options?.find((o) => o.id === id);
+    return opt?.multiple ?? null;
+  });
 
   protected readonly challenge2Ratio = computed(() => {
     const low = this.challenge2LowResult().summary.finalBalance;

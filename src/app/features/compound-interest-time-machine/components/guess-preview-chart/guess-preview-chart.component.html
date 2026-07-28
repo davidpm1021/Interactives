@@ -1,0 +1,62 @@
+<div class="guess-preview">
+  <div class="preview-label">Your guess visualized</div>
+  <svg
+    [attr.viewBox]="'0 0 ' + viewBoxWidth + ' ' + viewBoxHeight"
+    class="preview-svg"
+    role="img"
+    aria-label="Preview of your guess compared to the 5 percent baseline"
+  >
+    <!-- 5% baseline: dashed gold -->
+    <polyline
+      [attr.points]="baselinePoints()"
+      fill="none"
+      stroke="var(--ngpf-gold)"
+      stroke-width="2"
+      stroke-dasharray="6,4"
+    />
+    <!-- Guess: solid royal blue, only when an option is selected -->
+    @if (multiple() !== null) {
+      <polyline
+        [attr.points]="guessPoints()"
+        fill="none"
+        stroke="var(--ngpf-royal-blue)"
+        stroke-width="2.5"
+      />
+    }
+    <!-- X-axis baseline -->
+    <line
+      x1="12"
+      [attr.y1]="viewBoxHeight - 24"
+      [attr.x2]="viewBoxWidth - 12"
+      [attr.y2]="viewBoxHeight - 24"
+      stroke="#ddd"
+      stroke-width="1"
+    />
+    <text
+      x="12"
+      [attr.y]="viewBoxHeight - 8"
+      class="axis-label"
+    >Year 0</text>
+    <text
+      [attr.x]="viewBoxWidth - 12"
+      [attr.y]="viewBoxHeight - 8"
+      text-anchor="end"
+      class="axis-label"
+    >Year 40</text>
+  </svg>
+
+  <div class="preview-legend">
+    <span class="legend-item baseline">
+      <span class="swatch swatch-baseline"></span>
+      5% account: {{ formatCurrency(baselineFinal()) }}
+    </span>
+    @if (multiple() !== null) {
+      <span class="legend-item guess">
+        <span class="swatch swatch-guess"></span>
+        Your 10% guess: {{ formatCurrency(guessFinal()) }} ({{ multiple() }}x)
+      </span>
+    } @else {
+      <span class="legend-item hint">Pick an option to see your guess.</span>
+    }
+  </div>
+</div>

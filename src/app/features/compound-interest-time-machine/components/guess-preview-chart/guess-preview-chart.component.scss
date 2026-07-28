@@ -1,0 +1,76 @@
+.guess-preview {
+  max-width: 420px;
+  margin: 1rem auto 0;
+  padding: 0.85rem 1rem 1rem;
+  background: white;
+  border: 1px solid var(--ngpf-light-gray-blue);
+  border-radius: var(--ngpf-radius-md);
+  box-shadow: var(--ngpf-shadow-sm);
+  text-align: left;
+}
+
+.preview-label {
+  font-family: var(--ngpf-font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ngpf-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.preview-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.axis-label {
+  font-family: var(--ngpf-font-body);
+  font-size: 10px;
+  fill: var(--ngpf-text-muted);
+}
+
+.preview-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+  font-family: var(--ngpf-font-body);
+  font-size: 0.85rem;
+  color: var(--ngpf-text-primary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-item.hint {
+  color: var(--ngpf-text-muted);
+  font-style: italic;
+}
+
+.swatch {
+  display: inline-block;
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.swatch-baseline {
+  background: repeating-linear-gradient(
+    to right,
+    var(--ngpf-gold) 0,
+    var(--ngpf-gold) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  height: 3px;
+}
+
+.swatch-guess {
+  background: var(--ngpf-royal-blue);
+}
