@@ -47,29 +47,46 @@ export class PredictionChartComponent {
   private readonly SNAP = 100;
   private readonly DOT_RADIUS = 20;
   private readonly TOUCH_RADIUS = 28;
+  private readonly MAX_PREDICTION_VALUE = 100_000;
   private dragMoved = false;
   /** Frozen scale used during a drag to prevent feedback loops. */
   private dragScaleY: d3.ScaleLinear<number, number> | null = null;
 
-  /** Y-axis max grows dynamically: always 40% headroom above the highest dot. */
+  /**
+   * Y-axis max grows dynamically with the highest dot (40% headroom), floored
+   * at 5x principal so the chart isn't cramped and capped at MAX_PREDICTION_VALUE
+   * so it doesn't balloon into hundreds-of-thousands when a student over-drags.
+   */
   private readonly dynamicYMax = computed(() => {
     const highestDot = Math.max(this.dot10().value, this.show40() ? this.dot40().value : 0);
-    const minScale = this.principal() * 5; // Start at 5x principal so chart isn't cramped
+    const minScale = this.principal() * 5;
     const headroom = Math.max(minScale, highestDot * 1.4);
-    // Round up to a clean number for nice tick marks
-    const magnitude = Math.pow(10, Math.floor(Math.log10(headroom)));
-    return Math.ceil(headroom / magnitude) * magnitude;
+    const capped = Math.min(this.MAX_PREDICTION_VALUE, headroom);
+    const magnitude = Math.pow(10, Math.floor(Math.log10(capped)));
+    return Math.ceil(capped / magnitude) * magnitude;
   });
 
   // ── Template-bound state ──
 
+  protected readonly totalSteps = 2;
+
+  /**
+   * 1 = predict Year 10, 2 = predict Year 40, 3 = both locked (done state).
+   * The template renders each step in a separate `@switch` case so switching
+   * remounts the card and its slide-in animation re-fires.
+   */
+  protected readonly currentStep = computed(() => {
+    if (!this.dot10().locked) return 1;
+    if (!this.dot40().locked) return 2;
+    return 3;
+  });
+
   protected readonly instruction = computed(() => {
-    const d10 = this.dot10();
-    const d40 = this.dot40();
-    if (!d10.locked) {
+    const step = this.currentStep();
+    if (step === 1) {
       return 'Drag the dot up or down to predict the balance at Year 10, then lock your guess.';
     }
-    if (!d40.locked) {
+    if (step === 2) {
       return 'Now predict Year 40. Drag the dot, then lock your guess.';
     }
     return 'Both predictions locked! Click "Show me reality" below.';
@@ -229,7 +246,7 @@ export class PredictionChartComponent {
       .attr('role', 'slider')
       .attr('aria-label', `Year ${point.year} prediction: ${formatCurrency(point.value)}`)
       .attr('aria-valuemin', '0')
-      .attr('aria-valuemax', String(this.dynamicYMax()))
+      .attr('aria-valuemax', String(this.MAX_PREDICTION_VALUE))
       .attr('aria-valuenow', String(point.value))
       .attr('aria-valuetext', formatCurrency(point.value));
 
@@ -333,7 +350,7 @@ export class PredictionChartComponent {
     const clampedY = Math.max(0, Math.min(this.dims.innerHeight, svgY));
     const rawValue = scale.invert(clampedY);
     const snapped = Math.round(rawValue / this.SNAP) * this.SNAP;
-    const clamped = Math.max(0, snapped);
+    const clamped = Math.max(0, Math.min(this.MAX_PREDICTION_VALUE, snapped));
     this.updateDot(id, clamped);
   }
 
@@ -345,7 +362,7 @@ export class PredictionChartComponent {
     switch (event.key) {
       case 'ArrowUp':
         event.preventDefault();
-        val = val + step;
+        val = Math.min(this.MAX_PREDICTION_VALUE, val + step);
         this.updateDot(id, val);
         break;
       case 'ArrowDown':

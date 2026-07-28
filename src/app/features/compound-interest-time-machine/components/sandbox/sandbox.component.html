@@ -96,7 +96,7 @@
             [max]="endAge() - 1"
             step="1"
             [value]="startAge()"
-            (input)="onStartAgeInput($event)"
+            (change)="onStartAgeInput($event)"
             aria-label="Start age"
           />
         </div>
@@ -111,7 +111,7 @@
             max="80"
             step="1"
             [value]="endAge()"
-            (input)="onEndAgeInput($event)"
+            (change)="onEndAgeInput($event)"
             aria-label="End age"
           />
         </div>
@@ -133,7 +133,9 @@
       [result]="result()"
       [comparisonResult]="waitResult()"
       [selectedYear]="selectedYear()"
+      [hoverYear]="hoverYear()"
       [isAutoPlaying]="isAutoPlaying()"
+      [yAxisMax]="frozenYMax()"
       (yearHover)="onYearHover($event)"
     />
     <app-time-scrubber
@@ -144,8 +146,9 @@
     />
     <app-summary-panel
       [result]="result()"
-      [selectedYear]="selectedYear()"
+      [selectedYear]="hoverYear() ?? selectedYear()"
       [comparisonResult]="waitResult()"
+      [animate]="isAutoPlaying()"
     />
   </div>
 
@@ -156,7 +159,7 @@
       </button>
     }
     <button class="ngpf-btn ngpf-btn-primary" (click)="onFinish()">
-      See My Results
+      Finish Exploring &rarr;
     </button>
   </div>
 </div>

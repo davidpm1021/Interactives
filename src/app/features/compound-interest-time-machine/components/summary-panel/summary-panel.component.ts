@@ -14,6 +14,12 @@ export class SummaryPanelComponent implements OnDestroy {
   readonly result = input.required<SimulationResult>();
   readonly selectedYear = input<number | null>(null);
   readonly comparisonResult = input<SimulationResult | null>(null);
+  /**
+   * When true, changes to the values tween over 300ms. When false, they snap
+   * instantly. Sandbox turns this on only during auto-play so slider/scrub
+   * updates don't leave the numbers chasing the target.
+   */
+  readonly animate = input(false);
 
   protected readonly displayData = computed(() => {
     const res = this.result();
@@ -83,7 +89,7 @@ export class SummaryPanelComponent implements OnDestroy {
       this.animationId = null;
     }
 
-    if (this.reducedMotion) {
+    if (this.reducedMotion || !this.animate()) {
       this.animatedBalance.set(targetBalance);
       this.animatedContributions.set(targetContributions);
       this.animatedInterest.set(targetInterest);

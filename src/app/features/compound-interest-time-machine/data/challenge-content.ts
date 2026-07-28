@@ -79,7 +79,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
   },
   challenge5: {
     title: 'Your Time Machine',
-    setup: 'Now it\'s your turn. Use what you\'ve learned to explore your own future.',
+    setup: 'Now it\'s your turn. Adjust the inputs, press Play to watch your money grow, then click Finish when you\'re done exploring.',
     inputPrompts: {
       principal: 'How much could you start with?',
       contribution: 'How much could you set aside each month?',

@@ -70,16 +70,27 @@ export class SandboxComponent implements OnInit {
   });
 
   // ── Time scrubber ──
-  /** The year the scrubber is set to (persists across hovers). */
-  private readonly scrubberYear = signal<number | null>(null);
-  /** The year shown on the chart (may temporarily differ during hover). */
+  /**
+   * The year the scrubber is set to. Also drives the growth-chart curtain
+   * (data drawn up to this year). Not affected by hover, so cursor movement
+   * doesn't retract/extend the chart on every mouse pixel.
+   */
   protected readonly selectedYear = signal<number | null>(null);
+  /** Year the mouse is hovering over. Drives the marker + tooltip only. */
+  protected readonly hoverYear = signal<number | null>(null);
   protected readonly isAutoPlaying = signal(false);
+
+  /**
+   * Y-axis ceiling passed to the growth chart. Frozen on init and re-frozen
+   * each time the student presses Play so sliding rate/contribution mid-idle
+   * doesn't leak the answer through a rescaling axis.
+   */
+  protected readonly frozenYMax = signal<number | null>(null);
 
   ngOnInit(): void {
     // Start at year 0 so the user scrubs or plays to reveal
-    this.scrubberYear.set(0);
     this.selectedYear.set(0);
+    this.refitYAxis();
   }
 
   // ── Input handlers ──
@@ -110,21 +121,25 @@ export class SandboxComponent implements OnInit {
   }
 
   protected onYearChange(year: number): void {
-    this.scrubberYear.set(year);
     this.selectedYear.set(year);
   }
 
   protected onPlayStateChange(playing: boolean): void {
     this.isAutoPlaying.set(playing);
+    if (playing) {
+      this.refitYAxis();
+    }
+  }
+
+  private refitYAxis(): void {
+    const base = this.result().summary.finalBalance;
+    const wait = this.waitResult()?.summary.finalBalance ?? 0;
+    const ceiling = Math.max(base, wait) * 1.1;
+    this.frozenYMax.set(ceiling > 0 ? ceiling : null);
   }
 
   protected onYearHover(year: number | null): void {
-    if (year !== null) {
-      this.selectedYear.set(year);
-    } else {
-      // Mouse left the chart — snap back to scrubber position
-      this.selectedYear.set(this.scrubberYear());
-    }
+    this.hoverYear.set(year);
   }
 
   protected onFinish(): void {
