@@ -39,7 +39,7 @@
     <div class="callout comparison">
       @if (delta > 0) {
         {{ comparisonLabel() }}
-        <strong>{{ formatCurrency(delta) }}</strong> more.
+        <strong>{{ formatCurrency(delta) }}</strong>{{ comparisonSuffix() }}
       } @else {
         The other scenario earned
         <strong>{{ formatCurrency(-delta) }}</strong> more.

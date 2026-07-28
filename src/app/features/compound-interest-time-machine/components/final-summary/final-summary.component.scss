@@ -76,7 +76,10 @@
 
 // ── Print button ──
 .print-action {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
   margin-top: 2rem;
 }
 

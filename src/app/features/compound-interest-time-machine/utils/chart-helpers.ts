@@ -92,13 +92,27 @@ export function createChartSvg(
     .attr('fill', '#1db8e8')
     .attr('opacity', 0.4);
 
+  // Clip the plot area. When the y-axis is pinned (see the frozen-ceiling
+  // behavior in the sandbox) the data can exceed the visible domain, and
+  // without a clip the line and areas render outside the plot box and beyond
+  // the SVG viewBox entirely. `plot-clip-rect` is sized in updateChart once
+  // the dimensions are known.
+  defs
+    .append('clipPath')
+    .attr('id', 'plot-clip')
+    .append('rect')
+    .attr('class', 'plot-clip-rect')
+    .attr('x', 0)
+    .attr('y', 0);
+
   const chartGroup = svg
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  // Layer groups for ordering
-  chartGroup.append('g').attr('class', 'area-layer');
-  chartGroup.append('g').attr('class', 'line-layer');
+  // Layer groups for ordering. Data layers are clipped; axes and the marker
+  // are not, so tick labels and the hover dot can sit outside the plot box.
+  chartGroup.append('g').attr('class', 'area-layer').attr('clip-path', 'url(#plot-clip)');
+  chartGroup.append('g').attr('class', 'line-layer').attr('clip-path', 'url(#plot-clip)');
   chartGroup.append('g').attr('class', 'marker-layer');
   chartGroup.append('g').attr('class', 'x-axis');
   chartGroup.append('g').attr('class', 'y-axis');
@@ -133,7 +147,10 @@ export function createScales(
  */
 export function widthAwareTickCount(innerWidth: number, maxTicks: number, minTicks = 3): number {
   const target = Math.floor(innerWidth / 60);
-  return Math.max(minTicks, Math.min(maxTicks, target));
+  // Cap last so `maxTicks` always wins. Applying the floor last would let
+  // minTicks override a smaller cap — e.g. a 1-year horizon would still ask
+  // for 3 ticks and d3 would emit 0 / 0.5 / 1, rendering "Age 22.5".
+  return Math.min(maxTicks, Math.max(minTicks, target));
 }
 
 /** Render x and y axes with transitions. */

@@ -9,7 +9,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (dp of result().dataPoints; track dp.year) {
+      @for (dp of rows(); track dp.year) {
         <tr>
           <td>{{ startAge() !== null ? startAge()! + dp.year : dp.year }}</td>
           <td>{{ format(dp.compoundBalance) }}</td>

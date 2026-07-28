@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, OnDestroy, computed, input, output, signal } from '@angular/core';
 import { FillSentence, TAKEAWAY_DISTRACTORS, TAKEAWAY_SENTENCES } from '../../data/takeaways-fill';
 
 interface Chip {
@@ -35,13 +35,16 @@ interface BlankState {
   templateUrl: './takeaways-fill.component.html',
   styleUrl: './takeaways-fill.component.scss',
 })
-export class TakeawaysFillComponent {
+export class TakeawaysFillComponent implements OnDestroy {
   readonly sentences = input<readonly FillSentence[]>(TAKEAWAY_SENTENCES);
   readonly distractors = input<readonly string[]>(TAKEAWAY_DISTRACTORS);
   readonly completedChange = output<boolean>();
 
   protected readonly selectedChipId = signal<string | null>(null);
   protected readonly announcement = signal('');
+
+  /** In-flight shake-unplace timers, keyed by blank id. */
+  private readonly pendingShakes = new Map<string, ReturnType<typeof setTimeout>>();
 
   /** Deterministic-ish shuffled order for the word bank based on the token list. */
   private readonly chipOrder = computed<string[]>(() => {
@@ -149,16 +152,52 @@ export class TakeawaysFillComponent {
       }));
       this.chips.update((cs) => cs.map((c) => (c.id === chipId ? { ...c, placed: true } : c)));
       this.announcement.set(`"${chip.text}" isn't right for that blank. Try another.`);
-      // Return the chip after a short delay for the shake to be visible.
-      setTimeout(() => {
-        this.blanks.update((bs) => ({
-          ...bs,
-          [blankId]: { ...bs[blankId], chipId: null, shake: false },
-        }));
-        this.chips.update((cs) => cs.map((c) => (c.id === chipId ? { ...c, placed: false } : c)));
-        this.selectedChipId.set(null);
+      // Return the chip after a short delay so the shake is visible. The timer
+      // is tracked so it can be flushed early (Show answers) or cancelled on
+      // destroy, and the callback re-checks that the blank is still holding
+      // this chip in a shaking state before clearing it.
+      const timer = setTimeout(() => {
+        this.pendingShakes.delete(blankId);
+        this.unplaceShake(blankId, chipId);
       }, 500);
+      this.pendingShakes.set(blankId, timer);
     }
+  }
+
+  /**
+   * Return a wrongly-placed chip to the bank.
+   *
+   * Guarded: if the blank has since been filled by another path (a correct
+   * placement or "Show answers"), leave it alone. Without this check a stale
+   * timer could blank a slot that had already been marked correct/revealed,
+   * permanently rendering it as an empty box with a green check that no
+   * further interaction could repair.
+   */
+  private unplaceShake(blankId: string, chipId: string): void {
+    const blank = this.blanks()[blankId];
+    if (!blank || blank.chipId !== chipId || blank.correct || blank.revealed) return;
+
+    this.blanks.update((bs) => ({
+      ...bs,
+      [blankId]: { ...bs[blankId], chipId: null, shake: false },
+    }));
+    this.chips.update((cs) => cs.map((c) => (c.id === chipId ? { ...c, placed: false } : c)));
+    if (this.selectedChipId() === chipId) this.selectedChipId.set(null);
+  }
+
+  /** Run every in-flight shake unplace immediately and drop its timer. */
+  private flushPendingShakes(): void {
+    for (const [blankId, timer] of this.pendingShakes) {
+      clearTimeout(timer);
+      const chipId = this.blanks()[blankId]?.chipId;
+      if (chipId) this.unplaceShake(blankId, chipId);
+    }
+    this.pendingShakes.clear();
+  }
+
+  ngOnDestroy(): void {
+    for (const timer of this.pendingShakes.values()) clearTimeout(timer);
+    this.pendingShakes.clear();
   }
 
   protected onKeyChip(event: KeyboardEvent, chip: Chip): void {
@@ -176,6 +215,11 @@ export class TakeawaysFillComponent {
   }
 
   protected showAllAnswers(): void {
+    // Settle any in-flight shake first, so a chip that is transiently marked
+    // `placed` is back in the bank and available to match a blank below.
+    // Otherwise its blank is silently skipped and never gets revealed.
+    this.flushPendingShakes();
+
     const chips = [...this.chips()];
     const blanks = { ...this.blanks() };
     for (const b of Object.values(blanks)) {

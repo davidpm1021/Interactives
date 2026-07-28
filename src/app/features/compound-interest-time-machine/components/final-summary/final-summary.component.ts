@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { ChallengeStateService } from '../../services/challenge-state.service';
 import { CompoundInterestService } from '../../services/compound-interest.service';
 import { CHALLENGE_CONTENT } from '../../data/challenge-content';
@@ -21,8 +21,15 @@ interface RecapRow {
   styleUrl: './final-summary.component.scss',
 })
 export class FinalSummaryComponent {
+  readonly canGoBack = input(false);
+  readonly goBack = output<void>();
+
   private readonly stateService = inject(ChallengeStateService);
   private readonly service = inject(CompoundInterestService);
+
+  protected onBack(): void {
+    this.goBack.emit();
+  }
 
   protected readonly recapRows = computed<RecapRow[]>(() => {
     const preds = this.stateService.predictions();

@@ -1,4 +1,4 @@
-import { Component, input, computed, signal, effect, OnDestroy } from '@angular/core';
+import { Component, input, computed, signal, effect, untracked, OnDestroy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { SimulationResult, YearlyDataPoint } from '../../models/compound-interest.models';
 import { formatCurrency, formatPercent } from '../../utils/formatters';
@@ -31,6 +31,13 @@ export class SummaryPanelComponent implements OnDestroy {
    * is set.
    */
   readonly comparisonLabel = input('Starting earlier earned you');
+  /**
+   * Text after the dollar amount. Lives alongside comparisonLabel because the
+   * sentence reads differently depending on framing: "Starting earlier earned
+   * you $X more!" vs "Waiting 5 years cost you $X." A hardcoded " more."
+   * suffix made the second phrasing say the opposite of what it means.
+   */
+  readonly comparisonSuffix = input(' more!');
 
   protected readonly displayData = computed(() => {
     const res = this.result();
@@ -85,7 +92,19 @@ export class SummaryPanelComponent implements OnDestroy {
 
     effect(() => {
       const data = this.displayData();
-      this.animateToValues(data.balance, data.contributions, data.interestEarned, data.interestPercent);
+      // untracked: animateToValues reads the four `animated*` signals to pick
+      // up the tween's starting point, and its rAF tick writes those same
+      // signals. A tracked read would make every animation frame re-run this
+      // effect, cancelling and restarting the tween each frame so the 300ms
+      // ease never completes. Only displayData should drive it.
+      untracked(() =>
+        this.animateToValues(
+          data.balance,
+          data.contributions,
+          data.interestEarned,
+          data.interestPercent,
+        ),
+      );
     });
   }
 

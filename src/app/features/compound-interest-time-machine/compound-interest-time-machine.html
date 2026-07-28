@@ -13,7 +13,7 @@
     } @else if (showingConcept()) {
       <app-concept-demo (finish)="onConceptFinished()" (goBack)="onGoBack()" [canGoBack]="canGoBack()" />
     } @else if (showingSummary()) {
-      <app-final-summary />
+      <app-final-summary [canGoBack]="canGoBack()" (goBack)="onGoBack()" />
     } @else {
       @switch (currentChallenge()) {
         @case (1) {

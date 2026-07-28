@@ -154,6 +154,7 @@
       [animate]="isAutoPlaying()"
       [startAge]="startAge()"
       [comparisonLabel]="'Waiting ' + waitYears + ' years cost you'"
+      comparisonSuffix="."
     />
 
     <div class="table-toggle">
@@ -168,7 +169,11 @@
     </div>
 
     @if (showTable()) {
-      <app-growth-table [result]="result()" [startAge]="startAge()" />
+      <app-growth-table
+        [result]="result()"
+        [startAge]="startAge()"
+        [maxYear]="selectedYear()"
+      />
     }
   </div>
 

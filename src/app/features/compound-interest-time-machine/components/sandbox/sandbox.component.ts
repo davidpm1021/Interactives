@@ -95,6 +95,12 @@ export class SandboxComponent implements OnInit {
    */
   protected readonly frozenYMax = signal<number | null>(null);
 
+  /**
+   * True once the student has seen the curve reach the end of the timeline.
+   * Gates whether later input changes are allowed to rescale the y-axis.
+   */
+  private readonly hasRevealed = signal(false);
+
   ngOnInit(): void {
     // Carry the session's rate over from the challenges before the first
     // refit, so the frozen ceiling matches the scenario we open on.
@@ -107,28 +113,48 @@ export class SandboxComponent implements OnInit {
   // ── Input handlers ──
   protected onPrincipalInput(event: Event): void {
     this.principal.set(this.clamp(this.parseNumber(event), 0, 100000));
+    this.onInputsChanged();
   }
 
   protected onContributionInput(event: Event): void {
     this.contributionAmount.set(this.clamp(this.parseNumber(event), 0, 2000));
+    this.onInputsChanged();
   }
 
   protected onRateInput(event: Event): void {
     this.interestRatePercent.set(this.clamp(this.parseNumber(event), 0, 15));
+    this.onInputsChanged();
   }
 
   protected onStartAgeInput(event: Event): void {
     const val = Math.round(this.parseNumber(event));
     this.startAge.set(this.clamp(val, 18, this.endAge() - 1));
+    this.onInputsChanged();
   }
 
   protected onEndAgeInput(event: Event): void {
     const val = Math.round(this.parseNumber(event));
     this.endAge.set(this.clamp(val, this.startAge() + 1, 80));
+    this.onInputsChanged();
   }
 
   protected toggleWaitComparison(): void {
     this.showWaitComparison.update((v) => !v);
+    this.onInputsChanged();
+  }
+
+  /**
+   * Rescale the y-axis on input changes, but only once the student has already
+   * watched the curve reach the end.
+   *
+   * Before the reveal the ceiling stays pinned so nudging the rate can't
+   * telegraph the final balance. After it, there is nothing left to withhold,
+   * and keeping the stale ceiling would leave the curve pressed against (or
+   * clipped at) the top of the plot with no way to recover short of pressing
+   * Play again.
+   */
+  private onInputsChanged(): void {
+    if (this.hasRevealed()) this.refitYAxis();
   }
 
   protected readonly showTable = signal(false);
@@ -139,6 +165,9 @@ export class SandboxComponent implements OnInit {
 
   protected onYearChange(year: number): void {
     this.selectedYear.set(year);
+    // Once the timeline reaches the end the final balance is on screen, so the
+    // axis no longer needs to be withheld from later input changes.
+    if (year >= this.timeHorizon()) this.hasRevealed.set(true);
   }
 
   protected onPlayStateChange(playing: boolean): void {

@@ -30,6 +30,11 @@
   <app-reflection-form />
 
   <div class="print-action">
+    @if (canGoBack()) {
+      <button type="button" class="ngpf-btn ngpf-btn-secondary no-print" (click)="onBack()">
+        &larr; Back to Time Machine
+      </button>
+    }
     <button class="ngpf-btn ngpf-btn-primary" (click)="onPrint()">
       Print My Results
     </button>

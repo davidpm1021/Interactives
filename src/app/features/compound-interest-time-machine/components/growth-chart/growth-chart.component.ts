@@ -9,6 +9,7 @@ import {
   viewChild,
   Injector,
   inject,
+  untracked,
 } from '@angular/core';
 import * as d3 from 'd3';
 import { SimulationResult, YearlyDataPoint } from '../../models/compound-interest.models';
@@ -186,6 +187,15 @@ export class GrowthChartComponent {
       .attr('width', dims.innerWidth)
       .attr('height', dims.innerHeight);
 
+    // Size the clip so a pinned y-axis can't let the curve draw outside the
+    // plot box. Slight vertical padding keeps a 2.5px-wide stroke sitting
+    // exactly on the ceiling from being shaved in half.
+    this.svg
+      .select('.plot-clip-rect')
+      .attr('y', -2)
+      .attr('width', dims.innerWidth)
+      .attr('height', dims.innerHeight + 4);
+
     const allData = result.dataPoints;
     const compOffset = this.comparisonStartYear();
     // For scaling, project the comparison series onto the primary timeline.
@@ -320,8 +330,12 @@ export class GrowthChartComponent {
         this.yearHover.emit(null);
       });
 
-    // Initial marker placement — respects hoverYear if set, else selectedYear
-    this.updateMarker(this.hoverYear() ?? selectedYear);
+    // Initial marker placement — respects hoverYear if set, else selectedYear.
+    // Read hoverYear untracked: this runs inside the full-render effect, and a
+    // tracked read would make every mousemove re-run the whole render (axes,
+    // areas, lines, comparison series, all with 400ms transitions), which is
+    // exactly what the hover/render split exists to avoid.
+    this.updateMarker(untracked(() => this.hoverYear()) ?? selectedYear);
 
     // ARIA label
     const ariaLabel = `Growth chart showing ${formatCurrency(result.summary.finalBalance)} after ${maxYear} years`;
