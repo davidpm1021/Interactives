@@ -11,7 +11,6 @@ import { PredictionChartComponent } from './components/prediction-chart/predicti
 import { PredictionChoiceComponent } from './components/prediction-choice/prediction-choice.component';
 import { PredictionInputComponent } from './components/prediction-input/prediction-input.component';
 import { RevealChartComponent } from './components/reveal-chart/reveal-chart.component';
-import { GuessPreviewChartComponent } from './components/guess-preview-chart/guess-preview-chart.component';
 import { SandboxComponent } from './components/sandbox/sandbox.component';
 import { FinalSummaryComponent } from './components/final-summary/final-summary.component';
 import { IntroComponent } from './components/intro/intro.component';
@@ -35,7 +34,6 @@ import { formatCurrency, formatPercent } from './utils/formatters';
     PredictionChoiceComponent,
     PredictionInputComponent,
     RevealChartComponent,
-    GuessPreviewChartComponent,
     SandboxComponent,
     FinalSummaryComponent,
     IntroComponent,
@@ -204,13 +202,6 @@ export class CompoundInterestTimeMachine {
 
   protected readonly challenge2Selection = signal<string | null>(null);
   protected readonly challenge2Ready = computed(() => this.challenge2Selection() !== null);
-
-  protected readonly challenge2SelectedMultiple = computed(() => {
-    const id = this.challenge2Selection();
-    if (!id) return null;
-    const opt = CHALLENGE_CONTENT['challenge2'].options?.find((o) => o.id === id);
-    return opt?.multiple ?? null;
-  });
 
   protected readonly challenge2Ratio = computed(() => {
     const low = this.challenge2LowResult().summary.finalBalance;

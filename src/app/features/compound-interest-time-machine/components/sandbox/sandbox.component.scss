@@ -100,7 +100,9 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 4px 8px;
-  min-width: 90px;
+  // Wide enough to fit "$ 100,000" plus the browser spinner arrows.
+  // Previously 90px which clipped 5-digit values on Windows Chrome.
+  min-width: 120px;
   background: white;
 
   .prefix,
@@ -109,12 +111,16 @@
     font-size: 0.9rem;
     color: #666;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   input[type='number'] {
     border: none;
     outline: none;
-    width: 65px;
+    // Flex so the input takes all remaining space in the wrapper. The
+    // previous fixed 65px width clipped anything past ~4 digits + spinner.
+    flex: 1;
+    min-width: 0;
     font-size: 0.95rem;
     font-family: var(--ngpf-font-body);
     text-align: right;
