@@ -273,7 +273,8 @@ export class CompoundInterestTimeMachine {
     const c = this.currentChallenge();
     if (c === 1) return this.challenge1Insight();
     if (c === 2) return this.challenge2Insight();
-    const content = CHALLENGE_CONTENT[`challenge${c}`];
-    return content?.reflectInsight ?? '';
+    // Use currentContent (interpolated) rather than raw CHALLENGE_CONTENT so
+    // tokens like {{c3Final}} render as the actual dollar figure.
+    return this.currentContent().reflectInsight ?? '';
   }
 }
