@@ -125,6 +125,17 @@ export function createScales(
   return { x, y };
 }
 
+/**
+ * Pick a tick count that scales with the chart's inner width so labels don't
+ * collide on narrow (mobile) viewports. Rule of thumb: ~one tick per 60px.
+ * Callers can cap the target with `maxTicks` (e.g. `maxYear` for a whole-year
+ * scale that shouldn't produce fractional ticks).
+ */
+export function widthAwareTickCount(innerWidth: number, maxTicks: number, minTicks = 3): number {
+  const target = Math.floor(innerWidth / 60);
+  return Math.max(minTicks, Math.min(maxTicks, target));
+}
+
 /** Render x and y axes with transitions. */
 export function renderAxes(
   chartGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
@@ -135,9 +146,10 @@ export function renderAxes(
   formatYTick: (d: number) => string,
   formatXTick?: (d: number) => string,
 ): void {
+  const innerWidth = (scales.x.range()[1] as number) - (scales.x.range()[0] as number);
   const xAxis = d3
     .axisBottom(scales.x)
-    .ticks(Math.min(maxYear, 10))
+    .ticks(widthAwareTickCount(innerWidth, Math.min(maxYear, 10)))
     .tickFormat((d) => (formatXTick ? formatXTick(d as number) : `Yr ${d}`));
 
   const yAxis = d3

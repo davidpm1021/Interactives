@@ -14,7 +14,7 @@ import {
 import * as d3 from 'd3';
 import { PredictionPoint } from '../../models/compound-interest.models';
 import { formatCurrency } from '../../utils/formatters';
-import { computeChartDimensions, createScales, ChartDimensions, ChartScales, DEFAULT_MARGIN } from '../../utils/chart-helpers';
+import { computeChartDimensions, createScales, ChartDimensions, ChartScales, DEFAULT_MARGIN, widthAwareTickCount } from '../../utils/chart-helpers';
 
 @Component({
   selector: 'app-prediction-chart',
@@ -165,9 +165,10 @@ export class PredictionChartComponent {
       [0, this.dynamicYMax()],
     );
 
-    // Axes
+    // Axes — tick count scales with chart width so labels don't collide on
+    // narrow (mobile) viewports.
     const xAxis = d3.axisBottom(this.scales.x)
-      .ticks(Math.min(this.maxYear(), 10))
+      .ticks(widthAwareTickCount(this.dims.innerWidth, Math.min(this.maxYear(), 10)))
       .tickFormat((d) => `Yr ${d}`);
     const yAxis = d3.axisLeft(this.scales.y)
       .ticks(6)

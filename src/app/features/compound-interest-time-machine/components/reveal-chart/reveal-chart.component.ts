@@ -21,6 +21,7 @@ import {
   ChartScales,
   ChartMargin,
   DEFAULT_MARGIN,
+  widthAwareTickCount,
 } from '../../utils/chart-helpers';
 
 /** Wider right margin to fit the gap bracket + label */
@@ -126,9 +127,10 @@ export class RevealChartComponent {
 
     const scales = createScales(dims.innerWidth, dims.innerHeight, [0, maxYear], [0, maxBalance * 1.1]);
 
-    // Axes
+    // Axes — tick count scales with chart width so labels don't collide on
+    // narrow (mobile) viewports.
     const xAxis = d3.axisBottom(scales.x)
-      .ticks(Math.min(maxYear, 10))
+      .ticks(widthAwareTickCount(dims.innerWidth, Math.min(maxYear, 10)))
       .tickFormat((d) => `Yr ${d}`);
     const yAxis = d3.axisLeft(scales.y)
       .ticks(6)
