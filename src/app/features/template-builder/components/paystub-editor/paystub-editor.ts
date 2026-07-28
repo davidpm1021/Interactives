@@ -13,7 +13,7 @@ import {
   lineItemAmount,
   samplePaystub,
 } from '../../models/paystub.model';
-import { randomPaystub } from '../../utils/random-paystub.util';
+import { EMPLOYER_STATES, PaystubRandomOptions, randomPaystub } from '../../utils/random-paystub.util';
 import { FirstItemMutator } from '../../utils/first-item-mutator.util';
 import {
   parseNonNegative,
@@ -81,6 +81,58 @@ export class PaystubEditor {
   protected readonly current = computed(() => this.paystubs()[0] ?? samplePaystub());
 
   protected readonly randomFnRef = (): Paystub => randomPaystub();
+
+  // ── Configured random ──
+  protected readonly employerStates = EMPLOYER_STATES;
+  /** Preset income bands. "custom" defers to configCustomIncome. */
+  protected readonly incomeBand = signal<'any' | 'low' | 'mid' | 'high' | 'custom'>('any');
+  protected readonly configCustomIncome = signal<number>(45000);
+  protected readonly configState = signal<string>('');
+  protected readonly configSmallOnly = signal<boolean>(false);
+  protected readonly configOvertime = signal<'random' | 'yes' | 'no'>('random');
+
+  protected setIncomeBand(value: 'any' | 'low' | 'mid' | 'high' | 'custom'): void {
+    this.incomeBand.set(value);
+  }
+  protected setConfigCustomIncome(value: string | number): void {
+    const n = typeof value === 'string' ? parseFloat(value) : value;
+    if (Number.isFinite(n)) this.configCustomIncome.set(Math.max(0, n));
+  }
+  protected setConfigState(value: string): void {
+    this.configState.set(value);
+  }
+  protected setConfigSmallOnly(value: boolean): void {
+    this.configSmallOnly.set(value);
+  }
+  protected setConfigOvertime(value: 'random' | 'yes' | 'no'): void {
+    this.configOvertime.set(value);
+  }
+
+  /** Translate the panel signals into a PaystubRandomOptions object. */
+  private buildOptions(): PaystubRandomOptions {
+    const band = this.incomeBand();
+    let annualIncomeTarget: number | undefined;
+    switch (band) {
+      case 'low':    annualIncomeTarget = 18_000 + Math.random() * 7_000;  break; // $18-25k
+      case 'mid':    annualIncomeTarget = 28_000 + Math.random() * 17_000; break; // $28-45k
+      case 'high':   annualIncomeTarget = 50_000 + Math.random() * 40_000; break; // $50-90k
+      case 'custom': annualIncomeTarget = this.configCustomIncome();            break;
+      default:       annualIncomeTarget = undefined;
+    }
+    const ot = this.configOvertime();
+    return {
+      annualIncomeTarget,
+      state: this.configState() || undefined,
+      smallEmployerOnly: this.configSmallOnly() || undefined,
+      includeOvertime: ot === 'yes' ? true : ot === 'no' ? false : undefined,
+    };
+  }
+
+  /** "Generate with these settings" — replaces the first paystub. */
+  protected generateConfigured(): void {
+    const next = randomPaystub(new Date(), this.buildOptions());
+    this.paystubs.update((list) => [next, ...list.slice(1)]);
+  }
   protected readonly clearFnRef = (): Paystub => emptyPaystub();
 
   // Helpers that operate on a given paystub (used inside the preview template)

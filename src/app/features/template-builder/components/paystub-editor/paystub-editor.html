@@ -16,6 +16,67 @@
     you type in.
   </p>
 
+  <details class="paystub-editor__accordion no-print">
+    <summary>
+      <span>Configure random generation</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <p class="paystub-editor__hint">
+        Pin a few dimensions, then click <strong>Generate with these settings</strong> below.
+        Anything left as <em>Any</em> stays random.
+      </p>
+      <div class="paystub-editor__row">
+        <label>
+          <span>Annual income</span>
+          <select [ngModel]="incomeBand()" (ngModelChange)="setIncomeBand($event)">
+            <option value="any">Any</option>
+            <option value="low">Low ($18-25k)</option>
+            <option value="mid">Mid ($28-45k)</option>
+            <option value="high">High ($50-90k)</option>
+            <option value="custom">Custom exact $</option>
+          </select>
+        </label>
+        @if (incomeBand() === 'custom') {
+          <label>
+            <span>Annual income ($)</span>
+            <input type="number" min="0" step="1000"
+              [ngModel]="configCustomIncome()"
+              (ngModelChange)="setConfigCustomIncome($event)" />
+          </label>
+        }
+      </div>
+      <div class="paystub-editor__row">
+        <label>
+          <span>State (for tax and address)</span>
+          <select [ngModel]="configState()" (ngModelChange)="setConfigState($event)">
+            <option value="">Any</option>
+            @for (st of employerStates; track st) {
+              <option [value]="st">{{ st }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Overtime</span>
+          <select [ngModel]="configOvertime()" (ngModelChange)="setConfigOvertime($event)">
+            <option value="random">Random</option>
+            <option value="yes">Include</option>
+            <option value="no">Don't include</option>
+          </select>
+        </label>
+      </div>
+      <label class="paystub-editor__checkbox">
+        <input type="checkbox"
+          [ngModel]="configSmallOnly()"
+          (ngModelChange)="setConfigSmallOnly($event)" />
+        <span>Small employer only (no 401(k) offering)</span>
+      </label>
+      <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="generateConfigured()">
+        Generate with these settings
+      </button>
+    </div>
+  </details>
+
   <fieldset class="paystub-editor__section">
     <legend>Earnings</legend>
     @for (earning of current().earnings; track $index) {
