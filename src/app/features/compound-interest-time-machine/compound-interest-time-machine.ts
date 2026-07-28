@@ -58,6 +58,7 @@ export class CompoundInterestTimeMachine {
   protected readonly predictions = this.stateService.predictions;
   protected readonly showingSummary = this.stateService.showingSummary;
   protected readonly showingIntro = this.stateService.showingIntro;
+  protected readonly canGoBack = this.stateService.canGoBack;
 
   protected readonly currentContent = computed(
     () => CHALLENGE_CONTENT[`challenge${this.currentChallenge()}`],
@@ -136,6 +137,10 @@ export class CompoundInterestTimeMachine {
     this.stateService.finishSandbox();
   }
 
+  protected onGoBack(): void {
+    this.stateService.goBack();
+  }
+
   // ── Challenge 1 handlers ────────────────────────────
 
   protected onChallenge1PredictionChange(points: PredictionPoint[]): void {
@@ -167,26 +172,10 @@ export class CompoundInterestTimeMachine {
     return low > 0 ? high / low : 0;
   });
 
-  protected readonly challenge2GuessLabel = computed(() => {
-    const id = this.predictions().challenge2RateGuess;
-    if (!id) return null;
-    const opt = CHALLENGE_CONTENT['challenge2'].options?.find((o) => o.id === id);
-    return opt?.label ?? null;
-  });
-
   protected readonly challenge2Insight = computed(() => {
     const ratio = this.challenge2Ratio();
-    const guessLabel = this.challenge2GuessLabel();
     const ratioText = `${ratio.toFixed(1)}x`;
-
-    let base = `The rate doubled, but the outcome didn't just double. The 10% account ended up with ${ratioText} as much as the 5% account.`;
-
-    if (guessLabel) {
-      base += ` You guessed "${guessLabel}."`;
-    }
-
-    base += ` With compound interest, small rate differences get magnified over time.`;
-    return base;
+    return `The rate doubled, but the outcome didn't just double. The 10% account ended up with ${ratioText} as much as the 5% account. With compound interest, small rate differences get magnified over time. After year one, the 10% account is only $50 ahead. But that $50 earns interest too, and so does every dollar of interest after it. The gap widens by more each year until "twice as much" becomes ${ratioText} at the finish line.`;
   });
 
   protected onChallenge2Select(id: string): void {

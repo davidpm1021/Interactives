@@ -60,31 +60,4 @@
     }
   }
 
-  &__begin {
-    font-family: var(--ngpf-font-heading);
-    font-size: 1.1rem;
-    font-weight: 600;
-    padding: 0.85rem 2.5rem;
-    background: var(--ngpf-bright-blue);
-    color: white;
-    border: none;
-    border-radius: var(--ngpf-radius-md, 8px);
-    cursor: pointer;
-    transition: background 0.15s ease, transform 0.15s ease;
-    min-height: 48px;
-
-    &:hover {
-      background: var(--ngpf-royal-blue);
-      transform: translateY(-1px);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--ngpf-sky-blue);
-      outline-offset: 2px;
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }

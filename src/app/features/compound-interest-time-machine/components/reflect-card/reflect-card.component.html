@@ -1,10 +1,17 @@
 <div class="reflect-card" role="region" aria-label="Reflection">
   <p class="insight-text">{{ insightText() }}</p>
-  <button
-    class="next-btn"
-    (click)="onNext()"
-    [attr.aria-label]="isLastChallenge() ? 'Start exploring' : 'Go to next challenge'"
-  >
-    {{ isLastChallenge() ? 'Start Exploring \u2192' : 'Next Challenge \u2192' }}
-  </button>
+  <div class="reflect-actions">
+    @if (canGoBack()) {
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onBack()">
+        &larr; Back
+      </button>
+    }
+    <button
+      class="ngpf-btn ngpf-btn-primary"
+      (click)="onNext()"
+      [attr.aria-label]="isLastChallenge() ? 'Start exploring' : 'Go to next challenge'"
+    >
+      {{ isLastChallenge() ? 'Start Exploring \u2192' : 'Next Challenge \u2192' }}
+    </button>
+  </div>
 </div>

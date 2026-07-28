@@ -19,12 +19,15 @@ export class ChallengeStateService {
     predictions: {},
   });
 
+  private readonly _history = signal<ChallengeState[]>([]);
+
   // ── Derived signals ────────────────────────────────
 
   readonly currentChallenge = computed(() => this._state().currentChallenge);
   readonly currentPhase = computed(() => this._state().phase);
   readonly completedChallenges = computed(() => this._state().completedChallenges);
   readonly predictions = computed(() => this._state().predictions);
+  readonly canGoBack = computed(() => this._history().length > 0);
 
   readonly isComplete = computed(
     () => this._state().completedChallenges.size === 4 && this._state().currentChallenge === 5,
@@ -37,65 +40,85 @@ export class ChallengeStateService {
 
   /** Move from intro → challenge 1's predict phase. */
   startChallenges(): void {
-    this._state.update((s) => {
-      if (s.phase !== 'intro') return s;
-      return { ...s, phase: 'predict' as ChallengePhase };
-    });
+    const prev = this._state();
+    if (prev.phase !== 'intro') return;
+    this.pushHistory(prev);
+    this._state.set({ ...prev, phase: 'predict' as ChallengePhase });
   }
 
   /** Move from predict → reveal for the current challenge. */
   submitPrediction(predictions: Partial<ChallengePredictions>): void {
-    this._state.update((s) => {
-      if (s.phase !== 'predict') return s;
-      return {
-        ...s,
-        phase: 'reveal' as ChallengePhase,
-        predictions: { ...s.predictions, ...predictions },
-      };
+    const prev = this._state();
+    if (prev.phase !== 'predict') return;
+    this.pushHistory(prev);
+    this._state.set({
+      ...prev,
+      phase: 'reveal' as ChallengePhase,
+      predictions: { ...prev.predictions, ...predictions },
     });
   }
 
   /** Move from reveal → reflect for the current challenge. */
   advanceToReflect(): void {
-    this._state.update((s) => {
-      if (s.phase !== 'reveal') return s;
-      return { ...s, phase: 'reflect' as ChallengePhase };
-    });
+    const prev = this._state();
+    if (prev.phase !== 'reveal') return;
+    this.pushHistory(prev);
+    this._state.set({ ...prev, phase: 'reflect' as ChallengePhase });
   }
 
   /** Move from reflect → next challenge's predict phase. */
   advanceToNextChallenge(): void {
-    this._state.update((s) => {
-      if (s.phase !== 'reflect') return s;
-      const current = s.currentChallenge;
-      if (current >= 5) return s;
+    const prev = this._state();
+    if (prev.phase !== 'reflect') return;
+    const current = prev.currentChallenge;
+    if (current >= 5) return;
 
-      const completed = new Set(s.completedChallenges);
-      completed.add(current);
+    const completed = new Set(prev.completedChallenges);
+    completed.add(current);
 
-      const next = (current + 1) as ChallengeId;
-      return {
-        ...s,
-        currentChallenge: next,
-        phase: (next === 5 ? 'sandbox' : 'predict') as ChallengePhase,
-        completedChallenges: completed,
-      };
+    const next = (current + 1) as ChallengeId;
+    this.pushHistory(prev);
+    this._state.set({
+      ...prev,
+      currentChallenge: next,
+      phase: (next === 5 ? 'sandbox' : 'predict') as ChallengePhase,
+      completedChallenges: completed,
     });
   }
 
   /** Mark Challenge 5 sandbox as finished → show summary. */
   finishSandbox(): void {
-    this._state.update((s) => {
-      if (s.currentChallenge !== 5) return s;
-      if (s.phase !== 'sandbox') return s;
-      const completed = new Set(s.completedChallenges);
-      completed.add(5);
-      return { ...s, phase: 'summary' as ChallengePhase, completedChallenges: completed };
+    const prev = this._state();
+    if (prev.currentChallenge !== 5) return;
+    if (prev.phase !== 'sandbox') return;
+    const completed = new Set(prev.completedChallenges);
+    completed.add(5);
+    this.pushHistory(prev);
+    this._state.set({
+      ...prev,
+      phase: 'summary' as ChallengePhase,
+      completedChallenges: completed,
     });
+  }
+
+  /** Undo the most recent forward transition. */
+  goBack(): void {
+    const h = this._history();
+    if (h.length === 0) return;
+    const prev = h[h.length - 1];
+    this._history.set(h.slice(0, -1));
+    this._state.set(prev);
   }
 
   /** Get the full state snapshot (for testing / debugging). */
   getState(): ChallengeState {
     return this._state();
+  }
+
+  private pushHistory(snapshot: ChallengeState): void {
+    this._history.update((h) => [
+      ...h,
+      { ...snapshot, completedChallenges: new Set(snapshot.completedChallenges) },
+    ]);
   }
 }

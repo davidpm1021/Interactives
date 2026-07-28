@@ -48,7 +48,7 @@ describe('CompoundInterestTimeMachine', () => {
     stateService.startChallenges();
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
-    const btn = el.querySelector('.show-me-btn') as HTMLButtonElement;
+    const btn = el.querySelector('.predict-action .ngpf-btn-primary') as HTMLButtonElement;
     expect(btn).toBeTruthy();
     expect(btn.disabled).toBe(true);
   });

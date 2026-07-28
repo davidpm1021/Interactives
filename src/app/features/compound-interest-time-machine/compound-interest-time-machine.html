@@ -25,8 +25,13 @@
                 (allLocked)="onChallenge1AllLocked()"
               />
               <div class="predict-action">
+                @if (canGoBack()) {
+                  <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onGoBack()">
+                    &larr; Back
+                  </button>
+                }
                 <button
-                  class="show-me-btn"
+                  class="ngpf-btn ngpf-btn-primary"
                   [disabled]="!challenge1Ready()"
                   (click)="onChallenge1ShowMe()"
                 >
@@ -45,13 +50,16 @@
               <app-reveal-stats
                 [actualValue]="challenge1Result().summary.finalBalance"
                 [guessValue]="predictions().challenge1Year40 ?? null"
+                guessLabel="Your 40-year Guess"
                 label="Reality"
               />
               @if (currentPhase() === 'reflect') {
                 <app-reflect-card
                   [challengeId]="currentChallenge()"
                   [insightText]="challenge1Insight()"
+                  [canGoBack]="canGoBack()"
                   (nextChallenge)="onNextChallenge()"
+                  (goBack)="onGoBack()"
                 />
               }
             }
@@ -68,8 +76,13 @@
                 (selectionChanged)="onChallenge2Select($event)"
               />
               <div class="predict-action">
+                @if (canGoBack()) {
+                  <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onGoBack()">
+                    &larr; Back
+                  </button>
+                }
                 <button
-                  class="show-me-btn"
+                  class="ngpf-btn ngpf-btn-primary"
                   [disabled]="!challenge2Ready()"
                   (click)="onChallenge2ShowMe()"
                 >
@@ -98,15 +111,14 @@
                 <div class="ratio-result">
                   The 10% account is <strong>{{ challenge2Ratio() | number:'1.1-1' }}x</strong> the 5% account
                 </div>
-                @if (challenge2GuessLabel()) {
-                  <div class="your-guess">You guessed: {{ challenge2GuessLabel() }}</div>
-                }
               </div>
               @if (currentPhase() === 'reflect') {
                 <app-reflect-card
                   [challengeId]="currentChallenge()"
                   [insightText]="getReflectInsight()"
+                  [canGoBack]="canGoBack()"
                   (nextChallenge)="onNextChallenge()"
+                  (goBack)="onGoBack()"
                 />
               }
             }
@@ -125,8 +137,13 @@
                 (valueChanged)="onChallenge3Input($event)"
               />
               <div class="predict-action">
+                @if (canGoBack()) {
+                  <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onGoBack()">
+                    &larr; Back
+                  </button>
+                }
                 <button
-                  class="show-me-btn"
+                  class="ngpf-btn ngpf-btn-primary"
                   [disabled]="!challenge3Ready()"
                   (click)="onChallenge3ShowMe()"
                 >
@@ -150,7 +167,9 @@
                 <app-reflect-card
                   [challengeId]="currentChallenge()"
                   [insightText]="getReflectInsight()"
+                  [canGoBack]="canGoBack()"
                   (nextChallenge)="onNextChallenge()"
+                  (goBack)="onGoBack()"
                 />
               }
             }
@@ -167,8 +186,13 @@
                 (selectionChanged)="onChallenge4Select($event)"
               />
               <div class="predict-action">
+                @if (canGoBack()) {
+                  <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onGoBack()">
+                    &larr; Back
+                  </button>
+                }
                 <button
-                  class="show-me-btn"
+                  class="ngpf-btn ngpf-btn-primary"
                   [disabled]="!challenge4Ready()"
                   (click)="onChallenge4ShowMe()"
                 >
@@ -206,7 +230,9 @@
                   [challengeId]="currentChallenge()"
                   [insightText]="getReflectInsight()"
                   [isLastChallenge]="true"
+                  [canGoBack]="canGoBack()"
                   (nextChallenge)="onNextChallenge()"
+                  (goBack)="onGoBack()"
                 />
               }
             }
@@ -217,7 +243,11 @@
           <div class="sandbox-layout">
             <h2>{{ challengeContent['challenge5'].title }}</h2>
             <p class="sandbox-setup">{{ challengeContent['challenge5'].setup }}</p>
-            <app-sandbox (finish)="onFinishSandbox()" />
+            <app-sandbox
+              [canGoBack]="canGoBack()"
+              (finish)="onFinishSandbox()"
+              (goBack)="onGoBack()"
+            />
           </div>
         }
       }

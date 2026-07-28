@@ -17,6 +17,7 @@ export interface RevealStat {
 })
 export class RevealStatsComponent {
   readonly guessValue = input<number | null>(null);
+  readonly guessLabel = input('Your Guess');
   readonly actualValue = input.required<number>();
   readonly label = input('Final Balance');
   readonly additionalStats = input<RevealStat[]>([]);

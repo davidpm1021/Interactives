@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, output, signal, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal, OnInit } from '@angular/core';
 import { CompoundInterestService } from '../../services/compound-interest.service';
 import { GrowthChartComponent } from '../growth-chart/growth-chart.component';
 import { SummaryPanelComponent } from '../summary-panel/summary-panel.component';
@@ -14,7 +14,13 @@ import { CHALLENGE_CONTENT } from '../../data/challenge-content';
   styleUrl: './sandbox.component.scss',
 })
 export class SandboxComponent implements OnInit {
+  readonly canGoBack = input(false);
   readonly finish = output<void>();
+  readonly goBack = output<void>();
+
+  protected onBack(): void {
+    this.goBack.emit();
+  }
 
   private readonly service = inject(CompoundInterestService);
 
