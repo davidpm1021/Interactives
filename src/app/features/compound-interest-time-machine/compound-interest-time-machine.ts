@@ -15,6 +15,7 @@ import { GuessPreviewChartComponent } from './components/guess-preview-chart/gue
 import { SandboxComponent } from './components/sandbox/sandbox.component';
 import { FinalSummaryComponent } from './components/final-summary/final-summary.component';
 import { IntroComponent } from './components/intro/intro.component';
+import { ConceptDemoComponent } from './components/concept-demo/concept-demo.component';
 import { CHALLENGE_CONTENT, ChallengeContent } from './data/challenge-content';
 import { ChallengeId, ChallengePredictions, PredictionPoint } from './models/compound-interest.models';
 import { formatCurrency, formatPercent } from './utils/formatters';
@@ -38,6 +39,7 @@ import { formatCurrency, formatPercent } from './utils/formatters';
     SandboxComponent,
     FinalSummaryComponent,
     IntroComponent,
+    ConceptDemoComponent,
   ],
   providers: [ChallengeStateService],
   templateUrl: './compound-interest-time-machine.html',
@@ -61,7 +63,9 @@ export class CompoundInterestTimeMachine {
   protected readonly predictions = this.stateService.predictions;
   protected readonly showingSummary = this.stateService.showingSummary;
   protected readonly showingIntro = this.stateService.showingIntro;
+  protected readonly showingConcept = this.stateService.showingConcept;
   protected readonly canGoBack = this.stateService.canGoBack;
+  protected readonly reflections = this.stateService.reflections;
 
   protected readonly sessionRate = this.stateService.sessionRate;
 
@@ -96,6 +100,7 @@ export class CompoundInterestTimeMachine {
       predictPrompt40: swap(content.predictPrompt40),
       reflectInsight: swap(content.reflectInsight),
       reflectInsightAccurate: swap(content.reflectInsightAccurate),
+      reflectPrompt: swap(content.reflectPrompt),
     };
   }
 
@@ -143,8 +148,16 @@ export class CompoundInterestTimeMachine {
 
   // ── Actions ────────────────────────────────────────
 
-  protected onStartChallenges(): void {
-    this.stateService.startChallenges();
+  protected onStartConcept(): void {
+    this.stateService.startConcept();
+  }
+
+  protected onConceptFinished(): void {
+    this.stateService.advanceFromConcept();
+  }
+
+  protected onReflection(promptId: string, text: string): void {
+    this.stateService.saveReflection(promptId, text);
   }
 
   protected onSubmitPrediction(predictions: Partial<ChallengePredictions>): void {

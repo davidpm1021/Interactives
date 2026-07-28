@@ -1,5 +1,22 @@
 <div class="reflect-card" role="region" aria-label="Reflection">
   <p class="insight-text">{{ insightText() }}</p>
+
+  @if (reflectPrompt(); as prompt) {
+    <div class="reflect-prompt">
+      <label class="reflect-prompt__label" [attr.for]="'reflect-' + challengeId()">
+        {{ prompt }}
+      </label>
+      <textarea
+        [id]="'reflect-' + challengeId()"
+        class="reflect-prompt__input"
+        rows="2"
+        placeholder="Write a sentence or two. (Optional. Helps you remember.)"
+        [value]="reflectionValue()"
+        (input)="onReflectionInput($event)"
+      ></textarea>
+    </div>
+  }
+
   <div class="reflect-actions">
     @if (canGoBack()) {
       <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onBack()">

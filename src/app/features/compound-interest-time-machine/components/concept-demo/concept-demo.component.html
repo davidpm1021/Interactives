@@ -1,0 +1,76 @@
+<section class="concept-demo" aria-labelledby="concept-title">
+  <div class="concept-step-badge">Concept demo</div>
+  <h2 id="concept-title" class="concept-demo__title">
+    Before you guess, watch this
+  </h2>
+  <p class="concept-demo__lede">
+    The whole story of compound interest is in one idea:
+    <strong>the interest you earn also earns interest.</strong>
+    Here's what that looks like over just three years.
+  </p>
+
+  <div class="concept-demo__chart" role="img" aria-label="Stacked bars showing $1 growing over 3 years at 10 percent">
+    <div class="bars">
+      @for (bar of bars(); track bar.year) {
+        <div class="bar-col" [class.bar-col--highlight]="bar.highlight">
+          <div class="bar-track">
+            @if (bar.shown) {
+              <div class="bar-segment bar-segment--interest" [style.height.%]="bar.interestPct"></div>
+              <div class="bar-segment bar-segment--principal" [style.height.%]="bar.principalPct"></div>
+            }
+          </div>
+          <div class="bar-label">Year {{ bar.year }}</div>
+        </div>
+      }
+    </div>
+    <div class="legend">
+      <span class="legend-item"><span class="swatch swatch--principal"></span> Your original $1</span>
+      <span class="legend-item"><span class="swatch swatch--interest"></span> Interest earned</span>
+    </div>
+  </div>
+
+  <div class="concept-demo__figures" aria-live="polite">
+    <div class="figure">
+      <div class="figure-label">Year {{ currentStep().year }} balance</div>
+      <div class="figure-value">${{ currentStep().balance.toFixed(2) }}</div>
+    </div>
+    @if (currentStep().interestThisYear > 0) {
+      <div class="figure figure--interest">
+        <div class="figure-label">Interest earned this year</div>
+        <div class="figure-value">+${{ currentStep().interestThisYear.toFixed(2) }}</div>
+      </div>
+    }
+  </div>
+
+  <p class="concept-demo__narrative">{{ currentStep().narrative }}</p>
+
+  <div class="concept-demo__progress">
+    @for (bar of bars(); track bar.year; let i = $index) {
+      <span
+        class="progress-dot"
+        [class.progress-dot--active]="i === stepIndex()"
+        [class.progress-dot--past]="i < stepIndex()"
+        [attr.aria-current]="i === stepIndex() ? 'step' : null"
+      ></span>
+    }
+  </div>
+
+  <div class="concept-demo__actions">
+    @if (canGoBack() && isFirstStep()) {
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onBack()">
+        &larr; Back
+      </button>
+    } @else if (!isFirstStep()) {
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onPrevStep()">
+        &larr; Back
+      </button>
+    }
+    <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="onNext()">
+      @if (isLastStep()) {
+        Make your first prediction &rarr;
+      } @else {
+        Next
+      }
+    </button>
+  </div>
+</section>

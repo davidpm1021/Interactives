@@ -1,8 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
 import { ChallengeStateService } from '../../services/challenge-state.service';
 import { CompoundInterestService } from '../../services/compound-interest.service';
-import { CHALLENGE_CONTENT, SUMMARY_TAKEAWAYS } from '../../data/challenge-content';
+import { CHALLENGE_CONTENT } from '../../data/challenge-content';
 import { formatCurrency } from '../../utils/formatters';
+import { TakeawaysFillComponent } from '../takeaways-fill/takeaways-fill.component';
+import { ReflectionFormComponent } from '../reflection-form/reflection-form.component';
 
 interface RecapRow {
   challenge: number;
@@ -14,7 +16,7 @@ interface RecapRow {
 @Component({
   selector: 'app-final-summary',
   standalone: true,
-  imports: [],
+  imports: [TakeawaysFillComponent, ReflectionFormComponent],
   templateUrl: './final-summary.component.html',
   styleUrl: './final-summary.component.scss',
 })
@@ -22,10 +24,9 @@ export class FinalSummaryComponent {
   private readonly stateService = inject(ChallengeStateService);
   private readonly service = inject(CompoundInterestService);
 
-  protected readonly takeaways = SUMMARY_TAKEAWAYS;
-
   protected readonly recapRows = computed<RecapRow[]>(() => {
     const preds = this.stateService.predictions();
+    const rate = this.stateService.sessionRate();
     const rows: RecapRow[] = [];
     const fmt = (n: number) => formatCurrency(Math.round(n));
     const optionLabel = (key: 'challenge2' | 'challenge4', id: string | null | undefined) => {
@@ -35,7 +36,7 @@ export class FinalSummaryComponent {
     };
 
     // Challenge 1
-    const c1Actual = this.service.calculateChallenge1().summary.finalBalance;
+    const c1Actual = this.service.calculateChallenge1(rate).summary.finalBalance;
     rows.push({
       challenge: 1,
       title: CHALLENGE_CONTENT['challenge1'].title,
@@ -45,7 +46,7 @@ export class FinalSummaryComponent {
       reality: fmt(c1Actual),
     });
 
-    // Challenge 2
+    // Challenge 2 stays fixed at 5% vs 10%
     const c2Low = this.service.calculateChallenge2Low().summary.finalBalance;
     const c2High = this.service.calculateChallenge2High().summary.finalBalance;
     const ratio = c2High / c2Low;
@@ -57,7 +58,7 @@ export class FinalSummaryComponent {
     });
 
     // Challenge 3
-    const c3Actual = this.service.calculateChallenge3().summary.finalBalance;
+    const c3Actual = this.service.calculateChallenge3(rate).summary.finalBalance;
     rows.push({
       challenge: 3,
       title: CHALLENGE_CONTENT['challenge3'].title,
@@ -68,8 +69,8 @@ export class FinalSummaryComponent {
     });
 
     // Challenge 4
-    const c4Early = this.service.calculateChallenge4Early().summary.finalBalance;
-    const c4Late = this.service.calculateChallenge4Late().summary.finalBalance;
+    const c4Early = this.service.calculateChallenge4Early(rate).summary.finalBalance;
+    const c4Late = this.service.calculateChallenge4Late(rate).summary.finalBalance;
     const gap = c4Early - c4Late;
     rows.push({
       challenge: 4,

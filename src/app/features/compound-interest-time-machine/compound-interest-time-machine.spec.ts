@@ -28,11 +28,20 @@ describe('CompoundInterestTimeMachine', () => {
     expect(el.querySelector('.challenge-progress')).toBeFalsy();
   });
 
-  it('should leave the intro and reveal challenge 1 after startChallenges', () => {
-    stateService.startChallenges();
+  it('should leave the intro and enter concept demo after startConcept', () => {
+    stateService.startConcept();
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
     expect(el.querySelector('app-intro')).toBeFalsy();
+    expect(el.querySelector('app-concept-demo')).toBeTruthy();
+  });
+
+  it('should advance from concept to challenge 1 predict', () => {
+    stateService.startConcept();
+    stateService.advanceFromConcept();
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('app-concept-demo')).toBeFalsy();
     expect(el.querySelector('.challenge-progress')).toBeTruthy();
     const title = el.querySelector('.challenge-title');
     expect(title?.textContent).toContain('The Guess');
@@ -45,7 +54,8 @@ describe('CompoundInterestTimeMachine', () => {
   });
 
   it('should show disabled show-me button before predictions are locked', () => {
-    stateService.startChallenges();
+    stateService.startConcept();
+    stateService.advanceFromConcept();
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
     const btn = el.querySelector('.predict-action .ngpf-btn-primary') as HTMLButtonElement;
@@ -54,7 +64,8 @@ describe('CompoundInterestTimeMachine', () => {
   });
 
   it('should advance to reveal when state service transitions', () => {
-    stateService.startChallenges();
+    stateService.startConcept();
+    stateService.advanceFromConcept();
     stateService.submitPrediction({ challenge1Year10: 2000, challenge1Year40: 5000 });
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
@@ -63,7 +74,8 @@ describe('CompoundInterestTimeMachine', () => {
   });
 
   it('should advance through to reflect phase', () => {
-    stateService.startChallenges();
+    stateService.startConcept();
+    stateService.advanceFromConcept();
     stateService.submitPrediction({ challenge1Year10: 2000, challenge1Year40: 5000 });
     fixture.detectChanges();
     stateService.advanceToReflect();

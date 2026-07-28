@@ -53,7 +53,14 @@ export type ViewState = 'scenario-selection' | 'exploring' | 'comparing';
 // ── Challenge State ──────────────────────────────
 
 export type ChallengeId = 1 | 2 | 3 | 4 | 5;
-export type ChallengePhase = 'intro' | 'predict' | 'reveal' | 'reflect' | 'sandbox' | 'summary';
+export type ChallengePhase =
+  | 'intro'
+  | 'concept'
+  | 'predict'
+  | 'reveal'
+  | 'reflect'
+  | 'sandbox'
+  | 'summary';
 
 export interface ChallengeState {
   currentChallenge: ChallengeId;

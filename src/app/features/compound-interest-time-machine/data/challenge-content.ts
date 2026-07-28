@@ -20,6 +20,8 @@ export interface ChallengeContent {
   options?: ChallengeOption[];
   reflectInsight?: string;
   reflectInsightAccurate?: string;
+  /** Optional open-ended prompt shown in the reflect card to nudge synthesis. */
+  reflectPrompt?: string;
   inputPrompts?: Record<string, string>;
   waitToggle?: string;
 }
@@ -36,6 +38,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
       'The growth looks slow at first, then accelerates. That\'s the "compound" effect. Your money doesn\'t just earn interest. It earns interest on the interest.',
     reflectInsightAccurate:
       'Impressive. Most people guess way lower. But did you expect it to curve like that? The growth isn\'t steady. It accelerates.',
+    reflectPrompt: 'What surprised you about how the curve grew?',
   },
   challenge2: {
     title: 'Does Double the Rate Mean Double the Money?',
@@ -53,6 +56,8 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     revealButton: 'Show me',
     reflectInsight:
       'Doubling the rate didn\'t double the outcome. It did way more than that. With compound interest, small rate differences get magnified over time. That\'s why it\'s worth knowing what different accounts and investments actually earn.',
+    reflectPrompt:
+      'In your own words: why does doubling the rate more than double the money?',
   },
   challenge3: {
     title: 'The Power of Adding a Little',
@@ -63,6 +68,8 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     revealButton: 'Show me',
     reflectInsight:
       '$100/month is about $3.30/day. Compound interest turned $49,000 of your money into {{c3Final}}. That\'s the power of consistent investing over time.',
+    reflectPrompt:
+      'What does this make you want to change (or keep doing) with your own money?',
   },
   challenge4: {
     title: 'The Cost of Waiting',
@@ -82,6 +89,8 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     revealButton: 'Show me',
     reflectInsight:
       'Jordan didn\'t do anything wrong. They invested consistently for 30 years. But those first 10 years of compound growth are the most valuable years you\'ll ever have. Every dollar has the longest time to multiply. That\'s time you can never get back.',
+    reflectPrompt:
+      'What would you tell a friend who says "I\'ll just start investing later"?',
   },
   challenge5: {
     title: 'Your Time Machine',
@@ -104,8 +113,3 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
   },
 } as const;
 
-export const SUMMARY_TAKEAWAYS = [
-  'Compound growth accelerates. Most of the gains come in the later years.',
-  'A small difference in rate creates an enormous difference in outcome.',
-  'Time is the most powerful variable. Starting early matters more than investing more later.',
-] as const;

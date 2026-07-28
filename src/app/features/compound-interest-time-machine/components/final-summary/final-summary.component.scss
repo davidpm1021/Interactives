@@ -74,42 +74,10 @@
   color: var(--ngpf-navy-blue);
 }
 
-// ── Takeaways ──
-.takeaways {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: var(--ngpf-shadow-sm);
-  margin-bottom: 2rem;
-
-  h3 {
-    font-family: var(--ngpf-font-heading);
-    color: var(--ngpf-navy-blue);
-    font-size: 1.1rem;
-    margin: 0 0 1rem;
-  }
-
-  ol {
-    margin: 0;
-    padding-left: 1.25rem;
-
-    li {
-      font-family: var(--ngpf-font-body);
-      font-size: 0.95rem;
-      color: #444;
-      line-height: 1.6;
-      margin-bottom: 0.75rem;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-}
-
 // ── Print button ──
 .print-action {
   text-align: center;
+  margin-top: 2rem;
 }
 
 // ── Print styles ──
@@ -120,11 +88,6 @@
 
   .print-action {
     display: none;
-  }
-
-  .takeaways {
-    box-shadow: none;
-    border: 1px solid #ddd;
   }
 
   .recap-table th {

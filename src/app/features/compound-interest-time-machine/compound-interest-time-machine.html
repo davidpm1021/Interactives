@@ -1,7 +1,7 @@
 <app-top-header></app-top-header>
 <main class="compound-interest-time-machine" id="main-content">
   <div class="content">
-    @if (!showingIntro()) {
+    @if (!showingIntro() && !showingConcept()) {
       <app-challenge-progress
         [currentChallenge]="currentChallenge()"
         [completedChallenges]="completedChallenges()"
@@ -9,7 +9,9 @@
     }
 
     @if (showingIntro()) {
-      <app-intro (begin)="onStartChallenges()" />
+      <app-intro (begin)="onStartConcept()" />
+    } @else if (showingConcept()) {
+      <app-concept-demo (finish)="onConceptFinished()" (goBack)="onGoBack()" [canGoBack]="canGoBack()" />
     } @else if (showingSummary()) {
       <app-final-summary />
     } @else {
@@ -58,8 +60,11 @@
                   [challengeId]="currentChallenge()"
                   [insightText]="challenge1Insight()"
                   [canGoBack]="canGoBack()"
+                  [reflectPrompt]="currentContent().reflectPrompt ?? null"
+                  [reflectionValue]="reflections()['challenge1'] ?? ''"
                   (nextChallenge)="onNextChallenge()"
                   (goBack)="onGoBack()"
+                  (reflectionText)="onReflection('challenge1', $event)"
                 />
               }
             }
@@ -121,8 +126,11 @@
                   [challengeId]="currentChallenge()"
                   [insightText]="getReflectInsight()"
                   [canGoBack]="canGoBack()"
+                  [reflectPrompt]="currentContent().reflectPrompt ?? null"
+                  [reflectionValue]="reflections()['challenge2'] ?? ''"
                   (nextChallenge)="onNextChallenge()"
                   (goBack)="onGoBack()"
+                  (reflectionText)="onReflection('challenge2', $event)"
                 />
               }
             }
@@ -172,8 +180,11 @@
                   [challengeId]="currentChallenge()"
                   [insightText]="getReflectInsight()"
                   [canGoBack]="canGoBack()"
+                  [reflectPrompt]="currentContent().reflectPrompt ?? null"
+                  [reflectionValue]="reflections()['challenge3'] ?? ''"
                   (nextChallenge)="onNextChallenge()"
                   (goBack)="onGoBack()"
+                  (reflectionText)="onReflection('challenge3', $event)"
                 />
               }
             }
@@ -236,8 +247,11 @@
                   [insightText]="getReflectInsight()"
                   [isLastChallenge]="true"
                   [canGoBack]="canGoBack()"
+                  [reflectPrompt]="currentContent().reflectPrompt ?? null"
+                  [reflectionValue]="reflections()['challenge4'] ?? ''"
                   (nextChallenge)="onNextChallenge()"
                   (goBack)="onGoBack()"
+                  (reflectionText)="onReflection('challenge4', $event)"
                 />
               }
             }

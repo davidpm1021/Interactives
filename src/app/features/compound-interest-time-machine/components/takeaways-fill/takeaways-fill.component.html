@@ -1,0 +1,73 @@
+<div class="takeaways-fill">
+  <div class="takeaways-fill__header">
+    <h3 class="takeaways-fill__title">Key Takeaways</h3>
+    <p class="takeaways-fill__hint">
+      Tap a word from the bank, then tap a blank to place it. Get it right and it locks in.
+    </p>
+  </div>
+
+  <div class="sentences">
+    @for (sentence of sentences(); track sentence.id) {
+      <p class="sentence">
+        @for (part of sentence.parts; track $index) {
+          @if (part.blankId; as blankId) {
+            @let blankState = blanks()[blankId];
+            @let placedChip = chipInBlank(blankId);
+            <button
+              type="button"
+              class="blank"
+              [class.blank--correct]="blankState.correct"
+              [class.blank--revealed]="blankState.revealed"
+              [class.blank--shake]="blankState.shake"
+              [class.blank--filled]="placedChip !== null"
+              (click)="onBlankClick(blankId)"
+              (keydown)="onKeyBlank($event, blankId)"
+              [attr.aria-label]="placedChip ? placedChip.text + ' placed. Click to remove.' : 'Empty blank. Click to place selected word.'"
+              [attr.aria-invalid]="blankState.shake"
+            >
+              @if (placedChip) {
+                {{ placedChip.text }}
+              } @else {
+                <span class="blank__placeholder">____</span>
+              }
+              @if (blankState.correct || blankState.revealed) {
+                <span class="blank__check" aria-hidden="true">✓</span>
+              }
+            </button>
+          } @else {
+            <span>{{ part.text }}</span>
+          }
+        }
+      </p>
+    }
+  </div>
+
+  <div class="word-bank" role="group" aria-label="Word bank">
+    <div class="word-bank__label">Word bank</div>
+    <div class="word-bank__chips">
+      @for (chip of chips(); track chip.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.chip--placed]="chip.placed"
+          [class.chip--selected]="selectedChipId() === chip.id"
+          [class.chip--locked]="chip.locked"
+          [disabled]="chip.placed && chip.locked"
+          (click)="onChipClick(chip)"
+          (keydown)="onKeyChip($event, chip)"
+          [attr.aria-pressed]="selectedChipId() === chip.id"
+        >
+          {{ chip.text }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="takeaways-fill__actions">
+    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="showAllAnswers()">
+      Show answers
+    </button>
+  </div>
+
+  <div class="sr-only" aria-live="polite">{{ announcement() }}</div>
+</div>

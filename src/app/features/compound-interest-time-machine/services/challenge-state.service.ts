@@ -34,6 +34,12 @@ export class ChallengeStateService {
     predictions: {},
   });
 
+  /**
+   * Reflection text lives outside the history-tracked state so Back/Next
+   * navigation never rewinds a student's in-progress writing.
+   */
+  private readonly _reflections = signal<Record<string, string>>({});
+
   private readonly _history = signal<ChallengeState[]>([]);
 
   // ── Derived signals ────────────────────────────────
@@ -42,6 +48,7 @@ export class ChallengeStateService {
   readonly currentPhase = computed(() => this._state().phase);
   readonly completedChallenges = computed(() => this._state().completedChallenges);
   readonly predictions = computed(() => this._state().predictions);
+  readonly reflections = computed(() => this._reflections());
   readonly canGoBack = computed(() => this._history().length > 0);
 
   readonly isComplete = computed(
@@ -50,13 +57,22 @@ export class ChallengeStateService {
 
   readonly showingSummary = computed(() => this._state().phase === 'summary');
   readonly showingIntro = computed(() => this._state().phase === 'intro');
+  readonly showingConcept = computed(() => this._state().phase === 'concept');
 
   // ── Transition methods ─────────────────────────────
 
-  /** Move from intro → challenge 1's predict phase. */
-  startChallenges(): void {
+  /** Move from intro → concept phase (the "interest earns interest" demo). */
+  startConcept(): void {
     const prev = this._state();
     if (prev.phase !== 'intro') return;
+    this.pushHistory(prev);
+    this._state.set({ ...prev, phase: 'concept' as ChallengePhase });
+  }
+
+  /** Move from concept → challenge 1's predict phase. */
+  advanceFromConcept(): void {
+    const prev = this._state();
+    if (prev.phase !== 'concept') return;
     this.pushHistory(prev);
     this._state.set({ ...prev, phase: 'predict' as ChallengePhase });
   }
@@ -123,6 +139,15 @@ export class ChallengeStateService {
     const prev = h[h.length - 1];
     this._history.set(h.slice(0, -1));
     this._state.set(prev);
+  }
+
+  /**
+   * Persist a freeform reflection entry keyed by prompt id. Not gated on phase
+   * so reflect-cards and the final-summary form can both call it. Stored in a
+   * separate signal so Back/Next never rewinds a student's writing.
+   */
+  saveReflection(promptId: string, text: string): void {
+    this._reflections.update((r) => ({ ...r, [promptId]: text }));
   }
 
   /** Get the full state snapshot (for testing / debugging). */
