@@ -160,6 +160,50 @@ Features wrap content in a div matching the component name, with TopHeader and B
 - Kebab-case for files/selectors, PascalCase for classes
 - Single quotes, 100 char line width (Prettier config in package.json)
 
+## Styling: Use Global Tokens & Classes By Default
+
+Every new component MUST reuse the global design system before rolling anything
+custom. The global tokens and classes live in `src/styles.scss` and are listed
+in the memory file at
+`.claude/projects/D--Cursor-Projects-NGPFInteractives/memory/MEMORY.md`.
+Deviate only when the design genuinely calls for it, and leave a comment
+explaining why.
+
+**Buttons — always use global classes:**
+- Primary CTA (Next / Show me / Finish): `class="ngpf-btn ngpf-btn-primary"`
+- Secondary/back/cancel: `class="ngpf-btn ngpf-btn-secondary"`
+- Outline / success / danger variants: `.ngpf-btn-outline`, `.ngpf-btn-success`,
+  `.ngpf-btn-danger`.
+- Do NOT redefine button padding, border-radius, font-size, background, or
+  hover color in a component's SCSS. If a button needs to be smaller or a
+  different shape, that's usually a sign it isn't a button — reach for a
+  chip / toggle / icon-control pattern instead, and if the design still calls
+  for it, use a distinct class name (e.g. `.play-btn`, `.wait-toggle`).
+- If you DO create a specialized control that looks button-like (icon button,
+  segmented toggle, chip), reuse the CTA blues: base = `--ngpf-bright-blue`,
+  hover = `--ngpf-royal-blue`. Two different "action blues" in one flow reads
+  as a mistake to users.
+- If a global class doesn't apply visually against the page background (e.g.
+  `.ngpf-btn-secondary` blends into `--ngpf-soft-blue-tint`), override
+  LOCALLY in the feature's SCSS with a scoped `::ng-deep` rule, not by
+  replacing the class.
+
+**Colors — use design tokens:**
+- Always use `var(--ngpf-*)` custom properties (see MEMORY.md for the full
+  list). Never hardcode hex colors like `#333`, `#555`, `#ddd`, `#eee` in
+  component SCSS. If a shade you need doesn't exist as a token, ask before
+  adding one to `styles.scss`.
+- Never use raw `rgba(31, 59, 155, 0.08)` etc. — use the tinted tokens
+  (`--ngpf-soft-blue-tint`, `--ngpf-ice-blue`).
+
+**Spacing, radii, shadows — use the token scales:**
+- `--ngpf-spacing-{xs,sm,md,lg,xl,xxl}`, `--ngpf-radius-{sm,md,lg}`,
+  `--ngpf-shadow-{sm,md,lg}`. Ad-hoc pixel values are fine only for
+  chart-internal geometry (SVG coordinates, d3 dimensions, etc.).
+
+When touching an existing component that violates these rules, prefer fixing
+the violations over adding new ones on top.
+
 ## Git Workflow
 
 - **Never commit directly to main.** Always use a feature branch.

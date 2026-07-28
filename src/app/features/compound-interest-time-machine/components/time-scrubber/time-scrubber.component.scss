@@ -10,7 +10,10 @@
     min-width: 48px;
     border-radius: 50%;
     border: none;
-    background: var(--ngpf-royal-blue);
+    // Match the primary-CTA colors (--ngpf-bright-blue → --ngpf-royal-blue on
+    // hover) so the play button reads as the same "action blue" as the Next /
+    // Show me / Finish buttons throughout the flow.
+    background: var(--ngpf-bright-blue);
     color: white;
     cursor: pointer;
     display: flex;
@@ -19,7 +22,7 @@
     transition: background-color 0.15s, transform 0.1s;
 
     &:hover {
-      background: var(--ngpf-navy-blue);
+      background: var(--ngpf-royal-blue);
     }
 
     &:active {
