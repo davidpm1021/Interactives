@@ -82,32 +82,7 @@
 }
 
 .lock-btn {
-  display: inline-block;
   margin-top: 0.75rem;
-  background: var(--ngpf-bright-blue);
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-family: var(--ngpf-font-heading);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-
-  &:hover {
-    background: var(--ngpf-royal-blue);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--ngpf-sky-blue);
-    outline-offset: 2px;
-  }
 }
 
 :host ::ng-deep {

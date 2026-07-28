@@ -30,6 +30,23 @@
     outline: none;
   }
 
+  // ── Local secondary-button override ───────────────
+  // The page background is --ngpf-soft-blue-tint (line 4), which is the exact
+  // color the global .ngpf-btn-secondary uses for its background. Buttons like
+  // "← Back" and "Show table" would blend in and read as bare text. Give them
+  // a white fill + subtle border so they read as buttons here. Applies to all
+  // secondary buttons inside this feature, including inside child components
+  // (that's why ::ng-deep).
+  ::ng-deep .ngpf-btn-secondary {
+    background: white;
+    border: 1px solid var(--ngpf-light-gray-blue);
+
+    &:hover:not(:disabled) {
+      background: var(--ngpf-ice-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+  }
+
   // ── Centered challenge layout (challenges 1–4) ────
 
   .challenge-container {
@@ -50,6 +67,14 @@
     justify-content: center;
     align-items: center;
     gap: 0.75rem;
+    margin-top: 1.25rem;
+
+    // When the row contains only the Back button (e.g. Challenge 1 while dots
+    // are still being locked, since Show me is hidden until challenge1Ready),
+    // reduce visual weight so it doesn't demand attention over the chart.
+    &:has(> button:only-child) {
+      margin-top: 0.75rem;
+    }
   }
 
   .guess-vs-reality {

@@ -9,7 +9,7 @@
     Here's what that looks like over just three years.
   </p>
 
-  <div class="concept-demo__chart" role="img" aria-label="Stacked bars showing $1 growing over 3 years at 10 percent">
+  <div class="concept-demo__chart" role="img" aria-label="Stacked bars showing $100 growing over 3 years at 10 percent">
     <div class="bars">
       @for (bar of bars(); track bar.year) {
         <div class="bar-col" [class.bar-col--highlight]="bar.highlight">
@@ -24,7 +24,7 @@
       }
     </div>
     <div class="legend">
-      <span class="legend-item"><span class="swatch swatch--principal"></span> Your original $1</span>
+      <span class="legend-item"><span class="swatch swatch--principal"></span> Your original $100</span>
       <span class="legend-item"><span class="swatch swatch--interest"></span> Interest earned</span>
     </div>
   </div>
@@ -32,12 +32,12 @@
   <div class="concept-demo__figures" aria-live="polite">
     <div class="figure">
       <div class="figure-label">Year {{ currentStep().year }} balance</div>
-      <div class="figure-value">${{ currentStep().balance.toFixed(2) }}</div>
+      <div class="figure-value">${{ currentStep().balance.toFixed(currentStep().balance >= 100 ? 0 : 2) }}</div>
     </div>
     @if (currentStep().interestThisYear > 0) {
       <div class="figure figure--interest">
         <div class="figure-label">Interest earned this year</div>
-        <div class="figure-value">+${{ currentStep().interestThisYear.toFixed(2) }}</div>
+        <div class="figure-value">+${{ currentStep().interestThisYear.toFixed(currentStep().interestThisYear >= 10 ? 0 : 2) }}</div>
       </div>
     }
   </div>

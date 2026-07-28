@@ -31,34 +31,40 @@ export class ConceptDemoComponent {
 
   protected readonly stepIndex = signal(0);
 
+  /**
+   * Uses $100 (not $1) as the principal so the yearly interest chunks are
+   * $10 / $11 / $12.10 — big enough to actually SEE the sliver grow. The
+   * pedagogy (interest earns interest) is identical to the $1 case; the
+   * numbers just render as meaningful bar segments instead of hairlines.
+   */
   protected readonly steps: readonly ConceptStep[] = [
     {
       year: 0,
-      balance: 1.0,
+      balance: 100,
       interestThisYear: 0,
       narrative:
-        'You start with $1. Imagine you put it in an account that pays 10% every year.',
+        'You start with $100. Imagine you put it in an account that pays 10% every year.',
     },
     {
       year: 1,
-      balance: 1.1,
-      interestThisYear: 0.1,
+      balance: 110,
+      interestThisYear: 10,
       narrative:
-        'After year 1, you\'ve earned 10 cents. Now you have $1.10. Simple so far.',
+        'After year 1, you\'ve earned $10. Now you have $110. Simple so far.',
     },
     {
       year: 2,
-      balance: 1.21,
-      interestThisYear: 0.11,
+      balance: 121,
+      interestThisYear: 11,
       narrative:
-        'After year 2, you earn 11 cents instead of 10. Why? You\'re earning 10% on $1.10, not on $1. That extra cent is interest earning interest. That\'s what makes it "compound".',
+        'After year 2, you earn $11 instead of $10. Why? You\'re earning 10% on $110, not on $100. That extra dollar is interest earning interest. That\'s what makes it "compound".',
     },
     {
       year: 3,
-      balance: 1.33,
-      interestThisYear: 0.12,
+      balance: 133.1,
+      interestThisYear: 12.1,
       narrative:
-        'After year 3, you earn 12 cents. Small amounts here. But now imagine this happens for 40 years, on more than a dollar. That\'s the story you\'re about to explore.',
+        'After year 3, you earn about $12. Small amounts at first. Now imagine this same effect running for 40 years, on more than $100. That\'s the story you\'re about to explore.',
     },
   ];
 
@@ -66,14 +72,15 @@ export class ConceptDemoComponent {
   protected readonly isFirstStep = computed(() => this.stepIndex() === 0);
   protected readonly isLastStep = computed(() => this.stepIndex() === this.steps.length - 1);
 
-  /** Bar heights, normalized to the max final balance (1.33). Percent height. */
+  /** Bar heights, normalized to the max final balance. Percent height. */
   protected readonly bars = computed(() => {
+    const principal = this.steps[0].balance;
     const max = this.steps[this.steps.length - 1].balance;
     const shownUpTo = this.stepIndex();
     return this.steps.map((step, i) => {
       const shown = i <= shownUpTo;
-      const principalPct = shown ? (1 / max) * 100 : 0;
-      const interestPct = shown ? ((step.balance - 1) / max) * 100 : 0;
+      const principalPct = shown ? (principal / max) * 100 : 0;
+      const interestPct = shown ? ((step.balance - principal) / max) * 100 : 0;
       return {
         year: step.year,
         principalPct,

@@ -32,13 +32,14 @@
                     &larr; Back
                   </button>
                 }
-                <button
-                  class="ngpf-btn ngpf-btn-primary"
-                  [disabled]="!challenge1Ready()"
-                  (click)="onChallenge1ShowMe()"
-                >
-                  {{ currentContent().revealButton ?? 'Show me' }}
-                </button>
+                @if (challenge1Ready()) {
+                  <button
+                    class="ngpf-btn ngpf-btn-primary"
+                    (click)="onChallenge1ShowMe()"
+                  >
+                    {{ currentContent().revealButton ?? 'Show me' }}
+                  </button>
+                }
               </div>
             } @else {
               <h2>{{ currentContent().title }}</h2>

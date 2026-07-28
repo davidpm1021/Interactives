@@ -53,14 +53,16 @@ describe('CompoundInterestTimeMachine', () => {
     expect(live).toBeTruthy();
   });
 
-  it('should show disabled show-me button before predictions are locked', () => {
+  it('should hide the show-me button until challenge 1 predictions are locked', () => {
     stateService.startConcept();
     stateService.advanceFromConcept();
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
-    const btn = el.querySelector('.predict-action .ngpf-btn-primary') as HTMLButtonElement;
-    expect(btn).toBeTruthy();
-    expect(btn.disabled).toBe(true);
+    // Show me should not appear at all until both dots are locked. Prior
+    // behavior showed a disabled button, which floated below the chart's Lock
+    // button as a second orphaned row.
+    const btn = el.querySelector('.predict-action .ngpf-btn-primary') as HTMLButtonElement | null;
+    expect(btn).toBeNull();
   });
 
   it('should advance to reveal when state service transitions', () => {
