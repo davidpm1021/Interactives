@@ -47,6 +47,13 @@ export class EditorShell {
   readonly clearFn = input.required<() => unknown>();
   readonly previewFitHeight = input<number>(470);
   readonly maxBatch = input<number>(30);
+  /**
+   * Two-way. When true, the preview area renders a placeholder ("Generate to
+   * see the preview") instead of the docs. Auto-flips to false when a shell
+   * action (Generate / Clear) fires; parent editors that trigger their own
+   * generation set it back to false via the two-way binding.
+   */
+  readonly hidePreview = model<boolean>(false);
 
   protected readonly copiesPerPage = signal<1 | 2>(1);
   protected readonly batchCount = signal<number>(1);
@@ -98,6 +105,7 @@ export class EditorShell {
     this.docs.set([this.clearFn()()]);
     this.batchCount.set(1);
     this.batchAnnouncement.set('All cleared. One blank document ready.');
+    this.hidePreview.set(false);
   }
 
   protected generateBatch(): void {
@@ -109,6 +117,7 @@ export class EditorShell {
     this.batchAnnouncement.set(
       `Generated ${count} random ${label}${count === 1 ? '' : 's'}.`,
     );
+    this.hidePreview.set(false);
   }
 
   protected print(): void {

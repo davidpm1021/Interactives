@@ -2,6 +2,7 @@
   title="Paystub Builder"
   singularLabel="paystub"
   [(docs)]="paystubs"
+  [(hidePreview)]="hidePreview"
   [previewTpl]="previewTpl"
   [randomFn]="randomFnRef"
   [clearFn]="clearFnRef"
@@ -16,14 +17,14 @@
     you type in.
   </p>
 
-  <details class="paystub-editor__accordion no-print">
+  <details configPanel open class="paystub-editor__accordion no-print">
     <summary>
       <span>Configure random generation</span>
       <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
     </summary>
     <div class="paystub-editor__accordion-body">
       <p class="paystub-editor__hint">
-        Pin a few dimensions, then click <strong>Generate with these settings</strong> below.
+        Pin a few dimensions, then click <strong>Generate with these settings</strong>.
         Anything left as <em>Any</em> stays random.
       </p>
       <div class="paystub-editor__row">

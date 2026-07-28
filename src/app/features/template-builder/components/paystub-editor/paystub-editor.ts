@@ -80,6 +80,14 @@ export class PaystubEditor {
   protected readonly paystubs = signal<Paystub[]>([samplePaystub()]);
   protected readonly current = computed(() => this.paystubs()[0] ?? samplePaystub());
 
+  /**
+   * Preview is hidden until the teacher generates something — one-click
+   * random via the shell button, custom-configured via generateConfigured(),
+   * or a blank sheet via the shell's Clear all button. Two-way bound to the
+   * shell's hidePreview model.
+   */
+  protected readonly hidePreview = signal(true);
+
   protected readonly randomFnRef = (): Paystub => randomPaystub();
 
   // ── Configured random ──
@@ -128,10 +136,11 @@ export class PaystubEditor {
     };
   }
 
-  /** "Generate with these settings" — replaces the first paystub. */
+  /** "Generate with these settings" — replaces the first paystub and reveals the preview. */
   protected generateConfigured(): void {
     const next = randomPaystub(new Date(), this.buildOptions());
     this.paystubs.update((list) => [next, ...list.slice(1)]);
+    this.hidePreview.set(false);
   }
   protected readonly clearFnRef = (): Paystub => emptyPaystub();
 

@@ -38,6 +38,46 @@
     gap: var(--ngpf-spacing-md);
   }
 
+  // Compact action buttons — smaller than the site-wide ngpf-btn so the
+  // Generate / Clear / Print row doesn't dominate the form header.
+  &__btn {
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    background: white;
+    color: var(--ngpf-text-primary);
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    cursor: pointer;
+    line-height: 1.3;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+
+    &--primary {
+      background: var(--ngpf-royal-blue);
+      color: white;
+      border-color: var(--ngpf-royal-blue);
+
+      &:hover,
+      &:focus-visible {
+        background: var(--ngpf-bright-blue);
+        color: white;
+        border-color: var(--ngpf-bright-blue);
+      }
+    }
+  }
+
   &__actions-group {
     display: flex;
     flex-wrap: wrap;
@@ -120,6 +160,17 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: var(--ngpf-spacing-xs);
+  }
+
+  &__preview-placeholder {
+    padding: var(--ngpf-spacing-xl) var(--ngpf-spacing-lg);
+    text-align: center;
+    background: var(--ngpf-soft-blue-tint);
+    border: 1px dashed var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+    color: var(--ngpf-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   &__preview-count {
