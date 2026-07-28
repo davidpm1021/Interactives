@@ -1,7 +1,13 @@
 <div class="summary-panel" role="region" aria-live="polite" aria-label="Investment summary">
   <div class="stat-cards">
     <div class="stat-card primary">
-      <span class="stat-label">Balance at Year {{ displayData().year }}</span>
+      <span class="stat-label">
+        @if (startAge() !== null) {
+          Balance at Age {{ startAge()! + displayData().year }}
+        } @else {
+          Balance at Year {{ displayData().year }}
+        }
+      </span>
       <span class="stat-value large">{{ formatCurrency(animatedBalance()) }}</span>
     </div>
     <div class="stat-card">
@@ -20,7 +26,11 @@
 
   @if (showDoublingCallout()) {
     <div class="callout doubling">
-      Your money doubled your contributions by Year {{ doublingYear() }}!
+      @if (startAge() !== null) {
+        Your money doubled your contributions by Age {{ startAge()! + doublingYear()! }}!
+      } @else {
+        Your money doubled your contributions by Year {{ doublingYear() }}!
+      }
       That means interest earned more than you ever put in.
     </div>
   }
@@ -28,8 +38,8 @@
   @if (comparisonDelta(); as delta) {
     <div class="callout comparison">
       @if (delta > 0) {
-        Starting earlier earned you
-        <strong>{{ formatCurrency(delta) }}</strong> more!
+        {{ comparisonLabel() }}
+        <strong>{{ formatCurrency(delta) }}</strong> more.
       } @else {
         The other scenario earned
         <strong>{{ formatCurrency(-delta) }}</strong> more.

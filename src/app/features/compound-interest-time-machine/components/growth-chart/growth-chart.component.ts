@@ -50,6 +50,17 @@ export class GrowthChartComponent {
    * telegraph how much bigger the final balance will be.
    */
   readonly yAxisMax = input<number | null>(null);
+  /**
+   * When set, the x-axis labels render as ages instead of "Yr N". Also lets the
+   * tooltip show ages.
+   */
+  readonly startAge = input<number | null>(null);
+  /**
+   * Offset (in years) at which the comparison series should start on the x-axis.
+   * The sandbox uses 5 for the "wait 5 years" scenario so the comparison line
+   * begins later in time rather than just being a shorter series stuck at year 0.
+   */
+  readonly comparisonStartYear = input(0);
   readonly yearHover = output<number | null>();
 
   private readonly injector = inject(Injector);
@@ -92,8 +103,11 @@ export class GrowthChartComponent {
       const simple = this.showSimpleInterest();
       const year = this.selectedYear();
       const autoPlay = this.isAutoPlaying();
-      // Also track yAxisMax so the chart re-renders when the sandbox re-freezes it.
+      // Also track yAxisMax + startAge + comparisonStartYear so the chart re-renders
+      // when the sandbox re-freezes the axis or the age framing changes.
       this.yAxisMax();
+      this.startAge();
+      this.comparisonStartYear();
       if (this.initialized) {
         this.updateChart(data, comparison, simple, year, autoPlay);
       }
@@ -173,7 +187,12 @@ export class GrowthChartComponent {
       .attr('height', dims.innerHeight);
 
     const allData = result.dataPoints;
-    const allDataForScale = comparison ? [...allData, ...comparison.dataPoints] : allData;
+    const compOffset = this.comparisonStartYear();
+    // For scaling, project the comparison series onto the primary timeline.
+    const shiftedComp = comparison
+      ? comparison.dataPoints.map((d) => ({ ...d, year: d.year + compOffset }))
+      : [];
+    const allDataForScale = comparison ? [...allData, ...shiftedComp] : allData;
 
     const maxYear = Math.max(...allDataForScale.map((d) => d.year));
     const dataMaxBalance = Math.max(
@@ -192,9 +211,16 @@ export class GrowthChartComponent {
     const displayYear = selectedYear ?? maxYear;
     const data = allData.filter((d) => d.year <= displayYear);
     const dur = this.getTransitionDuration(isAutoPlaying);
+    const startAge = this.startAge();
 
-    renderAxes(this.chartGroup, scales, dims.innerHeight, maxYear, dur, (d) =>
-      formatCurrency(d, true),
+    renderAxes(
+      this.chartGroup,
+      scales,
+      dims.innerHeight,
+      maxYear,
+      dur,
+      (d) => formatCurrency(d, true),
+      startAge !== null ? (d) => `Age ${startAge + d}` : undefined,
     );
 
     // Area generators
@@ -246,19 +272,22 @@ export class GrowthChartComponent {
       lineLayer.selectAll('.simple-line').remove();
     }
 
-    // Comparison result
+    // Comparison result — shifted right by compOffset years so a "waiting"
+    // scenario begins later in time rather than compressing to year 0.
     if (comparison) {
-      const compData = comparison.dataPoints;
+      const compData = comparison.dataPoints.filter(
+        (d) => d.year + compOffset <= displayYear,
+      );
 
       const compBalanceLine = d3
         .line<YearlyDataPoint>()
-        .x((d) => scales.x(d.year))
+        .x((d) => scales.x(d.year + compOffset))
         .y((d) => scales.y(d.compoundBalance))
         .curve(d3.curveMonotoneX);
 
       const compArea = d3
         .area<YearlyDataPoint>()
-        .x((d) => scales.x(d.year))
+        .x((d) => scales.x(d.year + compOffset))
         .y0(dims.innerHeight)
         .y1((d) => scales.y(d.compoundBalance))
         .curve(d3.curveMonotoneX);
@@ -357,15 +386,20 @@ export class GrowthChartComponent {
     const x = event.clientX - containerRect.left + 15;
     const y = event.clientY - containerRect.top - 10;
 
+    const startAge = this.startAge();
+    const heading = startAge !== null ? `Age ${startAge + dp.year}` : `Year ${dp.year}`;
+
     let html = `
-      <strong>Year ${dp.year}</strong><br/>
+      <strong>${heading}</strong><br/>
       Balance: ${formatCurrency(dp.compoundBalance)}<br/>
       Contributed: ${formatCurrency(dp.totalContributions)}<br/>
       Interest: ${formatCurrency(dp.totalInterestEarned)}
     `;
 
     if (comparison) {
-      const compDp = comparison.dataPoints.find((d) => d.year === dp.year);
+      const compOffset = this.comparisonStartYear();
+      const compYear = dp.year - compOffset;
+      const compDp = compYear >= 0 ? comparison.dataPoints.find((d) => d.year === compYear) : null;
       if (compDp) {
         html += `<br/><hr style="margin:4px 0;border-color:#ddd"/>
           <strong>Comparison</strong><br/>

@@ -136,11 +136,14 @@
       [hoverYear]="hoverYear()"
       [isAutoPlaying]="isAutoPlaying()"
       [yAxisMax]="frozenYMax()"
+      [startAge]="startAge()"
+      [comparisonStartYear]="waitYears"
       (yearHover)="onYearHover($event)"
     />
     <app-time-scrubber
       [maxYear]="timeHorizon()"
       [currentYear]="selectedYear() ?? timeHorizon()"
+      [startAge]="startAge()"
       (yearChange)="onYearChange($event)"
       (playStateChange)="onPlayStateChange($event)"
     />
@@ -149,7 +152,24 @@
       [selectedYear]="hoverYear() ?? selectedYear()"
       [comparisonResult]="waitResult()"
       [animate]="isAutoPlaying()"
+      [startAge]="startAge()"
+      [comparisonLabel]="'Waiting ' + waitYears + ' years cost you'"
     />
+
+    <div class="table-toggle">
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-secondary table-toggle-btn"
+        (click)="toggleTable()"
+        [attr.aria-expanded]="showTable()"
+      >
+        {{ showTable() ? 'Hide table' : 'Show table' }}
+      </button>
+    </div>
+
+    @if (showTable()) {
+      <app-growth-table [result]="result()" [startAge]="startAge()" />
+    }
   </div>
 
   <div class="sandbox-finish">

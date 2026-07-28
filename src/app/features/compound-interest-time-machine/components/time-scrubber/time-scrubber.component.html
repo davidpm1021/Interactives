@@ -29,11 +29,17 @@
       [attr.aria-valuemin]="0"
       [attr.aria-valuemax]="maxYear()"
       [attr.aria-valuenow]="currentYear()"
-      [attr.aria-label]="'Timeline scrubber, Year ' + currentYear() + ' of ' + maxYear()"
+      [attr.aria-label]="startAge() !== null
+        ? 'Timeline scrubber, age ' + (startAge()! + currentYear()) + ' of ' + (startAge()! + maxYear())
+        : 'Timeline scrubber, Year ' + currentYear() + ' of ' + maxYear()"
     />
   </div>
 
   <div class="year-display">
-    Year {{ currentYear() }} of {{ maxYear() }}
+    @if (startAge() !== null) {
+      Age {{ startAge()! + currentYear() }} of {{ startAge()! + maxYear() }}
+    } @else {
+      Year {{ currentYear() }} of {{ maxYear() }}
+    }
   </div>
 </div>

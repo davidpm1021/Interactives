@@ -20,6 +20,17 @@ export class SummaryPanelComponent implements OnDestroy {
    * updates don't leave the numbers chasing the target.
    */
   readonly animate = input(false);
+  /**
+   * When set, callouts and headings render "age N" instead of "year N".
+   * The header year label uses (startAge + displayData.year).
+   */
+  readonly startAge = input<number | null>(null);
+  /**
+   * Copy for the comparison-delta callout. Sandbox passes the "wait 5 years"
+   * phrasing; other consumers can override. Not used unless comparisonResult
+   * is set.
+   */
+  readonly comparisonLabel = input('Starting earlier earned you');
 
   protected readonly displayData = computed(() => {
     const res = this.result();

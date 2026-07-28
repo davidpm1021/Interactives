@@ -191,6 +191,18 @@
   gap: 1rem;
 }
 
+.table-toggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.table-toggle-btn {
+  font-size: 0.85rem !important;
+  padding: 8px 16px !important;
+  min-height: 0 !important;
+}
+
 // ── Finish button ──
 .sandbox-finish {
   grid-column: 1 / -1;

@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, input, output, signal, OnInit } from '@angular/core';
 import { CompoundInterestService } from '../../services/compound-interest.service';
 import { GrowthChartComponent } from '../growth-chart/growth-chart.component';
+import { GrowthTableComponent } from '../growth-table/growth-table.component';
 import { SummaryPanelComponent } from '../summary-panel/summary-panel.component';
 import { TimeScrubberComponent } from '../time-scrubber/time-scrubber.component';
 import { SimulationInputs, SimulationResult } from '../../models/compound-interest.models';
@@ -9,7 +10,7 @@ import { CHALLENGE_CONTENT } from '../../data/challenge-content';
 @Component({
   selector: 'app-sandbox',
   standalone: true,
-  imports: [GrowthChartComponent, SummaryPanelComponent, TimeScrubberComponent],
+  imports: [GrowthChartComponent, GrowthTableComponent, SummaryPanelComponent, TimeScrubberComponent],
   templateUrl: './sandbox.component.html',
   styleUrl: './sandbox.component.scss',
 })
@@ -52,11 +53,11 @@ export class SandboxComponent implements OnInit {
 
   // ── Wait comparison ──
   protected readonly showWaitComparison = signal(false);
+  protected readonly waitYears = 5;
 
   protected readonly waitResult = computed<SimulationResult | null>(() => {
     if (!this.showWaitComparison()) return null;
-    const waitYears = 5;
-    const horizon = this.timeHorizon() - waitYears;
+    const horizon = this.timeHorizon() - this.waitYears;
     if (horizon < 1) return null;
     const inputs: SimulationInputs = {
       principal: this.principal(),
@@ -118,6 +119,12 @@ export class SandboxComponent implements OnInit {
 
   protected toggleWaitComparison(): void {
     this.showWaitComparison.update((v) => !v);
+  }
+
+  protected readonly showTable = signal(false);
+
+  protected toggleTable(): void {
+    this.showTable.update((v) => !v);
   }
 
   protected onYearChange(year: number): void {

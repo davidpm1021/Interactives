@@ -10,6 +10,8 @@ import { Component, input, output, signal, OnDestroy } from '@angular/core';
 export class TimeScrubberComponent implements OnDestroy {
   readonly maxYear = input.required<number>();
   readonly currentYear = input.required<number>();
+  /** When set, the scrubber displays ages instead of raw year offsets. */
+  readonly startAge = input<number | null>(null);
   readonly yearChange = output<number>();
   readonly playStateChange = output<boolean>();
 

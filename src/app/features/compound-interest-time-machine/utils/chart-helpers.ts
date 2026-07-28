@@ -133,11 +133,12 @@ export function renderAxes(
   maxYear: number,
   duration: number,
   formatYTick: (d: number) => string,
+  formatXTick?: (d: number) => string,
 ): void {
   const xAxis = d3
     .axisBottom(scales.x)
     .ticks(Math.min(maxYear, 10))
-    .tickFormat((d) => `Yr ${d}`);
+    .tickFormat((d) => (formatXTick ? formatXTick(d as number) : `Yr ${d}`));
 
   const yAxis = d3
     .axisLeft(scales.y)
