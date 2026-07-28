@@ -76,6 +76,30 @@ describe('ChallengeStateService', () => {
     expect(service.currentPhase()).toBe('reflect');
   });
 
+  it('should skip the transient reveal phase when going back from reflect', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({ challenge1Year40: 5000 });
+    service.advanceToReflect();
+    service.goBack();
+    // 'reveal' renders no Next/Back control and its chart never re-emits
+    // animationComplete, so landing there would strand the student.
+    expect(service.currentPhase()).toBe('predict');
+    expect(service.currentChallenge()).toBe(1);
+  });
+
+  it('should go back from a later challenge to the previous reflect card', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({});
+    service.advanceToReflect();
+    service.advanceToNextChallenge();
+    expect(service.currentChallenge()).toBe(2);
+    service.goBack();
+    expect(service.currentChallenge()).toBe(1);
+    expect(service.currentPhase()).toBe('reflect');
+  });
+
   it('should advance from challenge 1 to 2', () => {
     service.startConcept();
     service.advanceFromConcept();

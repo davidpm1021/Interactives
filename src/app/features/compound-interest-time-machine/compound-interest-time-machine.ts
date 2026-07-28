@@ -68,13 +68,23 @@ export class CompoundInterestTimeMachine {
   protected readonly sessionRate = this.stateService.sessionRate;
 
   // ── Challenge results (computed from service) ──────
+  //
+  // Challenges 1 and 3 use the randomized per-session rate: they ask for a
+  // free-form dollar guess, so the answer varies harmlessly and students can't
+  // copy a number off a neighbour's screen.
+  //
+  // Challenges 2 and 4 stay pinned to fixed rates. Their multiple-choice
+  // options are calibrated to specific outcomes (C2's "how many times bigger"
+  // bands assume 5% vs 10%; C4's dollar bands and its "$24,000 more" framing
+  // assume 7%), so randomizing the rate would leave the answer key pointing at
+  // the wrong option, or at no option at all.
 
   protected readonly challenge1Result = computed(() => this.service.calculateChallenge1(this.sessionRate()));
   protected readonly challenge2LowResult = computed(() => this.service.calculateChallenge2Low());
   protected readonly challenge2HighResult = computed(() => this.service.calculateChallenge2High());
   protected readonly challenge3Result = computed(() => this.service.calculateChallenge3(this.sessionRate()));
-  protected readonly challenge4EarlyResult = computed(() => this.service.calculateChallenge4Early(this.sessionRate()));
-  protected readonly challenge4LateResult = computed(() => this.service.calculateChallenge4Late(this.sessionRate()));
+  protected readonly challenge4EarlyResult = computed(() => this.service.calculateChallenge4Early());
+  protected readonly challenge4LateResult = computed(() => this.service.calculateChallenge4Late());
 
   protected readonly currentContent = computed<ChallengeContent>(() => {
     const raw = CHALLENGE_CONTENT[`challenge${this.currentChallenge()}`];
@@ -168,6 +178,7 @@ export class CompoundInterestTimeMachine {
 
   protected onNextChallenge(): void {
     this.stateService.advanceToNextChallenge();
+    this.resetInputsForCurrentPredict();
   }
 
   protected onFinishSandbox(): void {
@@ -176,6 +187,41 @@ export class CompoundInterestTimeMachine {
 
   protected onGoBack(): void {
     this.stateService.goBack();
+    this.resetInputsForCurrentPredict();
+  }
+
+  /**
+   * Clear the component-local prediction signals for the challenge whose
+   * predict screen we just navigated into (via Back or Next challenge).
+   *
+   * The prediction widgets (prediction-chart / -choice / -input) are destroyed
+   * and re-created on every entry to a predict phase, so their own internal
+   * state resets to empty. These parent-held signals do not, which would leave
+   * the "Show me" button armed with an answer the student can no longer see
+   * and can silently resubmit. They repopulate as soon as the student
+   * interacts with the freshly-rendered widget.
+   *
+   * Scoped to the current challenge, and only when we land on 'predict', so
+   * navigating back to an earlier *reflect* screen keeps that challenge's
+   * prediction points intact for the reveal chart's ghost line.
+   */
+  private resetInputsForCurrentPredict(): void {
+    if (this.currentPhase() !== 'predict') return;
+    switch (this.currentChallenge()) {
+      case 1:
+        this.challenge1PredictionPoints.set([]);
+        this.challenge1Ready.set(false);
+        break;
+      case 2:
+        this.challenge2Selection.set(null);
+        break;
+      case 3:
+        this.challenge3Guess.set(null);
+        break;
+      case 4:
+        this.challenge4Selection.set(null);
+        break;
+    }
   }
 
   // ── Challenge 1 handlers ────────────────────────────

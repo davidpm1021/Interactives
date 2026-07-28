@@ -89,11 +89,19 @@ export class ChallengeStateService {
     });
   }
 
-  /** Move from reveal → reflect for the current challenge. */
+  /**
+   * Move from reveal → reflect for the current challenge.
+   *
+   * Deliberately does NOT push history. 'reveal' is a transient animation
+   * state that auto-advances here via the chart's `animationComplete` output,
+   * so it is never a meaningful Back destination — and landing on it would
+   * strand the student, because the reveal branch renders no Next/Back control
+   * and the already-rendered chart never re-emits `animationComplete`.
+   * Skipping the push makes Back from a reflect card land on 'predict'.
+   */
   advanceToReflect(): void {
     const prev = this._state();
     if (prev.phase !== 'reveal') return;
-    this.pushHistory(prev);
     this._state.set({ ...prev, phase: 'reflect' as ChallengePhase });
   }
 

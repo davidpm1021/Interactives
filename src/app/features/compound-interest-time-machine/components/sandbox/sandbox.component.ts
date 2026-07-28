@@ -16,6 +16,13 @@ import { CHALLENGE_CONTENT } from '../../data/challenge-content';
 })
 export class SandboxComponent implements OnInit {
   readonly canGoBack = input(false);
+  /**
+   * Rate the sandbox opens on, as a whole percent. The parent passes the
+   * randomized session rate so "Your Time Machine" continues the same
+   * scenario the student just worked through, instead of silently switching
+   * to a different rate and producing different numbers for identical inputs.
+   */
+  readonly initialRatePercent = input(7);
   readonly finish = output<void>();
   readonly goBack = output<void>();
 
@@ -89,6 +96,9 @@ export class SandboxComponent implements OnInit {
   protected readonly frozenYMax = signal<number | null>(null);
 
   ngOnInit(): void {
+    // Carry the session's rate over from the challenges before the first
+    // refit, so the frozen ceiling matches the scenario we open on.
+    this.interestRatePercent.set(this.clamp(this.initialRatePercent(), 0, 15));
     // Start at year 0 so the user scrubs or plays to reveal
     this.selectedYear.set(0);
     this.refitYAxis();

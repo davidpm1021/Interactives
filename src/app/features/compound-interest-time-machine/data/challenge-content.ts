@@ -62,7 +62,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
   challenge3: {
     title: 'The Power of Adding a Little',
     setup:
-      'Remember that $1,000 at {{rate}} for 40 years? It grew to about {{c1Final}} on its own. Now let\'s add $100 every month, like a small automatic transfer from a paycheck. Over 40 years, that\'s $49,000 of your own money on top of the original $1,000.',
+      'Remember that $1,000 at {{rate}} for 40 years? It grew to about {{c1Final}} on its own. Now let\'s add $100 every month, like a small automatic transfer from a paycheck. Over 40 years that\'s $48,000, which on top of the original $1,000 means you put in $49,000 of your own money.',
     predictPrompt:
       'Combined with compound interest, how much do you think you\'ll end up with?',
     revealButton: 'Show me',
@@ -71,6 +71,11 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     reflectPrompt:
       'What does this make you want to change (or keep doing) with your own money?',
   },
+  // NOTE: Challenge 4 is deliberately pinned to 7% rather than the randomized
+  // session rate. The "$24,000 more" framing and the dollar-denominated answer
+  // options below are calibrated to a 7% outcome (Alex ends ~$281k ahead, so
+  // option E is correct). At 5% the gap is ~$139k, which falls between options
+  // C and D with no correct answer.
   challenge4: {
     title: 'The Cost of Waiting',
     setup:

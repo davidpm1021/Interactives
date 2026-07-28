@@ -68,9 +68,10 @@ export class FinalSummaryComponent {
       reality: fmt(c3Actual),
     });
 
-    // Challenge 4
-    const c4Early = this.service.calculateChallenge4Early(rate).summary.finalBalance;
-    const c4Late = this.service.calculateChallenge4Late(rate).summary.finalBalance;
+    // Challenge 4 stays pinned to 7%: its dollar answer bands are calibrated
+    // to that rate (see the note in compound-interest-time-machine.ts).
+    const c4Early = this.service.calculateChallenge4Early().summary.finalBalance;
+    const c4Late = this.service.calculateChallenge4Late().summary.finalBalance;
     const gap = c4Early - c4Late;
     rows.push({
       challenge: 4,

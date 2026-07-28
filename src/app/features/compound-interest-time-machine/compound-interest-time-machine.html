@@ -261,6 +261,7 @@
             <p class="sandbox-setup">{{ challengeContent['challenge5'].setup }}</p>
             <app-sandbox
               [canGoBack]="canGoBack()"
+              [initialRatePercent]="sessionRate() * 100"
               (finish)="onFinishSandbox()"
               (goBack)="onGoBack()"
             />

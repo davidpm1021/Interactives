@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { CompoundInterestTimeMachine } from './compound-interest-time-machine';
 import { ChallengeStateService } from './services/challenge-state.service';
 
@@ -84,5 +85,59 @@ describe('CompoundInterestTimeMachine', () => {
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
     expect(el.querySelector('app-reflect-card')).toBeTruthy();
+  });
+
+  it('should always leave a reachable control after Back from a reflect card', () => {
+    stateService.startConcept();
+    stateService.advanceFromConcept();
+    stateService.submitPrediction({ challenge1Year10: 2000, challenge1Year40: 5000 });
+    stateService.advanceToReflect();
+    fixture.detectChanges();
+
+    const backBtn = fixture.nativeElement.querySelector(
+      'app-reflect-card .ngpf-btn-secondary',
+    ) as HTMLButtonElement;
+    expect(backBtn).toBeTruthy();
+    backBtn.click();
+    fixture.detectChanges();
+
+    // We should be back on the predict screen, not stranded on the
+    // control-less reveal screen.
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('app-prediction-chart')).toBeTruthy();
+    expect(el.querySelector('.predict-action')).toBeTruthy();
+  });
+
+  it('should clear the armed show-me button when Back re-enters a predict screen', () => {
+    stateService.startConcept();
+    stateService.advanceFromConcept();
+    fixture.detectChanges();
+
+    // Simulate the student locking both dots, which arms challenge1Ready.
+    const el: HTMLElement = fixture.nativeElement;
+    const chart = fixture.debugElement.query(By.css('app-prediction-chart'));
+    expect(chart).toBeTruthy();
+    chart.triggerEventHandler('predictionChange', [
+      { year: 10, value: 2000, locked: true },
+      { year: 40, value: 5000, locked: true },
+    ]);
+    chart.triggerEventHandler('allLocked', undefined);
+    fixture.detectChanges();
+    expect(el.querySelector('.predict-action .ngpf-btn-primary')).toBeTruthy();
+
+    // Submit, reach reflect, then Back into the predict screen again.
+    stateService.submitPrediction({ challenge1Year10: 2000, challenge1Year40: 5000 });
+    stateService.advanceToReflect();
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelector(
+        'app-reflect-card .ngpf-btn-secondary',
+      ) as HTMLButtonElement
+    ).click();
+    fixture.detectChanges();
+
+    // The re-created chart has both dots unlocked, so the Show me button must
+    // not still be armed with the stale guess.
+    expect(el.querySelector('.predict-action .ngpf-btn-primary')).toBeNull();
   });
 });
