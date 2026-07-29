@@ -9,6 +9,7 @@
     "test": "ng test",
     "feature": "bash create-feature.sh",
     "production": "ng build --configuration production",
+    "build:pages": "ng build --configuration production --output-path dist/pages --base-href /Interactives/",
     "parse-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/parse-dictionary.ts",
     "audit-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/audit-dictionary.ts",
     "validate-dictionary": "npx ts-node --project tsconfig.scripts.json --esm scripts/ngpf-vocabulary-flashcards/validate-dictionary.ts",
