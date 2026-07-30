@@ -34,14 +34,14 @@
           <span id="flashcard-front-label" class="card-label">{{ frontLabel() }}</span>
           <p id="flashcard-front-content" class="card-content" [class.term-text]="frontIsTerm()" [style.font-size]="frontFontSize()" [attr.lang]="session().isSpanish ? 'es' : null">{{ frontContent() }}</p>
           <span class="flip-hint">Tap to reveal</span>
-          @if (currentCard(); as card) {
+          @if (visibleCard(); as card) {
             <span class="unit-badge">{{ card.unitName }}</span>
           }
         </div>
         <div class="flashcard-back">
           <span id="flashcard-back-label" class="card-label">{{ backLabel() }}</span>
           <p id="flashcard-back-content" class="card-content" [class.term-text]="!frontIsTerm()" [style.font-size]="backFontSize()" [attr.lang]="session().isSpanish ? 'es' : null">{{ backContent() }}</p>
-          @if (currentCard(); as card) {
+          @if (visibleCard(); as card) {
             <span class="unit-badge">{{ card.unitName }}</span>
           }
         </div>
