@@ -59,6 +59,28 @@
   margin: 0.75rem 0 0;
 }
 
+// Sized to sit inside a scenario-table cell as the missing entry.
+.prediction-input.compact {
+  max-width: none;
+  margin: 0;
+
+  .input-wrapper {
+    padding: 0 10px;
+    border-color: var(--ngpf-royal-blue);
+    border-style: dashed;
+  }
+
+  .dollar-prefix {
+    font-size: 1rem;
+  }
+
+  .money-input {
+    font-size: 1rem;
+    padding: 7px 0;
+    width: 96px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .input-wrapper {
     transition: none;

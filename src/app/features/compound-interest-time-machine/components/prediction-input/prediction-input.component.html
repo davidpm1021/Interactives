@@ -1,5 +1,7 @@
-<div class="prediction-input">
-  <p class="input-prompt">{{ prompt() }}</p>
+<div class="prediction-input" [class.compact]="compact()">
+  @if (!compact() && prompt()) {
+    <p class="input-prompt">{{ prompt() }}</p>
+  }
   <div class="input-wrapper">
     <span class="dollar-prefix">$</span>
     <input
@@ -14,7 +16,7 @@
       placeholder="0"
     />
   </div>
-  @if (hint()) {
+  @if (!compact() && hint()) {
     <p class="input-hint" id="prediction-hint">{{ hint() }}</p>
   }
 </div>

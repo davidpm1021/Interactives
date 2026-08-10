@@ -1,0 +1,90 @@
+.scenario-table-wrapper {
+  max-width: 640px;
+  margin: 0 auto var(--ngpf-spacing-lg);
+  overflow-x: auto;
+}
+
+.scenario-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--ngpf-font-body);
+  background: white;
+  border-radius: var(--ngpf-radius-md);
+  overflow: hidden;
+  box-shadow: var(--ngpf-shadow-sm);
+
+  th,
+  td {
+    padding: 0.7rem 0.85rem;
+    text-align: center;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+  }
+
+  thead th {
+    background: var(--ngpf-soft-blue-tint);
+    color: var(--ngpf-royal-blue);
+    font-family: var(--ngpf-font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+
+  tbody td {
+    color: var(--ngpf-text-secondary);
+  }
+
+  // The student's row is what changed, so it carries the emphasis.
+  tr.yours {
+    background: var(--ngpf-ice-blue);
+
+    td,
+    .row-label {
+      color: var(--ngpf-text-primary);
+      font-weight: 600;
+    }
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .row-label {
+    text-align: left;
+    font-family: var(--ngpf-font-heading);
+    font-size: 0.8rem;
+    color: var(--ngpf-text-muted);
+    white-space: nowrap;
+  }
+
+  .row-label-head {
+    width: 1%;
+  }
+
+  .answer-cell {
+    padding: 0.35rem 0.5rem;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  .scenario-table th,
+  .scenario-table td {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.8rem;
+  }
+}

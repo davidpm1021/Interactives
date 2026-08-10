@@ -15,6 +15,7 @@ import { SandboxComponent } from './components/sandbox/sandbox.component';
 import { FinalSummaryComponent } from './components/final-summary/final-summary.component';
 import { IntroComponent } from './components/intro/intro.component';
 import { ConceptDemoComponent } from './components/concept-demo/concept-demo.component';
+import { ScenarioTableComponent, ScenarioRow } from './components/scenario-table/scenario-table.component';
 import { CHALLENGE_CONTENT, ChallengeContent } from './data/challenge-content';
 import { ChallengeId, ChallengePredictions, PredictionPoint } from './models/compound-interest.models';
 import { formatCurrency, formatPercent } from './utils/formatters';
@@ -38,6 +39,7 @@ import { formatCurrency, formatPercent } from './utils/formatters';
     FinalSummaryComponent,
     IntroComponent,
     ConceptDemoComponent,
+    ScenarioTableComponent,
   ],
   providers: [ChallengeStateService],
   templateUrl: './compound-interest-time-machine.html',
@@ -281,6 +283,38 @@ export class CompoundInterestTimeMachine {
 
   protected readonly challenge3Guess = signal<number | null>(null);
   protected readonly challenge3Ready = computed(() => this.challenge3Guess() !== null);
+
+  protected readonly challenge3TableHeaders = [
+    'Starting amount',
+    'Added monthly',
+    'Total you put in',
+    'Value after 40 years',
+  ];
+  protected readonly challenge3RowLabels = ['Part 1', 'Now'];
+
+  /**
+   * Baseline row is the Part 1 scenario the student already worked through,
+   * so the blank cell reads as completing a pattern rather than answering a
+   * question posed in prose.
+   */
+  protected readonly challenge3TableRows = computed<ScenarioRow[]>(() => {
+    const money = (n: number) => formatCurrency(Math.round(n));
+    const contributed = this.challenge3Result().summary.totalContributions;
+    return [
+      {
+        cells: [
+          money(1000),
+          money(0),
+          money(1000),
+          money(this.challenge1Result().summary.finalBalance),
+        ],
+      },
+      {
+        cells: [money(1000), money(100), money(contributed), ''],
+        isYours: true,
+      },
+    ];
+  });
 
   protected onChallenge3Input(value: number): void {
     this.challenge3Guess.set(value);

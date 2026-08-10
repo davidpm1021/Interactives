@@ -19,6 +19,11 @@ export class PredictionInputComponent {
    * retained or discarded.
    */
   readonly initialValue = input<number | null>(null);
+  /**
+   * Strips the prompt, hint and outer spacing so the field can sit inside a
+   * table cell as the missing entry in a comparison.
+   */
+  readonly compact = input(false);
 
   readonly valueChanged = output<number>();
 

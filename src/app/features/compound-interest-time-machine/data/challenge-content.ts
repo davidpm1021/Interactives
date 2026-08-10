@@ -62,9 +62,10 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
   challenge3: {
     title: 'The Power of Adding a Little',
     setup:
-      'Remember your friend\'s graduation gift? That $1,000 grew to {{c1Final}} over 40 years, without them adding another cent. Now let\'s add $100 every month, like a small automatic transfer from a paycheck. Over 40 years that\'s $48,000, which on top of the original $1,000 means you put in $49,000 of your own money.',
-    predictPrompt:
-      'Combined with compound interest, how much do you think you\'ll end up with?',
+      // Short by design. The scenario table below carries the figures; review
+      // found the prose version too easy to skim past before guessing.
+      'Same $1,000. Same 40 years. The only thing that changes is adding $100 every month, like a small automatic transfer from a paycheck.',
+    predictPrompt: 'Fill in the missing number: what does it grow to?',
     revealButton: 'Show me',
     // Deliberately omits the "$3.30/day" framing and "of your money": review
     // found both read as sales-y and potentially out of touch for
