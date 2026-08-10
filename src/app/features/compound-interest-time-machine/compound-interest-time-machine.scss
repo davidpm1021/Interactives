@@ -77,6 +77,30 @@
     }
   }
 
+  // Promoted takeaway. Replaces a row of stat cards whose figures now sit on
+  // the chart itself, so the one sentence that answers the challenge question
+  // lands directly under the graph instead of below the fold.
+  .headline-callout {
+    max-width: 520px;
+    margin: var(--ngpf-spacing-lg) auto 0;
+    padding: var(--ngpf-spacing-md) var(--ngpf-spacing-lg);
+    background: white;
+    border-left: 4px solid var(--ngpf-royal-blue);
+    border-radius: var(--ngpf-radius-md);
+    box-shadow: var(--ngpf-shadow-sm);
+    font-family: var(--ngpf-font-body);
+    font-size: 1.15rem;
+    color: var(--ngpf-text-primary);
+    text-align: center;
+    line-height: 1.5;
+
+    strong {
+      font-family: var(--ngpf-font-heading);
+      font-size: 1.6rem;
+      color: var(--ngpf-royal-blue);
+    }
+  }
+
   .guess-vs-reality {
     text-align: center;
     margin-top: 1.25rem;

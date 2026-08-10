@@ -260,9 +260,11 @@ export class CompoundInterestTimeMachine {
   });
 
   protected readonly challenge2Insight = computed(() => {
-    const ratio = this.challenge2Ratio();
-    const ratioText = `${ratio.toFixed(1)}x`;
-    return `The rate doubled, but the outcome didn't just double. The 10% account ended up with ${ratioText} as much as the 5% account. With compound interest, small rate differences get magnified over time. After year one, the 10% account is only $50 ahead. But that $50 earns interest too, and so does every dollar of interest after it. The gap widens by more each year until "twice as much" becomes ${ratioText} at the finish line.`;
+    // Kept short deliberately: the ratio is already the headline callout and
+    // both totals are labelled on the chart, so this only has to explain the
+    // mechanism. Restating the figures here pushed the reflection question
+    // well below the fold.
+    return `After year one, the 10% account is only $50 ahead. But that $50 earns interest too, and so does every dollar of interest after it, so the gap widens by more every year.`;
   });
 
   protected onChallenge2Select(id: string): void {

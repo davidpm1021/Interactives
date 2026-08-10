@@ -104,22 +104,15 @@
                 [result]="challenge2LowResult()"
                 [resultB]="challenge2HighResult()"
                 mode="dual"
+                [showEndpointLabels]="true"
+                seriesALabel="5%"
+                seriesBLabel="10%"
                 (animationComplete)="onAdvanceToReflect()"
               />
-              <div class="dual-stats">
-                <app-reveal-stats
-                  [actualValue]="challenge2LowResult().summary.finalBalance"
-                  label="5% Account"
-                />
-                <app-reveal-stats
-                  [actualValue]="challenge2HighResult().summary.finalBalance"
-                  label="10% Account"
-                />
-              </div>
-              <div class="guess-vs-reality">
-                <div class="ratio-result">
-                  The 10% account is <strong>{{ challenge2Ratio() | number:'1.1-1' }}x</strong> the 5% account
-                </div>
+              <div class="headline-callout">
+                The 10% account is
+                <strong>{{ challenge2Ratio() | number:'1.1-1' }}x</strong>
+                the 5% account
               </div>
               @if (currentPhase() === 'reflect') {
                 <app-reflect-card

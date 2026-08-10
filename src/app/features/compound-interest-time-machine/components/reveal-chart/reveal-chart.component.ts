@@ -47,6 +47,15 @@ export class RevealChartComponent {
   readonly predictionPoints = input<PredictionPoint[]>([]);
   readonly mode = input<RevealMode>('single');
   readonly principal = input(1000);
+  /**
+   * Label each line's final value at its endpoint instead of repeating the
+   * figures in separate stat cards below the chart. Also suppresses the gap
+   * bracket, which restates the same comparison a third time.
+   */
+  readonly showEndpointLabels = input(false);
+  /** Short series names used by the endpoint labels, e.g. "5%" / "10%". */
+  readonly seriesALabel = input('');
+  readonly seriesBLabel = input('');
   readonly animationComplete = output<void>();
 
   private readonly injector = inject(Injector);
@@ -282,9 +291,67 @@ export class RevealChartComponent {
       .attr('opacity', 0.2);
   }
 
+  /**
+   * Write each series' final value at the end of its line, in the line's own
+   * colour, so the numbers live where the shapes are instead of in a separate
+   * row of cards the student has to scroll to and mentally re-pair.
+   */
+  private renderEndpointLabels(scales: ChartScales): void {
+    if (!this.showEndpointLabels()) return;
+
+    const layer = this.chartGroup.select('.bracket-layer');
+    const offset = this.resultBStartYear();
+
+    const label = (
+      point: YearlyDataPoint,
+      xYear: number,
+      color: string,
+      seriesName: string,
+    ) => {
+      const text = layer
+        .append('text')
+        .attr('class', 'endpoint-label')
+        .attr('x', scales.x(xYear) + 10)
+        .attr('y', scales.y(point.compoundBalance))
+        .attr('dominant-baseline', 'middle')
+        .attr('font-family', 'var(--ngpf-font-heading)')
+        .attr('font-size', '0.85rem')
+        .attr('font-weight', '700')
+        .attr('fill', color);
+      if (seriesName) {
+        text.append('tspan').attr('font-weight', '500').text(`${seriesName} `);
+      }
+      text.append('tspan').text(formatCurrency(Math.round(point.compoundBalance)));
+      return text;
+    };
+
+    const dataA = this.result().dataPoints;
+    const lastA = dataA[dataA.length - 1];
+    label(lastA, lastA.year, 'var(--ngpf-sky-blue)', this.seriesALabel());
+
+    const dataB = this.resultB()?.dataPoints;
+    if (dataB) {
+      const lastB = dataB[dataB.length - 1];
+      label(lastB, lastB.year + offset, 'var(--ngpf-gold)', this.seriesBLabel());
+    }
+
+    const dur = this.reducedMotion() ? 0 : 300;
+    if (dur > 0) {
+      layer.selectAll('.endpoint-label').attr('opacity', 0)
+        .transition().duration(dur).attr('opacity', 1);
+    }
+  }
+
   private renderGapBracket(scales: ChartScales): void {
     const bracketLayer = this.chartGroup.select('.bracket-layer');
     bracketLayer.selectAll('*').remove();
+
+    // Endpoint labels already state both totals; the bracket would be a third
+    // rendering of the same comparison.
+    if (this.showEndpointLabels()) {
+      this.renderEndpointLabels(scales);
+      return;
+    }
 
     const m = this.mode();
 
