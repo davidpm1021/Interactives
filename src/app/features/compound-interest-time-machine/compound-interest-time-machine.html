@@ -162,13 +162,17 @@
                 [result]="challenge3Result()"
                 [resultB]="challenge1Result()"
                 mode="stacked"
+                [showEndpointLabels]="true"
+                [areaLabels]="true"
+                seriesBLabel="Lump sum"
                 (animationComplete)="onAdvanceToReflect()"
               />
-              <app-reveal-stats
-                [actualValue]="challenge3Result().summary.finalBalance"
-                [guessValue]="predictions().challenge3ContributionGuess ?? null"
-                label="With $100/month"
-              />
+              <div class="headline-callout">
+                You guessed
+                {{ predictions().challenge3ContributionGuess ?? 0 | currency:'USD':'symbol':'1.0-0' }}.
+                It actually grows to
+                <strong>{{ challenge3Result().summary.finalBalance | currency:'USD':'symbol':'1.0-0' }}</strong>
+              </div>
               @if (currentPhase() === 'reflect') {
                 <app-reflect-card
                   [challengeId]="currentChallenge()"

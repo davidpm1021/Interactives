@@ -66,8 +66,11 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     predictPrompt:
       'Combined with compound interest, how much do you think you\'ll end up with?',
     revealButton: 'Show me',
+    // Deliberately omits the "$3.30/day" framing and "of your money": review
+    // found both read as sales-y and potentially out of touch for
+    // lower-income students.
     reflectInsight:
-      '$100/month is about $3.30/day. Compound interest turned $49,000 of your money into {{c3Final}}. That\'s the power of consistent investing over time.',
+      'Compound interest turned $49,000 into {{c3Final}}. That\'s the power of consistent investing over time.',
     reflectPrompt:
       'What does this make you want to change (or keep doing) with your own money?',
   },

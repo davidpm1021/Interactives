@@ -56,6 +56,11 @@ export class RevealChartComponent {
   /** Short series names used by the endpoint labels, e.g. "5%" / "10%". */
   readonly seriesALabel = input('');
   readonly seriesBLabel = input('');
+  /**
+   * Name the two shaded bands in place. Without this the stacked areas are
+   * unexplained — reviewers reported not knowing what the shading meant.
+   */
+  readonly areaLabels = input(false);
   readonly animationComplete = output<void>();
 
   private readonly injector = inject(Injector);
@@ -199,13 +204,13 @@ export class RevealChartComponent {
         .attr('stroke-dashoffset', '0')
         .on('end', () => {
           path.attr('stroke-dasharray', null).attr('stroke-dashoffset', null);
-          this.renderGapBracket(scales);
+          this.renderGapBracket(dims, scales);
           if (!isDual) this.renderResultBLine(scales);
           this.hasAnimated = true;
           this.animationComplete.emit();
         });
     } else {
-      this.renderGapBracket(scales);
+      this.renderGapBracket(dims, scales);
       if (!isDual) this.renderResultBLine(scales);
       this.hasAnimated = true;
       this.animationComplete.emit();
@@ -289,6 +294,43 @@ export class RevealChartComponent {
       .attr('d', interestArea(data))
       .attr('fill', 'var(--ngpf-sky-blue)')
       .attr('opacity', 0.2);
+
+    if (!this.areaLabels()) return;
+
+    // Name each band inside itself, near the right where the bands are
+    // thickest. Placed at the vertical midpoint of each band at ~78% across.
+    const anchor = data[Math.floor(data.length * 0.78)];
+    if (!anchor) return;
+
+    const bandLabel = (yMid: number, color: string, text: string) => {
+      areaLayer
+        .append('text')
+        .attr('class', 'area-label')
+        .attr('x', scales.x(anchor.year))
+        .attr('y', yMid)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('font-family', 'var(--ngpf-font-body)')
+        .attr('font-size', '0.72rem')
+        .attr('font-weight', '600')
+        .attr('fill', color)
+        .text(text);
+    };
+
+    const contribMid =
+      (scales.y(anchor.totalContributions) + dims.innerHeight) / 2;
+    const interestMid =
+      (scales.y(anchor.compoundBalance) + scales.y(anchor.totalContributions)) / 2;
+
+    // States the final total, not the value at the anchor column — the point
+    // of the label is "you put in $49,000 altogether".
+    const totalContributed = data[data.length - 1].totalContributions;
+    bandLabel(
+      contribMid,
+      'var(--ngpf-royal-blue)',
+      `What you put in: ${formatCurrency(Math.round(totalContributed))}`,
+    );
+    bandLabel(interestMid, 'var(--ngpf-sky-blue)', 'Interest earned');
   }
 
   /**
@@ -296,7 +338,7 @@ export class RevealChartComponent {
    * colour, so the numbers live where the shapes are instead of in a separate
    * row of cards the student has to scroll to and mentally re-pair.
    */
-  private renderEndpointLabels(scales: ChartScales): void {
+  private renderEndpointLabels(dims: ChartDimensions, scales: ChartScales): void {
     if (!this.showEndpointLabels()) return;
 
     const layer = this.chartGroup.select('.bracket-layer');
@@ -308,10 +350,11 @@ export class RevealChartComponent {
       color: string,
       seriesName: string,
     ) => {
+      const x = scales.x(xYear) + 10;
       const text = layer
         .append('text')
         .attr('class', 'endpoint-label')
-        .attr('x', scales.x(xYear) + 10)
+        .attr('x', x)
         .attr('y', scales.y(point.compoundBalance))
         .attr('dominant-baseline', 'middle')
         .attr('font-family', 'var(--ngpf-font-heading)')
@@ -322,6 +365,16 @@ export class RevealChartComponent {
         text.append('tspan').attr('font-weight', '500').text(`${seriesName} `);
       }
       text.append('tspan').text(formatCurrency(Math.round(point.compoundBalance)));
+
+      // Pull the label back inside if it would run past the SVG edge. Series
+      // names and figures both vary, so clamp by measurement rather than
+      // trusting the right margin to be wide enough for whatever is passed in.
+      const node = text.node();
+      if (node) {
+        const width = node.getBBox().width;
+        const maxX = dims.width - REVEAL_MARGIN.left - width - 2;
+        if (x > maxX) text.attr('x', Math.max(0, maxX));
+      }
       return text;
     };
 
@@ -342,14 +395,14 @@ export class RevealChartComponent {
     }
   }
 
-  private renderGapBracket(scales: ChartScales): void {
+  private renderGapBracket(dims: ChartDimensions, scales: ChartScales): void {
     const bracketLayer = this.chartGroup.select('.bracket-layer');
     bracketLayer.selectAll('*').remove();
 
     // Endpoint labels already state both totals; the bracket would be a third
     // rendering of the same comparison.
     if (this.showEndpointLabels()) {
-      this.renderEndpointLabels(scales);
+      this.renderEndpointLabels(dims, scales);
       return;
     }
 
@@ -470,6 +523,10 @@ export class RevealChartComponent {
     if (isReference) {
       path.attr('stroke-dasharray', '6,4').attr('opacity', 0.5);
 
+      // Endpoint labels already name and value this line; drawing the
+      // reference caption too would print the same figure twice.
+      if (this.showEndpointLabels()) return;
+
       // Add reference label
       const lastPoint = dataB[dataB.length - 1];
       lineLayer.append('text')
@@ -523,6 +580,6 @@ export class RevealChartComponent {
       .attr('stroke-width', 3);
 
     this.renderResultBLine(scales);
-    this.renderGapBracket(scales);
+    this.renderGapBracket(dims, scales);
   }
 }
