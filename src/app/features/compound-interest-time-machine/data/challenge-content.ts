@@ -106,9 +106,10 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     setup: 'Now it\'s your turn. Adjust the inputs, press Play to watch your money grow, then click Finish when you\'re done exploring.',
     inputPrompts: {
       principal: 'How much could you start with?',
-      contribution: 'How much could you set aside each month?',
+      contribution: 'How much could you invest each month?',
       rate: 'What growth rate do you expect?',
-      rateHelper: 'The stock market has historically averaged about 7-10% per year',
+      rateHelper:
+        'The stock market has historically averaged about 7-10% per year before inflation',
       startAge: 'When do you want to start?',
       endAge: 'When do you want this money?',
     },

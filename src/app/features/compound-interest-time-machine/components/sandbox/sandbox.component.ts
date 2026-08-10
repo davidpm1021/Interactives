@@ -35,7 +35,10 @@ export class SandboxComponent implements OnInit {
   protected readonly content = CHALLENGE_CONTENT['challenge5'];
 
   // ── Input signals (smart defaults from challenges) ──
-  protected readonly principal = signal(1000);
+  // Opens at $100, not the $1,000 from the challenge story. Review: "many
+  // (most?) students don't have an initial $1000 investment and some may feel
+  // put off." The slider steps in $100s to match.
+  protected readonly principal = signal(100);
   protected readonly contributionAmount = signal(100);
   protected readonly interestRatePercent = signal(7);
   protected readonly startAge = signal(22);
