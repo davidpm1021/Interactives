@@ -3,7 +3,7 @@
     <div class="stat-card primary">
       <span class="stat-label">
         @if (startAge() !== null) {
-          Balance at Age {{ startAge()! + displayData().year }}
+          Balance at age {{ startAge()! + displayData().year }}
         } @else {
           Balance at Year {{ displayData().year }}
         }
@@ -27,7 +27,7 @@
   @if (showDoublingCallout()) {
     <div class="callout doubling">
       @if (startAge() !== null) {
-        Your money doubled your contributions by Age {{ startAge()! + doublingYear()! }}!
+        Your money doubled your contributions by age {{ startAge()! + doublingYear()! }}!
       } @else {
         Your money doubled your contributions by Year {{ doublingYear() }}!
       }

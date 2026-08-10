@@ -38,6 +38,16 @@ export class SummaryPanelComponent implements OnDestroy {
    * suffix made the second phrasing say the opposite of what it means.
    */
   readonly comparisonSuffix = input(' more!');
+  /**
+   * Timeline position the narrative callouts respond to, independent of hover.
+   *
+   * `selectedYear` follows the cursor so the numbers update as the student
+   * inspects the chart, but a summary statement about the whole run should not
+   * blink out just because the pointer is resting left of the doubling point —
+   * which is exactly where it sits while scrolling down to read the callout.
+   * Falls back to `selectedYear` when not supplied.
+   */
+  readonly calloutYear = input<number | null>(null);
 
   protected readonly displayData = computed(() => {
     const res = this.result();
@@ -67,7 +77,8 @@ export class SummaryPanelComponent implements OnDestroy {
 
   protected readonly showDoublingCallout = computed(() => {
     const res = this.result();
-    const year = this.selectedYear() ?? res.dataPoints[res.dataPoints.length - 1].year;
+    const lastYear = res.dataPoints[res.dataPoints.length - 1].year;
+    const year = this.calloutYear() ?? this.selectedYear() ?? lastYear;
     return res.summary.doublingYear !== null && year >= res.summary.doublingYear;
   });
 
