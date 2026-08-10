@@ -191,15 +191,19 @@ export class CompoundInterestTimeMachine {
   }
 
   /**
-   * Clear the component-local prediction signals for the challenge whose
+   * Reset the component-local prediction signals for the challenge whose
    * predict screen we just navigated into (via Back or Next challenge).
    *
-   * The prediction widgets (prediction-chart / -choice / -input) are destroyed
-   * and re-created on every entry to a predict phase, so their own internal
-   * state resets to empty. These parent-held signals do not, which would leave
-   * the "Show me" button armed with an answer the student can no longer see
-   * and can silently resubmit. They repopulate as soon as the student
-   * interacts with the freshly-rendered widget.
+   * The widgets are destroyed and re-created on every entry to a predict
+   * phase, so their internal state resets. These parent-held signals do not,
+   * which would otherwise leave "Show me" armed with an answer the student
+   * can no longer see and could silently resubmit.
+   *
+   * A previously-submitted guess is not lost: it lives in the service's
+   * `predictions` and is fed back into the widget via its initial-value input,
+   * so the student sees their answer restored and can adjust it. Clearing here
+   * only resets the *local* readiness flags, which the widget re-emits as soon
+   * as it seeds itself.
    *
    * Scoped to the current challenge, and only when we land on 'predict', so
    * navigating back to an earlier *reflect* screen keeps that challenge's

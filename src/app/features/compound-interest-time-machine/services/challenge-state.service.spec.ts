@@ -88,6 +88,32 @@ describe('ChallengeStateService', () => {
     expect(service.currentChallenge()).toBe(1);
   });
 
+  it('should keep submitted predictions when going back to adjust them', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({ challenge1Year10: 3300, challenge1Year40: 8800 });
+    service.goBack();
+
+    // Navigation rewinds, but the guess must survive so the predict screen can
+    // re-seed its widget — otherwise Back means starting the guess over.
+    expect(service.currentPhase()).toBe('predict');
+    expect(service.predictions().challenge1Year10).toBe(3300);
+    expect(service.predictions().challenge1Year40).toBe(8800);
+  });
+
+  it('should keep predictions from earlier challenges when going back', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({ challenge1Year40: 5000 });
+    service.advanceToReflect();
+    service.advanceToNextChallenge();
+    service.submitPrediction({ challenge2RateGuess: 'E' });
+    service.goBack();
+
+    expect(service.predictions().challenge2RateGuess).toBe('E');
+    expect(service.predictions().challenge1Year40).toBe(5000);
+  });
+
   it('should go back from a later challenge to the previous reflect card', () => {
     service.startConcept();
     service.advanceFromConcept();

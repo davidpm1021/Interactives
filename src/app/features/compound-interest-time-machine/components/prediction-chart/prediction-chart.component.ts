@@ -26,6 +26,14 @@ import { computeChartDimensions, createScales, ChartDimensions, ChartScales, DEF
 export class PredictionChartComponent {
   readonly principal = input(1000);
   readonly maxYear = input(40);
+  /**
+   * Previously-submitted guesses to restore. Set when the student navigates
+   * Back into this screen so both dots reappear at the values they chose and
+   * can be nudged, rather than forcing them to start the guess over.
+   * Restored unlocked so they remain adjustable.
+   */
+  readonly initialYear10 = input<number | null>(null);
+  readonly initialYear40 = input<number | null>(null);
 
   readonly predictionChange = output<PredictionPoint[]>();
   readonly allLocked = output<void>();
@@ -43,6 +51,8 @@ export class PredictionChartComponent {
   private readonly dot40 = signal<PredictionPoint>({ year: 40, value: 5000, locked: false });
   private readonly show40 = signal(false);
   private draggingDot: 'dot10' | 'dot40' | null = null;
+  /** Guards the restore effect so it seeds the dots only on first arrival. */
+  private restoredInitialGuess = false;
 
   private readonly SNAP = 100;
   private readonly DOT_RADIUS = 20;
@@ -105,6 +115,24 @@ export class PredictionChartComponent {
   });
 
   constructor() {
+    // Restore a previous guess, once, before the chart first renders. Both
+    // dots are shown so the student sees exactly what they submitted, and both
+    // stay unlocked so either can be nudged before re-submitting.
+    effect(() => {
+      const y10 = this.initialYear10();
+      const y40 = this.initialYear40();
+      if (y10 === null && y40 === null) return;
+      if (this.restoredInitialGuess) return;
+      this.restoredInitialGuess = true;
+
+      if (y10 !== null) this.dot10.set({ year: 10, value: y10, locked: false });
+      if (y40 !== null) {
+        this.dot40.set({ year: 40, value: y40, locked: false });
+        this.show40.set(true);
+      }
+      this.emitPredictions();
+    });
+
     afterNextRender(() => {
       this.initChart();
       this.initialized = true;

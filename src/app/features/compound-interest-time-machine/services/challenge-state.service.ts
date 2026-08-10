@@ -144,13 +144,21 @@ export class ChallengeStateService {
     });
   }
 
-  /** Undo the most recent forward transition. */
+  /**
+   * Undo the most recent forward transition.
+   *
+   * Navigation state rewinds, but submitted predictions do not. `submitPrediction`
+   * snapshots the state *before* the answer was recorded, so a naive restore
+   * would discard the very guess the student came Back to adjust. Predictions
+   * are the student's work — like reflections — so they carry forward and the
+   * predict screen can re-seed its widget from them.
+   */
   goBack(): void {
     const h = this._history();
     if (h.length === 0) return;
     const prev = h[h.length - 1];
     this._history.set(h.slice(0, -1));
-    this._state.set(prev);
+    this._state.set({ ...prev, predictions: this._state().predictions });
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, effect, input, output, signal, computed, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -13,10 +13,27 @@ export class PredictionInputComponent {
   readonly min = input(0);
   readonly max = input(1_000_000);
   readonly hint = input('');
+  /**
+   * Value to pre-fill. Set when the student navigates Back into this screen
+   * so their previous guess is restored and visible rather than silently
+   * retained or discarded.
+   */
+  readonly initialValue = input<number | null>(null);
 
   readonly valueChanged = output<number>();
 
   protected readonly rawValue = signal('');
+
+  constructor() {
+    // Seed once from the restored value; later edits come from onInput.
+    effect(() => {
+      const initial = this.initialValue();
+      if (initial !== null && untracked(() => this.rawValue()) === '') {
+        this.rawValue.set(initial.toLocaleString('en-US'));
+        this.valueChanged.emit(initial);
+      }
+    });
+  }
 
   protected readonly parsedValue = computed(() => {
     const cleaned = this.rawValue().replace(/[^0-9]/g, '');
