@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TakeawaysFillComponent } from './takeaways-fill.component';
 
+/** Correct answers in blank order, per TAKEAWAY_SENTENCES. */
+const ANSWERS = ['accelerates', 'later', 'rate', 'outcome', 'Time', 'early'];
+
 describe('TakeawaysFillComponent', () => {
   let fixture: ComponentFixture<TakeawaysFillComponent>;
   let component: TakeawaysFillComponent;
@@ -59,24 +62,29 @@ describe('TakeawaysFillComponent', () => {
     expect(updated.classList.contains('blank--correct')).toBe(false);
   });
 
-  it('emits completedChange when all blanks are filled via Show answers', () => {
+  it('emits completedChange once every blank is correctly filled', () => {
     let completed = false;
     component.completedChange.subscribe((v) => (completed = v));
-    const showBtn = fixture.nativeElement.querySelector(
-      '.takeaways-fill__actions .ngpf-btn',
-    ) as HTMLButtonElement;
-    showBtn.click();
-    fixture.detectChanges();
+
+    // Place each answer in order; blankEls() and ANSWERS share an index.
+    ANSWERS.forEach((text, i) => {
+      chipEl(text)!.click();
+      fixture.detectChanges();
+      blankEls()[i].click();
+      fixture.detectChanges();
+    });
+
     expect(completed).toBe(true);
-    // All blanks should be locked/revealed
     for (const b of blankEls()) {
-      expect(
-        b.classList.contains('blank--correct') || b.classList.contains('blank--revealed'),
-      ).toBe(true);
+      expect(b.classList.contains('blank--correct')).toBe(true);
     }
   });
 
-  it('does not let a stale shake timer blank an answer revealed in the meantime', async () => {
+  it('does not offer a Show answers escape hatch', () => {
+    expect(fixture.nativeElement.querySelector('.takeaways-fill__actions')).toBeNull();
+  });
+
+  it('does not let a stale shake timer clear an answer corrected in the meantime', async () => {
     // Wrong placement into the first blank arms a 500ms unplace timer.
     chipEl('simple')!.click();
     fixture.detectChanges();
@@ -84,53 +92,22 @@ describe('TakeawaysFillComponent', () => {
     fixture.detectChanges();
     expect(blankEls()[0].classList.contains('blank--shake')).toBe(true);
 
-    // Reveal everything before that timer fires.
-    (
-      fixture.nativeElement.querySelector(
-        '.takeaways-fill__actions .ngpf-btn',
-      ) as HTMLButtonElement
-    ).click();
+    // Clear it and land the correct chip before that timer fires.
+    blankEls()[0].click();
     fixture.detectChanges();
+    chipEl(ANSWERS[0])!.click();
+    fixture.detectChanges();
+    blankEls()[0].click();
+    fixture.detectChanges();
+    expect(blankEls()[0].classList.contains('blank--correct')).toBe(true);
 
     // Let the original timer's deadline pass.
     await new Promise((r) => setTimeout(r, 600));
     fixture.detectChanges();
 
     const first = blankEls()[0];
-    expect(first.classList.contains('blank--revealed')).toBe(true);
-    expect(first.textContent).toContain('accelerates');
-  });
-
-  it('reveals every blank even when a chip is mid-shake', async () => {
-    // Drop the correct chip for blank 2 onto blank 1, so it is wrong and
-    // transiently marked placed.
-    chipEl('later')!.click();
-    fixture.detectChanges();
-    blankEls()[0].click();
-    fixture.detectChanges();
-
-    let completed = false;
-    component.completedChange.subscribe((v) => (completed = v));
-
-    (
-      fixture.nativeElement.querySelector(
-        '.takeaways-fill__actions .ngpf-btn',
-      ) as HTMLButtonElement
-    ).click();
-    fixture.detectChanges();
-
-    // Every blank must be filled, including the one whose chip was mid-shake.
-    for (const b of blankEls()) {
-      expect(
-        b.classList.contains('blank--correct') || b.classList.contains('blank--revealed'),
-      ).toBe(true);
-    }
-    expect(completed).toBe(true);
-
-    await new Promise((r) => setTimeout(r, 600));
-    fixture.detectChanges();
-    // The flushed timer must not undo the reveal.
-    expect(blankEls()[0].textContent).toContain('accelerates');
+    expect(first.classList.contains('blank--correct')).toBe(true);
+    expect(first.textContent).toContain(ANSWERS[0]);
   });
 
   it('supports keyboard: Enter on chip selects, Enter on blank places', () => {

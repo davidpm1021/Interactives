@@ -4,9 +4,9 @@ import { FillSentence, TAKEAWAY_DISTRACTORS, TAKEAWAY_SENTENCES } from '../../da
 interface Chip {
   id: string;
   text: string;
-  /** True when this chip is currently placed in a blank (or shown-answer). */
+  /** True when this chip is currently placed in a blank. */
   placed: boolean;
-  /** True if the placement is locked (correct answer or reveal-all). */
+  /** True once the placement is locked in, which happens on a correct answer. */
   locked: boolean;
 }
 
@@ -19,14 +19,18 @@ interface BlankState {
   correct: boolean;
   /** Set briefly after a wrong placement to trigger the shake animation. */
   shake: boolean;
-  /** True when the answer was auto-revealed via "Show answers". */
-  revealed: boolean;
 }
 
 /**
  * Click-to-place fill-in-the-blank for Key Takeaways. Students click a chip
  * to select it, then click a blank to drop it. Correct → green lock; wrong →
  * red shake + chip returns to bank. Fully keyboard-accessible.
+ *
+ * There is deliberately no "Show answers" escape hatch. Review: "I already
+ * know my answers are correct from the green box, check mark, and locking
+ * into place" and "are we okay that they can just click show answers without
+ * trying?" The bank is a closed set with four distractors and wrong chips
+ * bounce straight back, so nobody can get stuck.
  */
 @Component({
   selector: 'app-takeaways-fill',
@@ -85,7 +89,6 @@ export class TakeawaysFillComponent implements OnDestroy {
             chipId: null,
             correct: false,
             shake: false,
-            revealed: false,
           };
         }
       }
@@ -119,7 +122,7 @@ export class TakeawaysFillComponent implements OnDestroy {
 
   protected onBlankClick(blankId: string): void {
     const blank = this.blanks()[blankId];
-    if (blank.correct || blank.revealed) return; // locked
+    if (blank.correct) return; // locked
 
     // If blank is filled but wrong, unplace before accepting a new chip.
     if (blank.chipId) {
@@ -153,9 +156,9 @@ export class TakeawaysFillComponent implements OnDestroy {
       this.chips.update((cs) => cs.map((c) => (c.id === chipId ? { ...c, placed: true } : c)));
       this.announcement.set(`"${chip.text}" isn't right for that blank. Try another.`);
       // Return the chip after a short delay so the shake is visible. The timer
-      // is tracked so it can be flushed early (Show answers) or cancelled on
-      // destroy, and the callback re-checks that the blank is still holding
-      // this chip in a shaking state before clearing it.
+      // is tracked so it can be cancelled on destroy, and the callback
+      // re-checks that the blank is still holding this chip in a shaking state
+      // before clearing it.
       const timer = setTimeout(() => {
         this.pendingShakes.delete(blankId);
         this.unplaceShake(blankId, chipId);
@@ -167,15 +170,15 @@ export class TakeawaysFillComponent implements OnDestroy {
   /**
    * Return a wrongly-placed chip to the bank.
    *
-   * Guarded: if the blank has since been filled by another path (a correct
-   * placement or "Show answers"), leave it alone. Without this check a stale
-   * timer could blank a slot that had already been marked correct/revealed,
-   * permanently rendering it as an empty box with a green check that no
-   * further interaction could repair.
+   * Guarded: if the student cleared the blank and landed a correct chip before
+   * the timer fired, leave it alone. Without this check a stale timer could
+   * blank a slot that had already been marked correct, permanently rendering
+   * it as an empty box with a green check that no further interaction could
+   * repair.
    */
   private unplaceShake(blankId: string, chipId: string): void {
     const blank = this.blanks()[blankId];
-    if (!blank || blank.chipId !== chipId || blank.correct || blank.revealed) return;
+    if (!blank || blank.chipId !== chipId || blank.correct) return;
 
     this.blanks.update((bs) => ({
       ...bs,
@@ -183,16 +186,6 @@ export class TakeawaysFillComponent implements OnDestroy {
     }));
     this.chips.update((cs) => cs.map((c) => (c.id === chipId ? { ...c, placed: false } : c)));
     if (this.selectedChipId() === chipId) this.selectedChipId.set(null);
-  }
-
-  /** Run every in-flight shake unplace immediately and drop its timer. */
-  private flushPendingShakes(): void {
-    for (const [blankId, timer] of this.pendingShakes) {
-      clearTimeout(timer);
-      const chipId = this.blanks()[blankId]?.chipId;
-      if (chipId) this.unplaceShake(blankId, chipId);
-    }
-    this.pendingShakes.clear();
   }
 
   ngOnDestroy(): void {
@@ -214,32 +207,6 @@ export class TakeawaysFillComponent implements OnDestroy {
     }
   }
 
-  protected showAllAnswers(): void {
-    // Settle any in-flight shake first, so a chip that is transiently marked
-    // `placed` is back in the bank and available to match a blank below.
-    // Otherwise its blank is silently skipped and never gets revealed.
-    this.flushPendingShakes();
-
-    const chips = [...this.chips()];
-    const blanks = { ...this.blanks() };
-    for (const b of Object.values(blanks)) {
-      if (b.correct || b.revealed) continue;
-      // Find an unplaced chip whose text matches the answer.
-      const matchIdx = chips.findIndex(
-        (c) => !c.placed && c.text.toLowerCase() === b.answer.toLowerCase(),
-      );
-      if (matchIdx >= 0) {
-        chips[matchIdx] = { ...chips[matchIdx], placed: true, locked: true };
-        blanks[b.blankId] = { ...b, chipId: chips[matchIdx].id, revealed: true };
-      }
-    }
-    this.chips.set(chips);
-    this.blanks.set(blanks);
-    this.selectedChipId.set(null);
-    this.announcement.set('All answers revealed.');
-    this.maybeEmitCompleted();
-  }
-
   protected chipInBlank(blankId: string): Chip | null {
     const b = this.blanks()[blankId];
     if (!b?.chipId) return null;
@@ -247,7 +214,7 @@ export class TakeawaysFillComponent implements OnDestroy {
   }
 
   private maybeEmitCompleted(): void {
-    const allDone = Object.values(this.blanks()).every((b) => b.correct || b.revealed);
+    const allDone = Object.values(this.blanks()).every((b) => b.correct);
     if (allDone) this.completedChange.emit(true);
   }
 }

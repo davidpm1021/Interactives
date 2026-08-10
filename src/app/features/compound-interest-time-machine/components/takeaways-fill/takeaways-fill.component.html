@@ -17,7 +17,6 @@
               type="button"
               class="blank"
               [class.blank--correct]="blankState.correct"
-              [class.blank--revealed]="blankState.revealed"
               [class.blank--shake]="blankState.shake"
               [class.blank--filled]="placedChip !== null"
               (click)="onBlankClick(blankId)"
@@ -30,7 +29,7 @@
               } @else {
                 <span class="blank__placeholder">____</span>
               }
-              @if (blankState.correct || blankState.revealed) {
+              @if (blankState.correct) {
                 <span class="blank__check" aria-hidden="true">✓</span>
               }
             </button>
@@ -61,12 +60,6 @@
         </button>
       }
     </div>
-  </div>
-
-  <div class="takeaways-fill__actions">
-    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="showAllAnswers()">
-      Show answers
-    </button>
   </div>
 
   <div class="sr-only" aria-live="polite">{{ announcement() }}</div>

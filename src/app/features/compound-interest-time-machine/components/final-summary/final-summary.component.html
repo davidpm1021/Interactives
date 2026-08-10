@@ -1,29 +1,29 @@
 <div class="final-summary">
   <h2>Your Results</h2>
 
-  <div class="recap-table-wrapper">
-    <table class="recap-table" aria-label="Prediction recap">
-      <thead>
-        <tr>
-          <th scope="col">Challenge</th>
-          <th scope="col">Your Guess</th>
-          <th scope="col">Reality</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (row of recapRows(); track row.challenge) {
-          <tr>
-            <td class="challenge-cell">
-              <span class="challenge-num">{{ row.challenge }}</span>
-              {{ row.title }}
-            </td>
-            <td class="guess-cell">{{ row.guess }}</td>
-            <td class="reality-cell">{{ row.reality }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  <!-- Printed line, deliberately not an input: no student names are typed
+       into or stored by the app. Students write it in after printing. -->
+  <div class="name-line print-only">
+    <span class="name-line__label">Name:</span>
+    <span class="name-line__rule"></span>
   </div>
+
+  <section class="challenge-recap" aria-labelledby="recap-heading">
+    <h3 id="recap-heading">What you thought along the way</h3>
+    @for (item of challengeReflections(); track item.challenge) {
+      <div class="recap-item">
+        <p class="recap-prompt">
+          <span class="challenge-num">{{ item.challenge }}</span>
+          {{ item.prompt }}
+        </p>
+        @if (item.answer) {
+          <p class="recap-answer">{{ item.answer }}</p>
+        } @else {
+          <p class="recap-answer recap-answer--blank" aria-label="Not answered"></p>
+        }
+      </div>
+    }
+  </section>
 
   <app-takeaways-fill />
 

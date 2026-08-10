@@ -27,11 +27,6 @@
     margin: 0;
   }
 
-  &__actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.25rem;
-  }
 }
 
 .sentences {
@@ -88,14 +83,6 @@
     background: var(--ngpf-success-bg);
     border-color: var(--ngpf-success);
     color: var(--ngpf-success);
-    cursor: default;
-  }
-
-  &--revealed {
-    background: #f5f5f5;
-    border-color: #999;
-    border-style: dotted;
-    color: #666;
     cursor: default;
   }
 
@@ -209,7 +196,6 @@
 
 @media print {
   .takeaways-fill__hint,
-  .takeaways-fill__actions,
   .word-bank {
     display: none;
   }
