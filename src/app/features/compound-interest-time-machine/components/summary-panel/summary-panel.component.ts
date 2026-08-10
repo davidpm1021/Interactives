@@ -1,12 +1,11 @@
 import { Component, input, computed, signal, effect, untracked, OnDestroy } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 import { SimulationResult, YearlyDataPoint } from '../../models/compound-interest.models';
-import { formatCurrency, formatPercent } from '../../utils/formatters';
+import { formatCurrency } from '../../utils/formatters';
 
 @Component({
   selector: 'app-summary-panel',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [],
   templateUrl: './summary-panel.component.html',
   styleUrl: './summary-panel.component.scss',
 })
@@ -59,9 +58,6 @@ export class SummaryPanelComponent implements OnDestroy {
       balance: dp.compoundBalance,
       contributions: dp.totalContributions,
       interestEarned: dp.totalInterestEarned,
-      interestPercent: dp.compoundBalance > 0
-        ? (dp.totalInterestEarned / dp.compoundBalance) * 100
-        : 0,
       year: dp.year,
     };
   });
@@ -70,7 +66,6 @@ export class SummaryPanelComponent implements OnDestroy {
   protected readonly animatedBalance = signal(0);
   protected readonly animatedContributions = signal(0);
   protected readonly animatedInterest = signal(0);
-  protected readonly animatedInterestPercent = signal(0);
 
   private animationId: number | null = null;
   private readonly reducedMotion: boolean;
@@ -93,7 +88,6 @@ export class SummaryPanelComponent implements OnDestroy {
   });
 
   protected formatCurrency = (n: number) => formatCurrency(Math.round(n));
-  protected formatPercent = formatPercent;
 
   constructor() {
     this.reducedMotion =
@@ -103,18 +97,13 @@ export class SummaryPanelComponent implements OnDestroy {
 
     effect(() => {
       const data = this.displayData();
-      // untracked: animateToValues reads the four `animated*` signals to pick
-      // up the tween's starting point, and its rAF tick writes those same
-      // signals. A tracked read would make every animation frame re-run this
-      // effect, cancelling and restarting the tween each frame so the 300ms
-      // ease never completes. Only displayData should drive it.
+      // untracked: animateToValues reads the `animated*` signals to pick up the
+      // tween's starting point, and its rAF tick writes those same signals. A
+      // tracked read would make every animation frame re-run this effect,
+      // cancelling and restarting the tween each frame so the 300ms ease never
+      // completes. Only displayData should drive it.
       untracked(() =>
-        this.animateToValues(
-          data.balance,
-          data.contributions,
-          data.interestEarned,
-          data.interestPercent,
-        ),
+        this.animateToValues(data.balance, data.contributions, data.interestEarned),
       );
     });
   }
@@ -123,7 +112,6 @@ export class SummaryPanelComponent implements OnDestroy {
     targetBalance: number,
     targetContributions: number,
     targetInterest: number,
-    targetPercent: number,
   ): void {
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
@@ -134,14 +122,12 @@ export class SummaryPanelComponent implements OnDestroy {
       this.animatedBalance.set(targetBalance);
       this.animatedContributions.set(targetContributions);
       this.animatedInterest.set(targetInterest);
-      this.animatedInterestPercent.set(targetPercent);
       return;
     }
 
     const startBalance = this.animatedBalance();
     const startContributions = this.animatedContributions();
     const startInterest = this.animatedInterest();
-    const startPercent = this.animatedInterestPercent();
 
     const duration = 300;
     let startTime: number | null = null;
@@ -157,7 +143,6 @@ export class SummaryPanelComponent implements OnDestroy {
       this.animatedBalance.set(startBalance + (targetBalance - startBalance) * eased);
       this.animatedContributions.set(startContributions + (targetContributions - startContributions) * eased);
       this.animatedInterest.set(startInterest + (targetInterest - startInterest) * eased);
-      this.animatedInterestPercent.set(startPercent + (targetPercent - startPercent) * eased);
 
       if (progress < 1) {
         this.animationId = requestAnimationFrame(tick);
