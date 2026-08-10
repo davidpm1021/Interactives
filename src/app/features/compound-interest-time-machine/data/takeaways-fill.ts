@@ -49,10 +49,24 @@ export const TAKEAWAY_SENTENCES: readonly FillSentence[] = [
   },
 ];
 
-/** Plausible-but-wrong tokens mixed into the word bank alongside the answers. */
+/**
+ * Plausible-but-wrong tokens mixed into the word bank alongside the answers.
+ *
+ * A distractor has to be wrong in *every* blank, not just the one it looks
+ * closest to. "amount" was replaced because "a small difference in rate
+ * creates an enormous difference in amount" reads perfectly well, so students
+ * reasoning correctly were being told they were wrong.
+ *
+ * Adjectives are the safest choice here: the blanks all want a noun or a
+ * specific adverb, so an adjective cannot complete them. Avoid plausible nouns
+ * like "fees" or "inflation" — both make the rate sentence *true*.
+ *
+ * "steady" is deliberately tempting: choosing it for "most of the gains come
+ * in the ___ years" surfaces exactly the misconception the activity corrects.
+ */
 export const TAKEAWAY_DISTRACTORS: readonly string[] = [
   'simple',
   'linear',
-  'amount',
+  'steady',
   'principal',
 ];
