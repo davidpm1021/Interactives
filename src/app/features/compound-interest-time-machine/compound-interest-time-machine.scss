@@ -109,6 +109,13 @@
       font-size: 1.6rem;
       color: var(--ngpf-royal-blue);
     }
+
+    .callout-subline {
+      display: block;
+      margin-top: var(--ngpf-spacing-xs);
+      font-size: 0.85rem;
+      color: var(--ngpf-text-muted);
+    }
   }
 
   .guess-vs-reality {

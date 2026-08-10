@@ -226,24 +226,18 @@
                 [resultB]="challenge4LateResult()"
                 [resultBStartYear]="10"
                 mode="dual"
+                [showEndpointLabels]="true"
+                [hideAreas]="true"
+                seriesALabel="Alex"
+                seriesBLabel="Jordan"
                 (animationComplete)="onAdvanceToReflect()"
               />
-              <div class="dual-stats">
-                <app-reveal-stats
-                  [actualValue]="challenge4EarlyResult().summary.finalBalance"
-                  label="Alex (started at 22)"
-                />
-                <app-reveal-stats
-                  [actualValue]="challenge4LateResult().summary.finalBalance"
-                  label="Jordan (started at 32)"
-                />
-              </div>
-              <div class="guess-vs-reality">
-                <div class="ratio-result">
-                  Alex ends up with <strong>{{ challenge4Gap() | currency:'USD':'symbol':'1.0-0' }}</strong> more than Jordan
-                </div>
+              <div class="headline-callout">
+                Alex ends up with
+                <strong>{{ challenge4Gap() | currency:'USD':'symbol':'1.0-0' }}</strong>
+                more than Jordan
                 @if (challenge4GuessLabel()) {
-                  <div class="your-guess">You guessed: {{ challenge4GuessLabel() }}</div>
+                  <span class="callout-subline">You guessed: {{ challenge4GuessLabel() }}</span>
                 }
               </div>
               @if (currentPhase() === 'reflect') {

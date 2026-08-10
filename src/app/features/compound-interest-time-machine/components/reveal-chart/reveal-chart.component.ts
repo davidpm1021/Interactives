@@ -61,6 +61,15 @@ export class RevealChartComponent {
    * unexplained — reviewers reported not knowing what the shading meant.
    */
   readonly areaLabels = input(false);
+  /**
+   * Suppress the shaded contribution/interest bands.
+   *
+   * The bands are computed from `result` alone, so on a two-series chart they
+   * sit beneath both curves and imply the second series contributed the same
+   * amount. On Challenge 4 that is false by $24,000 — and understating
+   * Jordan's shortfall contradicts the very point the chart is making.
+   */
+  readonly hideAreas = input(false);
   readonly animationComplete = output<void>();
 
   private readonly injector = inject(Injector);
@@ -268,6 +277,8 @@ export class RevealChartComponent {
   private renderAreas(dims: ChartDimensions, scales: ChartScales): void {
     const areaLayer = this.chartGroup.select('.area-layer');
     areaLayer.selectAll('*').remove();
+
+    if (this.hideAreas()) return;
 
     const data = this.result().dataPoints;
 
