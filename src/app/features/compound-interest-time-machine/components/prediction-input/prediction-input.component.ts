@@ -24,6 +24,12 @@ export class PredictionInputComponent {
    * table cell as the missing entry in a comparison.
    */
   readonly compact = input(false);
+  /**
+   * Defaults to "?" rather than "0": a bare zero renders like a real entry,
+   * and in the scenario table it sat alongside genuine figures as if the cell
+   * were already answered.
+   */
+  readonly placeholder = input('?');
 
   readonly valueChanged = output<number>();
 

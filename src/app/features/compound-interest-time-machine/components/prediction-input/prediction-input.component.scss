@@ -47,8 +47,11 @@
   width: 180px;
   text-align: left;
 
+  // Kept clearly lighter than entered text so the prompt never reads as a
+  // value. (Also replaces a hardcoded #ccc with the design token.)
   &::placeholder {
-    color: #ccc;
+    color: var(--ngpf-light-gray-blue);
+    font-weight: 400;
   }
 }
 

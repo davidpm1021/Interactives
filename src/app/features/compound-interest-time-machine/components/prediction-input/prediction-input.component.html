@@ -13,7 +13,7 @@
       (keydown.enter)="$event.preventDefault()"
       aria-label="Your prediction in dollars"
       [attr.aria-describedby]="hint() ? 'prediction-hint' : null"
-      placeholder="0"
+      [placeholder]="placeholder()"
     />
   </div>
   @if (!compact() && hint()) {
