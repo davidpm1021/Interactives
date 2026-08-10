@@ -10,22 +10,26 @@ import {
  * Signal-based state machine for the five-challenge guided sequence.
  * Provided at component level (not 'root') so it resets when navigating away.
  */
-/**
- * Session-level interest rate pool. Picked once per session (component
- * instantiation) so a student replaying the activity sees different numbers,
- * matching the teacher feedback that students should not be able to share
- * verbatim answers.
- */
-const SESSION_RATE_POOL = [0.05, 0.06, 0.07, 0.08, 0.09] as const;
 
-function pickSessionRate(): number {
-  return SESSION_RATE_POOL[Math.floor(Math.random() * SESSION_RATE_POOL.length)];
-}
+/**
+ * The rate of return used throughout the activity.
+ *
+ * Pinned at 7%. An earlier version drew a random rate per session (5-9%) so
+ * students couldn't copy a neighbour's numbers, but review found two problems:
+ * the varying figures read as mistakes ("Remember that $1,000 at 6%..." drew
+ * "there is no 6%, numbers are wrong"), and the upper end overstated a
+ * realistic post-inflation return. 7% is roughly the long-run S&P 500 average
+ * after inflation.
+ */
+const SESSION_RATE = 0.07;
 
 @Injectable()
 export class ChallengeStateService {
-  /** Randomized per-session base rate used by Challenges 1, 3, and 4. */
-  readonly sessionRate = signal(pickSessionRate());
+  /**
+   * Base rate for Challenges 1 and 3 and the sandbox default. Kept as a signal
+   * so consumers read it uniformly, but it is constant — see SESSION_RATE.
+   */
+  readonly sessionRate = signal(SESSION_RATE);
 
   private readonly _state = signal<ChallengeState>({
     currentChallenge: 1,

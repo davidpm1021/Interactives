@@ -62,7 +62,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
   challenge3: {
     title: 'The Power of Adding a Little',
     setup:
-      'Remember that $1,000 at {{rate}} for 40 years? It grew to about {{c1Final}} on its own. Now let\'s add $100 every month, like a small automatic transfer from a paycheck. Over 40 years that\'s $48,000, which on top of the original $1,000 means you put in $49,000 of your own money.',
+      'Remember your friend\'s graduation gift? That $1,000 grew to {{c1Final}} over 40 years, without them adding another cent. Now let\'s add $100 every month, like a small automatic transfer from a paycheck. Over 40 years that\'s $48,000, which on top of the original $1,000 means you put in $49,000 of your own money.',
     predictPrompt:
       'Combined with compound interest, how much do you think you\'ll end up with?',
     revealButton: 'Show me',

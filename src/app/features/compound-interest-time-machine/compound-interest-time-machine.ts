@@ -69,15 +69,15 @@ export class CompoundInterestTimeMachine {
 
   // ── Challenge results (computed from service) ──────
   //
-  // Challenges 1 and 3 use the randomized per-session rate: they ask for a
-  // free-form dollar guess, so the answer varies harmlessly and students can't
-  // copy a number off a neighbour's screen.
+  // Every challenge now runs at a fixed rate. Challenges 1 and 3 read it from
+  // sessionRate (pinned at 7% — see SESSION_RATE in challenge-state.service).
   //
-  // Challenges 2 and 4 stay pinned to fixed rates. Their multiple-choice
-  // options are calibrated to specific outcomes (C2's "how many times bigger"
-  // bands assume 5% vs 10%; C4's dollar bands and its "$24,000 more" framing
-  // assume 7%), so randomizing the rate would leave the answer key pointing at
-  // the wrong option, or at no option at all.
+  // Challenges 2 and 4 hardcode their own rates and must keep doing so even if
+  // sessionRate is ever varied again: their multiple-choice options are
+  // calibrated to specific outcomes (C2's "how many times bigger" bands assume
+  // 5% vs 10%; C4's dollar bands and "$24,000 more" framing assume 7%), so a
+  // different rate would leave the answer key pointing at the wrong option, or
+  // at no option at all.
 
   protected readonly challenge1Result = computed(() => this.service.calculateChallenge1(this.sessionRate()));
   protected readonly challenge2LowResult = computed(() => this.service.calculateChallenge2Low());
