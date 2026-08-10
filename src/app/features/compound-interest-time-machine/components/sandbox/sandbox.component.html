@@ -118,14 +118,6 @@
       </div>
     </div>
 
-    <button
-      class="wait-toggle"
-      [class.active]="showWaitComparison()"
-      (click)="toggleWaitComparison()"
-      [attr.aria-pressed]="showWaitComparison()"
-    >
-      {{ content.waitToggle }}
-    </button>
   </div>
 
   <div class="sandbox-chart">
@@ -144,6 +136,7 @@
       [maxYear]="timeHorizon()"
       [currentYear]="selectedYear() ?? timeHorizon()"
       [startAge]="startAge()"
+      [needsRerun]="needsRerun()"
       (yearChange)="onYearChange($event)"
       (playStateChange)="onPlayStateChange($event)"
     />
@@ -158,10 +151,27 @@
       comparisonSuffix="."
     />
 
-    <div class="table-toggle">
+    <!--
+      Both toggles sit below the results rather than among the inputs. Review
+      found the wait-comparison button competed with the play control ("it was
+      hard to find the play/submit button at first"), so it only appears once
+      the student has actually watched a run.
+    -->
+    <div class="result-toggles">
+      @if (hasRevealed()) {
+        <button
+          type="button"
+          class="ngpf-btn ngpf-btn-secondary toggle-btn"
+          [class.active]="showWaitComparison()"
+          (click)="toggleWaitComparison()"
+          [attr.aria-pressed]="showWaitComparison()"
+        >
+          {{ content.waitToggle }}
+        </button>
+      }
       <button
         type="button"
-        class="ngpf-btn ngpf-btn-secondary table-toggle-btn"
+        class="ngpf-btn ngpf-btn-secondary toggle-btn"
         (click)="toggleTable()"
         [attr.aria-expanded]="showTable()"
       >

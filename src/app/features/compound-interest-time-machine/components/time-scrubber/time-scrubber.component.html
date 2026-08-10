@@ -1,6 +1,7 @@
 <div class="time-scrubber">
   <button
     class="play-btn"
+    [class.needs-rerun]="needsRerun() && !isPlaying()"
     (click)="togglePlay()"
     [attr.aria-label]="isPlaying() ? 'Pause timeline' : 'Play timeline'"
   >
@@ -43,3 +44,9 @@
     }
   </div>
 </div>
+
+@if (needsRerun() && !isPlaying()) {
+  <p class="rerun-hint" role="status">
+    You changed your numbers. Press play to see the new result.
+  </p>
+}

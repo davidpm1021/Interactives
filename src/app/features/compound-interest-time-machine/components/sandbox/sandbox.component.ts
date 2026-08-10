@@ -99,12 +99,26 @@ export class SandboxComponent implements OnInit {
    * True once the student has seen the curve reach the end of the timeline.
    * Gates whether later input changes are allowed to rescale the y-axis.
    */
-  private readonly hasRevealed = signal(false);
+  protected readonly hasRevealed = signal(false);
+
+  /**
+   * True when inputs changed after a completed run, so the figures on screen
+   * no longer match what the student last watched.
+   *
+   * Review: "I ran the animation, then adjusted my inputs... it was hard to
+   * tell that it had re-run the estimate with my new input." Drives a prompt
+   * on the play control rather than silently updating.
+   */
+  protected readonly needsRerun = signal(false);
 
   ngOnInit(): void {
     // Carry the session's rate over from the challenges before the first
     // refit, so the frozen ceiling matches the scenario we open on.
-    this.interestRatePercent.set(this.clamp(this.initialRatePercent(), 0, 15));
+    // Rounded to the slider's 0.5 step: the caller derives this from a decimal
+    // rate, and 0.07 * 100 lands on 7.000000000000001, which rendered in full
+    // in the number field.
+    const seeded = Math.round(this.clamp(this.initialRatePercent(), 0, 15) * 2) / 2;
+    this.interestRatePercent.set(seeded);
     // Start at year 0 so the user scrubs or plays to reveal
     this.selectedYear.set(0);
     this.refitYAxis();
@@ -154,7 +168,9 @@ export class SandboxComponent implements OnInit {
    * Play again.
    */
   private onInputsChanged(): void {
-    if (this.hasRevealed()) this.refitYAxis();
+    if (!this.hasRevealed()) return;
+    this.refitYAxis();
+    this.needsRerun.set(true);
   }
 
   protected readonly showTable = signal(false);
@@ -174,6 +190,9 @@ export class SandboxComponent implements OnInit {
     this.isAutoPlaying.set(playing);
     if (playing) {
       this.refitYAxis();
+      // The run now reflects the current inputs, so the prompt has served
+      // its purpose.
+      this.needsRerun.set(false);
     }
   }
 
