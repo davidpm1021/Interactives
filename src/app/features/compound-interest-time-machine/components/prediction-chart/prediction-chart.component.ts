@@ -206,7 +206,7 @@ export class PredictionChartComponent {
     const rect = container.getBoundingClientRect();
     if (rect.width <= 0) return;
 
-    this.dims = computeChartDimensions(rect.width, DEFAULT_MARGIN, 0.55, 300, 460);
+    this.dims = computeChartDimensions(rect.width, DEFAULT_MARGIN, 0.40, 280, 330);
     this.svg.attr('viewBox', `0 0 ${this.dims.width} ${this.dims.height}`);
 
     this.scales = createScales(
