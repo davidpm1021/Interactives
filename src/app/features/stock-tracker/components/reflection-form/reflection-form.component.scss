@@ -146,5 +146,28 @@
     &__section {
       break-inside: avoid;
     }
+
+    // Ruled line where a stock was never chosen, so the question is visibly
+    // unanswered rather than silently absent.
+    &__pick-blank {
+      display: flex;
+      align-items: baseline;
+      gap: var(--ngpf-spacing-sm);
+      margin: 0 0 var(--ngpf-spacing-xs);
+      font-family: var(--ngpf-font-body);
+      font-size: 0.9rem;
+      max-width: 22rem;
+    }
+
+    &__pick-blank-label {
+      color: var(--ngpf-text-secondary);
+      flex-shrink: 0;
+    }
+
+    &__pick-blank-rule {
+      flex: 1;
+      border-bottom: 1px solid var(--ngpf-text-secondary);
+      height: 1.1em;
+    }
   }
 }

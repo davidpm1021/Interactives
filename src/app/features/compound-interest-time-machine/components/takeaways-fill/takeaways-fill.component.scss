@@ -230,4 +230,21 @@
     background: transparent;
     padding: 0;
   }
+
+  // A blank the student didn't solve prints as something they can write on.
+  // Previously it came out as an 80px "____" with the word bank hidden, so
+  // the sentence was neither answered on screen nor answerable on paper —
+  // the "Show answers" button used to guarantee a complete printed sheet.
+  // Sized to match the ruled lines an unanswered reflection prompt gets.
+  .blank:not(.blank--correct) {
+    border-bottom: 1px solid var(--ngpf-text-secondary);
+    border-radius: 0;
+    min-width: 8rem;
+
+    .blank__placeholder {
+      // Held in the layout so the line keeps its height, but the row of
+      // underscores would read as filled-in rather than as space to write.
+      visibility: hidden;
+    }
+  }
 }

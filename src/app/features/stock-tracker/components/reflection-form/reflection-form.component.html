@@ -37,6 +37,19 @@
             </button>
           }
         </div>
+
+        <!--
+          Printed stand-in for a pick that was never made. Print hides every
+          unpicked chip, so an untouched question collapsed to nothing and the
+          sheet read as if it had never been asked. Matches the ruled line an
+          unanswered written prompt already gets.
+        -->
+        @if (!report()[pickField]) {
+          <p class="reflection-form__pick-blank print-only">
+            <span class="reflection-form__pick-blank-label">My pick:</span>
+            <span class="reflection-form__pick-blank-rule"></span>
+          </p>
+        }
       }
 
       @if (field.pickPrompt) {
