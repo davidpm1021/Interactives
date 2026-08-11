@@ -13,7 +13,17 @@ export type ReflectionKey =
 interface FieldDef {
   key: ReflectionKey;
   label: string;
+  /** Question above the textarea. */
   prompt: string;
+  /**
+   * Question above the chip row, when the field asks students to choose a
+   * stock before writing about it. Keeping it separate from `prompt` stops a
+   * single line having to serve both inputs. Review: "Separate the 3
+   * questions... ask 'Which stock is worth the most today' then students
+   * choose one stock. Below, ask 'Is this the same as the best ROI? Why or
+   * why not?'"
+   */
+  pickPrompt?: string;
   /**
    * When set, render a "pick one of the 5 stocks" chip row above the
    * textarea. The selected ticker is stored on `pickField` in the report so
@@ -31,8 +41,8 @@ const FIELDS: FieldDef[] = [
   {
     key: 'mostValuableAnalysis',
     label: 'Most Valuable Stock',
-    prompt:
-      'Which stock is worth the most today? Is this the same as the best ROI? Why or why not?',
+    pickPrompt: 'Which stock is worth the most today?',
+    prompt: 'Is this the same as the stock with the best ROI? Why or why not?',
     pickField: 'mostValuablePick',
   },
   {

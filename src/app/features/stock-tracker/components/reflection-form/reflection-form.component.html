@@ -4,10 +4,24 @@
       <label [attr.for]="'reflect-' + field.key" class="reflection-form__label">
         {{ field.label }}
       </label>
-      <p class="reflection-form__prompt">{{ field.prompt }}</p>
+      <!--
+        With a pickPrompt the two questions straddle the chips: the pick
+        question above, the written question below. Without one, the single
+        prompt stays above the chips exactly as before, so fields that were
+        never split don't end up with an unlabelled chip row.
+      -->
+      @if (field.pickPrompt; as pickPrompt) {
+        <p class="reflection-form__prompt">{{ pickPrompt }}</p>
+      } @else {
+        <p class="reflection-form__prompt">{{ field.prompt }}</p>
+      }
 
       @if (field.pickField; as pickField) {
-        <div class="reflection-form__chips" role="radiogroup" [attr.aria-label]="field.label + ': pick a stock'">
+        <div
+          class="reflection-form__chips"
+          role="radiogroup"
+          [attr.aria-label]="field.pickPrompt ?? field.label + ': pick a stock'"
+        >
           @for (pick of picks(); track pick.ticker; let i = $index) {
             <button
               type="button"
@@ -23,6 +37,10 @@
             </button>
           }
         </div>
+      }
+
+      @if (field.pickPrompt) {
+        <p class="reflection-form__prompt">{{ field.prompt }}</p>
       }
 
       <textarea
