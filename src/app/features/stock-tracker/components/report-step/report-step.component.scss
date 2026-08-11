@@ -184,5 +184,14 @@
     &__charts {
       margin: 0;
     }
+
+    // The sheet doesn't fit one page, so it's split where the content already
+    // divides: the data students were given on the first, everything they
+    // wrote on the second. Left to itself the break landed mid-analysis, with
+    // a couple of questions stranded after a half-empty page. Nothing is
+    // enlarged to fill either page.
+    &__section--analysis {
+      break-before: page;
+    }
   }
 }
