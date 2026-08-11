@@ -14,7 +14,24 @@
         <tr>
           <th scope="col">Year</th>
           <th scope="col">Age</th>
-          <th scope="col">Date Used</th>
+          <!--
+            "Date", not "Date Used", per review. "Used" was the only signal
+            that this can differ from the actual birthday, so the explanation
+            moves into a tooltip alongside the three columns that already
+            carry one.
+          -->
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Date: the trading day the price comes from. If the market was closed on your birthday, this is the last trading day before it">
+              Date
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>Date.</strong> The trading day this price comes from.
+                Markets close on weekends and holidays, so if your birthday
+                wasn't a trading day this is the last one before it.
+              </span>
+            </span>
+          </th>
           <th scope="col">
             <span class="stock-table__th-info" tabindex="0"
                   aria-label="Adjusted closing price: the day's closing price, adjusted for stock splits and dividends so it can be compared across years">
