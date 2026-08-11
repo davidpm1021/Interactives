@@ -38,19 +38,6 @@
     font-weight: 600;
   }
 
-  &__sub {
-    font-family: var(--ngpf-font-body);
-    font-size: 0.82rem;
-    color: var(--ngpf-text-secondary);
-    line-height: 1.35;
-    margin-top: 2px;
-
-    &--match {
-      color: var(--ngpf-success, #2e7d32);
-      font-weight: 600;
-    }
-  }
-
   // ── Required-contribution reveal ──
   // Full width beneath the tiles, so it reads as an answer to a question the
   // student asked rather than a third headline number competing with the two

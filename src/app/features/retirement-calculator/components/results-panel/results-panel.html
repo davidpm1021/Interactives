@@ -3,13 +3,13 @@
     <div class="results-panel__tile results-panel__tile--primary"
          [class.results-panel__tile--warn]="hasGap()"
          [class.results-panel__tile--ok]="!hasGap()">
+      <!--
+        No employer-match sub-line. Review: "Remove 'Of that, $X came from your
+        employer.' from 'you'll have' box (cluttering key value + redundant
+        with graph)." The chart's shaded band and its legend entry carry it.
+      -->
       <span class="results-panel__label">You'll have</span>
       <app-stat-counter [value]="projection().finalBalance" prefix="$" />
-      @if (projection().totalEmployerMatch > 0) {
-        <span class="results-panel__sub results-panel__sub--match">
-          Of that, {{ formatCurrency(projection().totalEmployerMatch) }} came from your employer.
-        </span>
-      }
     </div>
 
     <div class="results-panel__tile">

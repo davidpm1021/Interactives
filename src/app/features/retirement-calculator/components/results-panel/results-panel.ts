@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { RetirementProjection } from '../../models/retirement.models';
 import { StatCounterComponent } from '../shared/stat-counter/stat-counter.component';
-import { formatCurrency } from '../../utils/formatters';
 
 @Component({
   selector: 'app-results-panel',
@@ -32,6 +31,4 @@ export class ResultsPanel {
   protected reveal(): void {
     this.revealed.set(true);
   }
-
-  protected readonly formatCurrency = formatCurrency;
 }
