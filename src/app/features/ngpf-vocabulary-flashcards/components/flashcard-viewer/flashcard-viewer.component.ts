@@ -157,7 +157,17 @@ export class FlashcardViewerComponent implements OnDestroy {
 
   protected readonly cardAnnouncement = computed(() => {
     const card = this.currentCard();
+    const shown = this.visibleCard();
     if (!card) return '';
+
+    // Stay silent while `displayCard` is still holding the outgoing card.
+    // The number comes from the session and updates immediately, but the
+    // label and content come from the lagging card, so announcing during that
+    // window read out the new card's number against the previous card's term,
+    // then corrected itself 140ms later and announced a second time. Emitting
+    // nothing until they agree produces one announcement, and a correct one.
+    if (shown && shown.term.id !== card.term.id) return '';
+
     if (card.isFlipped) {
       return `${this.backLabel()}: ${this.backContent()}`;
     }

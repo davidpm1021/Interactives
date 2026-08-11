@@ -36,6 +36,17 @@ export class FlashcardService {
    * Spanish mode, where the "definition" would just read
    * "Spanish translation coming soon!".
    */
+  /**
+   * How many of a unit's terms will actually become cards in the given
+   * language. In Spanish this is smaller than `unit.terms.length` because
+   * untranslated entries are skipped, and the picker must advertise this
+   * number rather than the raw one or it promises cards it won't deal.
+   */
+  studiableTermCount(unit: Unit, isSpanish: boolean): number {
+    if (!isSpanish) return unit.terms.length;
+    return unit.terms.filter((t) => this.hasUsableSpanish(t)).length;
+  }
+
   private hasUsableSpanish(term: Term): boolean {
     const spanishTerm = term.spanish?.term?.trim() ?? '';
     const spanishDefinition = term.spanish?.definition?.trim() ?? '';

@@ -64,3 +64,22 @@
     }
   }
 }
+
+// Explains a card count that drops when Spanish is selected.
+.translation-note {
+  font-family: var(--ngpf-font-body);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--ngpf-text-secondary);
+  background: white;
+  border-left: 3px solid var(--ngpf-bright-blue);
+  border-radius: var(--ngpf-radius-sm);
+  padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+  margin: 0 0 var(--ngpf-spacing-lg);
+
+  // The deck would be empty, so this is a blocker rather than a footnote.
+  &--blocking {
+    border-left-color: var(--ngpf-error);
+    color: var(--ngpf-text-primary);
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, ElementRef, inject, input, output, signal, computed } from '@angular/core';
 import { Unit, StudyMode } from '../../models/flashcard.models';
+import { FlashcardService } from '../../services/flashcard.service';
 
 export interface StudySettings {
   mode: StudyMode;
@@ -22,11 +23,31 @@ export class StudySettingsComponent {
   protected readonly isSpanish = signal(false);
 
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+  private readonly flashcardService = inject(FlashcardService);
   protected readonly modeOrder: readonly StudyMode[] = ['term-first', 'definition-first', 'mixed'];
 
+  /**
+   * Cards the session will actually deal, which in Spanish is fewer than the
+   * raw term count because untranslated entries are skipped when the deck is
+   * built. The unit picker runs before the language is chosen, so this screen
+   * is the first and only place the real number can be shown.
+   */
   protected readonly totalTerms = computed(() =>
-    this.selectedUnits().reduce((sum, unit) => sum + unit.terms.length, 0)
+    this.selectedUnits().reduce(
+      (sum, unit) => sum + this.flashcardService.studiableTermCount(unit, this.isSpanish()),
+      0,
+    )
   );
+
+  /** How many terms Spanish study would drop, for the explanatory note. */
+  protected readonly untranslatedCount = computed(() => {
+    if (!this.isSpanish()) return 0;
+    const all = this.selectedUnits().reduce((sum, unit) => sum + unit.terms.length, 0);
+    return all - this.totalTerms();
+  });
+
+  /** Nothing to study: every selected unit is untranslated in this language. */
+  protected readonly hasNoCards = computed(() => this.totalTerms() === 0);
 
   protected readonly unitCount = computed(() => this.selectedUnits().length);
 

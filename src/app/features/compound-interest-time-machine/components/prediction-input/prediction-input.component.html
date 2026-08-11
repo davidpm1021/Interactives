@@ -12,10 +12,18 @@
       (input)="onInput($event)"
       (keydown.enter)="$event.preventDefault()"
       aria-label="Your prediction in dollars"
-      [attr.aria-describedby]="hint() ? 'prediction-hint' : null"
+      [attr.aria-invalid]="showRangeHint()"
+      [attr.aria-describedby]="showRangeHint() ? 'prediction-range' : (hint() ? 'prediction-hint' : null)"
       [placeholder]="placeholder()"
     />
   </div>
+  <!--
+    Shown even in compact mode. Without it an out-of-range entry just made the
+    forward button vanish, with nothing on screen saying why.
+  -->
+  @if (showRangeHint()) {
+    <p class="input-range-hint" id="prediction-range" role="status">{{ rangeHintText() }}</p>
+  }
   @if (!compact() && hint()) {
     <p class="input-hint" id="prediction-hint">{{ hint() }}</p>
   }

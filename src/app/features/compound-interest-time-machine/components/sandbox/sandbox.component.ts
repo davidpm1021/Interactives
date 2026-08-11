@@ -157,7 +157,11 @@ export class SandboxComponent implements OnInit {
 
   protected toggleWaitComparison(): void {
     this.showWaitComparison.update((v) => !v);
-    this.onInputsChanged();
+    // Refit only. This overlays a second curve, it doesn't change the
+    // student's own inputs, so routing it through onInputsChanged told them
+    // "You changed your numbers. Press play to see the new result." about
+    // figures that were still current.
+    this.refitYAxisIfRevealed();
   }
 
   /**
@@ -171,9 +175,14 @@ export class SandboxComponent implements OnInit {
    * Play again.
    */
   private onInputsChanged(): void {
+    this.refitYAxisIfRevealed();
+    if (this.hasRevealed()) this.needsRerun.set(true);
+  }
+
+  /** Rescale without marking the on-screen figures stale. */
+  private refitYAxisIfRevealed(): void {
     if (!this.hasRevealed()) return;
     this.refitYAxis();
-    this.needsRerun.set(true);
   }
 
   protected readonly showTable = signal(false);

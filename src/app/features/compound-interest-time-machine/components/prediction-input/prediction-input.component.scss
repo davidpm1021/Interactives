@@ -89,3 +89,13 @@
     transition: none;
   }
 }
+
+// Shown in both modes, unlike .input-hint: in the scenario table this is the
+// only feedback an out-of-range entry gets.
+.input-range-hint {
+  font-family: var(--ngpf-font-body);
+  font-size: 0.78rem;
+  color: var(--ngpf-error);
+  margin: 0.4rem 0 0;
+  line-height: 1.3;
+}

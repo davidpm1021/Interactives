@@ -322,7 +322,8 @@ export class CompoundInterestTimeMachine {
     ];
   });
 
-  protected onChallenge3Input(value: number): void {
+  /** null when the field holds nothing usable, which disables "Show me". */
+  protected onChallenge3Input(value: number | null): void {
     this.challenge3Guess.set(value);
   }
 

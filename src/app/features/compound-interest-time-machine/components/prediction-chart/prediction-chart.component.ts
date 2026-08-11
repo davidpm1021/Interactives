@@ -510,24 +510,25 @@ export class PredictionChartComponent {
     if (sig().locked) return;
     sig.set({ ...sig(), locked: true });
 
-    if (id === 'dot10' && !this.show40()) {
-      // Year 40 opens level with the student's own Year-10 answer rather than
-      // a number we picked. A flat line from Year 10 to Year 40 reads as "it
-      // stops growing here", so the student has to actively decide how much
-      // more happens, and the anchor is their own reasoning instead of ours.
-      //
-      // Guarded by !show40() so it only fires the first time the dot appears:
-      // a restored guess (see the initialYear40 effect) already set show40 and
-      // must not be overwritten.
-      this.dot40.set({ ...this.dot40(), value: this.dot10().value });
-      this.show40.set(true);
-      // Focus the Year 40 dot after render
-      setTimeout(() => {
-        const dot40El = this.chartGroup?.select('.dot-layer .prediction-dot:not(.locked-dot)')?.node();
-        if (dot40El instanceof HTMLElement || dot40El instanceof SVGElement) {
-          (dot40El as HTMLElement).focus();
-        }
-      }, 50);
+    if (id === 'dot10') {
+      if (!this.show40()) {
+        // Year 40 opens level with the student's own Year-10 answer rather than
+        // a number we picked. A flat line from Year 10 to Year 40 reads as "it
+        // stops growing here", so the student has to actively decide how much
+        // more happens, and the anchor is their own reasoning instead of ours.
+        //
+        // Guarded by !show40() so it only fires the first time the dot appears:
+        // a restored guess (see the initialYear40 effect) already set show40 and
+        // must not be overwritten.
+        this.dot40.set({ ...this.dot40(), value: this.dot10().value });
+        this.show40.set(true);
+      }
+
+      // Outside that guard on purpose. Locking rebuilds .dot-layer and destroys
+      // the focused element, so on the restored path — where show40 is already
+      // true — focus fell to <body> and a keyboard user could not lock Year 40
+      // or reach "Show me reality" without tabbing back into the SVG.
+      if (!this.dot40().locked) this.restoreFocusAfterRender('dot40');
     }
 
     if (id === 'dot40') {
