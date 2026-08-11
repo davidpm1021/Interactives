@@ -1,14 +1,6 @@
 .reveal-chart-wrapper {
   position: relative;
   min-height: 340px;
-
-  svg {
-    width: 100%;
-    display: block;
-    // The hit area spans the plot, so stop a touch-drag over the chart from
-    // scrolling the page while the student is scrubbing along the curve.
-    touch-action: pan-y;
-  }
 }
 
 // ── Hover / tap readout ──
@@ -49,6 +41,20 @@
 }
 
 :host ::ng-deep {
+  // The <svg> is created by d3, so it never receives Angular's scoping
+  // attribute and cannot be styled from the encapsulated block above. This
+  // rule previously lived there and silently never applied.
+  //
+  // pan-y lets the browser own vertical scrolling, so a student can always
+  // swipe the page even with a finger on the chart. Horizontal drags are left
+  // to the pointer handlers for scrubbing. There is no horizontal page scroll
+  // here to compete with.
+  svg {
+    width: 100%;
+    display: block;
+    touch-action: pan-y;
+  }
+
   .axis text {
     font-family: var(--ngpf-font-body);
     font-size: 0.75rem;

@@ -130,7 +130,13 @@ export class RevealChartComponent {
     this.chartGroup.append('g').attr('class', 'bracket-layer');
     // Last, so the marker draws over the curves, and created once here rather
     // than in renderStatic, which wipes the layers above on every resize.
-    this.chartGroup.append('g').attr('class', 'hover-layer');
+    // pointer-events none is load-bearing: this layer is raised above the
+    // hit rect so the marker draws on top of the curves, which also made it
+    // the topmost hit target. Crossing the marker fired pointerleave on the
+    // overlay and cleared the readout, so it strobed under the cursor.
+    this.chartGroup.append('g')
+      .attr('class', 'hover-layer')
+      .attr('pointer-events', 'none');
     this.chartGroup.append('rect')
       .attr('class', 'hover-overlay')
       .attr('fill', 'transparent')
@@ -154,15 +160,15 @@ export class RevealChartComponent {
   // aren't on screen yet, and would also pre-empt the reveal.
 
   private attachHoverHandlers(): void {
+    // No touchmove handler. Scroll-vs-scrub arbitration is left entirely to
+    // `touch-action: pan-y` on the svg, so the browser keeps ownership of
+    // vertical panning and a student can always scroll away from the chart.
+    // Calling preventDefault() here instead meant that if the CSS ever failed
+    // to apply, every touch-drag over a 340px chart froze the page.
     this.chartGroup.select<SVGRectElement>('.hover-overlay')
       .on('pointermove', (event: PointerEvent) => this.onHover(event))
       .on('pointerdown', (event: PointerEvent) => this.onHover(event))
-      .on('pointerleave', () => this.clearHover())
-      // Touch drags scroll the page by default, which fights a drag-to-scrub
-      // gesture. Only claim the gesture once the chart is interactive.
-      .on('touchmove', (event: TouchEvent) => {
-        if (this.hasAnimated) event.preventDefault();
-      });
+      .on('pointerleave', () => this.clearHover());
   }
 
   /** Size the invisible hit area to the plot. Called from every render path. */

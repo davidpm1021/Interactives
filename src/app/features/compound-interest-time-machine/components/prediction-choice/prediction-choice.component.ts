@@ -28,6 +28,11 @@ export class PredictionChoiceComponent {
       const initial = this.initialSelectionId();
       if (initial && untracked(() => this.selectedId()) === null) {
         this.selectedId.set(initial);
+        // Emit as well as set. The parent clears its readiness signal when it
+        // re-enters a predict screen, so seeding silently left the restored
+        // answer visibly selected while the "Show me" button stayed disabled
+        // with nothing on screen explaining why.
+        this.selectionChanged.emit(initial);
       }
     });
   }
