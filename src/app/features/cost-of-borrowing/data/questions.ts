@@ -40,17 +40,22 @@ export const QUESTIONS: Question[] = [
     explanation:
       'Compare each product\'s 2020 value to its 2026 value on the chart or table. Credit cards moved from about 14.7% to about 21%; that is the largest jump.',
   },
+  // Deliberately looks at 2006-2020, not 2020-now. Q3 already has students
+  // compute every product's 2020-to-now change in order to find the biggest
+  // mover, mortgage included, so asking for that same figure again here was
+  // arithmetic they had just done. The earlier window is a fall rather than a
+  // rise and covers the fourteen years Q3 never touches.
   {
-    id: 'q4-mortgage-rise',
+    id: 'q4-mortgage-decline',
     dok: 2,
     answerType: 'numeric',
     prompt:
-      'The 30-year mortgage rate hit its lowest point of the past 20 years in 2020. By roughly how many percentage points has it risen since then? Round to the nearest whole number.',
-    correctValue: 4,
+      'Before it started climbing, the 30-year mortgage rate spent years falling. By roughly how many percentage points did it drop between 2006 and its 2020 low?',
+    correctValue: 3.5,
     tolerance: 1,
     unit: 'points',
     explanation:
-      'The mortgage line drops to around 2.7% in 2020 and rises to about 6.4% by 2026. That is a jump of about 3.8 percentage points, which rounds to 4.',
+      'The mortgage line starts around 6.2% in 2006 and bottoms out around 2.7% in 2020, a fall of roughly 3.5 percentage points. Rates moved in both directions over these 20 years, not just up.',
   },
   {
     id: 'q5-history-cc',
