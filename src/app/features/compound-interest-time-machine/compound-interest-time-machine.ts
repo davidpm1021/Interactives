@@ -111,7 +111,7 @@ export class CompoundInterestTimeMachine {
       '{{c3Final}}': formatCurrency(Math.round(this.challenge3Result().summary.finalBalance)),
       '{{c3Monthly}}': formatCurrency(CHALLENGE_3_MONTHLY),
       // Everything the student put in, principal included, so the insight's
-      // "turned X into Y" matches the table's "Total you put in" column.
+      // "turned X into Y" matches the table's "Total invested" column.
       '{{c3Contributed}}': formatCurrency(
         Math.round(this.challenge3Result().summary.totalContributions),
       ),
@@ -314,7 +314,7 @@ export class CompoundInterestTimeMachine {
   protected readonly challenge3TableHeaders = [
     'Starting amount',
     'Added monthly',
-    'Total you put in',
+    'Total invested',
     'Value after 40 years',
   ];
   protected readonly challenge3RowLabels = ['Part 1', 'Now'];
