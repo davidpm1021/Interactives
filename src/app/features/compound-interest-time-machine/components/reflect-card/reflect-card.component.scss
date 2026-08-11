@@ -4,6 +4,13 @@
   margin-top: 1.5rem;
   animation: reflect-fade-in 0.4s ease-out;
 
+  // Focused programmatically to bring the card into view, so suppress the ring
+  // the student never asked for. Controls inside it keep their own.
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
   .insight-text {
     font-family: var(--ngpf-font-body);
     font-size: 1.05rem;

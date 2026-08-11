@@ -1,5 +1,7 @@
 .challenge-progress {
-  padding: 1rem 0 1.5rem;
+  // Trimmed: this sits above a scenario, a step card, a ~320px chart and the
+  // lock button, all of which have to share a laptop viewport.
+  padding: 0.6rem 0 0.9rem;
 
   .progress-track {
     display: flex;

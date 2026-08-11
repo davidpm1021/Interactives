@@ -2,11 +2,18 @@
   text-align: center;
 }
 
+// Badge and instruction sit on one row rather than stacked. This screen has
+// to fit a header, a stepper, the scenario, this card, a ~400px chart and the
+// lock button inside a laptop viewport, and the padded two-line version of
+// this box was taking 104px to deliver one sentence.
 .step-card {
   position: relative;
-  max-width: 520px;
-  margin: 0 auto 1rem;
-  padding: 0.75rem 1rem 0.85rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  max-width: 640px;
+  margin: 0 auto 0.6rem;
+  padding: 0.5rem 0.85rem;
   background: white;
   border: 1px solid var(--ngpf-light-gray-blue);
   border-left: 4px solid var(--ngpf-bright-blue);
@@ -35,7 +42,8 @@
   background: var(--ngpf-soft-blue-tint);
   padding: 2px 8px;
   border-radius: 999px;
-  margin-bottom: 0.4rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 
   .step-card--done & {
     color: var(--ngpf-success);
@@ -71,7 +79,9 @@
 
 .prediction-chart-wrapper {
   position: relative;
-  min-height: 340px;
+  // Matches the chart's own minimum. At 340 it was reserving ~23px of empty
+  // space below a 317px chart and pushing the buttons off screen.
+  min-height: 280px;
   touch-action: none;
   user-select: none;
 
@@ -82,7 +92,7 @@
 }
 
 .lock-btn {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 :host ::ng-deep {

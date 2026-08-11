@@ -13,6 +13,7 @@ import { PredictionInputComponent } from './components/prediction-input/predicti
 import { RevealChartComponent } from './components/reveal-chart/reveal-chart.component';
 import { SandboxComponent } from './components/sandbox/sandbox.component';
 import { FinalSummaryComponent } from './components/final-summary/final-summary.component';
+import { ScrollCueComponent } from './components/scroll-cue/scroll-cue.component';
 import { IntroComponent } from './components/intro/intro.component';
 import { ConceptDemoComponent } from './components/concept-demo/concept-demo.component';
 import { ScenarioTableComponent, ScenarioRow } from './components/scenario-table/scenario-table.component';
@@ -38,6 +39,7 @@ import { formatCurrency, formatPercent } from './utils/formatters';
     SandboxComponent,
     FinalSummaryComponent,
     IntroComponent,
+    ScrollCueComponent,
     ConceptDemoComponent,
     ScenarioTableComponent,
   ],
@@ -151,14 +153,55 @@ export class CompoundInterestTimeMachine {
 
       afterNextRender(
         () => {
-          const heading = this.elementRef.nativeElement.querySelector('h2');
-          if (heading) {
-            heading.setAttribute('tabindex', '-1');
-            heading.focus();
+          const host = this.elementRef.nativeElement;
+
+          // On reflect, the h2 is the same challenge title it has been since
+          // the predict phase; the new content is the reflect card, which
+          // renders below a full-height chart and lands off screen on a laptop
+          // (measured ~800px down at an 800px viewport). Focusing it both
+          // announces the right thing and scrolls it into view, so a student
+          // isn't left staring at a chart with no visible question or button.
+          const target: HTMLElement | null =
+            phase === 'reflect'
+              ? host.querySelector('app-reflect-card .reflect-card')
+              : host.querySelector('h2');
+          if (!target) return;
+
+          if (!target.hasAttribute('tabindex')) {
+            target.setAttribute('tabindex', '-1');
           }
+          // preventScroll on the focus call, then scroll deliberately: the
+          // default would pin the card to the top of the viewport and push the
+          // reveal the student just watched off screen.
+          target.focus({ preventScroll: phase === 'reflect' });
+          if (phase === 'reflect') this.bringIntoView(target);
         },
         { injector: this.injector },
       );
+    });
+  }
+
+  /**
+   * Scroll an element into view without yanking it to the top of the page.
+   *
+   * Leaves the tail of the chart above it visible so the reveal stays in
+   * context, and only scrolls when the element is actually off screen, so a
+   * short viewport-fitting screen doesn't jump for no reason.
+   */
+  private bringIntoView(el: HTMLElement): void {
+    if (typeof window === 'undefined') return;
+    const rect = el.getBoundingClientRect();
+    const margin = 96; // keeps the bottom of the chart on screen
+    const overshoot = rect.bottom - window.innerHeight;
+    if (overshoot <= 0) return;
+
+    const reduced =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.scrollBy({
+      top: Math.min(overshoot + 16, rect.top - margin),
+      behavior: reduced ? 'auto' : 'smooth',
     });
   }
 
