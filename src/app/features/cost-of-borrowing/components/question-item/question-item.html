@@ -83,9 +83,16 @@
 
       <div class="question-item__explanation">{{ question().explanation }}</div>
 
-      <button type="button" class="question-item__reset" (click)="onReset()">
-        Try again
-      </button>
+      <!--
+        Only offered on a wrong answer. onReset() clears the recorded response
+        and restarts the question, so on a correct one this invited the student
+        to throw away an answer they'd already got right.
+      -->
+      @if (correct() === false) {
+        <button type="button" class="question-item__reset" (click)="onReset()">
+          Try again
+        </button>
+      }
     </div>
   } @else if (nudge()) {
     <p class="question-item__nudge" role="status">
