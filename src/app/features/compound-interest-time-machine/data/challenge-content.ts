@@ -67,14 +67,14 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     setup:
       // Short by design. The scenario table below carries the figures; review
       // found the prose version too easy to skim past before guessing.
-      'Same $1,000. Same 40 years. The only thing that changes is adding $100 every month, like a small automatic transfer from a paycheck.',
+      'Same $1,000. Same 40 years. The only thing that changes is adding {{c3Monthly}} every month, like a small automatic transfer from a paycheck.',
     predictPrompt: 'Fill in the missing number: what does it grow to?',
     revealButton: 'Show me',
     // Deliberately omits the "$3.30/day" framing and "of your money": review
     // found both read as sales-y and potentially out of touch for
     // lower-income students.
     reflectInsight:
-      'Compound interest turned $49,000 into {{c3Final}}. That\'s the power of consistent investing over time.',
+      'Compound interest turned {{c3Contributed}} into {{c3Final}}. That\'s the power of consistent investing over time.',
     reflectPrompt:
       'What does this make you want to change (or keep doing) with your own money?',
   },

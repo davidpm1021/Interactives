@@ -333,8 +333,8 @@ export class RevealChartComponent {
     const interestMid =
       (scales.y(anchor.compoundBalance) + scales.y(anchor.totalContributions)) / 2;
 
-    // States the final total, not the value at the anchor column — the point
-    // of the label is "you put in $49,000 altogether".
+    // States the final total, not the value at the anchor column: the point of
+    // the label is "you put in $13,000 altogether".
     const totalContributed = data[data.length - 1].totalContributions;
     bandLabel(
       contribMid,

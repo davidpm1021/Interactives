@@ -9,6 +9,12 @@ import {
   YearlyDataPoint,
 } from '../models/compound-interest.models';
 
+/**
+ * Monthly deposit for Challenge 3. Exported so the copy and the scenario
+ * table quote the same number the simulation runs, instead of retyping it.
+ */
+export const CHALLENGE_3_MONTHLY = 25;
+
 @Injectable({ providedIn: 'root' })
 export class CompoundInterestService {
   calculate(inputs: SimulationInputs): SimulationResult {
@@ -61,13 +67,21 @@ export class CompoundInterestService {
     });
   }
 
-  /** Challenge 3: $1k + $100/mo, {rate=7%}, 40yr, monthly compounding */
+  /**
+   * Challenge 3: $1k + $25/mo, {rate=7%}, 40yr, monthly compounding.
+   *
+   * $25 rather than $100 so the deposits stay *smaller* than what the original
+   * $1,000 grows to on its own ($12,000 vs $14,974). Review: at $100/mo "you're
+   * adding more than the final value of the initial investment", which makes
+   * "the power of adding a little" read as "obviously, you put in a pile of
+   * money."
+   */
   calculateChallenge3(rate = 0.07): SimulationResult {
     return this.calculate({
       principal: 1000,
       interestRate: rate,
       timeHorizon: 40,
-      contributionAmount: 100,
+      contributionAmount: CHALLENGE_3_MONTHLY,
       contributionFrequency: 'monthly',
       compoundingFrequency: 'monthly',
     });

@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal, effect, ElementRef, Injector, afterNextRender } from '@angular/core';
 import { DecimalPipe, CurrencyPipe } from '@angular/common';
 import { TopHeader } from '../../shared/top-header/top-header';
-import { CompoundInterestService } from './services/compound-interest.service';
+import { CompoundInterestService, CHALLENGE_3_MONTHLY } from './services/compound-interest.service';
 import { ChallengeStateService } from './services/challenge-state.service';
 import { ChallengeProgressComponent } from './components/challenge-progress/challenge-progress.component';
 import { ChallengeIntroComponent } from './components/challenge-intro/challenge-intro.component';
@@ -98,6 +98,12 @@ export class CompoundInterestTimeMachine {
       '{{rate}}': formatPercent(this.sessionRate()),
       '{{c1Final}}': formatCurrency(Math.round(this.challenge1Result().summary.finalBalance)),
       '{{c3Final}}': formatCurrency(Math.round(this.challenge3Result().summary.finalBalance)),
+      '{{c3Monthly}}': formatCurrency(CHALLENGE_3_MONTHLY),
+      // Everything the student put in, principal included, so the insight's
+      // "turned X into Y" matches the table's "Total you put in" column.
+      '{{c3Contributed}}': formatCurrency(
+        Math.round(this.challenge3Result().summary.totalContributions),
+      ),
     };
     const swap = (s: string | undefined): string | undefined =>
       s === undefined ? s : Object.entries(tokens).reduce((acc, [k, v]) => acc.split(k).join(v), s);
@@ -310,7 +316,7 @@ export class CompoundInterestTimeMachine {
         ],
       },
       {
-        cells: [money(1000), money(100), money(contributed), ''],
+        cells: [money(1000), money(CHALLENGE_3_MONTHLY), money(contributed), ''],
         isYours: true,
       },
     ];
