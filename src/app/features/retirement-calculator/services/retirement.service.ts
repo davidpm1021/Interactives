@@ -56,9 +56,10 @@ export class RetirementService {
     yearlyBalances.push({ age: inputs.currentAge, balance, totalContributed });
 
     for (let year = 1; year <= yearsToRetirement; year++) {
-      const yearEmployeeContribution = monthlyContrib * 12;
-      const yearEmployerMatch = this.annualEmployerMatch(yearEmployeeContribution, salary, match);
-      balance = balance * (1 + r) + yearEmployeeContribution + yearEmployerMatch;
+      const step = this.stepYear(balance, monthlyContrib, salary, r, match);
+      const yearEmployeeContribution = step.employee;
+      const yearEmployerMatch = step.employer;
+      balance = step.balance;
       totalContributed += yearEmployeeContribution;
       totalEmployerMatch += yearEmployerMatch;
       yearlyBalances.push({
@@ -93,7 +94,7 @@ export class RetirementService {
     const gapAtRetirement = targetNestEgg - finalBalance;
 
     const requiredMonthlyToHitGoal = this.solveMonthlyContribution(
-      inputs.currentSavings,
+      inputs,
       targetNestEgg,
       r,
       g,
@@ -314,27 +315,77 @@ export class RetirementService {
    *
    * Return the monthly (annual / 12).
    */
+  /**
+   * One year of accumulation. The single place the recurrence lives, so the
+   * projection the student sees and the solver below can't drift apart.
+   */
+  private stepYear(
+    balance: number,
+    monthlyContrib: number,
+    salary: number,
+    r: number,
+    match: EmployerMatch | undefined,
+  ): { balance: number; employee: number; employer: number } {
+    const employee = monthlyContrib * 12;
+    const employer = this.annualEmployerMatch(employee, salary, match);
+    return { balance: balance * (1 + r) + employee + employer, employee, employer };
+  }
+
+  /** Final balance for a given starting monthly contribution. */
+  private accumulate(
+    monthlyContribution: number,
+    inputs: RetirementInputs,
+    r: number,
+    g: number,
+    years: number,
+  ): number {
+    let balance = inputs.currentSavings;
+    let monthlyContrib = monthlyContribution;
+    let salary = inputs.currentSalary;
+    for (let year = 1; year <= years; year++) {
+      balance = this.stepYear(balance, monthlyContrib, salary, r, inputs.employerMatch).balance;
+      monthlyContrib *= 1 + g;
+      salary *= 1 + g;
+    }
+    return balance;
+  }
+
+  /**
+   * Monthly contribution needed to reach the target.
+   *
+   * Solved numerically against the same accumulation the chart is drawn from,
+   * rather than with a closed-form annuity formula. The closed form had no way
+   * to express the employer match, so the answer ignored it entirely: with a
+   * 50%-up-to-6% match the projected balance rose by ~$295,000 while this
+   * figure didn't move, telling a student to contribute more than they need.
+   * The match is also piecewise (it stops at the cap), which a single formula
+   * can't capture cleanly anyway.
+   */
   private solveMonthlyContribution(
-    currentSavings: number,
+    inputs: RetirementInputs,
     targetNestEgg: number,
     r: number,
     g: number,
     years: number,
   ): number {
     if (years <= 0) return targetNestEgg;
-    const growthFactor = Math.pow(1 + r, years);
-    const projectedFromSavings = currentSavings * growthFactor;
-    const stillNeeded = targetNestEgg - projectedFromSavings;
-    if (stillNeeded <= 0) return 0;
+    // Existing savings alone already get there.
+    if (this.accumulate(0, inputs, r, g, years) >= targetNestEgg) return 0;
 
-    let annualYearOne: number;
-    if (Math.abs(r - g) < 1e-9) {
-      // r == g: FV_contribs = P_annual * n * (1+r)^(n-1)
-      annualYearOne = stillNeeded / (years * Math.pow(1 + r, years - 1));
-    } else {
-      annualYearOne =
-        (stillNeeded * (r - g)) / (Math.pow(1 + r, years) - Math.pow(1 + g, years));
+    let lo = 0;
+    let hi = Math.max(1000, targetNestEgg / (years * 12));
+    // Widen until the target is bracketed, with a ceiling so a pathological
+    // input can't spin here.
+    let guard = 0;
+    while (this.accumulate(hi, inputs, r, g, years) < targetNestEgg && guard++ < 60) {
+      hi *= 2;
     }
-    return annualYearOne / 12;
+
+    for (let i = 0; i < 60; i++) {
+      const mid = (lo + hi) / 2;
+      if (this.accumulate(mid, inputs, r, g, years) < targetNestEgg) lo = mid;
+      else hi = mid;
+    }
+    return hi;
   }
 }

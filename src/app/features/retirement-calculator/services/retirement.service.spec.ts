@@ -203,4 +203,48 @@ describe('RetirementService', () => {
     const p70 = service.project({ ...base, retirementAge: 70 });
     expect(p70.gapAtRetirement).toBeLessThan(p67.gapAtRetirement);
   });
+
+  describe('requiredMonthlyToHitGoal with an employer match', () => {
+    const base: RetirementInputs = {
+      ...DEFAULT_INPUTS,
+      currentAge: 30,
+      retirementAge: 67,
+      currentSalary: 60000,
+      currentSavings: 0,
+      monthlyContribution: 500,
+      targetMonthlyBudget: 3000,
+    };
+
+    it('asks for less once an employer is contributing too', () => {
+      const without = service.project(base);
+      const withMatch = service.project({
+        ...base,
+        employerMatch: { matchRate: 0.5, capPct: 0.06 },
+      });
+      // Previously identical: the solver had no way to see the match, so it
+      // told students to save the same amount whether or not an employer was
+      // adding to it.
+      expect(withMatch.requiredMonthlyToHitGoal).toBeLessThan(
+        without.requiredMonthlyToHitGoal,
+      );
+    });
+
+    it('lands on the target when the student contributes the stated amount', () => {
+      for (const employerMatch of [
+        undefined,
+        { matchRate: 0.5, capPct: 0.06 },
+        { matchRate: 1, capPct: 0.03 },
+      ]) {
+        const inputs = { ...base, employerMatch };
+        const required = service.project(inputs).requiredMonthlyToHitGoal;
+        const check = service.project({ ...inputs, monthlyContribution: required });
+        expect(check.finalBalance).toBeCloseTo(check.targetNestEgg, -2);
+      }
+    });
+
+    it('returns 0 when existing savings already clear the target', () => {
+      const p = service.project({ ...base, currentSavings: 10_000_000 });
+      expect(p.requiredMonthlyToHitGoal).toBe(0);
+    });
+  });
 });
