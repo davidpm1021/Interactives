@@ -1,4 +1,11 @@
-<div class="reflect-card" role="region" aria-label="Reflection">
+<!--
+  tabindex -1 so the parent can move focus here when the card appears. The
+  card renders ~800px below the fold on a laptop, and focusing it scrolls it
+  into view natively, which fixes sighted and screen-reader users with one
+  mechanism. Focus used to go to the h2 above the chart, which on this phase
+  is the same challenge title it has been all along.
+-->
+<div class="reflect-card" role="region" aria-label="Reflection" tabindex="-1">
   <p class="insight-text">{{ insightText() }}</p>
 
   @if (reflectPrompt(); as prompt) {
