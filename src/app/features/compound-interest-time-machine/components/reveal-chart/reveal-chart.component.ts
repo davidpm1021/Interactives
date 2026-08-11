@@ -715,8 +715,14 @@ export class RevealChartComponent {
       .y((d) => scales.y(d.compoundBalance))
       .curve(d3.curveMonotoneX);
 
+    // Gold in every mode. In stacked mode this used to be grey (#999), which
+    // put it in the same visual family as the shaded "Money you invested"
+    // band directly beneath it — two grey lines that converge and then cross
+    // near year 40 ($13,000 of deposits vs $14,974 of lump-sum growth) while
+    // meaning completely unrelated things. Its own endpoint label was already
+    // gold, so the chart was naming a colour it didn't draw.
     const isReference = m === 'stacked';
-    const stroke = isReference ? '#999' : 'var(--ngpf-gold)';
+    const stroke = 'var(--ngpf-gold)';
     const strokeWidth = isReference ? 2 : 2.5;
 
     const path = lineLayer.append('path')
@@ -726,7 +732,10 @@ export class RevealChartComponent {
       .attr('stroke-width', strokeWidth);
 
     if (isReference) {
-      path.attr('stroke-dasharray', '6,4').attr('opacity', 0.5);
+      // Still dashed and slightly recessive, because it's a reference rather
+      // than the curve the challenge is about. 0.5 was faint enough to read as
+      // background shading; 0.85 keeps it secondary but legible.
+      path.attr('stroke-dasharray', '6,4').attr('opacity', 0.85);
 
       // Endpoint labels already name and value this line; drawing the
       // reference caption too would print the same figure twice.
@@ -740,7 +749,7 @@ export class RevealChartComponent {
         .attr('text-anchor', 'end')
         .attr('font-family', 'var(--ngpf-font-body)')
         .attr('font-size', '0.7rem')
-        .attr('fill', '#999')
+        .attr('fill', 'var(--ngpf-gold)')
         .text(`Lump sum only: ${formatCurrency(Math.round(lastPoint.compoundBalance))}`);
     }
 
