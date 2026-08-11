@@ -56,11 +56,17 @@
       </p>
       <div class="track-step__check-options" role="radiogroup">
         @for (pick of state.picks(); track pick.ticker; let i = $index) {
+          <!--
+            The --correct highlight is gated on guessIsCorrect(), not merely on
+            "a guess was made". It used to appear on the right answer whichever
+            option was clicked, so a wrong guess lit up the correct button and
+            "Try again" had nothing left to find.
+          -->
           <button
             type="button"
             class="track-step__check-option"
             [class.track-step__check-option--picked]="bestGuess() === pick.ticker"
-            [class.track-step__check-option--correct]="bestGuess() !== null && pick.ticker === actualBest()?.ticker"
+            [class.track-step__check-option--correct]="guessIsCorrect() && pick.ticker === actualBest()?.ticker"
             [class.track-step__check-option--wrong]="bestGuess() === pick.ticker && pick.ticker !== actualBest()?.ticker"
             role="radio"
             [attr.aria-checked]="bestGuess() === pick.ticker"
@@ -87,8 +93,14 @@
             {{ formatPercent(actualBest()!.roi) }} since your 10th birthday, the
             highest of your 5 picks.
           } @else {
-            <strong>Not quite.</strong> {{ actualBest()?.ticker }} was the top
-            performer at {{ formatPercent(actualBest()!.roi) }}.
+            <!--
+              No ticker and no figure. Review: "don't give away the answer if
+              students pick incorrectly, just say 'Not quite.' with the 'try
+              again' button. Giving away the answer takes away the opportunity
+              for students to truly try again." The chart and ROI table above
+              hold everything needed to work it out.
+            -->
+            <strong>Not quite.</strong>
           }
           <button type="button" class="track-step__check-reset" (click)="resetGuess()">Try again</button>
         </div>
