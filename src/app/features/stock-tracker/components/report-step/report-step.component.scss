@@ -176,6 +176,11 @@
       margin-bottom: var(--ngpf-spacing-xs);
     }
 
+    // Left unscaled on purpose. Scaling this ancestor does keep the plot
+    // rendering (unlike touching the wrapper, which blanks it), but it clips
+    // the chart's right edge because the width can't be compensated without
+    // tripping Chart.js's observer, and it saves nowhere near enough to reach
+    // one page: the sheet is ~1300px against ~1000px of usable page.
     &__charts {
       margin: 0;
     }
