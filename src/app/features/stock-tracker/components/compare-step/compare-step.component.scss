@@ -28,3 +28,13 @@
     padding-top: var(--ngpf-spacing-md);
   }
 }
+
+// Sets expectations before the click: the next thing that happens is a
+// browser print dialog, not another page.
+.compare-step__print-note {
+  margin: var(--ngpf-spacing-sm) 0 0;
+  font-family: var(--ngpf-font-body);
+  font-size: 0.85rem;
+  color: var(--ngpf-text-secondary);
+  text-align: center;
+}

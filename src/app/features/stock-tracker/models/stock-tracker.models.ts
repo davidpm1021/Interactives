@@ -13,7 +13,9 @@ export const STEPS: readonly StepConfig[] = [
   { id: 'setup', label: 'Setup & Pick Companies', shortLabel: 'Setup', number: 1 },
   { id: 'track', label: 'Track Prices', shortLabel: 'Track', number: 2 },
   { id: 'compare', label: 'Compare Stocks', shortLabel: 'Compare', number: 3 },
-  { id: 'report', label: 'Write Report', shortLabel: 'Report', number: 4 },
+  // The writing now happens on the compare step; this one just presents
+  // the finished report and opens the print dialog.
+  { id: 'report', label: 'Your Report', shortLabel: 'Report', number: 4 },
 ] as const;
 
 export type StepStatus = 'completed' | 'active' | 'locked';
