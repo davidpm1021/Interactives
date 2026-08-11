@@ -216,11 +216,20 @@ export class GrowthChart {
         .y0((d) => scales.y(d.actualNoMatch))
         .y1((d) => scales.y(d.actual))
         .curve(d3.curveMonotoneX);
+      // Same hue as the balance area beneath it, separated by depth rather
+      // than by a different colour. Review: green "feels a little TOO
+      // distinct - it distracts from the key distinction between your
+      // projected balance and your target balance."
+      //
+      // 0.40 over the 0.12 base composites to #95A2D0 against #E4E7F3, which
+      // validates at ΔE 21.7 normal-vision and 21.0 under protanopia. The
+      // green it replaces was ΔE 12.1 / 11.1, i.e. below the readability floor
+      // it appeared to satisfy by being a different hue.
       matchLayer
         .append('path')
         .attr('d', matchArea(data))
-        .attr('fill', 'var(--ngpf-success, #2e7d32)')
-        .attr('opacity', 0.28);
+        .attr('fill', 'var(--ngpf-royal-blue, #1f3b9b)')
+        .attr('opacity', 0.4);
     }
 
     // No stroked line along the bottom of the match band. Review: "Remove

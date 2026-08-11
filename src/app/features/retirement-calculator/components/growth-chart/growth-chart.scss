@@ -169,9 +169,12 @@
       margin-top: 4px;
     }
 
+    // Matches the band on the chart, which moved from green into the blue
+    // family. The swatch is drawn over white rather than over the balance
+    // area, so it carries the band's composited colour directly instead of
+    // reusing its 0.4 opacity.
     &--match {
-      background: var(--ngpf-success, #2e7d32);
-      opacity: 0.5;
+      background: #95a2d0;
       border-radius: 2px;
     }
   }
