@@ -14,7 +14,9 @@ export class ChallengeProgressComponent {
 
   protected readonly steps: { id: ChallengeId; label: string }[] = [
     { id: 1, label: 'The Guess' },
-    { id: 2, label: 'Rate' },
+    // "Return", not "Rate of Return": these are one-word chips sitting beside
+    // "Adding" and "Waiting", and the long form wraps on narrow screens.
+    { id: 2, label: 'Return' },
     { id: 3, label: 'Adding' },
     { id: 4, label: 'Waiting' },
     { id: 5, label: 'Sandbox' },
