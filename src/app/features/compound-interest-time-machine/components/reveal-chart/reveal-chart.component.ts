@@ -206,13 +206,19 @@ export class RevealChartComponent {
   }
 
   /** The series values at a given year, in the order the readout lists them. */
-  private seriesAt(dp: YearlyDataPoint): { label: string; value: number; color: string }[] {
-    const rows: { label: string; value: number; color: string }[] = [];
+  private seriesAt(
+    dp: YearlyDataPoint,
+  ): { label: string; value: number; color: string; plotted: boolean }[] {
+    // `plotted` marks rows that correspond to an actual curve. The
+    // contributions row is a band edge, so it belongs in the readout but must
+    // not get a marker dot implying a line that isn't drawn.
+    const rows: { label: string; value: number; color: string; plotted: boolean }[] = [];
     const a = this.seriesALabel();
     rows.push({
       label: a || 'Balance',
       value: dp.compoundBalance,
       color: 'var(--ngpf-sky-blue)',
+      plotted: true,
     });
 
     const b = this.resultB();
@@ -227,6 +233,7 @@ export class RevealChartComponent {
           label: this.seriesBLabel() || 'Comparison',
           value: bdp.compoundBalance,
           color: 'var(--ngpf-gold)',
+          plotted: true,
         });
       }
     }
@@ -234,9 +241,10 @@ export class RevealChartComponent {
     // Only meaningful when the bands are actually drawn from this series.
     if (!this.hideAreas() && dp.totalContributions > 0) {
       rows.push({
-        label: 'What you put in',
+        label: 'Money you invested',
         value: dp.totalContributions,
         color: 'var(--ngpf-royal-blue)',
+        plotted: false,
       });
     }
     return rows;
@@ -260,9 +268,7 @@ export class RevealChartComponent {
       .attr('opacity', 0.45);
 
     for (const row of this.seriesAt(dp)) {
-      // Contributions are a band edge, not a plotted curve; a dot there would
-      // imply a line that isn't drawn.
-      if (row.label === 'What you put in') continue;
+      if (!row.plotted) continue;
       layer.append('circle')
         .attr('cx', cx)
         .attr('cy', scales.y(row.value))
@@ -518,12 +524,16 @@ export class RevealChartComponent {
       (scales.y(anchor.compoundBalance) + scales.y(anchor.totalContributions)) / 2;
 
     // States the final total, not the value at the anchor column: the point of
-    // the label is "you put in $13,000 altogether".
+    // the label is "you invested $13,000 altogether".
+    //
+    // Not "What you put in": on Challenge 3 the student has just typed a guess
+    // into the table beside this chart, and that phrasing reads as the number
+    // they entered rather than the money in the scenario.
     const totalContributed = data[data.length - 1].totalContributions;
     bandLabel(
       contribMid,
       'var(--ngpf-royal-blue)',
-      `What you put in: ${formatCurrency(Math.round(totalContributed))}`,
+      `Money you invested: ${formatCurrency(Math.round(totalContributed))}`,
     );
     bandLabel(interestMid, 'var(--ngpf-sky-blue)', 'Interest earned');
   }
@@ -705,8 +715,14 @@ export class RevealChartComponent {
       .y((d) => scales.y(d.compoundBalance))
       .curve(d3.curveMonotoneX);
 
+    // Gold in every mode. In stacked mode this used to be grey (#999), which
+    // put it in the same visual family as the shaded "Money you invested"
+    // band directly beneath it — two grey lines that converge and then cross
+    // near year 40 ($13,000 of deposits vs $14,974 of lump-sum growth) while
+    // meaning completely unrelated things. Its own endpoint label was already
+    // gold, so the chart was naming a colour it didn't draw.
     const isReference = m === 'stacked';
-    const stroke = isReference ? '#999' : 'var(--ngpf-gold)';
+    const stroke = 'var(--ngpf-gold)';
     const strokeWidth = isReference ? 2 : 2.5;
 
     const path = lineLayer.append('path')
@@ -716,7 +732,10 @@ export class RevealChartComponent {
       .attr('stroke-width', strokeWidth);
 
     if (isReference) {
-      path.attr('stroke-dasharray', '6,4').attr('opacity', 0.5);
+      // Still dashed and slightly recessive, because it's a reference rather
+      // than the curve the challenge is about. 0.5 was faint enough to read as
+      // background shading; 0.85 keeps it secondary but legible.
+      path.attr('stroke-dasharray', '6,4').attr('opacity', 0.85);
 
       // Endpoint labels already name and value this line; drawing the
       // reference caption too would print the same figure twice.
@@ -730,7 +749,7 @@ export class RevealChartComponent {
         .attr('text-anchor', 'end')
         .attr('font-family', 'var(--ngpf-font-body)')
         .attr('font-size', '0.7rem')
-        .attr('fill', '#999')
+        .attr('fill', 'var(--ngpf-gold)')
         .text(`Lump sum only: ${formatCurrency(Math.round(lastPoint.compoundBalance))}`);
     }
 

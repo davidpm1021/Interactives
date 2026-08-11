@@ -4,6 +4,7 @@ import {
   HostListener,
   inject,
   signal,
+  input,
   afterNextRender,
   Injector,
   OnDestroy,
@@ -14,9 +15,13 @@ import {
  *
  * Several screens in this activity run taller than a laptop viewport, and on
  * the reveal screens the reflect card and its Next button sit entirely below
- * it, so the page reads as finished when it isn't. This is the general
- * affordance; the reflect card additionally pulls focus to itself when it
- * appears, which is what actually moves the student along.
+ * it, so the page reads as finished when it isn't.
+ *
+ * This is the only signpost, by design. Scrolling the student to the reflect
+ * card automatically was tried and removed: the reveal spends two seconds
+ * drawing the curve, and moving the page the moment it lands takes the result
+ * away before they've read it. The cue lets them look when they're ready, and
+ * `label` names what's waiting so it reads as a prompt rather than a nudge.
  *
  * Deliberately a button rather than a gradient fade: a fade is easy to miss
  * and can't be acted on.
@@ -34,9 +39,9 @@ import {
         type="button"
         class="scroll-cue"
         (click)="scrollDown()"
-        aria-label="Scroll down for more"
+        [attr.aria-label]="label() + ', scroll down'"
       >
-        <span class="scroll-cue__text">More below</span>
+        <span class="scroll-cue__text">{{ label() }}</span>
         <span class="scroll-cue__arrow" aria-hidden="true">&#8595;</span>
       </button>
     }
@@ -111,6 +116,12 @@ export class ScrollCueComponent implements OnDestroy {
    * so the cue only shows when something real is below.
    */
   private static readonly SLACK = 80;
+
+  /**
+   * Names what is waiting below. A generic "More below" doesn't tell a
+   * student who just watched a reveal that there is a question to answer.
+   */
+  readonly label = input('More below');
 
   protected readonly visible = signal(false);
 
