@@ -79,6 +79,15 @@
     background: var(--ngpf-ice-blue);
   }
 
+  // Under a dragged chip. Deliberately louder than :hover so the target is
+  // unmistakable while the pointer is carrying something.
+  &--drag-over {
+    background: var(--ngpf-ice-blue);
+    border-color: var(--ngpf-bright-blue);
+    border-style: solid;
+    transform: scale(1.06);
+  }
+
   &--correct {
     background: var(--ngpf-success-bg);
     border-color: var(--ngpf-success);
@@ -135,8 +144,14 @@
   color: var(--ngpf-royal-blue);
   border: 2px solid var(--ngpf-light-gray-blue);
   border-radius: 999px;
-  cursor: pointer;
+  // grab, not pointer: the chip is draggable as well as tappable, and the
+  // cursor is the only hint desktop users get before they try.
+  cursor: grab;
   transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease, opacity 0.2s ease;
+
+  &:active:not(:disabled) {
+    cursor: grabbing;
+  }
 
   &:hover:not(:disabled) {
     background: var(--ngpf-soft-blue-tint);
@@ -159,6 +174,13 @@
   &--placed {
     opacity: 0.35;
     cursor: default;
+  }
+
+  &--placed,
+  &--locked {
+    &:active {
+      cursor: default;
+    }
   }
 
   &--locked {

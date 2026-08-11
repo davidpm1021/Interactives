@@ -2,7 +2,7 @@
   <div class="takeaways-fill__header">
     <h3 class="takeaways-fill__title">Key Takeaways</h3>
     <p class="takeaways-fill__hint">
-      Tap a word from the bank, then tap a blank to place it. Get it right and it locks in.
+      Drag a word into a blank, or tap the word and then the blank. Get it right and it locks in.
     </p>
   </div>
 
@@ -19,8 +19,12 @@
               [class.blank--correct]="blankState.correct"
               [class.blank--shake]="blankState.shake"
               [class.blank--filled]="placedChip !== null"
+              [class.blank--drag-over]="dragOverBlankId() === blankId"
               (click)="onBlankClick(blankId)"
               (keydown)="onKeyBlank($event, blankId)"
+              (dragover)="onBlankDragOver($event, blankId)"
+              (dragleave)="onBlankDragLeave(blankId)"
+              (drop)="onBlankDrop($event, blankId)"
               [attr.aria-label]="placedChip ? placedChip.text + ' placed. Click to remove.' : 'Empty blank. Click to place selected word.'"
               [attr.aria-invalid]="blankState.shake"
             >
@@ -52,8 +56,11 @@
           [class.chip--selected]="selectedChipId() === chip.id"
           [class.chip--locked]="chip.locked"
           [disabled]="chip.placed && chip.locked"
+          [attr.draggable]="chip.locked ? 'false' : 'true'"
           (click)="onChipClick(chip)"
           (keydown)="onKeyChip($event, chip)"
+          (dragstart)="onChipDragStart($event, chip)"
+          (dragend)="onChipDragEnd()"
           [attr.aria-pressed]="selectedChipId() === chip.id"
         >
           {{ chip.text }}

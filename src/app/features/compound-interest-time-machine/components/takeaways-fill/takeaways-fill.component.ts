@@ -22,9 +22,10 @@ interface BlankState {
 }
 
 /**
- * Click-to-place fill-in-the-blank for Key Takeaways. Students click a chip
- * to select it, then click a blank to drop it. Correct → green lock; wrong →
- * red shake + chip returns to bank. Fully keyboard-accessible.
+ * Fill-in-the-blank Key Takeaways with a shared word bank. A chip reaches a
+ * blank three ways, all landing in `placeChip`: drag it, tap it then tap the
+ * blank, or Enter on each with the keyboard. Correct → green lock; wrong →
+ * red shake + chip returns to bank.
  *
  * There is deliberately no "Show answers" escape hatch. Review: "I already
  * know my answers are correct from the green box, check mark, and locking
@@ -46,6 +47,8 @@ export class TakeawaysFillComponent implements OnDestroy {
 
   protected readonly selectedChipId = signal<string | null>(null);
   protected readonly announcement = signal('');
+  /** Blank currently under a dragged chip, for the drop-target highlight. */
+  protected readonly dragOverBlankId = signal<string | null>(null);
 
   /** In-flight shake-unplace timers, keyed by blank id. */
   private readonly pendingShakes = new Map<string, ReturnType<typeof setTimeout>>();
@@ -134,6 +137,19 @@ export class TakeawaysFillComponent implements OnDestroy {
 
     const chipId = this.selectedChipId();
     if (!chipId) return;
+    this.placeChip(blankId, chipId);
+  }
+
+  /**
+   * Drop a chip into a blank and judge it.
+   *
+   * The single place placement is decided, shared by click-to-place, keyboard,
+   * and drag-and-drop, so all three paths grade identically by construction
+   * rather than by two copies of the rules staying in sync.
+   */
+  private placeChip(blankId: string, chipId: string): void {
+    const blank = this.blanks()[blankId];
+    if (!blank || blank.correct || blank.chipId) return;
     const chip = this.chips().find((c) => c.id === chipId);
     if (!chip || chip.placed) return;
 
@@ -191,6 +207,56 @@ export class TakeawaysFillComponent implements OnDestroy {
   ngOnDestroy(): void {
     for (const timer of this.pendingShakes.values()) clearTimeout(timer);
     this.pendingShakes.clear();
+  }
+
+  // ── Drag and drop ──
+  // Layered on top of click-to-place, never replacing it. Review asked for
+  // drag ("the tapping is a bit counterintuitive for the format"), but HTML5
+  // drag events don't fire on touch devices, so tapping has to keep working
+  // or the activity breaks on every classroom tablet. Keyboard is unaffected.
+
+  protected onChipDragStart(event: DragEvent, chip: Chip): void {
+    if (chip.locked) {
+      event.preventDefault();
+      return;
+    }
+    event.dataTransfer?.setData('text/plain', chip.id);
+    if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move';
+    // Mirror the drag into the selection model so a drag abandoned outside a
+    // blank leaves the chip selected, and a follow-up tap on a blank works.
+    this.selectedChipId.set(chip.id);
+  }
+
+  protected onChipDragEnd(): void {
+    this.dragOverBlankId.set(null);
+  }
+
+  protected onBlankDragOver(event: DragEvent, blankId: string): void {
+    if (!this.canAcceptDrop(blankId)) return;
+    // Only preventDefault on a valid target; without it the browser refuses
+    // the drop, which is what gives the "no entry" cursor over locked blanks.
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+    this.dragOverBlankId.set(blankId);
+  }
+
+  protected onBlankDragLeave(blankId: string): void {
+    if (this.dragOverBlankId() === blankId) this.dragOverBlankId.set(null);
+  }
+
+  protected onBlankDrop(event: DragEvent, blankId: string): void {
+    event.preventDefault();
+    this.dragOverBlankId.set(null);
+    const chipId = event.dataTransfer?.getData('text/plain');
+    if (!chipId) return;
+    this.placeChip(blankId, chipId);
+    this.selectedChipId.set(null);
+  }
+
+  /** A blank takes a drop only while empty and unlocked. */
+  private canAcceptDrop(blankId: string): boolean {
+    const blank = this.blanks()[blankId];
+    return !!blank && !blank.correct && !blank.chipId;
   }
 
   protected onKeyChip(event: KeyboardEvent, chip: Chip): void {

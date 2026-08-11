@@ -110,6 +110,81 @@ describe('TakeawaysFillComponent', () => {
     expect(first.textContent).toContain(ANSWERS[0]);
   });
 
+  /** Minimal DataTransfer stand-in; jsdom doesn't implement one. */
+  const makeDragEvent = (type: string, store: Map<string, string>): DragEvent => {
+    const ev = new Event(type, { bubbles: true, cancelable: true }) as DragEvent;
+    Object.defineProperty(ev, 'dataTransfer', {
+      value: {
+        effectAllowed: 'none',
+        dropEffect: 'none',
+        setData: (k: string, v: string) => store.set(k, v),
+        getData: (k: string) => store.get(k) ?? '',
+      },
+    });
+    return ev;
+  };
+
+  const dragChipToBlank = (chipText: string, blankIndex: number): void => {
+    const store = new Map<string, string>();
+    chipEl(chipText)!.dispatchEvent(makeDragEvent('dragstart', store));
+    fixture.detectChanges();
+    const blank = blankEls()[blankIndex];
+    blank.dispatchEvent(makeDragEvent('dragover', store));
+    fixture.detectChanges();
+    blank.dispatchEvent(makeDragEvent('drop', store));
+    fixture.detectChanges();
+  };
+
+  it('places a chip dragged onto a blank', () => {
+    dragChipToBlank(ANSWERS[0], 0);
+    const first = blankEls()[0];
+    expect(first.classList.contains('blank--correct')).toBe(true);
+    expect(first.textContent).toContain(ANSWERS[0]);
+  });
+
+  it('grades a wrong drop the same way as a wrong tap', () => {
+    dragChipToBlank('simple', 0);
+    const first = blankEls()[0];
+    expect(first.classList.contains('blank--shake')).toBe(true);
+    expect(first.classList.contains('blank--correct')).toBe(false);
+  });
+
+  it('highlights a blank on dragover and clears it on dragleave', () => {
+    const store = new Map<string, string>();
+    chipEl(ANSWERS[0])!.dispatchEvent(makeDragEvent('dragstart', store));
+    fixture.detectChanges();
+
+    blankEls()[0].dispatchEvent(makeDragEvent('dragover', store));
+    fixture.detectChanges();
+    expect(blankEls()[0].classList.contains('blank--drag-over')).toBe(true);
+
+    blankEls()[0].dispatchEvent(new Event('dragleave', { bubbles: true }));
+    fixture.detectChanges();
+    expect(blankEls()[0].classList.contains('blank--drag-over')).toBe(false);
+  });
+
+  it('refuses a drop onto an already-locked blank', () => {
+    dragChipToBlank(ANSWERS[0], 0);
+    expect(blankEls()[0].classList.contains('blank--correct')).toBe(true);
+
+    // A locked blank must not accept dragover, so the drop can't land.
+    const store = new Map<string, string>();
+    chipEl('simple')!.dispatchEvent(makeDragEvent('dragstart', store));
+    fixture.detectChanges();
+    const overEvent = makeDragEvent('dragover', store);
+    blankEls()[0].dispatchEvent(overEvent);
+    fixture.detectChanges();
+
+    expect(overEvent.defaultPrevented).toBe(false);
+    expect(blankEls()[0].textContent).toContain(ANSWERS[0]);
+  });
+
+  it('keeps locked chips undraggable', () => {
+    dragChipToBlank(ANSWERS[0], 0);
+    expect(chipEl(ANSWERS[0])!.getAttribute('draggable')).toBe('false');
+    expect(chipEl('simple')!.getAttribute('draggable')).toBe('true');
+  });
+
   it('supports keyboard: Enter on chip selects, Enter on blank places', () => {
     const chip = chipEl('accelerates')!;
     chip.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
