@@ -5,6 +5,46 @@
   svg {
     width: 100%;
     display: block;
+    // The hit area spans the plot, so stop a touch-drag over the chart from
+    // scrolling the page while the student is scrubbing along the curve.
+    touch-action: pan-y;
+  }
+}
+
+// ── Hover / tap readout ──
+.chart-readout {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--ngpf-spacing-sm) 10px;
+  background: white;
+  border: 1px solid var(--ngpf-light-gray-blue);
+  border-radius: var(--ngpf-radius-sm);
+  box-shadow: var(--ngpf-shadow-md);
+  font-family: var(--ngpf-font-body);
+  font-size: 0.8rem;
+  color: var(--ngpf-text-primary);
+  white-space: nowrap;
+
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-readout {
+    transition: none;
+  }
+}
+
+@media print {
+  .chart-readout {
+    display: none;
   }
 }
 
@@ -25,5 +65,27 @@
     font-size: 0.8rem;
     fill: var(--ngpf-navy-blue);
     font-weight: 600;
+  }
+
+  // The readout's rows are written with innerHTML, so like the d3-generated
+  // elements above they never receive Angular's scoping attribute and can't be
+  // styled from the encapsulated block.
+  .chart-readout__year {
+    font-weight: 700;
+    color: var(--ngpf-navy-blue);
+    margin-bottom: 2px;
+  }
+
+  .chart-readout__row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chart-readout__swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
 }

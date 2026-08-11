@@ -22,6 +22,7 @@ import {
   ChartMargin,
   DEFAULT_MARGIN,
   widthAwareTickCount,
+  yearFromPointer,
 } from '../../utils/chart-helpers';
 
 /** Wider right margin to fit the gap bracket + label */
@@ -74,11 +75,18 @@ export class RevealChartComponent {
 
   private readonly injector = inject(Injector);
   private readonly chartContainer = viewChild<ElementRef<HTMLDivElement>>('chartContainer');
+  private readonly readout = viewChild<ElementRef<HTMLDivElement>>('readout');
 
   private svg!: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   private chartGroup!: d3.Selection<SVGGElement, unknown, null, undefined>;
   private initialized = false;
   private hasAnimated = false;
+
+  /**
+   * Geometry from the last render, so pointer handling can resolve a year
+   * without re-deriving scales on every move.
+   */
+  private hoverCtx: { dims: ChartDimensions; scales: ChartScales } | null = null;
 
   private readonly reducedMotion = signal(false);
 
@@ -120,11 +128,174 @@ export class RevealChartComponent {
     this.chartGroup.append('g').attr('class', 'area-layer');
     this.chartGroup.append('g').attr('class', 'line-layer');
     this.chartGroup.append('g').attr('class', 'bracket-layer');
+    // Last, so the marker draws over the curves, and created once here rather
+    // than in renderStatic, which wipes the layers above on every resize.
+    this.chartGroup.append('g').attr('class', 'hover-layer');
+    this.chartGroup.append('rect')
+      .attr('class', 'hover-overlay')
+      .attr('fill', 'transparent')
+      .style('cursor', 'crosshair');
+    this.attachHoverHandlers();
 
     const ro = new ResizeObserver(() => {
       if (this.initialized && this.hasAnimated) this.renderStatic();
     });
     ro.observe(container);
+  }
+
+  // ── Hover / tap readout ──
+  //
+  // Review: "Add functionality to click line graph to see values at different
+  // points (would help students support their reasoning in answering the
+  // comprehension Q)." Pointer events rather than separate mouse and touch
+  // paths, so a tap on a tablet reads out the same way a hover does.
+  //
+  // Gated on hasAnimated: probing a half-drawn curve would report figures that
+  // aren't on screen yet, and would also pre-empt the reveal.
+
+  private attachHoverHandlers(): void {
+    this.chartGroup.select<SVGRectElement>('.hover-overlay')
+      .on('pointermove', (event: PointerEvent) => this.onHover(event))
+      .on('pointerdown', (event: PointerEvent) => this.onHover(event))
+      .on('pointerleave', () => this.clearHover())
+      // Touch drags scroll the page by default, which fights a drag-to-scrub
+      // gesture. Only claim the gesture once the chart is interactive.
+      .on('touchmove', (event: TouchEvent) => {
+        if (this.hasAnimated) event.preventDefault();
+      });
+  }
+
+  /** Size the invisible hit area to the plot. Called from every render path. */
+  private sizeHoverOverlay(dims: ChartDimensions): void {
+    this.chartGroup.select('.hover-overlay')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', dims.innerWidth)
+      .attr('height', dims.innerHeight)
+      .raise();
+    this.chartGroup.select('.hover-layer').raise();
+  }
+
+  private onHover(event: PointerEvent): void {
+    if (!this.hasAnimated || !this.hoverCtx) return;
+    const { dims, scales } = this.hoverCtx;
+    const data = this.result().dataPoints;
+    const maxYear = data[data.length - 1].year;
+    const year = yearFromPointer(
+      event,
+      scales,
+      maxYear,
+      this.chartGroup.node() as d3.ContainerElement,
+    );
+    const dp = data.find((d) => d.year === year);
+    if (!dp) return;
+    this.drawHoverMarker(dims, scales, dp);
+    this.showReadout(dims, scales, dp);
+  }
+
+  private clearHover(): void {
+    this.chartGroup.select('.hover-layer').selectAll('*').remove();
+    const el = this.readout()?.nativeElement;
+    if (el) el.classList.remove('is-visible');
+  }
+
+  /** The series values at a given year, in the order the readout lists them. */
+  private seriesAt(dp: YearlyDataPoint): { label: string; value: number; color: string }[] {
+    const rows: { label: string; value: number; color: string }[] = [];
+    const a = this.seriesALabel();
+    rows.push({
+      label: a || 'Balance',
+      value: dp.compoundBalance,
+      color: 'var(--ngpf-sky-blue)',
+    });
+
+    const b = this.resultB();
+    if (b) {
+      // Challenge 4 offsets the second series, so its year N is the primary
+      // series' year N + offset. Before that it hasn't started.
+      const offset = this.resultBStartYear();
+      const bYear = dp.year - offset;
+      const bdp = bYear >= 0 ? b.dataPoints.find((d) => d.year === bYear) : null;
+      if (bdp) {
+        rows.push({
+          label: this.seriesBLabel() || 'Comparison',
+          value: bdp.compoundBalance,
+          color: 'var(--ngpf-gold)',
+        });
+      }
+    }
+
+    // Only meaningful when the bands are actually drawn from this series.
+    if (!this.hideAreas() && dp.totalContributions > 0) {
+      rows.push({
+        label: 'What you put in',
+        value: dp.totalContributions,
+        color: 'var(--ngpf-royal-blue)',
+      });
+    }
+    return rows;
+  }
+
+  private drawHoverMarker(
+    dims: ChartDimensions,
+    scales: ChartScales,
+    dp: YearlyDataPoint,
+  ): void {
+    const layer = this.chartGroup.select<SVGGElement>('.hover-layer');
+    layer.selectAll('*').remove();
+
+    const cx = scales.x(dp.year);
+    layer.append('line')
+      .attr('x1', cx).attr('x2', cx)
+      .attr('y1', 0).attr('y2', dims.innerHeight)
+      .attr('stroke', 'var(--ngpf-navy-blue)')
+      .attr('stroke-width', 1)
+      .attr('stroke-dasharray', '4,4')
+      .attr('opacity', 0.45);
+
+    for (const row of this.seriesAt(dp)) {
+      // Contributions are a band edge, not a plotted curve; a dot there would
+      // imply a line that isn't drawn.
+      if (row.label === 'What you put in') continue;
+      layer.append('circle')
+        .attr('cx', cx)
+        .attr('cy', scales.y(row.value))
+        .attr('r', 5)
+        .attr('fill', row.color)
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2);
+    }
+  }
+
+  private showReadout(
+    dims: ChartDimensions,
+    scales: ChartScales,
+    dp: YearlyDataPoint,
+  ): void {
+    const el = this.readout()?.nativeElement;
+    const container = this.chartContainer()?.nativeElement;
+    if (!el || !container) return;
+
+    const rows = this.seriesAt(dp)
+      .map(
+        (r) =>
+          `<span class="chart-readout__row"><span class="chart-readout__swatch" style="background:${r.color}"></span>` +
+          `${r.label}: <strong>${formatCurrency(Math.round(r.value))}</strong></span>`,
+      )
+      .join('');
+    el.innerHTML = `<span class="chart-readout__year">Year ${dp.year}</span>${rows}`;
+    el.classList.add('is-visible');
+
+    // Position beside the guide line, flipping to its left when the box would
+    // overhang the container. Measured after the content is set so the width
+    // reflects the actual figures.
+    const cx = scales.x(dp.year) + REVEAL_MARGIN.left;
+    const boxW = el.offsetWidth;
+    const gap = 12;
+    const left =
+      cx + gap + boxW > container.clientWidth ? cx - gap - boxW : cx + gap;
+    el.style.left = `${Math.max(0, left)}px`;
+    el.style.top = `${REVEAL_MARGIN.top + dims.innerHeight * 0.08}px`;
   }
 
   private getDimsAndScales(): { dims: ChartDimensions; scales: ChartScales } | null {
@@ -163,6 +334,13 @@ export class RevealChartComponent {
       .attr('transform', `translate(0,${dims.innerHeight})`)
       .call(xAxis);
     this.chartGroup.select<SVGGElement>('.y-axis').call(yAxis);
+
+    // Every render path funnels through here, so this is the one place the
+    // hit area and cached geometry need refreshing. A resize rebuilds the
+    // layers underneath; the overlay and hover layer are re-raised above them.
+    this.hoverCtx = { dims, scales };
+    this.sizeHoverOverlay(dims);
+    this.clearHover();
 
     return { dims, scales };
   }

@@ -153,6 +153,28 @@ export function widthAwareTickCount(innerWidth: number, maxTicks: number, minTic
   return Math.min(maxTicks, Math.max(minTicks, target));
 }
 
+/**
+ * Whole year under the pointer, clamped to the plotted range.
+ *
+ * The one piece of hover handling worth sharing between charts: everything
+ * else (marker styling, tooltip contents, which series exist) differs enough
+ * per chart that a common implementation would take more configuration than
+ * it saves.
+ *
+ * `event.target` must be inside the chart group, since d3.pointer resolves
+ * coordinates against the element the listener is bound to.
+ */
+export function yearFromPointer(
+  event: PointerEvent | MouseEvent,
+  scales: ChartScales,
+  maxYear: number,
+  target?: d3.ContainerElement,
+): number {
+  const [mx] = d3.pointer(event, target);
+  const raw = Math.round(scales.x.invert(mx));
+  return Math.max(0, Math.min(maxYear, raw));
+}
+
 /** Render x and y axes with transitions. */
 export function renderAxes(
   chartGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
