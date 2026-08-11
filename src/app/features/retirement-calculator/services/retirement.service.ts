@@ -368,7 +368,11 @@ export class RetirementService {
     g: number,
     years: number,
   ): number {
-    if (years <= 0) return targetNestEgg;
+    // No years left to save, so no monthly contribution changes anything.
+    // This used to return targetNestEgg, which is a lump sum, not a monthly
+    // figure: entering a current age at or past the retirement age produced
+    // "To hit target, save $769,466/mo".
+    if (years <= 0) return 0;
     // Existing savings alone already get there.
     if (this.accumulate(0, inputs, r, g, years) >= targetNestEgg) return 0;
 

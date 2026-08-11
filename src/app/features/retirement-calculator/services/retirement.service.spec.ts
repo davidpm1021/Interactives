@@ -247,4 +247,24 @@ describe('RetirementService', () => {
       expect(p.requiredMonthlyToHitGoal).toBe(0);
     });
   });
+
+  describe('no years left to save', () => {
+    it('returns a monthly figure of 0, not the whole nest egg', () => {
+      for (const currentAge of [67, 75]) {
+        const p = service.project({
+          ...DEFAULT_INPUTS,
+          currentAge,
+          retirementAge: 67,
+          currentSavings: 0,
+          monthlyContribution: 500,
+          targetMonthlyBudget: 3000,
+        });
+        expect(p.yearsToRetirement).toBe(0);
+        // Previously returned targetNestEgg, so the UI showed the entire nest
+        // egg suffixed "/mo" — e.g. "To hit target, save $769,466/mo".
+        expect(p.requiredMonthlyToHitGoal).toBe(0);
+        expect(p.targetNestEgg).toBeGreaterThan(0);
+      }
+    });
+  });
 });

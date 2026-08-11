@@ -42,11 +42,23 @@
   } @else {
     <div class="results-panel__banner"
          [class.results-panel__banner--warn]="saveMore()"
-         [class.results-panel__banner--ok]="!saveMore()"
+         [class.results-panel__banner--ok]="!saveMore() && !atRetirementAge()"
          role="status"
          aria-live="polite">
-      <span class="results-panel__banner-label">To hit target, save</span>
-      <app-stat-counter [value]="projection().requiredMonthlyToHitGoal" prefix="$" suffix="/mo" />
+      @if (atRetirementAge()) {
+        <!--
+          There are no years left to contribute, so a monthly figure can't
+          answer the question. Saying so beats printing "$0/mo", which reads
+          as "you need nothing".
+        -->
+        <span class="results-panel__banner-note">
+          You're already at your retirement age, so there are no years left to save.
+          Try a later retirement age to see what monthly amount would get you there.
+        </span>
+      } @else {
+        <span class="results-panel__banner-label">To hit target, save</span>
+        <app-stat-counter [value]="projection().requiredMonthlyToHitGoal" prefix="$" suffix="/mo" />
+      }
     </div>
   }
 </section>

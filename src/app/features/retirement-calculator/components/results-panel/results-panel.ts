@@ -15,6 +15,14 @@ export class ResultsPanel {
   readonly monthlyContribution = input.required<number>();
 
   protected readonly hasGap = computed(() => this.projection().gapAtRetirement > 0);
+
+  /**
+   * No years left to contribute, so "save $X/mo" has no meaningful answer.
+   * Reachable by entering a current age at or past the retirement age.
+   */
+  protected readonly atRetirementAge = computed(
+    () => this.projection().yearsToRetirement <= 0,
+  );
   protected readonly saveMore = computed(
     () => this.projection().requiredMonthlyToHitGoal > this.monthlyContribution(),
   );
