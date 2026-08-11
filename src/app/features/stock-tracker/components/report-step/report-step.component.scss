@@ -101,12 +101,83 @@
   }
 }
 
-// Print styles
+.print-only {
+  display: none;
+}
+
+// ── Print ──
+// This is the artifact students hand in, so everything that only exists to
+// drive the website comes off, and the sheet gains a masthead.
 @media print {
+  .print-only {
+    display: block;
+  }
+
   .report-step {
     &__export,
-    &__save-warning {
+    &__save-warning,
+    // Guidance for someone working through the activity, meaningless once
+    // it's on paper. Review: "remove unnecessary text/images that are only
+    // for the website or guiding students through the activity."
+    &__description {
       display: none;
+    }
+
+    &__print-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ngpf-spacing-lg);
+      margin-bottom: var(--ngpf-spacing-md);
+    }
+
+    &__print-logo {
+      height: 34px;
+      width: auto;
+    }
+
+    &__print-name {
+      display: flex;
+      align-items: baseline;
+      gap: var(--ngpf-spacing-sm);
+      flex: 1;
+      max-width: 20rem;
+      font-family: var(--ngpf-font-body);
+      font-size: 0.9rem;
+    }
+
+    &__print-name-label {
+      font-weight: 600;
+      color: var(--ngpf-text-primary);
+    }
+
+    &__print-name-rule {
+      flex: 1;
+      border-bottom: 1px solid var(--ngpf-text-secondary);
+      height: 1.1em;
+    }
+
+    &__title {
+      font-size: 1.3rem;
+      margin: 0 0 var(--ngpf-spacing-sm);
+    }
+
+    // Deliberately NOT break-inside: avoid. Holding the whole analysis block
+    // together pushed all four questions onto a second page and left most of
+    // both pages blank. Individual question/answer pairs are kept intact by
+    // reflection-form instead, which is the granularity that matters.
+    gap: var(--ngpf-spacing-md);
+
+    &__section {
+      gap: var(--ngpf-spacing-sm);
+    }
+
+    &__section-title {
+      margin-bottom: var(--ngpf-spacing-xs);
+    }
+
+    &__charts {
+      margin: 0;
     }
   }
 }

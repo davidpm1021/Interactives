@@ -163,3 +163,16 @@
     display: block;
   }
 }
+
+// ── Print ──
+@media print {
+  .roi-summary-table {
+    // The "?" affordance and its tooltip only mean something to a pointer.
+    &__info-mark,
+    &__info-tooltip {
+      display: none;
+    }
+
+    break-inside: avoid;
+  }
+}

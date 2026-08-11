@@ -102,3 +102,49 @@
     }
   }
 }
+
+.print-only {
+  display: none;
+}
+
+// ── Print ──
+@media print {
+  .print-only {
+    display: block;
+  }
+
+  .reflection-form {
+    // Only the chip they chose. Printing five options with one highlighted
+    // wastes most of a page and reads as an unanswered multiple-choice.
+    &__chip:not(.reflection-form__chip--picked) {
+      display: none;
+    }
+
+    &__chip--picked {
+      border: none;
+      background: none;
+      padding: 0;
+      font-weight: 600;
+    }
+
+    &__textarea {
+      display: none;
+    }
+
+    &__answer {
+      margin: 0;
+      font-family: var(--ngpf-font-body);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--ngpf-text-primary);
+      white-space: pre-wrap;
+      // Leaves a visible gap when a student skipped the question, rather than
+      // silently collapsing so the sheet looks complete.
+      min-height: 1.4em;
+    }
+
+    &__section {
+      break-inside: avoid;
+    }
+  }
+}

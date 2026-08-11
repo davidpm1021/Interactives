@@ -60,6 +60,31 @@ Chart.register(...registerables);
         overflow-x: auto;
       }
     }
+
+    // A Letter page at half-inch margins computes to roughly 720 CSS px, under
+    // the 768px breakpoint above, so printing was silently getting the phone
+    // layout: scrollbars drawn into the page, the plot clipped, and the whole
+    // year axis cut off below the scroll viewport. Review: "Graph of stock
+    // prices rendered weird on my report." Undo it for print specifically.
+    @media print {
+      .multi-line-chart__canvas-wrap {
+        /* Only overflow changes. The 400px matches the canvas Chart.js already
+           drew, so nothing clips and no gap is left behind.
+         *
+         * Do not resize this box to save page space. Chart.js observes it and
+         * re-renders on any dimension change, and under print media that
+         * re-render produces a blank plot. Both a canvas width/height override
+         * and a transform + width compensation were tried; each came back with
+         * an empty chart. */
+        height: 400px;
+        overflow: visible;
+      }
+
+      .multi-line-chart {
+        break-inside: avoid;
+        margin: 0;
+      }
+    }
   `],
 })
 export class MultiLineChartComponent implements AfterViewInit, OnDestroy {

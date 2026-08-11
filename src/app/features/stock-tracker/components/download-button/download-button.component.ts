@@ -28,6 +28,14 @@ import { Component, input, output } from '@angular/core';
     </button>
   `,
   styles: [`
+    /* A download control is meaningless on paper. Hidden here rather than at
+       each call site so every host gets it. */
+    @media print {
+      :host {
+        display: none;
+      }
+    }
+
     .download-btn {
       display: inline-flex;
       align-items: center;

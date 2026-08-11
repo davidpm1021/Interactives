@@ -51,6 +51,12 @@
         [ngModel]="report()[field.key]"
         (ngModelChange)="onFieldChange(field.key, $event)"
       ></textarea>
+      <!--
+        A textarea does not grow to fit its content, so printing one clips any
+        answer longer than its four rows. The printed sheet gets the text
+        instead, which also drops the form-field border.
+      -->
+      <p class="reflection-form__answer print-only">{{ report()[field.key] }}</p>
     </div>
   }
 </div>
