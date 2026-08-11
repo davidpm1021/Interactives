@@ -57,6 +57,15 @@ export class CompoundInterestTimeMachine {
   protected readonly liveAnnouncement = signal('');
   protected readonly challengeContent = CHALLENGE_CONTENT;
 
+  /**
+   * What the scroll cue says. Naming the thing below beats a generic "More
+   * below": after a reveal the student has no way to know a question is
+   * waiting, and nothing scrolls them to it on purpose.
+   */
+  protected readonly scrollCueLabel = computed(() =>
+    this.currentPhase() === 'reflect' ? 'Answer the question below' : 'More below',
+  );
+
   // ── Derived state ──────────────────────────────────
 
   protected readonly currentChallenge = this.stateService.currentChallenge;
@@ -147,61 +156,30 @@ export class CompoundInterestTimeMachine {
     effect(() => {
       const challenge = this.currentChallenge();
       const phase = this.currentPhase();
-      this.liveAnnouncement.set(`Challenge ${challenge}, ${phase} phase`);
+      // Says what appeared, not just which phase. Nothing scrolls on reflect,
+      // so this is how a screen-reader user learns a question and a Next
+      // button are now on the page.
+      this.liveAnnouncement.set(
+        phase === 'reflect'
+          ? `Result revealed. A reflection question and the next-challenge button are below the chart.`
+          : `Challenge ${challenge}, ${phase} phase`,
+      );
 
       if (phase === 'intro') return;
 
       afterNextRender(
         () => {
-          const host = this.elementRef.nativeElement;
-
-          // On reflect, the h2 is the same challenge title it has been since
-          // the predict phase; the new content is the reflect card, which
-          // renders below a full-height chart and lands off screen on a laptop
-          // (measured ~800px down at an 800px viewport). Focusing it both
-          // announces the right thing and scrolls it into view, so a student
-          // isn't left staring at a chart with no visible question or button.
-          const target: HTMLElement | null =
-            phase === 'reflect'
-              ? host.querySelector('app-reflect-card .reflect-card')
-              : host.querySelector('h2');
-          if (!target) return;
-
-          if (!target.hasAttribute('tabindex')) {
-            target.setAttribute('tabindex', '-1');
-          }
-          // preventScroll on the focus call, then scroll deliberately: the
-          // default would pin the card to the top of the viewport and push the
-          // reveal the student just watched off screen.
-          target.focus({ preventScroll: phase === 'reflect' });
-          if (phase === 'reflect') this.bringIntoView(target);
+          // Deliberately does NOT scroll on reflect. The reveal spends two
+          // seconds drawing the curve, and moving the page the moment it lands
+          // takes the result away before the student has read it. What's below
+          // is signposted instead: see scrollCueLabel and the live region.
+          const heading = this.elementRef.nativeElement.querySelector('h2');
+          if (!heading) return;
+          heading.setAttribute('tabindex', '-1');
+          heading.focus();
         },
         { injector: this.injector },
       );
-    });
-  }
-
-  /**
-   * Scroll an element into view without yanking it to the top of the page.
-   *
-   * Leaves the tail of the chart above it visible so the reveal stays in
-   * context, and only scrolls when the element is actually off screen, so a
-   * short viewport-fitting screen doesn't jump for no reason.
-   */
-  private bringIntoView(el: HTMLElement): void {
-    if (typeof window === 'undefined') return;
-    const rect = el.getBoundingClientRect();
-    const margin = 96; // keeps the bottom of the chart on screen
-    const overshoot = rect.bottom - window.innerHeight;
-    if (overshoot <= 0) return;
-
-    const reduced =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    window.scrollBy({
-      top: Math.min(overshoot + 16, rect.top - margin),
-      behavior: reduced ? 'auto' : 'smooth',
     });
   }
 
