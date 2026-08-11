@@ -293,6 +293,9 @@ export class PredictionChartComponent {
 
     const group = layer.append('g')
       .attr('class', `prediction-dot ${point.locked ? 'locked-dot' : ''}`)
+      // Identifies the dot across re-renders so focus can be restored to the
+      // one the student was actually operating.
+      .attr('data-dot', id)
       .attr('transform', `translate(${cx},${cy})`)
       .attr('tabindex', point.locked ? '-1' : '0')
       .attr('role', 'slider')
@@ -480,11 +483,13 @@ export class PredictionChartComponent {
         event.preventDefault();
         val = Math.min(this.MAX_PREDICTION_VALUE, val + step);
         this.updateDot(id, val);
+        this.restoreFocusAfterRender(id);
         break;
       case 'ArrowDown':
         event.preventDefault();
         val = Math.max(0, val - step);
         this.updateDot(id, val);
+        this.restoreFocusAfterRender(id);
         break;
       case 'Enter':
       case ' ':
@@ -537,6 +542,29 @@ export class PredictionChartComponent {
     if (el instanceof HTMLElement || el instanceof SVGElement) {
       (el as HTMLElement).focus();
     }
+  }
+
+  /**
+   * Put focus back on a specific dot after the chart re-renders.
+   *
+   * Every value change re-runs the render effect, and renderDots() clears and
+   * rebuilds the layer, destroying the focused element. Without this a
+   * keyboard user could move a dot exactly once: the first arrow key landed,
+   * focus fell to <body>, and every later key (including Enter to lock) went
+   * nowhere, making the whole prediction step unreachable without a mouse.
+   *
+   * Deferred because the re-render happens when the signal effect flushes,
+   * after this handler returns. Targets the dot by id rather than "first
+   * unlocked", which would grab Year 10 while the student was editing Year 40
+   * on a restored guess where both are unlocked.
+   */
+  private restoreFocusAfterRender(id: 'dot10' | 'dot40'): void {
+    setTimeout(() => {
+      const el = this.chartGroup?.select(`.dot-layer [data-dot="${id}"]`)?.node();
+      if (el instanceof SVGElement || el instanceof HTMLElement) {
+        (el as HTMLElement).focus();
+      }
+    });
   }
 
   protected onLockClick(): void {

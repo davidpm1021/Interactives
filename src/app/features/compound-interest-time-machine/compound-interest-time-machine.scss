@@ -204,3 +204,20 @@
     }
   }
 }
+
+// ── Print ──
+// The shared TopHeader's inner bar is position: sticky, which in print lands
+// it wherever the page happened to be scrolled: mid-worksheet, on top of the
+// last reflection prompt. Neutralising the stickiness puts the NGPF branding
+// back at the top of the printed page where it belongs.
+//
+// Scoped here with ::ng-deep rather than edited in src/app/shared, so no other
+// feature's print output changes.
+// The element selector is load-bearing: TopHeader's own rule is
+// `.top-header[_ngcontent-…]`, which ties on specificity with a bare
+// `:host ::ng-deep .top-header`, and source order was deciding against us.
+@media print {
+  :host ::ng-deep app-top-header .top-header {
+    position: static;
+  }
+}

@@ -44,6 +44,16 @@ export class ChallengeStateService {
    */
   private readonly _reflections = signal<Record<string, string>>({});
 
+  /**
+   * Solved Key Takeaways blanks, keyed by blank id, holding the chip text that
+   * satisfied them.
+   *
+   * Kept here for the same reason as reflections: the summary component is
+   * destroyed whenever the student goes Back to the sandbox, so component-local
+   * state silently discarded every blank they had filled in.
+   */
+  private readonly _takeaways = signal<Record<string, string>>({});
+
   private readonly _history = signal<ChallengeState[]>([]);
 
   // ── Derived signals ────────────────────────────────
@@ -53,6 +63,7 @@ export class ChallengeStateService {
   readonly completedChallenges = computed(() => this._state().completedChallenges);
   readonly predictions = computed(() => this._state().predictions);
   readonly reflections = computed(() => this._reflections());
+  readonly takeaways = computed(() => this._takeaways());
   readonly canGoBack = computed(() => this._history().length > 0);
 
   readonly isComplete = computed(
@@ -168,6 +179,11 @@ export class ChallengeStateService {
    */
   saveReflection(promptId: string, text: string): void {
     this._reflections.update((r) => ({ ...r, [promptId]: text }));
+  }
+
+  /** Record a correctly-filled Key Takeaways blank so it survives navigation. */
+  saveTakeaway(blankId: string, chipText: string): void {
+    this._takeaways.update((t) => ({ ...t, [blankId]: chipText }));
   }
 
   /** Get the full state snapshot (for testing / debugging). */

@@ -1,5 +1,6 @@
-import { Component, OnDestroy, computed, input, output, signal } from '@angular/core';
+import { Component, OnDestroy, computed, inject, input, output, signal } from '@angular/core';
 import { FillSentence, TAKEAWAY_DISTRACTORS, TAKEAWAY_SENTENCES } from '../../data/takeaways-fill';
+import { ChallengeStateService } from '../../services/challenge-state.service';
 
 interface Chip {
   id: string;
@@ -44,6 +45,8 @@ export class TakeawaysFillComponent implements OnDestroy {
   readonly sentences = input<readonly FillSentence[]>(TAKEAWAY_SENTENCES);
   readonly distractors = input<readonly string[]>(TAKEAWAY_DISTRACTORS);
   readonly completedChange = output<boolean>();
+
+  private readonly stateService = inject(ChallengeStateService);
 
   protected readonly selectedChipId = signal<string | null>(null);
   protected readonly announcement = signal('');
@@ -98,6 +101,34 @@ export class TakeawaysFillComponent implements OnDestroy {
     }
     this.blanks.set(blankMap);
     this.selectedChipId.set(null);
+    this.restoreSaved();
+  }
+
+  /**
+   * Re-apply blanks the student already solved in this session.
+   *
+   * The summary screen is torn down whenever they go Back to the sandbox, so
+   * without this every filled blank was silently lost on return.
+   */
+  private restoreSaved(): void {
+    const saved = this.stateService.takeaways();
+    if (Object.keys(saved).length === 0) return;
+
+    const chips = [...this.chips()];
+    const blanks = { ...this.blanks() };
+    for (const [blankId, text] of Object.entries(saved)) {
+      const blank = blanks[blankId];
+      if (!blank) continue; // sentences changed since it was saved
+      const idx = chips.findIndex(
+        (c) => !c.placed && c.text.toLowerCase() === text.toLowerCase(),
+      );
+      if (idx < 0) continue;
+      chips[idx] = { ...chips[idx], placed: true, locked: true };
+      blanks[blankId] = { ...blank, chipId: chips[idx].id, correct: true, shake: false };
+    }
+    this.chips.set(chips);
+    this.blanks.set(blanks);
+    this.maybeEmitCompleted();
   }
 
   protected chipDisplay(chip: Chip): string {
@@ -162,6 +193,7 @@ export class TakeawaysFillComponent implements OnDestroy {
       this.chips.update((cs) => cs.map((c) => (c.id === chipId ? { ...c, placed: true, locked: true } : c)));
       this.selectedChipId.set(null);
       this.announcement.set(`"${chip.text}" is correct.`);
+      this.stateService.saveTakeaway(blankId, chip.text);
       this.maybeEmitCompleted();
     } else {
       // Shake, then unplace

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TakeawaysFillComponent } from './takeaways-fill.component';
+import { ChallengeStateService } from '../../services/challenge-state.service';
 
 /** Correct answers in blank order, per TAKEAWAY_SENTENCES. */
 const ANSWERS = ['accelerates', 'later', 'rate', 'outcome', 'Time', 'early'];
@@ -11,6 +12,9 @@ describe('TakeawaysFillComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TakeawaysFillComponent],
+      // Provided by the feature root in production; supplied here because the
+      // component persists solved blanks through it.
+      providers: [ChallengeStateService],
     }).compileComponents();
     fixture = TestBed.createComponent(TakeawaysFillComponent);
     component = fixture.componentInstance;
@@ -78,6 +82,31 @@ describe('TakeawaysFillComponent', () => {
     for (const b of blankEls()) {
       expect(b.classList.contains('blank--correct')).toBe(true);
     }
+  });
+
+  it('restores solved blanks when the component is rebuilt', () => {
+    // Solve the first two, as a student would before navigating away.
+    for (let i = 0; i < 2; i++) {
+      chipEl(ANSWERS[i])!.click();
+      fixture.detectChanges();
+      blankEls()[i].click();
+      fixture.detectChanges();
+    }
+
+    // Going Back to the sandbox destroys the summary screen; returning builds
+    // a fresh component against the same (component-level) service instance.
+    const service = TestBed.inject(ChallengeStateService);
+    const rebuilt = TestBed.createComponent(TakeawaysFillComponent);
+    rebuilt.detectChanges();
+
+    const blanks: HTMLButtonElement[] = Array.from(
+      rebuilt.nativeElement.querySelectorAll('.blank'),
+    );
+    expect(Object.keys(service.takeaways()).length).toBe(2);
+    expect(blanks[0].classList.contains('blank--correct')).toBe(true);
+    expect(blanks[1].classList.contains('blank--correct')).toBe(true);
+    expect(blanks[0].textContent).toContain(ANSWERS[0]);
+    expect(blanks[2].classList.contains('blank--correct')).toBe(false);
   });
 
   it('does not offer a Show answers escape hatch', () => {
