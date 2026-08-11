@@ -223,25 +223,12 @@ export class GrowthChart {
         .attr('opacity', 0.28);
     }
 
-    // Faint no-match reference line so the shaded area has a lower boundary
-    // that the eye can trace back to "you would have this without the match".
-    const noMatchLayer = this.chartGroup.select('.no-match-line-layer');
-    noMatchLayer.selectAll('*').remove();
-    if (matchActive) {
-      const noMatchLine = d3
-        .line<ChartPoint>()
-        .x((d) => scales.x(d.age))
-        .y((d) => scales.y(d.actualNoMatch))
-        .curve(d3.curveMonotoneX);
-      noMatchLayer
-        .append('path')
-        .attr('d', noMatchLine(data))
-        .attr('fill', 'none')
-        .attr('stroke', 'var(--ngpf-royal-blue, #1f3b9b)')
-        .attr('stroke-width', 1.5)
-        .attr('stroke-dasharray', '2 3')
-        .attr('opacity', 0.7);
-    }
+    // No stroked line along the bottom of the match band. Review: "Remove
+    // dotted blue line, but keep shading for employer match. The line makes it
+    // look like that's another function you have to track. Removing it keeps
+    // the focus on the projected balance vs target." The band's own fill edge
+    // still shows where the balance would sit without the match.
+    this.chartGroup.select('.no-match-line-layer').selectAll('*').remove();
 
     // Projected balance: solid royal-blue.
     const actualLine = d3
