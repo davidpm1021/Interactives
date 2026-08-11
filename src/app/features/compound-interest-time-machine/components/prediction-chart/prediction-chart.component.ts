@@ -47,7 +47,14 @@ export class PredictionChartComponent {
   private scales!: ChartScales;
   private initialized = false;
 
-  private readonly dot10 = signal<PredictionPoint>({ year: 10, value: 2000, locked: false });
+  // Year 10 opens on the principal itself, not a number we invented. At 7% the
+  // true Year-10 answer is $1,967, so the old $2,000 default sat $33 from
+  // correct and effectively pre-filled the first prediction. Starting at the
+  // principal reads as "what if it doesn't grow at all?", which is a
+  // meaningful wrong intuition for the reveal to correct. Review: "otherwise
+  // we're anchoring students to a starting answer (that may be a little
+  // arbitrary/they don't have context for)."
+  private readonly dot10 = signal<PredictionPoint>({ year: 10, value: 1000, locked: false });
   private readonly dot40 = signal<PredictionPoint>({ year: 40, value: 5000, locked: false });
   private readonly show40 = signal(false);
   private draggingDot: 'dot10' | 'dot40' | null = null;
@@ -63,14 +70,28 @@ export class PredictionChartComponent {
   private dragScaleY: d3.ScaleLinear<number, number> | null = null;
 
   /**
+   * Ceiling granted because a dot was dragged to the very top of the chart.
+   * Ratchets upward only, and feeds `dynamicYMax` as an extra floor.
+   */
+  private readonly pushedYMax = signal(0);
+
+  /** How far the axis opens up when a student pins a dot against the ceiling. */
+  private readonly CEILING_GROWTH = 2.5;
+
+  /**
    * Y-axis max grows dynamically with the highest dot (40% headroom), floored
    * at 5x principal so the chart isn't cramped and capped at MAX_PREDICTION_VALUE
    * so it doesn't balloon into hundreds-of-thousands when a student over-drags.
+   *
+   * `pushedYMax` is the escape valve for a student whose instinct is right:
+   * see `expandCeilingIfPinned`. The axis deliberately never opens far enough
+   * to *display* the true answer up front, only far enough to let a student
+   * reach it. Those are separable, and the reveal depends on the first.
    */
   private readonly dynamicYMax = computed(() => {
     const highestDot = Math.max(this.dot10().value, this.show40() ? this.dot40().value : 0);
     const minScale = this.principal() * 5;
-    const headroom = Math.max(minScale, highestDot * 1.4);
+    const headroom = Math.max(minScale, highestDot * 1.4, this.pushedYMax());
     const capped = Math.min(this.MAX_PREDICTION_VALUE, headroom);
     const magnitude = Math.pow(10, Math.floor(Math.log10(capped)));
     return Math.ceil(capped / magnitude) * magnitude;
@@ -350,12 +371,14 @@ export class PredictionChartComponent {
           this.onDrag(id, event.y);
         })
         .on('end', () => {
+          const ceiling = this.dragScaleY?.domain()[1] ?? null;
           this.dragScaleY = null;
           this.draggingDot = null;
           // Click without drag movement = lock
           if (!this.dragMoved) {
             this.lockDot(id);
           } else {
+            if (ceiling !== null) this.expandCeilingIfPinned(id, ceiling);
             // Full re-render so the scale adjusts to the new value.
             this.render();
             // Focus the newly-rendered dot so Enter/Arrows work without Tab.
@@ -370,6 +393,27 @@ export class PredictionChartComponent {
         this.onKeydown(id, event);
       });
     }
+  }
+
+  /**
+   * A dot dragged hard against the top of the chart means "I think it's more
+   * than this scale can show". Open the axis generously so the next drag can
+   * express it, instead of creeping up 40% at a time and making the student
+   * repeat the gesture.
+   *
+   * Review: "if you were to guess 'correctly', you would have to nudge the
+   * y-axis scale quite a few times. We probably WANT students to
+   * underestimate, but this discourages them from even getting close to the
+   * right answer." Only the pinned-to-ceiling case gets the bigger jump;
+   * ordinary drags keep the gentler 40% growth, so the dot doesn't visibly
+   * plummet every time it's nudged.
+   */
+  private expandCeilingIfPinned(id: 'dot10' | 'dot40', ceiling: number): void {
+    const value = (id === 'dot10' ? this.dot10() : this.dot40()).value;
+    // Tolerance covers the SNAP rounding at the very top of the range.
+    if (value < ceiling * 0.98) return;
+    const grown = Math.min(this.MAX_PREDICTION_VALUE, ceiling * this.CEILING_GROWTH);
+    this.pushedYMax.update((cur) => Math.max(cur, grown));
   }
 
   private onDrag(id: 'dot10' | 'dot40', svgY: number): void {
