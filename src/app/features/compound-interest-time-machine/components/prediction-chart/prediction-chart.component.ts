@@ -14,7 +14,7 @@ import {
 import * as d3 from 'd3';
 import { PredictionPoint } from '../../models/compound-interest.models';
 import { formatCurrency } from '../../utils/formatters';
-import { computeChartDimensions, createScales, ChartDimensions, ChartScales, DEFAULT_MARGIN } from '../../utils/chart-helpers';
+import { computeChartDimensions, createScales, ChartDimensions, ChartScales, DEFAULT_MARGIN, widthAwareTickCount } from '../../utils/chart-helpers';
 
 @Component({
   selector: 'app-prediction-chart',
@@ -26,6 +26,14 @@ import { computeChartDimensions, createScales, ChartDimensions, ChartScales, DEF
 export class PredictionChartComponent {
   readonly principal = input(1000);
   readonly maxYear = input(40);
+  /**
+   * Previously-submitted guesses to restore. Set when the student navigates
+   * Back into this screen so both dots reappear at the values they chose and
+   * can be nudged, rather than forcing them to start the guess over.
+   * Restored unlocked so they remain adjustable.
+   */
+  readonly initialYear10 = input<number | null>(null);
+  readonly initialYear40 = input<number | null>(null);
 
   readonly predictionChange = output<PredictionPoint[]>();
   readonly allLocked = output<void>();
@@ -39,37 +47,79 @@ export class PredictionChartComponent {
   private scales!: ChartScales;
   private initialized = false;
 
-  private readonly dot10 = signal<PredictionPoint>({ year: 10, value: 2000, locked: false });
-  private readonly dot40 = signal<PredictionPoint>({ year: 40, value: 5000, locked: false });
+  // Year 10 opens on the principal itself, not a number we invented. At 7% the
+  // true Year-10 answer is $1,967, so the old $2,000 default sat $33 from
+  // correct and effectively pre-filled the first prediction. Starting at the
+  // principal reads as "what if it doesn't grow at all?", which is a
+  // meaningful wrong intuition for the reveal to correct. Review: "otherwise
+  // we're anchoring students to a starting answer (that may be a little
+  // arbitrary/they don't have context for)."
+  private readonly dot10 = signal<PredictionPoint>({ year: 10, value: 1000, locked: false });
+  // Placeholder only. The real starting value is the student's locked Year-10
+  // answer, mirrored across in lockDot, or a restored guess.
+  private readonly dot40 = signal<PredictionPoint>({ year: 40, value: 1000, locked: false });
   private readonly show40 = signal(false);
   private draggingDot: 'dot10' | 'dot40' | null = null;
+  /** Guards the restore effect so it seeds the dots only on first arrival. */
+  private restoredInitialGuess = false;
 
   private readonly SNAP = 100;
   private readonly DOT_RADIUS = 20;
   private readonly TOUCH_RADIUS = 28;
+  private readonly MAX_PREDICTION_VALUE = 100_000;
   private dragMoved = false;
   /** Frozen scale used during a drag to prevent feedback loops. */
   private dragScaleY: d3.ScaleLinear<number, number> | null = null;
 
-  /** Y-axis max grows dynamically: always 40% headroom above the highest dot. */
+  /**
+   * Ceiling granted because a dot was dragged to the very top of the chart.
+   * Ratchets upward only, and feeds `dynamicYMax` as an extra floor.
+   */
+  private readonly pushedYMax = signal(0);
+
+  /** How far the axis opens up when a student pins a dot against the ceiling. */
+  private readonly CEILING_GROWTH = 2.5;
+
+  /**
+   * Y-axis max grows dynamically with the highest dot (40% headroom), floored
+   * at 5x principal so the chart isn't cramped and capped at MAX_PREDICTION_VALUE
+   * so it doesn't balloon into hundreds-of-thousands when a student over-drags.
+   *
+   * `pushedYMax` is the escape valve for a student whose instinct is right:
+   * see `expandCeilingIfPinned`. The axis deliberately never opens far enough
+   * to *display* the true answer up front, only far enough to let a student
+   * reach it. Those are separable, and the reveal depends on the first.
+   */
   private readonly dynamicYMax = computed(() => {
     const highestDot = Math.max(this.dot10().value, this.show40() ? this.dot40().value : 0);
-    const minScale = this.principal() * 5; // Start at 5x principal so chart isn't cramped
-    const headroom = Math.max(minScale, highestDot * 1.4);
-    // Round up to a clean number for nice tick marks
-    const magnitude = Math.pow(10, Math.floor(Math.log10(headroom)));
-    return Math.ceil(headroom / magnitude) * magnitude;
+    const minScale = this.principal() * 5;
+    const headroom = Math.max(minScale, highestDot * 1.4, this.pushedYMax());
+    const capped = Math.min(this.MAX_PREDICTION_VALUE, headroom);
+    const magnitude = Math.pow(10, Math.floor(Math.log10(capped)));
+    return Math.ceil(capped / magnitude) * magnitude;
   });
 
   // ── Template-bound state ──
 
+  protected readonly totalSteps = 2;
+
+  /**
+   * 1 = predict Year 10, 2 = predict Year 40, 3 = both locked (done state).
+   * The template renders each step in a separate `@switch` case so switching
+   * remounts the card and its slide-in animation re-fires.
+   */
+  protected readonly currentStep = computed(() => {
+    if (!this.dot10().locked) return 1;
+    if (!this.dot40().locked) return 2;
+    return 3;
+  });
+
   protected readonly instruction = computed(() => {
-    const d10 = this.dot10();
-    const d40 = this.dot40();
-    if (!d10.locked) {
+    const step = this.currentStep();
+    if (step === 1) {
       return 'Drag the dot up or down to predict the balance at Year 10, then lock your guess.';
     }
-    if (!d40.locked) {
+    if (step === 2) {
       return 'Now predict Year 40. Drag the dot, then lock your guess.';
     }
     return 'Both predictions locked! Click "Show me reality" below.';
@@ -88,6 +138,24 @@ export class PredictionChartComponent {
   });
 
   constructor() {
+    // Restore a previous guess, once, before the chart first renders. Both
+    // dots are shown so the student sees exactly what they submitted, and both
+    // stay unlocked so either can be nudged before re-submitting.
+    effect(() => {
+      const y10 = this.initialYear10();
+      const y40 = this.initialYear40();
+      if (y10 === null && y40 === null) return;
+      if (this.restoredInitialGuess) return;
+      this.restoredInitialGuess = true;
+
+      if (y10 !== null) this.dot10.set({ year: 10, value: y10, locked: false });
+      if (y40 !== null) {
+        this.dot40.set({ year: 40, value: y40, locked: false });
+        this.show40.set(true);
+      }
+      this.emitPredictions();
+    });
+
     afterNextRender(() => {
       this.initChart();
       this.initialized = true;
@@ -148,9 +216,10 @@ export class PredictionChartComponent {
       [0, this.dynamicYMax()],
     );
 
-    // Axes
+    // Axes — tick count scales with chart width so labels don't collide on
+    // narrow (mobile) viewports.
     const xAxis = d3.axisBottom(this.scales.x)
-      .ticks(Math.min(this.maxYear(), 10))
+      .ticks(widthAwareTickCount(this.dims.innerWidth, Math.min(this.maxYear(), 10)))
       .tickFormat((d) => `Yr ${d}`);
     const yAxis = d3.axisLeft(this.scales.y)
       .ticks(6)
@@ -224,12 +293,15 @@ export class PredictionChartComponent {
 
     const group = layer.append('g')
       .attr('class', `prediction-dot ${point.locked ? 'locked-dot' : ''}`)
+      // Identifies the dot across re-renders so focus can be restored to the
+      // one the student was actually operating.
+      .attr('data-dot', id)
       .attr('transform', `translate(${cx},${cy})`)
       .attr('tabindex', point.locked ? '-1' : '0')
       .attr('role', 'slider')
       .attr('aria-label', `Year ${point.year} prediction: ${formatCurrency(point.value)}`)
       .attr('aria-valuemin', '0')
-      .attr('aria-valuemax', String(this.dynamicYMax()))
+      .attr('aria-valuemax', String(this.MAX_PREDICTION_VALUE))
       .attr('aria-valuenow', String(point.value))
       .attr('aria-valuetext', formatCurrency(point.value));
 
@@ -275,19 +347,21 @@ export class PredictionChartComponent {
     }
 
     // Value label above
-    group.append('text')
+    const valueLabel = group.append('text')
       .attr('class', 'value-label')
       .attr('text-anchor', 'middle')
       .attr('y', -(this.DOT_RADIUS + 12))
       .text(formatCurrency(point.value));
+    this.clampLabelToChart(valueLabel, cx);
 
     // Lock hint below
     if (!point.locked) {
-      group.append('text')
+      const lockHint = group.append('text')
         .attr('class', 'lock-hint')
         .attr('text-anchor', 'middle')
         .attr('y', this.DOT_RADIUS + 18)
         .text('Press Enter to lock');
+      this.clampLabelToChart(lockHint, cx);
     }
 
     if (!point.locked) {
@@ -304,14 +378,18 @@ export class PredictionChartComponent {
           this.onDrag(id, event.y);
         })
         .on('end', () => {
+          const ceiling = this.dragScaleY?.domain()[1] ?? null;
           this.dragScaleY = null;
           this.draggingDot = null;
           // Click without drag movement = lock
           if (!this.dragMoved) {
             this.lockDot(id);
           } else {
-            // Full re-render so the scale adjusts to the new value
+            if (ceiling !== null) this.expandCeilingIfPinned(id, ceiling);
+            // Full re-render so the scale adjusts to the new value.
             this.render();
+            // Focus the newly-rendered dot so Enter/Arrows work without Tab.
+            this.focusUnlockedDot();
           }
         });
 
@@ -324,6 +402,66 @@ export class PredictionChartComponent {
     }
   }
 
+  /**
+   * Nudge a dot's centered label back inside the SVG when it would overhang.
+   *
+   * The Year-40 dot sits flush against the right edge of the plot area, and
+   * the margin there is only 30px, so a centered "Press Enter to lock" was
+   * rendering clipped to "Press Enter to". Measured rather than estimated:
+   * label width depends on the font and on the formatted value.
+   *
+   * `cx` is the dot's x within the chart group; the label is positioned in the
+   * dot group's local space, so the usable range runs from -(margin.left + cx)
+   * to (innerWidth - cx) + margin.right.
+   */
+  private clampLabelToChart(
+    label: d3.Selection<SVGTextElement, unknown, null, undefined>,
+    cx: number,
+  ): void {
+    const node = label.node();
+    if (!node || typeof node.getBBox !== 'function') return;
+
+    let box: DOMRect;
+    try {
+      box = node.getBBox();
+    } catch {
+      return; // getBBox throws on detached/hidden nodes in some environments
+    }
+    if (box.width === 0) return;
+
+    const leftLimit = -(DEFAULT_MARGIN.left + cx);
+    const rightLimit = this.dims.innerWidth - cx + DEFAULT_MARGIN.right;
+
+    let shift = 0;
+    if (box.x + box.width > rightLimit) {
+      shift = rightLimit - (box.x + box.width);
+    } else if (box.x < leftLimit) {
+      shift = leftLimit - box.x;
+    }
+    if (shift !== 0) label.attr('x', shift);
+  }
+
+  /**
+   * A dot dragged hard against the top of the chart means "I think it's more
+   * than this scale can show". Open the axis generously so the next drag can
+   * express it, instead of creeping up 40% at a time and making the student
+   * repeat the gesture.
+   *
+   * Review: "if you were to guess 'correctly', you would have to nudge the
+   * y-axis scale quite a few times. We probably WANT students to
+   * underestimate, but this discourages them from even getting close to the
+   * right answer." Only the pinned-to-ceiling case gets the bigger jump;
+   * ordinary drags keep the gentler 40% growth, so the dot doesn't visibly
+   * plummet every time it's nudged.
+   */
+  private expandCeilingIfPinned(id: 'dot10' | 'dot40', ceiling: number): void {
+    const value = (id === 'dot10' ? this.dot10() : this.dot40()).value;
+    // Tolerance covers the SNAP rounding at the very top of the range.
+    if (value < ceiling * 0.98) return;
+    const grown = Math.min(this.MAX_PREDICTION_VALUE, ceiling * this.CEILING_GROWTH);
+    this.pushedYMax.update((cur) => Math.max(cur, grown));
+  }
+
   private onDrag(id: 'dot10' | 'dot40', svgY: number): void {
     // Use the frozen scale from drag start to prevent feedback loops
     const scale = this.dragScaleY ?? this.scales.y;
@@ -331,7 +469,7 @@ export class PredictionChartComponent {
     const clampedY = Math.max(0, Math.min(this.dims.innerHeight, svgY));
     const rawValue = scale.invert(clampedY);
     const snapped = Math.round(rawValue / this.SNAP) * this.SNAP;
-    const clamped = Math.max(0, snapped);
+    const clamped = Math.max(0, Math.min(this.MAX_PREDICTION_VALUE, snapped));
     this.updateDot(id, clamped);
   }
 
@@ -343,13 +481,15 @@ export class PredictionChartComponent {
     switch (event.key) {
       case 'ArrowUp':
         event.preventDefault();
-        val = val + step;
+        val = Math.min(this.MAX_PREDICTION_VALUE, val + step);
         this.updateDot(id, val);
+        this.restoreFocusAfterRender(id);
         break;
       case 'ArrowDown':
         event.preventDefault();
         val = Math.max(0, val - step);
         this.updateDot(id, val);
+        this.restoreFocusAfterRender(id);
         break;
       case 'Enter':
       case ' ':
@@ -370,15 +510,25 @@ export class PredictionChartComponent {
     if (sig().locked) return;
     sig.set({ ...sig(), locked: true });
 
-    if (id === 'dot10' && !this.show40()) {
-      this.show40.set(true);
-      // Focus the Year 40 dot after render
-      setTimeout(() => {
-        const dot40El = this.chartGroup?.select('.dot-layer .prediction-dot:not(.locked-dot)')?.node();
-        if (dot40El instanceof HTMLElement || dot40El instanceof SVGElement) {
-          (dot40El as HTMLElement).focus();
-        }
-      }, 50);
+    if (id === 'dot10') {
+      if (!this.show40()) {
+        // Year 40 opens level with the student's own Year-10 answer rather than
+        // a number we picked. A flat line from Year 10 to Year 40 reads as "it
+        // stops growing here", so the student has to actively decide how much
+        // more happens, and the anchor is their own reasoning instead of ours.
+        //
+        // Guarded by !show40() so it only fires the first time the dot appears:
+        // a restored guess (see the initialYear40 effect) already set show40 and
+        // must not be overwritten.
+        this.dot40.set({ ...this.dot40(), value: this.dot10().value });
+        this.show40.set(true);
+      }
+
+      // Outside that guard on purpose. Locking rebuilds .dot-layer and destroys
+      // the focused element, so on the restored path — where show40 is already
+      // true — focus fell to <body> and a keyboard user could not lock Year 40
+      // or reach "Show me reality" without tabbing back into the SVG.
+      if (!this.dot40().locked) this.restoreFocusAfterRender('dot40');
     }
 
     if (id === 'dot40') {
@@ -386,6 +536,36 @@ export class PredictionChartComponent {
     }
 
     this.emitPredictions();
+  }
+
+  private focusUnlockedDot(): void {
+    const el = this.chartGroup?.select('.dot-layer .prediction-dot:not(.locked-dot)')?.node();
+    if (el instanceof HTMLElement || el instanceof SVGElement) {
+      (el as HTMLElement).focus();
+    }
+  }
+
+  /**
+   * Put focus back on a specific dot after the chart re-renders.
+   *
+   * Every value change re-runs the render effect, and renderDots() clears and
+   * rebuilds the layer, destroying the focused element. Without this a
+   * keyboard user could move a dot exactly once: the first arrow key landed,
+   * focus fell to <body>, and every later key (including Enter to lock) went
+   * nowhere, making the whole prediction step unreachable without a mouse.
+   *
+   * Deferred because the re-render happens when the signal effect flushes,
+   * after this handler returns. Targets the dot by id rather than "first
+   * unlocked", which would grab Year 10 while the student was editing Year 40
+   * on a restored guess where both are unlocked.
+   */
+  private restoreFocusAfterRender(id: 'dot10' | 'dot40'): void {
+    setTimeout(() => {
+      const el = this.chartGroup?.select(`.dot-layer [data-dot="${id}"]`)?.node();
+      if (el instanceof SVGElement || el instanceof HTMLElement) {
+        (el as HTMLElement).focus();
+      }
+    });
   }
 
   protected onLockClick(): void {

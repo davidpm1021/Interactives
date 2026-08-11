@@ -1,0 +1,78 @@
+name: Deploy to GitHub Pages
+
+# Builds the Angular app and publishes it to GitHub Pages so the team can
+# review interactives at https://davidpm1021.github.io/Interactives/
+#
+# This is a preview/sharing target only. The real deployment still goes to
+# ngpf.org via `npm run production`, which uses a different base-href and
+# output path (see angular.json).
+
+on:
+  push:
+    branches: [live]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let an in-flight deploy finish rather than cancelling it, so Pages is never
+# left half-updated.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          # Angular 21 requires Node ^20.19 || ^22.12 || ^24.
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        # base-href must match the repo name exactly — GitHub Pages serves a
+        # project site from /<repo>/ and the path is case-sensitive.
+        run: npm run build:pages
+
+      - name: Add SPA fallback
+        # The app uses path-based routing (provideRouter, no hash strategy) and
+        # nothing is prerendered, so a direct hit on a deep link such as
+        # /Interactives/compound-interest-time-machine has no matching file and
+        # Pages would return its own 404. Serving the app's index.html as
+        # 404.html hands control to the Angular router instead.
+        run: cp dist/pages/browser/index.html dist/pages/browser/404.html
+
+      - name: Disable Jekyll
+        # Pages runs output through Jekyll by default, which strips files and
+        # folders beginning with an underscore.
+        run: touch dist/pages/browser/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/pages/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

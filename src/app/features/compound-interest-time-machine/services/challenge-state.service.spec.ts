@@ -18,10 +18,40 @@ describe('ChallengeStateService', () => {
     expect(service.completedChallenges().size).toBe(0);
   });
 
-  it('should transition intro → predict on startChallenges', () => {
-    service.startChallenges();
-    expect(service.currentPhase()).toBe('predict');
+  it('should transition intro → concept on startConcept', () => {
+    service.startConcept();
+    expect(service.currentPhase()).toBe('concept');
     expect(service.showingIntro()).toBe(false);
+    expect(service.showingConcept()).toBe(true);
+  });
+
+  it('should transition concept → predict on advanceFromConcept', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    expect(service.currentPhase()).toBe('predict');
+    expect(service.showingConcept()).toBe(false);
+  });
+
+  it('should ignore advanceFromConcept when not in concept phase', () => {
+    service.advanceFromConcept();
+    expect(service.currentPhase()).toBe('intro');
+  });
+
+  it('should save reflections keyed by promptId', () => {
+    service.saveReflection('challenge1', 'The curve surprised me.');
+    service.saveReflection('summary-1', 'Start early.');
+    expect(service.reflections()['challenge1']).toBe('The curve surprised me.');
+    expect(service.reflections()['summary-1']).toBe('Start early.');
+  });
+
+  it('should preserve reflections when navigating back', () => {
+    service.startConcept();
+    service.saveReflection('challenge1', 'thoughts');
+    service.advanceFromConcept();
+    service.goBack();
+    // Back returns us to concept but reflections captured after startConcept
+    // should still be present since they aren't pushed to history.
+    expect(service.reflections()['challenge1']).toBe('thoughts');
   });
 
   it('should ignore submitPrediction while in intro phase', () => {
@@ -31,21 +61,74 @@ describe('ChallengeStateService', () => {
   });
 
   it('should transition predict → reveal on submitPrediction', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     service.submitPrediction({ challenge1Year10: 2000 });
     expect(service.currentPhase()).toBe('reveal');
     expect(service.predictions().challenge1Year10).toBe(2000);
   });
 
   it('should transition reveal → reflect on advanceToReflect', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     service.submitPrediction({});
     service.advanceToReflect();
     expect(service.currentPhase()).toBe('reflect');
   });
 
+  it('should skip the transient reveal phase when going back from reflect', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({ challenge1Year40: 5000 });
+    service.advanceToReflect();
+    service.goBack();
+    // 'reveal' renders no Next/Back control and its chart never re-emits
+    // animationComplete, so landing there would strand the student.
+    expect(service.currentPhase()).toBe('predict');
+    expect(service.currentChallenge()).toBe(1);
+  });
+
+  it('should keep submitted predictions when going back to adjust them', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({ challenge1Year10: 3300, challenge1Year40: 8800 });
+    service.goBack();
+
+    // Navigation rewinds, but the guess must survive so the predict screen can
+    // re-seed its widget — otherwise Back means starting the guess over.
+    expect(service.currentPhase()).toBe('predict');
+    expect(service.predictions().challenge1Year10).toBe(3300);
+    expect(service.predictions().challenge1Year40).toBe(8800);
+  });
+
+  it('should keep predictions from earlier challenges when going back', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({ challenge1Year40: 5000 });
+    service.advanceToReflect();
+    service.advanceToNextChallenge();
+    service.submitPrediction({ challenge2RateGuess: 'E' });
+    service.goBack();
+
+    expect(service.predictions().challenge2RateGuess).toBe('E');
+    expect(service.predictions().challenge1Year40).toBe(5000);
+  });
+
+  it('should go back from a later challenge to the previous reflect card', () => {
+    service.startConcept();
+    service.advanceFromConcept();
+    service.submitPrediction({});
+    service.advanceToReflect();
+    service.advanceToNextChallenge();
+    expect(service.currentChallenge()).toBe(2);
+    service.goBack();
+    expect(service.currentChallenge()).toBe(1);
+    expect(service.currentPhase()).toBe('reflect');
+  });
+
   it('should advance from challenge 1 to 2', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     service.submitPrediction({});
     service.advanceToReflect();
     service.advanceToNextChallenge();
@@ -55,7 +138,8 @@ describe('ChallengeStateService', () => {
   });
 
   it('should advance correctly 1 → 2 → 3 → 4 → 5', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     for (let i = 1; i <= 4; i++) {
       expect(service.currentChallenge()).toBe(i);
       service.submitPrediction({});
@@ -67,7 +151,8 @@ describe('ChallengeStateService', () => {
   });
 
   it('should enter sandbox phase for challenge 5', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     for (let i = 1; i <= 4; i++) {
       service.submitPrediction({});
       service.advanceToReflect();
@@ -77,19 +162,22 @@ describe('ChallengeStateService', () => {
   });
 
   it('should not skip phases (predict must come before reveal)', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     service.advanceToReflect(); // should be no-op in predict
     expect(service.currentPhase()).toBe('predict');
   });
 
   it('should not advance to next challenge from predict phase', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     service.advanceToNextChallenge(); // should be no-op
     expect(service.currentChallenge()).toBe(1);
   });
 
   it('should transition sandbox → summary on finishSandbox', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     for (let i = 1; i <= 4; i++) {
       service.submitPrediction({});
       service.advanceToReflect();
@@ -106,7 +194,8 @@ describe('ChallengeStateService', () => {
   });
 
   it('should merge predictions across challenges', () => {
-    service.startChallenges();
+    service.startConcept();
+    service.advanceFromConcept();
     service.submitPrediction({ challenge1Year10: 1500, challenge1Year40: 5000 });
     service.advanceToReflect();
     service.advanceToNextChallenge();

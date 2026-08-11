@@ -1,11 +1,4 @@
 .results-panel {
-  &__title {
-    font-family: var(--ngpf-font-heading);
-    color: var(--ngpf-royal-blue);
-    font-size: 1.35rem;
-    margin: 0 0 var(--ngpf-spacing-md);
-  }
-
   &__tiles {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -45,11 +38,54 @@
     font-weight: 600;
   }
 
-  &__sub {
+  // ── Required-contribution reveal ──
+  // Full width beneath the tiles, so it reads as an answer to a question the
+  // student asked rather than a third headline number competing with the two
+  // above it.
+  // .ngpf-btn-secondary's background is --ngpf-soft-blue-tint, which is exactly
+  // this page's background, and it carries no border, so the control rendered
+  // as bare text. Overridden locally rather than by swapping the class, per
+  // the guidance in CLAUDE.md.
+  &__reveal {
+    display: block;
+    width: 100%;
+    margin-top: var(--ngpf-spacing-md);
+    background: white !important;
+    border: 1px solid var(--ngpf-light-gray-blue) !important;
+
+    &:hover {
+      background: var(--ngpf-soft-blue-tint) !important;
+      border-color: var(--ngpf-royal-blue) !important;
+    }
+  }
+
+  &__banner {
+    margin-top: var(--ngpf-spacing-md);
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    box-shadow: var(--ngpf-shadow-sm);
+    border-left: 4px solid var(--ngpf-light-gray-blue);
+    padding: var(--ngpf-spacing-md);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+
+    &--warn {
+      border-left-color: var(--ngpf-error, #d64545);
+    }
+
+    &--ok {
+      border-left-color: var(--ngpf-success, #2e7d32);
+    }
+  }
+
+  &__banner-label {
     font-family: var(--ngpf-font-body);
-    font-size: 0.82rem;
-    color: var(--ngpf-text-secondary);
-    line-height: 1.35;
-    margin-top: 2px;
+    font-size: 0.8rem;
+    color: var(--ngpf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
   }
 }

@@ -4,6 +4,7 @@
   background: var(--ngpf-soft-blue-tint);
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
 
   &__intro {
     text-align: center;
@@ -26,8 +27,36 @@
     }
   }
 
-  &__actions {
-    margin-top: var(--ngpf-spacing-md);
+  &__toolbar {
+    position: absolute;
+    top: var(--ngpf-spacing-md);
+    right: var(--ngpf-spacing-lg);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+  }
+
+  &__icon-btn {
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    line-height: 0;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
   }
 
   &__behind {
@@ -67,6 +96,58 @@
     display: flex;
     flex-direction: column;
     gap: var(--ngpf-spacing-md);
+  }
+
+  &__data-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ngpf-spacing-sm);
+    margin-bottom: var(--ngpf-spacing-md);
+
+    .cost-of-borrowing__section-heading {
+      margin: 0;
+    }
+  }
+
+  &__view-toggle {
+    display: inline-flex;
+    background: var(--ngpf-soft-blue-tint);
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    padding: 2px;
+    gap: 2px;
+  }
+
+  &__view-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--ngpf-text-secondary);
+    padding: 4px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: calc(var(--ngpf-radius-sm) - 2px);
+
+    &:hover:not(&--active) {
+      color: var(--ngpf-royal-blue);
+    }
+
+    &--active {
+      background: white;
+      color: var(--ngpf-royal-blue);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__view-panel--hidden {
+    display: none;
   }
 
   &__questions {
@@ -197,8 +278,15 @@
 
     // Print worksheet uses the chart (matches the source worksheet's layout),
     // not the data table.
-    &__rate-table {
+    &__rate-table,
+    &__view-toggle {
       display: none !important;
+    }
+
+    // Always render the chart when printing, regardless of the on-screen
+    // toggle state.
+    &__view-panel--hidden {
+      display: block;
     }
 
     &__trend-chart {

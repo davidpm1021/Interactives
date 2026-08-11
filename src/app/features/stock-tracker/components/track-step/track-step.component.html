@@ -24,14 +24,95 @@
     </div>
   }
 
-  <!-- Per-company tables -->
+  <!-- Per-company tables (accordion; first stock open, rest collapsed) -->
   @for (pick of state.picks(); track pick.ticker; let i = $index) {
     @if (pick.annualData.length > 0) {
-      <app-stock-table [pick]="pick" [colorIndex]="i"></app-stock-table>
+      <details class="track-step__accordion" [attr.open]="i === 0 ? '' : null">
+        <summary class="track-step__accordion-summary">
+          <span class="track-step__accordion-dot" [style.background]="STOCK_COLORS[i]" aria-hidden="true"></span>
+          <span class="track-step__accordion-ticker">{{ pick.ticker }}</span>
+          <span class="track-step__accordion-name">{{ pick.companyName }}</span>
+          <span
+            class="track-step__accordion-roi"
+            [class.track-step__accordion-roi--positive]="pick.roi > 0"
+            [class.track-step__accordion-roi--negative]="pick.roi < 0"
+          >
+            {{ formatPercent(pick.roi) }}
+          </span>
+          <span class="track-step__accordion-caret" aria-hidden="true"></span>
+        </summary>
+        <div class="track-step__accordion-body">
+          <app-stock-table [pick]="pick" [colorIndex]="i"></app-stock-table>
+        </div>
+      </details>
     }
   }
 
+  <!-- Comprehension check -->
   @if (state.allDataLoaded()) {
+    <div class="track-step__check" role="group" aria-labelledby="best-performer-label">
+      <p class="track-step__check-prompt" id="best-performer-label">
+        Based on the data, which of your 5 stocks performed best since your 10th birthday?
+      </p>
+      <div class="track-step__check-options" role="radiogroup">
+        @for (pick of state.picks(); track pick.ticker; let i = $index) {
+          <!--
+            The --correct highlight is gated on guessIsCorrect(), not merely on
+            "a guess was made". It used to appear on the right answer whichever
+            option was clicked, so a wrong guess lit up the correct button and
+            "Try again" had nothing left to find.
+          -->
+          <button
+            type="button"
+            class="track-step__check-option"
+            [class.track-step__check-option--picked]="bestGuess() === pick.ticker"
+            [class.track-step__check-option--correct]="guessIsCorrect() && pick.ticker === actualBest()?.ticker"
+            [class.track-step__check-option--wrong]="bestGuess() === pick.ticker && pick.ticker !== actualBest()?.ticker"
+            role="radio"
+            [attr.aria-checked]="bestGuess() === pick.ticker"
+            [disabled]="bestGuess() !== null"
+            (click)="onGuess(pick.ticker)"
+          >
+            <span class="track-step__check-dot" [style.background]="STOCK_COLORS[i]" aria-hidden="true"></span>
+            <span class="track-step__check-ticker">{{ pick.ticker }}</span>
+            <span class="track-step__check-name">{{ pick.companyName }}</span>
+          </button>
+        }
+      </div>
+
+      @if (bestGuess() !== null) {
+        <div
+          class="track-step__check-verdict"
+          [class.track-step__check-verdict--correct]="guessIsCorrect()"
+          [class.track-step__check-verdict--wrong]="!guessIsCorrect()"
+          role="status"
+          aria-live="polite"
+        >
+          @if (guessIsCorrect()) {
+            <strong>Correct.</strong> {{ actualBest()?.ticker }} returned
+            {{ formatPercent(actualBest()!.roi) }} since your 10th birthday, the
+            highest of your 5 picks.
+          } @else {
+            <!--
+              No ticker and no figure. Review: "don't give away the answer if
+              students pick incorrectly, just say 'Not quite.' with the 'try
+              again' button. Giving away the answer takes away the opportunity
+              for students to truly try again." The chart and ROI table above
+              hold everything needed to work it out.
+            -->
+            <strong>Not quite.</strong>
+          }
+          <button type="button" class="track-step__check-reset" (click)="resetGuess()">Try again</button>
+        </div>
+      }
+
+      <app-reflection-form
+        [report]="state.report()"
+        [fields]="bestPerformerFields"
+        (reportChange)="onReportChange($event)">
+      </app-reflection-form>
+    </div>
+
     <div class="track-step__actions">
       <button class="ngpf-btn ngpf-btn-primary" (click)="onAdvance()">
         Compare My Stocks

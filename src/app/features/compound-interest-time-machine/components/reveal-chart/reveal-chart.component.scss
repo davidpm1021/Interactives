@@ -1,14 +1,60 @@
 .reveal-chart-wrapper {
   position: relative;
   min-height: 340px;
+}
 
-  svg {
-    width: 100%;
-    display: block;
+// ── Hover / tap readout ──
+.chart-readout {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--ngpf-spacing-sm) 10px;
+  background: white;
+  border: 1px solid var(--ngpf-light-gray-blue);
+  border-radius: var(--ngpf-radius-sm);
+  box-shadow: var(--ngpf-shadow-md);
+  font-family: var(--ngpf-font-body);
+  font-size: 0.8rem;
+  color: var(--ngpf-text-primary);
+  white-space: nowrap;
+
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-readout {
+    transition: none;
+  }
+}
+
+@media print {
+  .chart-readout {
+    display: none;
   }
 }
 
 :host ::ng-deep {
+  // The <svg> is created by d3, so it never receives Angular's scoping
+  // attribute and cannot be styled from the encapsulated block above. This
+  // rule previously lived there and silently never applied.
+  //
+  // pan-y lets the browser own vertical scrolling, so a student can always
+  // swipe the page even with a finger on the chart. Horizontal drags are left
+  // to the pointer handlers for scrubbing. There is no horizontal page scroll
+  // here to compete with.
+  svg {
+    width: 100%;
+    display: block;
+    touch-action: pan-y;
+  }
+
   .axis text {
     font-family: var(--ngpf-font-body);
     font-size: 0.75rem;
@@ -25,5 +71,27 @@
     font-size: 0.8rem;
     fill: var(--ngpf-navy-blue);
     font-weight: 600;
+  }
+
+  // The readout's rows are written with innerHTML, so like the d3-generated
+  // elements above they never receive Angular's scoping attribute and can't be
+  // styled from the encapsulated block.
+  .chart-readout__year {
+    font-weight: 700;
+    color: var(--ngpf-navy-blue);
+    margin-bottom: 2px;
+  }
+
+  .chart-readout__row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chart-readout__swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
 }

@@ -1,0 +1,22 @@
+<div class="growth-table-wrapper">
+  <table class="growth-table" aria-label="Year-by-year balance">
+    <thead>
+      <tr>
+        <th scope="col">{{ startAge() !== null ? 'Age' : 'Year' }}</th>
+        <th scope="col">Balance</th>
+        <th scope="col">Contributions</th>
+        <th scope="col">Interest</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (dp of rows(); track dp.year) {
+        <tr>
+          <td>{{ startAge() !== null ? startAge()! + dp.year : dp.year }}</td>
+          <td>{{ format(dp.compoundBalance) }}</td>
+          <td>{{ format(dp.totalContributions) }}</td>
+          <td>{{ format(dp.totalInterestEarned) }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

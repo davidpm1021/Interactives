@@ -1,8 +1,36 @@
 <div class="report-step">
-  <h2 class="report-step__title">Write Your Report</h2>
+  <!--
+    Print-only masthead. app-top-header is hidden on this step in print, so
+    the handed-in sheet carried no branding and nothing for a teacher to write
+    a name on. The name is a ruled line rather than an input: no student names
+    are typed into or stored by the app.
+  -->
+  <div class="report-step__print-header print-only">
+    <img class="report-step__print-logo" src="ngpf-logo.svg" alt="NGPF" />
+    <div class="report-step__print-name">
+      <span class="report-step__print-name-label">Name:</span>
+      <span class="report-step__print-name-rule"></span>
+    </div>
+  </div>
+
+  <h2 class="report-step__title">Stock Report</h2>
   <p class="report-step__description">
-    Reflect on your findings and write your investment report.
+    Review the analysis you built along the way and finish with your takeaway.
   </p>
+
+  <aside class="report-step__save-warning" role="note" aria-labelledby="save-warning-title">
+    <span class="report-step__save-warning-icon" aria-hidden="true">!</span>
+    <div class="report-step__save-warning-body">
+      <p class="report-step__save-warning-title" id="save-warning-title">
+        Save before you leave.
+      </p>
+      <p class="report-step__save-warning-text">
+        Nothing on this page is saved to a server. If you close the tab, refresh, or navigate away,
+        your answers are gone. When you finish, use <strong>Print / PDF</strong> or
+        <strong>Copy Text</strong> at the bottom to hand your work in.
+      </p>
+    </div>
+  </aside>
 
   <!-- Overview table -->
   <div class="report-step__section">
@@ -10,17 +38,17 @@
     <app-roi-summary-table [picks]="state.picks()"></app-roi-summary-table>
   </div>
 
-  <!-- Charts -->
+  <!-- Chart -->
   <div class="report-step__charts">
     <app-multi-line-chart [picks]="state.picks()"></app-multi-line-chart>
-    <app-roi-bar-chart [picks]="state.picks()"></app-roi-bar-chart>
   </div>
 
   <!-- Analysis questions -->
-  <div class="report-step__section">
+  <div class="report-step__section report-step__section--analysis">
     <h3 class="report-step__section-title">Your Analysis</h3>
     <app-reflection-form
       [report]="state.report()"
+      [picks]="state.picks()"
       (reportChange)="onReportChange($event)">
     </app-reflection-form>
   </div>

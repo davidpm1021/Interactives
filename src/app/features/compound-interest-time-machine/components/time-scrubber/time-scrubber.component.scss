@@ -10,7 +10,10 @@
     min-width: 48px;
     border-radius: 50%;
     border: none;
-    background: var(--ngpf-royal-blue);
+    // Match the primary-CTA colors (--ngpf-bright-blue → --ngpf-royal-blue on
+    // hover) so the play button reads as the same "action blue" as the Next /
+    // Show me / Finish buttons throughout the flow.
+    background: var(--ngpf-bright-blue);
     color: white;
     cursor: pointer;
     display: flex;
@@ -19,7 +22,7 @@
     transition: background-color 0.15s, transform 0.1s;
 
     &:hover {
-      background: var(--ngpf-navy-blue);
+      background: var(--ngpf-royal-blue);
     }
 
     &:active {
@@ -29,6 +32,12 @@
     &:focus-visible {
       outline: 2px solid var(--ngpf-sky-blue);
       outline-offset: 2px;
+    }
+
+    // Inputs changed since the last run — pulse so the stale figures on
+    // screen don't read as the answer to the new numbers.
+    &.needs-rerun {
+      animation: play-pulse 1.6s ease-in-out infinite;
     }
   }
 
@@ -101,12 +110,37 @@
   }
 }
 
+.rerun-hint {
+  margin: var(--ngpf-spacing-xs) 0 0;
+  text-align: center;
+  font-family: var(--ngpf-font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ngpf-royal-blue);
+}
+
+@keyframes play-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(29, 78, 216, 0.18);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .time-scrubber .play-btn {
     transition: none;
 
     &:active {
       transform: none;
+    }
+
+    // Static ring instead of a pulse; the hint text still carries the message.
+    &.needs-rerun {
+      animation: none;
+      box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.25);
     }
   }
 }

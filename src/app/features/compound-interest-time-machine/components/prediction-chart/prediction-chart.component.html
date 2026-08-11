@@ -1,8 +1,27 @@
 <div class="prediction-chart-area">
-  <p class="chart-instruction">{{ instruction() }}</p>
+  @switch (currentStep()) {
+    @case (1) {
+      <div class="step-card" role="status" aria-live="polite">
+        <span class="step-badge">Step 1 of {{ totalSteps }}</span>
+        <p class="step-instruction">{{ instruction() }}</p>
+      </div>
+    }
+    @case (2) {
+      <div class="step-card step-card--advanced" role="status" aria-live="polite">
+        <span class="step-badge">Step 2 of {{ totalSteps }}</span>
+        <p class="step-instruction">{{ instruction() }}</p>
+      </div>
+    }
+    @case (3) {
+      <div class="step-card step-card--done" role="status" aria-live="polite">
+        <span class="step-badge">Done</span>
+        <p class="step-instruction">{{ instruction() }}</p>
+      </div>
+    }
+  }
   <div class="prediction-chart-wrapper" #chartContainer></div>
   @if (showLockButton()) {
-    <button class="lock-btn" (click)="onLockClick()">
+    <button class="ngpf-btn ngpf-btn-primary lock-btn" (click)="onLockClick()">
       Lock my Year {{ activeDotYear() }} prediction
     </button>
   }

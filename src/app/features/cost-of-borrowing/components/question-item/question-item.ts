@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-  KeyConcept,
   MultipleChoiceQuestion,
   NumericQuestion,
   Question,
   ShortTextQuestion,
 } from '../../models/question.models';
 import { CostOfBorrowingStateService } from '../../services/state.service';
+import { formatAnswerValue } from '../../utils/formatters';
 
 @Component({
   selector: 'app-question-item',
@@ -20,27 +20,38 @@ import { CostOfBorrowingStateService } from '../../services/state.service';
 export class QuestionItem {
   readonly question = input.required<Question>();
   readonly index = input.required<number>();
+  /** Label for the "advance" state of the primary button (after full reveal). */
+  readonly advanceLabel = input<string>('Next question →');
+  /** True when this is the last question; hides the advance button after reveal so the parent can render the Review step instead. */
+  readonly isLast = input<boolean>(false);
+
+  readonly advanceRequested = output<void>();
 
   private readonly state = inject(CostOfBorrowingStateService);
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+
+  /**
+   * Attempt budget for MC and numeric before the correct answer is revealed.
+   * First wrong pick: soft "not quite" nudge, no highlights on the correct
+   * option, no explanation. Second attempt (right or wrong): full reveal.
+   */
+  private static readonly MAX_ATTEMPTS = 2;
 
   protected readonly selectedIndex = signal<number | null>(null);
   protected readonly numericInput = signal<string>('');
   protected readonly textInput = signal<string>('');
   protected readonly reveal = signal(false);
+  protected readonly attempts = signal(0);
+  /** True after a wrong first attempt while the student still has a retry. */
+  protected readonly nudge = signal(false);
 
   protected readonly submitted = computed(() => this.reveal());
 
   protected readonly correct = computed(() => {
     if (!this.reveal()) return null;
     const q = this.question();
-    if (q.answerType === 'multiple-choice') {
-      return this.selectedIndex() === q.correctIndex;
-    }
-    if (q.answerType === 'numeric') {
-      const v = parseFloat(this.numericInput());
-      if (!Number.isFinite(v)) return false;
-      return Math.abs(v - q.correctValue) <= q.tolerance;
+    if (q.answerType === 'multiple-choice' || q.answerType === 'numeric') {
+      return this.evaluateCorrect();
     }
     return null; // short-text: self-graded
   });
@@ -52,26 +63,30 @@ export class QuestionItem {
     return this.textInput().trim().length > 0;
   });
 
+  private evaluateCorrect(): boolean {
+    const q = this.question();
+    if (q.answerType === 'multiple-choice') return this.selectedIndex() === q.correctIndex;
+    if (q.answerType === 'numeric') {
+      const v = parseFloat(this.numericInput());
+      if (!Number.isFinite(v)) return false;
+      return Math.abs(v - q.correctValue) <= q.tolerance;
+    }
+    return false;
+  }
+
   protected asMc(q: Question): MultipleChoiceQuestion { return q as MultipleChoiceQuestion; }
   protected asNumeric(q: Question): NumericQuestion { return q as NumericQuestion; }
   protected asShortText(q: Question): ShortTextQuestion { return q as ShortTextQuestion; }
 
   /**
-   * Advisory feedback for short-text answers: shows which concepts from the
-   * model answer the student's response touched on. Not used for scoring —
-   * short-text is still self-graded — just gives structured hints so the
-   * student can see whether they hit the big ideas.
+   * Text that gets rendered inside the answer box on print, if the student
+   * has submitted a response. Empty string means "no answer yet" — the print
+   * stylesheet falls back to a blank hand-write area in that case.
    */
-  protected readonly conceptHits = computed<{ concept: KeyConcept; hit: boolean }[]>(() => {
-    const q = this.question();
-    if (q.answerType !== 'short-text' || !this.reveal()) return [];
-    const concepts = q.keyConcepts;
-    if (!concepts || concepts.length === 0) return [];
-    const answer = this.textInput().toLowerCase();
-    return concepts.map((concept) => ({
-      concept,
-      hit: concept.matchers.some((m) => answer.includes(m.toLowerCase())),
-    }));
+  protected readonly printAnswer = computed<string>(() => {
+    const record = this.state.answers()[this.question().id];
+    if (!record || !record.submitted) return '';
+    return formatAnswerValue(this.question(), record.value);
   });
 
   protected onSelect(i: number): void {
@@ -105,17 +120,45 @@ export class QuestionItem {
 
   protected onCheck(): void {
     if (!this.canCheck()) return;
-    this.reveal.set(true);
     const q = this.question();
-    const value =
-      q.answerType === 'multiple-choice' ? (this.selectedIndex() ?? -1)
-      : q.answerType === 'numeric' ? this.numericInput()
-      : this.textInput();
-    this.state.submit(q.id, value, this.correct());
+
+    if (q.answerType === 'short-text') {
+      // Short-text is not graded and no model answer is shown — clicking the
+      // primary button submits the response and advances in one step. The
+      // parent listens for advanceRequested to move on.
+      this.attempts.set(1);
+      this.reveal.set(true);
+      this.state.submit(q.id, this.textInput(), null, 1);
+      this.advanceRequested.emit();
+      return;
+    }
+
+    const isCorrect = this.evaluateCorrect();
+    const nextAttempts = this.attempts() + 1;
+    this.attempts.set(nextAttempts);
+
+    if (isCorrect || nextAttempts >= QuestionItem.MAX_ATTEMPTS) {
+      // Correct at any attempt, or exhausted retries — full reveal.
+      this.nudge.set(false);
+      this.reveal.set(true);
+      const value =
+        q.answerType === 'multiple-choice' ? (this.selectedIndex() ?? -1) : this.numericInput();
+      this.state.submit(q.id, value, isCorrect, nextAttempts);
+      return;
+    }
+
+    // First wrong attempt — soft nudge, no highlight on correct, no explanation.
+    this.nudge.set(true);
+  }
+
+  protected onAdvance(): void {
+    this.advanceRequested.emit();
   }
 
   protected onReset(): void {
     this.reveal.set(false);
+    this.nudge.set(false);
+    this.attempts.set(0);
     this.selectedIndex.set(null);
     this.numericInput.set('');
     this.textInput.set('');

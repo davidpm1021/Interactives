@@ -18,7 +18,9 @@ export class StockTrackerStateService {
   readonly report = signal<StockReport>({
     bestPerformerAnalysis: '',
     mostValuableAnalysis: '',
+    mostValuablePick: '',
     biggestSurprise: '',
+    biggestSurprisePick: '',
     lessonsLearned: '',
     generatedAt: new Date(),
   });
@@ -145,7 +147,9 @@ export class StockTrackerStateService {
     this.report.set({
       bestPerformerAnalysis: '',
       mostValuableAnalysis: '',
+      mostValuablePick: '',
       biggestSurprise: '',
+      biggestSurprisePick: '',
       lessonsLearned: '',
       generatedAt: new Date(),
     });

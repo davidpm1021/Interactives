@@ -1,65 +1,75 @@
 <div class="reflection-form">
-  <div class="reflection-form__section">
-    <label for="best-performer" class="reflection-form__label">
-      Best Performer Analysis
-    </label>
-    <p class="reflection-form__prompt">
-      Which stock had the best ROI? Why do you think it performed so well?
-    </p>
-    <textarea id="best-performer"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().bestPerformerAnalysis"
-              (ngModelChange)="onFieldChange('bestPerformerAnalysis', $event)">
-    </textarea>
-  </div>
+  @for (field of visibleFields(); track field.key) {
+    <div class="reflection-form__section">
+      <label [attr.for]="'reflect-' + field.key" class="reflection-form__label">
+        {{ field.label }}
+      </label>
+      <!--
+        With a pickPrompt the two questions straddle the chips: the pick
+        question above, the written question below. Without one, the single
+        prompt stays above the chips exactly as before, so fields that were
+        never split don't end up with an unlabelled chip row.
+      -->
+      @if (field.pickPrompt; as pickPrompt) {
+        <p class="reflection-form__prompt">{{ pickPrompt }}</p>
+      } @else {
+        <p class="reflection-form__prompt">{{ field.prompt }}</p>
+      }
 
-  <div class="reflection-form__section">
-    <label for="most-valuable" class="reflection-form__label">
-      Most Valuable Stock
-    </label>
-    <p class="reflection-form__prompt">
-      Which stock is worth the most today? Is this the same as the best ROI? Why or why not?
-    </p>
-    <textarea id="most-valuable"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().mostValuableAnalysis"
-              (ngModelChange)="onFieldChange('mostValuableAnalysis', $event)">
-    </textarea>
-  </div>
+      @if (field.pickField; as pickField) {
+        <div
+          class="reflection-form__chips"
+          role="radiogroup"
+          [attr.aria-label]="field.pickPrompt ?? field.label + ': pick a stock'"
+        >
+          @for (pick of picks(); track pick.ticker; let i = $index) {
+            <button
+              type="button"
+              class="reflection-form__chip"
+              [class.reflection-form__chip--picked]="report()[pickField] === pick.ticker"
+              role="radio"
+              [attr.aria-checked]="report()[pickField] === pick.ticker"
+              (click)="onPickChange(pickField, pick.ticker)"
+            >
+              <span class="reflection-form__chip-dot" [style.background]="STOCK_COLORS[i]" aria-hidden="true"></span>
+              <span class="reflection-form__chip-ticker">{{ pick.ticker }}</span>
+              <span class="reflection-form__chip-name">{{ pick.companyName }}</span>
+            </button>
+          }
+        </div>
 
-  <div class="reflection-form__section">
-    <label for="biggest-surprise" class="reflection-form__label">
-      Biggest Surprise
-    </label>
-    <p class="reflection-form__prompt">
-      Which stock's performance surprised you the most? Explain.
-    </p>
-    <textarea id="biggest-surprise"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().biggestSurprise"
-              (ngModelChange)="onFieldChange('biggestSurprise', $event)">
-    </textarea>
-  </div>
+        <!--
+          Printed stand-in for a pick that was never made. Print hides every
+          unpicked chip, so an untouched question collapsed to nothing and the
+          sheet read as if it had never been asked. Matches the ruled line an
+          unanswered written prompt already gets.
+        -->
+        @if (!report()[pickField]) {
+          <p class="reflection-form__pick-blank print-only">
+            <span class="reflection-form__pick-blank-label">My pick:</span>
+            <span class="reflection-form__pick-blank-rule"></span>
+          </p>
+        }
+      }
 
-  <div class="reflection-form__section">
-    <label for="lessons-learned" class="reflection-form__label">
-      Lessons Learned
-    </label>
-    <p class="reflection-form__prompt">
-      What did this project teach you about investing?
-    </p>
-    <textarea id="lessons-learned"
-              class="reflection-form__textarea"
-              rows="4"
-              placeholder="Write your analysis here..."
-              [ngModel]="report().lessonsLearned"
-              (ngModelChange)="onFieldChange('lessonsLearned', $event)">
-    </textarea>
-  </div>
+      @if (field.pickPrompt) {
+        <p class="reflection-form__prompt">{{ field.prompt }}</p>
+      }
+
+      <textarea
+        [id]="'reflect-' + field.key"
+        class="reflection-form__textarea"
+        rows="4"
+        placeholder="Write your analysis here..."
+        [ngModel]="report()[field.key]"
+        (ngModelChange)="onFieldChange(field.key, $event)"
+      ></textarea>
+      <!--
+        A textarea does not grow to fit its content, so printing one clips any
+        answer longer than its four rows. The printed sheet gets the text
+        instead, which also drops the form-field border.
+      -->
+      <p class="reflection-form__answer print-only">{{ report()[field.key] }}</p>
+    </div>
+  }
 </div>

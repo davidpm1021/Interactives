@@ -1,0 +1,121 @@
+.suggestion-chips {
+  background: var(--ngpf-soft-blue-tint);
+  border: 1px solid var(--ngpf-light-gray-blue);
+  border-radius: var(--ngpf-radius-md);
+  padding: var(--ngpf-spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ngpf-spacing-sm);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--ngpf-spacing-sm);
+  }
+
+  &__lead {
+    font-family: var(--ngpf-font-body);
+    font-weight: 600;
+    color: var(--ngpf-text-primary);
+    font-size: 0.9rem;
+  }
+
+  &__controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__sector-label {
+    display: inline-flex;
+  }
+
+  &__sector {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    background: white;
+    color: var(--ngpf-text-primary);
+    min-height: 32px;
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__shuffle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    padding: 4px 10px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.8rem;
+    cursor: pointer;
+    min-height: 32px;
+
+    &:hover,
+    &:focus-visible {
+      background: white;
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.82rem;
+    color: var(--ngpf-text-primary);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      border-color: var(--ngpf-royal-blue);
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__chip-ticker {
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+    font-size: 0.85rem;
+  }
+
+  &__chip-name {
+    color: var(--ngpf-text-secondary);
+  }
+}

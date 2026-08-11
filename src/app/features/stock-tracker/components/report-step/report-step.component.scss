@@ -48,13 +48,150 @@
     padding: var(--ngpf-spacing-lg) 0;
     border-top: 1px solid var(--ngpf-light-gray-blue);
   }
+
+  &__save-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ngpf-spacing-md);
+    background: #fff8e1;
+    border: 1px solid var(--ngpf-gold, #d68b0a);
+    border-left-width: 6px;
+    border-radius: var(--ngpf-radius-md);
+    padding: var(--ngpf-spacing-md) var(--ngpf-spacing-lg);
+  }
+
+  &__save-warning-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--ngpf-gold, #d68b0a);
+    color: white;
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  &__save-warning-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__save-warning-title {
+    margin: 0;
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ngpf-text-primary);
+  }
+
+  &__save-warning-text {
+    margin: 0;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ngpf-text-primary);
+  }
 }
 
-// Print styles
+.print-only {
+  display: none;
+}
+
+// ── Print ──
+// This is the artifact students hand in, so everything that only exists to
+// drive the website comes off, and the sheet gains a masthead.
 @media print {
+  .print-only {
+    display: block;
+  }
+
   .report-step {
-    &__export {
+    &__export,
+    &__save-warning,
+    // Guidance for someone working through the activity, meaningless once
+    // it's on paper. Review: "remove unnecessary text/images that are only
+    // for the website or guiding students through the activity."
+    &__description {
       display: none;
+    }
+
+    &__print-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ngpf-spacing-lg);
+      margin-bottom: var(--ngpf-spacing-md);
+    }
+
+    &__print-logo {
+      height: 34px;
+      width: auto;
+    }
+
+    &__print-name {
+      display: flex;
+      align-items: baseline;
+      gap: var(--ngpf-spacing-sm);
+      flex: 1;
+      max-width: 20rem;
+      font-family: var(--ngpf-font-body);
+      font-size: 0.9rem;
+    }
+
+    &__print-name-label {
+      font-weight: 600;
+      color: var(--ngpf-text-primary);
+    }
+
+    &__print-name-rule {
+      flex: 1;
+      border-bottom: 1px solid var(--ngpf-text-secondary);
+      height: 1.1em;
+    }
+
+    &__title {
+      font-size: 1.3rem;
+      margin: 0 0 var(--ngpf-spacing-sm);
+    }
+
+    // Deliberately NOT break-inside: avoid. Holding the whole analysis block
+    // together pushed all four questions onto a second page and left most of
+    // both pages blank. Individual question/answer pairs are kept intact by
+    // reflection-form instead, which is the granularity that matters.
+    gap: var(--ngpf-spacing-md);
+
+    &__section {
+      gap: var(--ngpf-spacing-sm);
+    }
+
+    &__section-title {
+      margin-bottom: var(--ngpf-spacing-xs);
+    }
+
+    // Left unscaled on purpose. Scaling this ancestor does keep the plot
+    // rendering (unlike touching the wrapper, which blanks it), but it clips
+    // the chart's right edge because the width can't be compensated without
+    // tripping Chart.js's observer, and it saves nowhere near enough to reach
+    // one page: the sheet is ~1300px against ~1000px of usable page.
+    &__charts {
+      margin: 0;
+    }
+
+    // The sheet doesn't fit one page, so it's split where the content already
+    // divides: the data students were given on the first, everything they
+    // wrote on the second. Left to itself the break landed mid-analysis, with
+    // a couple of questions stranded after a half-empty page. Nothing is
+    // enlarged to fill either page.
+    &__section--analysis {
+      break-before: page;
     }
   }
 }

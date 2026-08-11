@@ -62,6 +62,16 @@
       height: 8px;
       background: var(--ngpf-royal-blue);
     }
+
+    // Flip anchor near container edges so the tooltip body stays on-screen.
+    &--left {
+      transform: translate(0, -100%);
+      &::after { left: 12px; }
+    }
+    &--right {
+      transform: translate(-100%, -100%);
+      &::after { left: auto; right: 12px; transform: rotate(45deg); }
+    }
   }
 
   &__tooltip-year {

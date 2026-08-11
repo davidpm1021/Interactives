@@ -23,7 +23,30 @@
   </div>
 
   @if (view() === 'graph') {
-    <div #container class="growth-chart__container"></div>
+    <div #container class="growth-chart__container">
+      @if (hover(); as h) {
+        <div class="growth-chart__tooltip"
+             [class.growth-chart__tooltip--left]="tooltipAnchor() === 'left'"
+             [class.growth-chart__tooltip--right]="tooltipAnchor() === 'right'"
+             [style.left.px]="tooltipPos()?.left ?? 0"
+             [style.top.px]="tooltipPos()?.top ?? 0"
+             role="tooltip">
+          <div class="growth-chart__tooltip-age">Age {{ h.age }}</div>
+          <ul class="growth-chart__tooltip-list">
+            <li>
+              <span class="growth-chart__tooltip-swatch growth-chart__tooltip-swatch--actual" aria-hidden="true"></span>
+              <span class="growth-chart__tooltip-label">Projected</span>
+              <span class="growth-chart__tooltip-value">{{ formatCurrency(h.actual) }}</span>
+            </li>
+            <li>
+              <span class="growth-chart__tooltip-swatch growth-chart__tooltip-swatch--target" aria-hidden="true"></span>
+              <span class="growth-chart__tooltip-label">Target</span>
+              <span class="growth-chart__tooltip-value">{{ formatCurrency(h.target) }}</span>
+            </li>
+          </ul>
+        </div>
+      }
+    </div>
     <div class="growth-chart__legend">
       <span class="growth-chart__legend-item">
         <span class="growth-chart__legend-swatch growth-chart__legend-swatch--actual" aria-hidden="true"></span>
@@ -33,7 +56,14 @@
         <span class="growth-chart__legend-swatch growth-chart__legend-swatch--target" aria-hidden="true"></span>
         Target balance
       </span>
+      @if (projection().totalEmployerMatch > 0) {
+        <span class="growth-chart__legend-item">
+          <span class="growth-chart__legend-swatch growth-chart__legend-swatch--match" aria-hidden="true"></span>
+          From employer match
+        </span>
+      }
     </div>
+    <div class="sr-only" aria-live="polite">{{ hoverAnnouncement() }}</div>
   } @else {
     <div class="growth-chart__table-wrap">
       <table class="growth-chart__table">

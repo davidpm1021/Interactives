@@ -2,12 +2,13 @@
   title="Paystub Builder"
   singularLabel="paystub"
   [(docs)]="paystubs"
+  [(hidePreview)]="hidePreview"
   [previewTpl]="previewTpl"
   [randomFn]="randomFnRef"
   [clearFn]="clearFnRef"
 >
   <p class="paystub-editor__calc-note no-print">
-    <strong>What gets calculated:</strong> when you enter <strong>Hours</strong> and
+    <strong>What gets calculated:</strong> When you enter <strong>Hours</strong> and
     <strong>Rate</strong>, the current and YTD amounts compute automatically.
     Social Security ({{ SOCIAL_SECURITY_RATE | percent: '1.1-2' }}) and Medicare
     ({{ MEDICARE_RATE | percent: '1.2-2' }}) are computed from gross pay.
@@ -16,72 +17,66 @@
     you type in.
   </p>
 
-  <fieldset class="paystub-editor__section">
-    <legend>Employer</legend>
-    <label>
-      <span>Company name</span>
-      <input type="text" [ngModel]="current().employer.name" (ngModelChange)="updateEmployer('name', $event)" />
-    </label>
-    <label>
-      <span>Address line 1</span>
-      <input type="text" [ngModel]="current().employer.addressLine1" (ngModelChange)="updateEmployer('addressLine1', $event)" />
-    </label>
-    <label>
-      <span>Address line 2</span>
-      <input type="text" [ngModel]="current().employer.addressLine2" (ngModelChange)="updateEmployer('addressLine2', $event)" />
-    </label>
-  </fieldset>
-
-  <fieldset class="paystub-editor__section">
-    <legend>Employee</legend>
-    <label>
-      <span>Name</span>
-      <input type="text" [ngModel]="current().employee.name" (ngModelChange)="updateEmployee('name', $event)" />
-    </label>
-    <label>
-      <span>Employee ID</span>
-      <input type="text" [ngModel]="current().employee.employeeId" (ngModelChange)="updateEmployee('employeeId', $event)" />
-    </label>
-    <label>
-      <span>Address line 1</span>
-      <input type="text" [ngModel]="current().employee.addressLine1" (ngModelChange)="updateEmployee('addressLine1', $event)" />
-    </label>
-    <label>
-      <span>Address line 2</span>
-      <input type="text" [ngModel]="current().employee.addressLine2" (ngModelChange)="updateEmployee('addressLine2', $event)" />
-    </label>
-  </fieldset>
-
-  <fieldset class="paystub-editor__section">
-    <legend>Pay period</legend>
-    <div class="paystub-editor__row">
-      <label>
-        <span>Period start</span>
-        <input type="date" [ngModel]="current().period.start" (ngModelChange)="updatePeriod('start', $event)" />
+  <details configPanel open class="paystub-editor__accordion no-print">
+    <summary>
+      <span>Configure random generation</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <p class="paystub-editor__hint">
+        Pin a few dimensions, then click <strong>Generate with these settings</strong>.
+        Anything left as <em>Any</em> stays random.
+      </p>
+      <div class="paystub-editor__row">
+        <label>
+          <span>Annual income</span>
+          <select [ngModel]="incomeBand()" (ngModelChange)="setIncomeBand($event)">
+            <option value="any">Any</option>
+            <option value="low">Low ($18-25k)</option>
+            <option value="mid">Mid ($28-45k)</option>
+            <option value="high">High ($50-90k)</option>
+            <option value="custom">Custom exact $</option>
+          </select>
+        </label>
+        @if (incomeBand() === 'custom') {
+          <label>
+            <span>Annual income ($)</span>
+            <input type="number" min="0" step="1000"
+              [ngModel]="configCustomIncome()"
+              (ngModelChange)="setConfigCustomIncome($event)" />
+          </label>
+        }
+      </div>
+      <div class="paystub-editor__row">
+        <label>
+          <span>State (for tax and address)</span>
+          <select [ngModel]="configState()" (ngModelChange)="setConfigState($event)">
+            <option value="">Any</option>
+            @for (st of employerStates; track st) {
+              <option [value]="st">{{ st }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Overtime</span>
+          <select [ngModel]="configOvertime()" (ngModelChange)="setConfigOvertime($event)">
+            <option value="random">Random</option>
+            <option value="yes">Include</option>
+            <option value="no">Don't include</option>
+          </select>
+        </label>
+      </div>
+      <label class="paystub-editor__checkbox">
+        <input type="checkbox"
+          [ngModel]="configSmallOnly()"
+          (ngModelChange)="setConfigSmallOnly($event)" />
+        <span>Small employer only (no 401(k) offering)</span>
       </label>
-      <label>
-        <span>Period end</span>
-        <input type="date" [ngModel]="current().period.end" (ngModelChange)="updatePeriod('end', $event)" />
-      </label>
+      <button type="button" class="ngpf-btn ngpf-btn-primary" (click)="generateConfigured()">
+        Generate with these settings
+      </button>
     </div>
-    <div class="paystub-editor__row">
-      <label>
-        <span>Pay date</span>
-        <input type="date" [ngModel]="current().period.payDate" (ngModelChange)="updatePeriod('payDate', $event)" />
-      </label>
-      <label>
-        <span>Check number</span>
-        <input type="text" [ngModel]="current().period.checkNumber" (ngModelChange)="updatePeriod('checkNumber', $event)" />
-      </label>
-    </div>
-    <label>
-      <span>Pay periods completed YTD (including this one)</span>
-      <input type="number" min="1" step="1" [ngModel]="current().periodsYTD" (ngModelChange)="updatePeriodsYTD($event)" />
-      <small class="paystub-editor__hint">
-        Implied YTD gross: {{ ytdGrossReadout() | currency }}
-      </small>
-    </label>
-  </fieldset>
+  </details>
 
   <fieldset class="paystub-editor__section">
     <legend>Earnings</legend>
@@ -140,6 +135,39 @@
         </div>
       </div>
     }
+
+    <label class="paystub-editor__checkbox">
+      <input type="checkbox" [ngModel]="current().includeFederalTax" (ngModelChange)="updateIncludeFederalTax($event)" />
+      <span>Auto-calculate federal income tax (rough estimate from gross)</span>
+    </label>
+    @if (current().includeFederalTax) {
+      <div class="paystub-editor__readonly-rows">
+        <div>
+          <span>Federal Income Tax</span>
+          <strong>{{ federalCurrent() | currency }}</strong>
+          <span class="paystub-editor__readonly-ytd">YTD {{ federalYTD() | currency }}</span>
+        </div>
+      </div>
+    }
+
+    <label>
+      <span>Auto-calculate state income tax</span>
+      <select [ngModel]="current().stateForTax" (ngModelChange)="updateStateForTax($event)">
+        <option value="">No state tax</option>
+        @for (st of statesWithTax; track st) {
+          <option [value]="st">{{ st }}</option>
+        }
+      </select>
+    </label>
+    @if (current().stateForTax) {
+      <div class="paystub-editor__readonly-rows">
+        <div>
+          <span>State Income Tax ({{ current().stateForTax }})</span>
+          <strong>{{ stateCurrent() | currency }}</strong>
+          <span class="paystub-editor__readonly-ytd">YTD {{ stateYTD() | currency }}</span>
+        </div>
+      </div>
+    }
     @for (tax of current().otherTaxes; track $index) {
       <div class="paystub-editor__line-item" role="group" [attr.aria-label]="'Tax row ' + ($index + 1)">
         <label>
@@ -167,18 +195,144 @@
           <span>Description</span>
           <input type="text" [ngModel]="deduction.description" (ngModelChange)="updateDeduction($index, { description: $event })" />
         </label>
-        <label>
-          <span>Current ($)</span>
-          <input type="number" step="0.01" [ngModel]="deduction.current" (ngModelChange)="updateDeduction($index, { current: parseNumber($event) })" />
-        </label>
+        <div class="paystub-editor__row">
+          <label>
+            <span>Type</span>
+            <select
+              [ngModel]="deduction.percentOfGross != null ? '%' : '$'"
+              (ngModelChange)="setDeductionKind($index, $event)"
+            >
+              <option value="$">$ fixed</option>
+              <option value="%">% of gross</option>
+            </select>
+          </label>
+          @if (deduction.percentOfGross != null) {
+            <label>
+              <span>% of gross</span>
+              <input type="number" step="0.1" min="0" max="50"
+                [ngModel]="deduction.percentOfGross"
+                (ngModelChange)="updateDeduction($index, { percentOfGross: parseNumber($event) })" />
+            </label>
+          } @else {
+            <label>
+              <span>Current ($)</span>
+              <input type="number" step="0.01"
+                [ngModel]="deduction.current"
+                (ngModelChange)="updateDeduction($index, { current: parseNumber($event) })" />
+            </label>
+          }
+        </div>
         <div class="paystub-editor__line-meta">
+          @if (deduction.percentOfGross != null) {
+            <span>Current: <strong>{{ itemCurrentFor(deduction, current()) | currency }}</strong></span>
+          }
           <span>YTD: <strong>{{ itemYTDFor(deduction, current()) | currency }}</strong></span>
         </div>
         <button type="button" class="paystub-editor__remove" (click)="removeDeduction($index)" [attr.aria-label]="'Remove deduction row ' + ($index + 1) + (deduction.description ? ': ' + deduction.description : '')">Remove</button>
       </div>
     }
-    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addDeduction()">+ Add deduction</button>
+    <div class="paystub-editor__add-actions">
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addDeduction()">+ Add blank</button>
+      <label class="paystub-editor__preset-picker">
+        <span class="sr-only">Add a common deduction preset</span>
+        <select
+          #presetSel
+          (change)="addDeductionPreset(presetSel.value); presetSel.value = ''"
+        >
+          <option value="">+ Add common deduction…</option>
+          @for (preset of deductionPresets; track preset.id) {
+            <option [value]="preset.id">
+              {{ preset.description }} — {{ preset.kind === '%' ? preset.value + '% of gross' : '$' + preset.value }}
+            </option>
+          }
+        </select>
+      </label>
+    </div>
   </fieldset>
+
+  <!-- Sections most teachers won't touch after picking a random paystub live
+       in collapsed accordions so Hours + Rate stay near the top. -->
+  <details class="paystub-editor__accordion">
+    <summary>
+      <span>Pay period</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <div class="paystub-editor__row">
+        <label>
+          <span>Period start</span>
+          <input type="date" [ngModel]="current().period.start" (ngModelChange)="updatePeriod('start', $event)" />
+        </label>
+        <label>
+          <span>Period end</span>
+          <input type="date" [ngModel]="current().period.end" (ngModelChange)="updatePeriod('end', $event)" />
+        </label>
+      </div>
+      <div class="paystub-editor__row">
+        <label>
+          <span>Pay date</span>
+          <input type="date" [ngModel]="current().period.payDate" (ngModelChange)="updatePeriod('payDate', $event)" />
+        </label>
+        <label>
+          <span>Check number</span>
+          <input type="text" [ngModel]="current().period.checkNumber" (ngModelChange)="updatePeriod('checkNumber', $event)" />
+        </label>
+      </div>
+      <label>
+        <span>Pay periods completed YTD (including this one)</span>
+        <input type="number" min="1" step="1" [ngModel]="current().periodsYTD" (ngModelChange)="updatePeriodsYTD($event)" />
+        <small class="paystub-editor__hint">
+          Implied YTD gross: {{ ytdGrossReadout() | currency }}
+        </small>
+      </label>
+    </div>
+  </details>
+
+  <details class="paystub-editor__accordion">
+    <summary>
+      <span>Employer</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <label>
+        <span>Company name</span>
+        <input type="text" [ngModel]="current().employer.name" (ngModelChange)="updateEmployer('name', $event)" />
+      </label>
+      <label>
+        <span>Address line 1</span>
+        <input type="text" [ngModel]="current().employer.addressLine1" (ngModelChange)="updateEmployer('addressLine1', $event)" />
+      </label>
+      <label>
+        <span>Address line 2</span>
+        <input type="text" [ngModel]="current().employer.addressLine2" (ngModelChange)="updateEmployer('addressLine2', $event)" />
+      </label>
+    </div>
+  </details>
+
+  <details class="paystub-editor__accordion">
+    <summary>
+      <span>Employee</span>
+      <span class="paystub-editor__accordion-caret" aria-hidden="true"></span>
+    </summary>
+    <div class="paystub-editor__accordion-body">
+      <label>
+        <span>Name</span>
+        <input type="text" [ngModel]="current().employee.name" (ngModelChange)="updateEmployee('name', $event)" />
+      </label>
+      <label>
+        <span>Employee ID</span>
+        <input type="text" [ngModel]="current().employee.employeeId" (ngModelChange)="updateEmployee('employeeId', $event)" />
+      </label>
+      <label>
+        <span>Address line 1</span>
+        <input type="text" [ngModel]="current().employee.addressLine1" (ngModelChange)="updateEmployee('addressLine1', $event)" />
+      </label>
+      <label>
+        <span>Address line 2</span>
+        <input type="text" [ngModel]="current().employee.addressLine2" (ngModelChange)="updateEmployee('addressLine2', $event)" />
+      </label>
+    </div>
+  </details>
 </app-editor-shell>
 
 <ng-template #previewTpl let-paystub>
@@ -283,6 +437,24 @@
         </tr>
       </thead>
       <tbody>
+        @if (paystub.includeFederalTax) {
+          <tr>
+            <th scope="row">Federal Income Tax</th>
+            <td></td>
+            <td></td>
+            <td>{{ federalCurrentOf(paystub) | currency }}</td>
+            <td>{{ federalYTDOf(paystub) | currency }}</td>
+          </tr>
+        }
+        @if (paystub.stateForTax) {
+          <tr>
+            <th scope="row">State Income Tax ({{ paystub.stateForTax }})</th>
+            <td></td>
+            <td></td>
+            <td>{{ stateCurrentOf(paystub) | currency }}</td>
+            <td>{{ stateYTDOf(paystub) | currency }}</td>
+          </tr>
+        }
         @if (paystub.includeFICA) {
           <tr>
             <th scope="row">Social Security ({{ SOCIAL_SECURITY_RATE | percent: '1.1-2' }})</th>
@@ -304,7 +476,7 @@
             <th scope="row">{{ tax.description }}</th>
             <td></td>
             <td></td>
-            <td>{{ tax.current | currency }}</td>
+            <td>{{ itemCurrentFor(tax, paystub) | currency }}</td>
             <td>{{ itemYTDFor(tax, paystub) | currency }}</td>
           </tr>
         }
@@ -342,10 +514,15 @@
         <tbody>
           @for (deduction of paystub.deductions; track $index) {
             <tr>
-              <th scope="row">{{ deduction.description }}</th>
+              <th scope="row">
+                {{ deduction.description }}
+                @if (deduction.percentOfGross != null) {
+                  <span class="paystub-preview__sub">({{ deduction.percentOfGross }}% of gross)</span>
+                }
+              </th>
               <td></td>
               <td></td>
-              <td>{{ deduction.current | currency }}</td>
+              <td>{{ itemCurrentFor(deduction, paystub) | currency }}</td>
               <td>{{ itemYTDFor(deduction, paystub) | currency }}</td>
             </tr>
           }

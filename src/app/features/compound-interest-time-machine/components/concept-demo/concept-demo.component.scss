@@ -1,0 +1,218 @@
+.concept-demo {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  text-align: center;
+
+  &__title {
+    font-family: var(--ngpf-font-heading);
+    color: var(--ngpf-navy-blue, var(--ngpf-royal-blue));
+    font-size: 1.75rem;
+    margin: 0 0 0.75rem;
+  }
+
+  &__lede {
+    font-family: var(--ngpf-font-body);
+    font-size: 1.05rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.55;
+    max-width: 560px;
+    margin: 0 auto 1.5rem;
+
+    strong {
+      color: var(--ngpf-royal-blue);
+    }
+  }
+
+  &__chart {
+    background: white;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+    padding: 1.25rem;
+    margin: 0 auto 1.25rem;
+    box-shadow: var(--ngpf-shadow-sm);
+  }
+
+  &__figures {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &__narrative {
+    font-family: var(--ngpf-font-body);
+    font-size: 1rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0 auto 1.5rem;
+    min-height: 4.5rem;
+  }
+
+  &__progress {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.75rem;
+  height: 180px;
+  padding-bottom: 0.5rem;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 0 0 60px;
+  transition: transform 0.25s ease;
+
+  &--highlight {
+    transform: translateY(-4px);
+  }
+}
+
+.bar-track {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  background: var(--ngpf-soft-blue-tint);
+  border-radius: var(--ngpf-radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-segment {
+  width: 100%;
+  transition: height 0.4s ease-out;
+
+  &--principal {
+    background: var(--ngpf-royal-blue);
+  }
+
+  &--interest {
+    background: var(--ngpf-sky-blue);
+  }
+}
+
+.bar-label {
+  font-family: var(--ngpf-font-body);
+  font-size: 0.78rem;
+  color: var(--ngpf-text-muted);
+
+  .bar-col--highlight & {
+    color: var(--ngpf-royal-blue);
+    font-weight: 700;
+  }
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+  font-family: var(--ngpf-font-body);
+  font-size: 0.82rem;
+  color: var(--ngpf-text-secondary);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+
+  &--principal {
+    background: var(--ngpf-royal-blue);
+  }
+
+  &--interest {
+    background: var(--ngpf-sky-blue);
+  }
+}
+
+.figure {
+  min-width: 180px;
+  padding: 0.6rem 0.9rem;
+  background: white;
+  border: 1px solid var(--ngpf-light-gray-blue);
+  border-radius: var(--ngpf-radius-md);
+  box-shadow: var(--ngpf-shadow-sm);
+
+  &--interest {
+    border-left: 4px solid var(--ngpf-sky-blue);
+  }
+}
+
+.figure-label {
+  font-family: var(--ngpf-font-body);
+  font-size: 0.75rem;
+  color: var(--ngpf-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+}
+
+.figure-value {
+  font-family: var(--ngpf-font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ngpf-navy-blue, var(--ngpf-royal-blue));
+
+  .figure--interest & {
+    color: var(--ngpf-sky-blue);
+  }
+}
+
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ngpf-light-gray-blue);
+  transition: background 0.2s;
+
+  &--past {
+    background: var(--ngpf-royal-blue);
+    opacity: 0.7;
+  }
+
+  &--active {
+    background: var(--ngpf-royal-blue);
+    transform: scale(1.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-col,
+  .bar-segment,
+  .progress-dot {
+    transition: none;
+  }
+}

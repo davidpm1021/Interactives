@@ -105,5 +105,12 @@
       grid-template-columns: repeat(2, 1fr);
       overflow-x: auto;
     }
+
+    // Three cards over two columns would strand one on its own row. The
+    // balance is the headline, so it takes the full width and the two
+    // supporting figures pair up beneath it.
+    .stat-card.primary {
+      grid-column: 1 / -1;
+    }
   }
 }

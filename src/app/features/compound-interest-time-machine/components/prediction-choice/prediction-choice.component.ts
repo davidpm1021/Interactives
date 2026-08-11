@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, effect, input, output, signal, untracked } from '@angular/core';
 import { ChallengeOption } from '../../data/challenge-content';
 
 @Component({
@@ -11,10 +11,31 @@ import { ChallengeOption } from '../../data/challenge-content';
 export class PredictionChoiceComponent {
   readonly prompt = input('');
   readonly options = input<ChallengeOption[]>([]);
+  /**
+   * Option to pre-select. Set when the student navigates Back into this
+   * screen so their previous answer is restored and visible rather than
+   * silently retained or discarded.
+   */
+  readonly initialSelectionId = input<string | null>(null);
 
   readonly selectionChanged = output<string>();
 
   protected readonly selectedId = signal<string | null>(null);
+
+  constructor() {
+    // Seed once from the restored value; later edits come from onSelect.
+    effect(() => {
+      const initial = this.initialSelectionId();
+      if (initial && untracked(() => this.selectedId()) === null) {
+        this.selectedId.set(initial);
+        // Emit as well as set. The parent clears its readiness signal when it
+        // re-enters a predict screen, so seeding silently left the restored
+        // answer visibly selected while the "Show me" button stayed disabled
+        // with nothing on screen explaining why.
+        this.selectionChanged.emit(initial);
+      }
+    });
+  }
 
   protected onSelect(id: string): void {
     this.selectedId.set(id);

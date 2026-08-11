@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
   ChartPoint,
-  INCOME_GROWTH,
-  INFLATION,
+  DEFAULT_ASSUMPTIONS,
+  EmployerMatch,
   LIFE_EXPECTANCY,
-  POST_RETIREMENT_RETURN,
-  PRE_RETIREMENT_RETURN,
+  RetirementAssumptions,
   RetirementInputs,
   RetirementProjection,
   YearlyBalance,
@@ -29,13 +28,19 @@ export class RetirementService {
    * deflated back to today's dollars so it can be compared directly with
    * the entered budget.
    */
-  project(inputs: RetirementInputs): RetirementProjection {
+  project(
+    inputs: RetirementInputs,
+    assumptions: RetirementAssumptions = DEFAULT_ASSUMPTIONS,
+  ): RetirementProjection {
     const yearsToRetirement = Math.max(0, inputs.retirementAge - inputs.currentAge);
     // 29 years to fund from age 67 through age 95 inclusive (matches
     // NerdWallet's empirical output).
     const yearsInRetirement = Math.max(0, LIFE_EXPECTANCY - inputs.retirementAge + 1);
-    const r = PRE_RETIREMENT_RETURN;
-    const g = INCOME_GROWTH;
+    const r = assumptions.preReturn;
+    const g = assumptions.incomeGrowth;
+    const postR = assumptions.postReturn;
+    const inflation = assumptions.inflation;
+    const match = inputs.employerMatch;
 
     // Year-by-year accumulation. Annual compounding; end-of-year contribution
     // (ordinary annuity). The monthly contribution grows 2% at the start of
@@ -44,20 +49,25 @@ export class RetirementService {
     const yearlyBalances: YearlyBalance[] = [];
     let balance = inputs.currentSavings;
     let totalContributed = 0;
+    let totalEmployerMatch = 0;
     let monthlyContrib = inputs.monthlyContribution;
+    let salary = inputs.currentSalary;
 
     yearlyBalances.push({ age: inputs.currentAge, balance, totalContributed });
 
     for (let year = 1; year <= yearsToRetirement; year++) {
-      const yearContribution = monthlyContrib * 12;
-      balance = balance * (1 + r) + yearContribution;
-      totalContributed += yearContribution;
+      const yearEmployeeContribution = monthlyContrib * 12;
+      const yearEmployerMatch = this.annualEmployerMatch(yearEmployeeContribution, salary, match);
+      balance = balance * (1 + r) + yearEmployeeContribution + yearEmployerMatch;
+      totalContributed += yearEmployeeContribution;
+      totalEmployerMatch += yearEmployerMatch;
       yearlyBalances.push({
         age: inputs.currentAge + year,
         balance,
         totalContributed,
       });
       monthlyContrib *= 1 + g; // grow contribution for next year
+      salary *= 1 + g;          // salary grows at the same rate
     }
 
     const finalBalance = balance;
@@ -67,19 +77,20 @@ export class RetirementService {
 
     // Inflate today's monthly budget to retirement year.
     const budgetAtRetirement =
-      inputs.targetMonthlyBudget * Math.pow(1 + INFLATION, yearsToRetirement);
+      inputs.targetMonthlyBudget * Math.pow(1 + inflation, yearsToRetirement);
     const firstYearAnnualBudget = budgetAtRetirement * 12;
 
     // Nest egg needed at retirement to fund a growing-annuity withdrawal
     // over yearsInRetirement.
     const targetNestEgg = this.growingAnnuityPV(
       firstYearAnnualBudget,
-      POST_RETIREMENT_RETURN,
-      INFLATION,
+      postR,
+      inflation,
       yearsInRetirement,
     );
 
-    const gapAtRetirement = Math.max(0, targetNestEgg - finalBalance);
+    // Signed: positive = shortfall, negative = surplus over target.
+    const gapAtRetirement = targetNestEgg - finalBalance;
 
     const requiredMonthlyToHitGoal = this.solveMonthlyContribution(
       inputs.currentSavings,
@@ -93,23 +104,28 @@ export class RetirementService {
     // support over the drawdown?
     const firstYearIncomeNominal = this.solveFirstYearWithdrawal(
       finalBalance,
-      POST_RETIREMENT_RETURN,
-      INFLATION,
+      postR,
+      inflation,
       yearsInRetirement,
     );
     const projectedMonthlyIncome =
-      firstYearIncomeNominal / 12 / Math.pow(1 + INFLATION, yearsToRetirement);
+      firstYearIncomeNominal / 12 / Math.pow(1 + inflation, yearsToRetirement);
+
+    const noMatchFinalBalance = this.projectNoMatchFinalBalance(inputs, r, g, yearsToRetirement);
 
     const chartData = this.buildChartData(
       inputs,
       yearsToRetirement,
       yearsInRetirement,
       finalBalance,
+      noMatchFinalBalance,
       targetNestEgg,
       budgetAtRetirement,
       requiredMonthlyToHitGoal,
       r,
       g,
+      postR,
+      inflation,
     );
 
     return {
@@ -122,10 +138,28 @@ export class RetirementService {
       yearsToRetirement,
       yearsInRetirement,
       totalContributed,
+      totalEmployerMatch,
       salaryAtRetirement,
       budgetAtRetirement,
       chartData,
     };
+  }
+
+  /**
+   * Annual employer match dollars given the year's employee contribution,
+   * annual salary, and match config. Standard "N% match up to M% of salary"
+   * formula: employer matches matchRate of employee's contribution, but only
+   * the portion of the contribution up to (capPct × salary) is match-eligible.
+   */
+  private annualEmployerMatch(
+    yearEmployeeContribution: number,
+    salary: number,
+    match: EmployerMatch | undefined,
+  ): number {
+    if (!match || salary <= 0) return 0;
+    const capAmount = salary * match.capPct;
+    const eligible = Math.min(yearEmployeeContribution, capAmount);
+    return Math.max(0, eligible) * match.matchRate;
   }
 
   /**
@@ -146,11 +180,14 @@ export class RetirementService {
     yearsToRetirement: number,
     yearsInRetirement: number,
     finalBalance: number,
+    noMatchFinalBalance: number,
     targetNestEgg: number,
     budgetAtRetirement: number,
     requiredMonthly: number,
     r: number,
     g: number,
+    postR: number,
+    inflation: number,
   ): ChartPoint[] {
     const out: ChartPoint[] = [];
     // If the user is already on track or over, "target" contribution equals
@@ -160,28 +197,36 @@ export class RetirementService {
       : inputs.monthlyContribution;
 
     let actualBalance = inputs.currentSavings;
+    let noMatchBalance = inputs.currentSavings;
     let targetBalance = inputs.currentSavings;
     let actualContrib = inputs.monthlyContribution;
     let targetContrib = needStartingMonthly;
+    let salary = inputs.currentSalary;
 
     out.push({
       age: inputs.currentAge,
       actual: actualBalance,
+      actualNoMatch: noMatchBalance,
       target: targetBalance,
       phase: 'accumulation',
     });
 
     for (let year = 1; year <= yearsToRetirement; year++) {
-      actualBalance = actualBalance * (1 + r) + actualContrib * 12;
+      const employeeAnnual = actualContrib * 12;
+      const employerAnnual = this.annualEmployerMatch(employeeAnnual, salary, inputs.employerMatch);
+      actualBalance = actualBalance * (1 + r) + employeeAnnual + employerAnnual;
+      noMatchBalance = noMatchBalance * (1 + r) + employeeAnnual;
       targetBalance = targetBalance * (1 + r) + targetContrib * 12;
       out.push({
         age: inputs.currentAge + year,
         actual: actualBalance,
+        actualNoMatch: noMatchBalance,
         target: targetBalance,
         phase: 'accumulation',
       });
       actualContrib *= 1 + g;
       targetContrib *= 1 + g;
+      salary *= 1 + g;
     }
 
     // If the user's actual accumulation overshoots targetNestEgg, the target
@@ -192,24 +237,47 @@ export class RetirementService {
       out[out.length - 1] = { ...out[out.length - 1], target: targetNestEgg };
     }
 
-    // Drawdown phase.
+    // Drawdown phase. Both actual and no-match series draw the same
+    // withdrawal schedule; the smaller starting balance runs out sooner.
     let actualDraw = finalBalance;
+    let noMatchDraw = noMatchFinalBalance;
     let targetDraw = targetNestEgg;
     let withdrawal = budgetAtRetirement * 12;
 
     for (let k = 1; k <= yearsInRetirement; k++) {
-      actualDraw = Math.max(0, actualDraw * (1 + POST_RETIREMENT_RETURN) - withdrawal);
-      targetDraw = Math.max(0, targetDraw * (1 + POST_RETIREMENT_RETURN) - withdrawal);
+      actualDraw = Math.max(0, actualDraw * (1 + postR) - withdrawal);
+      noMatchDraw = Math.max(0, noMatchDraw * (1 + postR) - withdrawal);
+      targetDraw = Math.max(0, targetDraw * (1 + postR) - withdrawal);
       out.push({
         age: inputs.retirementAge + k,
         actual: actualDraw,
+        actualNoMatch: noMatchDraw,
         target: targetDraw,
         phase: 'drawdown',
       });
-      withdrawal *= 1 + INFLATION;
+      withdrawal *= 1 + inflation;
     }
 
     return out;
+  }
+
+  /**
+   * Final balance ignoring employer match — needed as the starting point of
+   * the "no match" drawdown line on the chart.
+   */
+  private projectNoMatchFinalBalance(
+    inputs: RetirementInputs,
+    r: number,
+    g: number,
+    yearsToRetirement: number,
+  ): number {
+    let balance = inputs.currentSavings;
+    let monthly = inputs.monthlyContribution;
+    for (let year = 1; year <= yearsToRetirement; year++) {
+      balance = balance * (1 + r) + monthly * 12;
+      monthly *= 1 + g;
+    }
+    return balance;
   }
 
   /**

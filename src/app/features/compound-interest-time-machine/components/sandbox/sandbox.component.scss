@@ -100,7 +100,9 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 4px 8px;
-  min-width: 90px;
+  // Wide enough to fit "$ 100,000" plus the browser spinner arrows.
+  // Previously 90px which clipped 5-digit values on Windows Chrome.
+  min-width: 120px;
   background: white;
 
   .prefix,
@@ -109,12 +111,16 @@
     font-size: 0.9rem;
     color: #666;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   input[type='number'] {
     border: none;
     outline: none;
-    width: 65px;
+    // Flex so the input takes all remaining space in the wrapper. The
+    // previous fixed 65px width clipped anything past ~4 digits + spinner.
+    flex: 1;
+    min-width: 0;
     font-size: 0.95rem;
     font-family: var(--ngpf-font-body);
     text-align: right;
@@ -153,37 +159,6 @@
   }
 }
 
-// ── Wait toggle ──
-.wait-toggle {
-  display: block;
-  width: 100%;
-  padding: 10px 16px;
-  background: white;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  font-family: var(--ngpf-font-body);
-  font-size: 0.88rem;
-  color: #555;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-
-  &:hover {
-    border-color: var(--ngpf-royal-blue);
-  }
-
-  &.active {
-    border-color: var(--ngpf-gold);
-    background: rgba(255, 193, 7, 0.08);
-    color: var(--ngpf-navy-blue);
-    font-weight: 600;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--ngpf-sky-blue);
-    outline-offset: 2px;
-  }
-}
-
 // ── Chart column ──
 .sandbox-chart {
   display: flex;
@@ -191,39 +166,35 @@
   gap: 1rem;
 }
 
+.result-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.toggle-btn {
+  font-size: 0.85rem !important;
+  padding: 8px 16px !important;
+  min-height: 0 !important;
+
+  &.active {
+    background: var(--ngpf-gold) !important;
+    border-color: var(--ngpf-gold) !important;
+    color: var(--ngpf-navy-blue) !important;
+  }
+}
+
 // ── Finish button ──
 .sandbox-finish {
   grid-column: 1 / -1;
   text-align: center;
   margin-top: 1rem;
-}
-
-.finish-btn {
-  display: inline-block;
-  background: var(--ngpf-bright-blue);
-  color: white;
-  border: none;
-  padding: 14px 40px;
-  border-radius: 10px;
-  font-family: var(--ngpf-font-heading);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-
-  &:hover {
-    background: var(--ngpf-royal-blue);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--ngpf-sky-blue);
-    outline-offset: 2px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 // ── Responsive ──
@@ -242,12 +213,5 @@
 
   .sandbox-finish {
     order: 3;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wait-toggle,
-  .finish-btn {
-    transition: none;
   }
 }

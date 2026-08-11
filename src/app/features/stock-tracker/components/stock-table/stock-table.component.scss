@@ -30,7 +30,10 @@
   }
 
   &__wrapper {
-    overflow-x: auto;
+    // Not overflow-x:auto — that also clips overflow-y, which cuts off the
+    // header tooltips when the table is short. Any horizontal scrolling is
+    // handled by the outer page.
+    overflow: visible;
     background: white;
     border-radius: var(--ngpf-radius-md);
     box-shadow: var(--ngpf-shadow-sm);
@@ -89,5 +92,110 @@
   &__negative {
     color: var(--ngpf-error);
     font-weight: 600;
+  }
+
+  &__hidden-row {
+    background: var(--ngpf-soft-blue-tint) !important;
+    text-align: center !important;
+
+    td {
+      padding: 6px 10px !important;
+      text-align: center;
+    }
+  }
+
+  &__hidden-marker {
+    display: inline-block;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--ngpf-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  &__toggle {
+    margin-top: 8px;
+    display: block;
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    padding: 6px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  // Term-tooltip pattern: "?" mark next to a column header. Hover or
+  // keyboard-focus reveals a plain-language definition of the column.
+  &__th-info {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: help;
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+
+  &__info-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: none;
+    line-height: 1;
+  }
+
+  &__info-tooltip {
+    position: absolute;
+    // Open above the header cell so short tables don't clip it below.
+    bottom: calc(100% + 8px);
+    right: 0;
+    z-index: 5;
+    display: none;
+    background: var(--ngpf-royal-blue);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.78rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+    line-height: 1.4;
+    width: 240px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: left;
+  }
+
+  &__th-info:hover &__info-tooltip,
+  &__th-info:focus-within &__info-tooltip,
+  &__th-info:focus &__info-tooltip {
+    display: block;
   }
 }

@@ -8,7 +8,7 @@
           type="range"
           min="0"
           max="100000"
-          step="500"
+          step="100"
           [value]="principal()"
           (input)="onPrincipalInput($event)"
           aria-label="Starting amount"
@@ -19,7 +19,7 @@
             type="number"
             min="0"
             max="100000"
-            step="500"
+            step="100"
             [value]="principal()"
             (input)="onPrincipalInput($event)"
             aria-label="Starting amount"
@@ -68,7 +68,7 @@
           step="0.5"
           [value]="interestRatePercent()"
           (input)="onRateInput($event)"
-          aria-label="Growth rate"
+          aria-label="Rate of return"
         />
         <div class="number-input-wrapper">
           <input
@@ -78,7 +78,7 @@
             step="0.5"
             [value]="interestRatePercent()"
             (input)="onRateInput($event)"
-            aria-label="Growth rate"
+            aria-label="Rate of return"
           />
           <span class="suffix">%</span>
         </div>
@@ -96,7 +96,7 @@
             [max]="endAge() - 1"
             step="1"
             [value]="startAge()"
-            (input)="onStartAgeInput($event)"
+            (change)="onStartAgeInput($event)"
             aria-label="Start age"
           />
         </div>
@@ -111,21 +111,13 @@
             max="80"
             step="1"
             [value]="endAge()"
-            (input)="onEndAgeInput($event)"
+            (change)="onEndAgeInput($event)"
             aria-label="End age"
           />
         </div>
       </div>
     </div>
 
-    <button
-      class="wait-toggle"
-      [class.active]="showWaitComparison()"
-      (click)="toggleWaitComparison()"
-      [attr.aria-pressed]="showWaitComparison()"
-    >
-      {{ content.waitToggle }}
-    </button>
   </div>
 
   <div class="sandbox-chart">
@@ -133,25 +125,77 @@
       [result]="result()"
       [comparisonResult]="waitResult()"
       [selectedYear]="selectedYear()"
+      [hoverYear]="hoverYear()"
       [isAutoPlaying]="isAutoPlaying()"
+      [yAxisMax]="frozenYMax()"
+      [startAge]="startAge()"
+      [comparisonStartYear]="waitYears"
       (yearHover)="onYearHover($event)"
     />
     <app-time-scrubber
       [maxYear]="timeHorizon()"
       [currentYear]="selectedYear() ?? timeHorizon()"
+      [startAge]="startAge()"
+      [needsRerun]="needsRerun()"
       (yearChange)="onYearChange($event)"
       (playStateChange)="onPlayStateChange($event)"
     />
     <app-summary-panel
       [result]="result()"
-      [selectedYear]="selectedYear()"
+      [selectedYear]="hoverYear() ?? selectedYear()"
+      [calloutYear]="selectedYear()"
       [comparisonResult]="waitResult()"
+      [animate]="isAutoPlaying()"
+      [startAge]="startAge()"
+      [comparisonLabel]="'Waiting ' + waitYears + ' years cost you'"
+      comparisonSuffix="."
     />
+
+    <!--
+      Both toggles sit below the results rather than among the inputs. Review
+      found the wait-comparison button competed with the play control ("it was
+      hard to find the play/submit button at first"), so it only appears once
+      the student has actually watched a run.
+    -->
+    <div class="result-toggles">
+      @if (hasRevealed()) {
+        <button
+          type="button"
+          class="ngpf-btn ngpf-btn-secondary toggle-btn"
+          [class.active]="showWaitComparison()"
+          (click)="toggleWaitComparison()"
+          [attr.aria-pressed]="showWaitComparison()"
+        >
+          {{ content.waitToggle }}
+        </button>
+      }
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-secondary toggle-btn"
+        (click)="toggleTable()"
+        [attr.aria-expanded]="showTable()"
+      >
+        {{ showTable() ? 'Hide table' : 'Show table' }}
+      </button>
+    </div>
+
+    @if (showTable()) {
+      <app-growth-table
+        [result]="result()"
+        [startAge]="startAge()"
+        [maxYear]="selectedYear()"
+      />
+    }
   </div>
 
   <div class="sandbox-finish">
-    <button class="finish-btn" (click)="onFinish()">
-      See My Results
+    @if (canGoBack()) {
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="onBack()">
+        &larr; Back
+      </button>
+    }
+    <button class="ngpf-btn ngpf-btn-primary" (click)="onFinish()">
+      Finish Exploring &rarr;
     </button>
   </div>
 </div>

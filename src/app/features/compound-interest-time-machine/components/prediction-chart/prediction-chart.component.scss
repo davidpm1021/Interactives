@@ -2,14 +2,71 @@
   text-align: center;
 }
 
-.chart-instruction {
+.step-card {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto 1rem;
+  padding: 0.75rem 1rem 0.85rem;
+  background: white;
+  border: 1px solid var(--ngpf-light-gray-blue);
+  border-left: 4px solid var(--ngpf-bright-blue);
+  border-radius: var(--ngpf-radius-md);
+  box-shadow: var(--ngpf-shadow-sm);
+  text-align: left;
+  animation: step-enter 400ms ease-out;
+
+  &--advanced {
+    border-left-color: var(--ngpf-royal-blue);
+  }
+
+  &--done {
+    border-left-color: var(--ngpf-success);
+  }
+}
+
+.step-badge {
+  display: inline-block;
+  font-family: var(--ngpf-font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ngpf-royal-blue);
+  background: var(--ngpf-soft-blue-tint);
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-bottom: 0.4rem;
+
+  .step-card--done & {
+    color: var(--ngpf-success);
+    background: var(--ngpf-success-bg);
+  }
+}
+
+.step-instruction {
   font-family: var(--ngpf-font-body);
   font-size: 0.95rem;
-  color: #555;
+  color: var(--ngpf-text-primary);
   line-height: 1.5;
-  text-align: center;
-  margin: 0 auto 0.75rem;
-  max-width: 480px;
+  margin: 0;
+}
+
+@keyframes step-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 3px var(--ngpf-soft-blue-tint);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 0 0 3px var(--ngpf-soft-blue-tint);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: var(--ngpf-shadow-sm);
+  }
 }
 
 .prediction-chart-wrapper {
@@ -25,32 +82,7 @@
 }
 
 .lock-btn {
-  display: inline-block;
   margin-top: 0.75rem;
-  background: var(--ngpf-bright-blue);
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-family: var(--ngpf-font-heading);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-
-  &:hover {
-    background: var(--ngpf-royal-blue);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--ngpf-sky-blue);
-    outline-offset: 2px;
-  }
 }
 
 :host ::ng-deep {
@@ -117,5 +149,9 @@
 
   .lock-btn {
     transition: none;
+  }
+
+  .step-card {
+    animation: none;
   }
 }

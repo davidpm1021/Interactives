@@ -2,7 +2,7 @@
   <div class="stats-row">
     @if (guessValue() !== null) {
       <div class="stat-card guess">
-        <span class="stat-label">Your Guess</span>
+        <span class="stat-label">{{ guessLabel() }}</span>
         <app-stat-counter [value]="guessValue()!" prefix="$" />
       </div>
     }

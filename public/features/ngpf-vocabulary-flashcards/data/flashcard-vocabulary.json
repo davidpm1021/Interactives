@@ -1,9 +1,9 @@
 {
   "metadata": {
     "version": "1.0.0",
-    "generatedAt": "2026-02-10T17:21:44.574Z",
+    "generatedAt": "2026-07-30T17:42:03.485Z",
     "sourceDocument": "NGPF Personal Finance Dictionary",
-    "totalTerms": 614
+    "totalTerms": 660
   },
   "units": [
     {
@@ -130,6 +130,15 @@
         },
         {
           "id": "behavioral-economics-014",
+          "term": "PACED Method",
+          "definition": "A step-by-step process for making thoughtful decisions. PACED stands for: Problem, Alternatives, Criteria, Evaluation, Decision.",
+          "spanish": {
+            "term": "Método PACED",
+            "definition": "Proceso paso a paso para tomar decisiones bien pensadas. PACED significa: problema, alternativas, criterios, evaluación y decisión."
+          }
+        },
+        {
+          "id": "behavioral-economics-015",
           "term": "Social Media Marketing",
           "definition": "The use of social media platforms and websites to promote a product or service",
           "spanish": {
@@ -138,7 +147,7 @@
           }
         },
         {
-          "id": "behavioral-economics-015",
+          "id": "behavioral-economics-016",
           "term": "Sunk Costs",
           "definition": "Costs that have already been incurred and cannot be recovered",
           "spanish": {
@@ -147,7 +156,7 @@
           }
         },
         {
-          "id": "behavioral-economics-016",
+          "id": "behavioral-economics-017",
           "term": "Sunk Cost Fallacy",
           "definition": "The tendency to make decisions about a current situation based on what resources you have already invested in the situation",
           "spanish": {
@@ -164,11 +173,11 @@
       "terms": [
         {
           "id": "banking-001",
-          "term": "50-20-30 Rule",
-          "definition": "A popular savings rule of thumb in which 50% of your income goes towards necessities, 20% goes towards saving and debt repayment, and 30% goes towards flexible spending",
+          "term": "50/30/20 Budget",
+          "definition": "A budgeting method that allocates 50% to needs, 30% to wants, and 20% to savings and debt repayment",
           "spanish": {
-            "term": "La regla 50-20-30",
-            "definition": "Es una regla popular para los ahorros que explica que 50% de sus ingresos es para las necesidades, 20% es para los ahorros y los pagos de deudas y el otro 30% es para los gastos flexibles."
+            "term": "El presupuesto de 50/30/20",
+            "definition": "Es un método para crear un presupuesto que reparte 50% a las necesidades, 30% a los deseos y 20% a los ahorros y la devolución de deudas."
           }
         },
         {
@@ -389,8 +398,8 @@
         },
         {
           "id": "banking-026",
-          "term": "FOMO (fear of missing out)",
-          "definition": "The tendency to feel anxiety/fear that an exciting or interesting event may currently be happening elsewhere, often aroused by posts seen on a social media website",
+          "term": "FOMO",
+          "definition": "The fear of missing out on an opportunity that others seem to be taking advantage of.",
           "spanish": {
             "term": "El miedo a perderse de algo",
             "definition": "Es la tendencia de sentirse ansioso o de tener miedo de que un evento interesante pueda ocurrir en otro lado; muchas veces ocurre al ver las publicaciones en las redes sociales."
@@ -774,6 +783,15 @@
       "terms": [
         {
           "id": "investing-001",
+          "term": "401(k) Plan",
+          "definition": "A retirement savings plan, sponsored through your employer who will often match your contributions, that allows an individual to save for retirement and have the savings grow while deferring taxes until funds are withdrawn",
+          "spanish": {
+            "term": "El plan de jubilación del 401(k)",
+            "definition": "Es una cuenta de ahorros para la jubilación, patrocinada por el empleador quien hace una contribución proporcional, lo que permite al empleado ahorrar para su jubilación mientras aplaza los impuestos hasta sacar los fondos."
+          }
+        },
+        {
+          "id": "investing-002",
           "term": "Active Trading",
           "definition": "Buying and selling investments - typically individual stocks and funds - within a short time frame (from seconds/minutes to days/weeks) in hopes of making quick profits from the small price changes. Research shows that 95% of active traders lose money.",
           "spanish": {
@@ -782,7 +800,7 @@
           }
         },
         {
-          "id": "investing-002",
+          "id": "investing-003",
           "term": "Asset Allocation",
           "definition": "Dividing an investment portfolio among different asset categories, such as stocks, bonds, and cash",
           "spanish": {
@@ -791,7 +809,7 @@
           }
         },
         {
-          "id": "investing-003",
+          "id": "investing-004",
           "term": "Asset Class",
           "definition": "A group of financial instruments which have similar financial characteristics and behave similarly in the marketplace (like stocks, bonds, and cash)",
           "spanish": {
@@ -800,7 +818,7 @@
           }
         },
         {
-          "id": "investing-004",
+          "id": "investing-005",
           "term": "Bear Market",
           "definition": "A market in which prices are falling, encouraging selling.",
           "spanish": {
@@ -809,7 +827,7 @@
           }
         },
         {
-          "id": "investing-005",
+          "id": "investing-006",
           "term": "Bond",
           "definition": "A security in which the investor loans money to a company or government, which then pays regular interest to the bondholder and returns the principal on the bond's maturity date",
           "spanish": {
@@ -818,7 +836,7 @@
           }
         },
         {
-          "id": "investing-006",
+          "id": "investing-007",
           "term": "Bond Rating",
           "definition": "A measurement of the likelihood that a bondholder will be paid back",
           "spanish": {
@@ -827,7 +845,7 @@
           }
         },
         {
-          "id": "investing-007",
+          "id": "investing-008",
           "term": "Brokerage Account",
           "definition": "An account that lets individual investors trade stocks, bonds, mutual funds, and other investments",
           "spanish": {
@@ -836,7 +854,7 @@
           }
         },
         {
-          "id": "investing-008",
+          "id": "investing-009",
           "term": "Bull Market",
           "definition": "A market in which there is increased stock trading and rising stock prices",
           "spanish": {
@@ -845,7 +863,7 @@
           }
         },
         {
-          "id": "investing-009",
+          "id": "investing-010",
           "term": "Capital Gain",
           "definition": "Profit from the sale of an asset, such as a stock or a bond, calculated by subtracting the price you initially paid from the price you then sold it for",
           "spanish": {
@@ -854,7 +872,7 @@
           }
         },
         {
-          "id": "investing-010",
+          "id": "investing-011",
           "term": "Capital Gains Tax",
           "definition": "A tax levied on profit from the sale of property or an investment",
           "spanish": {
@@ -863,7 +881,7 @@
           }
         },
         {
-          "id": "investing-011",
+          "id": "investing-012",
           "term": "Compound Return",
           "definition": "The growth of an investment where earnings, such as dividends or interest, are reinvested to generate additional earnings over time",
           "spanish": {
@@ -872,7 +890,7 @@
           }
         },
         {
-          "id": "investing-012",
+          "id": "investing-013",
           "term": "Coupon",
           "definition": "The annual interest payment on a bond, usually expressed as a percentage of its face value",
           "spanish": {
@@ -881,7 +899,7 @@
           }
         },
         {
-          "id": "investing-013",
+          "id": "investing-014",
           "term": "Diversification",
           "definition": "The practice of investing in a large variety of stocks, bonds, and/or funds as a way to reduce your overall risk",
           "spanish": {
@@ -890,7 +908,7 @@
           }
         },
         {
-          "id": "investing-014",
+          "id": "investing-015",
           "term": "Dividend",
           "definition": "Money from the profits of a company that is paid out to its shareholders, typically on a quarterly basis",
           "spanish": {
@@ -899,7 +917,7 @@
           }
         },
         {
-          "id": "investing-015",
+          "id": "investing-016",
           "term": "Dollar Cost Averaging",
           "definition": "The practice of putting a fixed amount into an investment over a period of time, regardless of the price of that investment",
           "spanish": {
@@ -908,7 +926,7 @@
           }
         },
         {
-          "id": "investing-016",
+          "id": "investing-017",
           "term": "Exchange-Traded Fund (ETF)",
           "definition": "A collection of stocks and/or bonds that are traded on securities exchanges. Unlike mutual funds, they can be traded throughout the day like an individual stock.",
           "spanish": {
@@ -917,7 +935,7 @@
           }
         },
         {
-          "id": "investing-017",
+          "id": "investing-018",
           "term": "Index Fund",
           "definition": "A low-fee portfolio of stocks chosen to track or mimic a stock market index, thereby removing the human element of investing because no one is choosing the individual stocks",
           "spanish": {
@@ -926,7 +944,7 @@
           }
         },
         {
-          "id": "investing-018",
+          "id": "investing-019",
           "term": "Individual Retirement Account (IRA)",
           "definition": "An investing tool for individuals to earmark funds specifically for their retirement",
           "spanish": {
@@ -935,7 +953,7 @@
           }
         },
         {
-          "id": "investing-019",
+          "id": "investing-020",
           "term": "Inflation",
           "definition": "The rate at which the price of goods increases and consumer purchasing power decreases over time",
           "spanish": {
@@ -944,7 +962,7 @@
           }
         },
         {
-          "id": "investing-020",
+          "id": "investing-021",
           "term": "Insider Trading",
           "definition": "The illegal act of trading a company's stock using information that is not available to the public",
           "spanish": {
@@ -953,16 +971,16 @@
           }
         },
         {
-          "id": "investing-021",
+          "id": "investing-022",
           "term": "Investing",
-          "definition": "The process of setting money aside to increase wealth over time for long-term financial goals such as retirement",
+          "definition": "(No definition provided)",
           "spanish": {
             "term": "La inversión",
             "definition": "Es un proceso de guardar dinero para aumentar su riqueza para poder lograr metas financieras a largo plazo, por ejemplo la jubilación"
           }
         },
         {
-          "id": "investing-022",
+          "id": "investing-023",
           "term": "Investment",
           "definition": "An asset or item that is acquired with the goal of making a profit",
           "spanish": {
@@ -971,7 +989,7 @@
           }
         },
         {
-          "id": "investing-023",
+          "id": "investing-024",
           "term": "Market Capitalization",
           "definition": "Market value of a company's outstanding shares calculated by multiplying the current share price by number of shares outstanding",
           "spanish": {
@@ -980,7 +998,7 @@
           }
         },
         {
-          "id": "investing-024",
+          "id": "investing-025",
           "term": "Micro-Investing Platform",
           "definition": "An application that allows users to regularly save small sums of money",
           "spanish": {
@@ -989,7 +1007,7 @@
           }
         },
         {
-          "id": "investing-025",
+          "id": "investing-026",
           "term": "Municipal Bond",
           "definition": "A bond, often having tax advantages for individual investors, issued by a state or local government which typically uses the loan to pay for public works to benefit its citizens",
           "spanish": {
@@ -998,7 +1016,7 @@
           }
         },
         {
-          "id": "investing-026",
+          "id": "investing-027",
           "term": "Mutual Fund",
           "definition": "A collection of stocks and/or bonds combined into one fund which will be traded as a unit, typically chosen and actively managed by an \"expert\" in exchange for a fee from each investor",
           "spanish": {
@@ -1007,7 +1025,7 @@
           }
         },
         {
-          "id": "investing-027",
+          "id": "investing-028",
           "term": "Nasdaq",
           "definition": "The second largest stock exchange in the world behind the NYSE",
           "spanish": {
@@ -1016,7 +1034,7 @@
           }
         },
         {
-          "id": "investing-028",
+          "id": "investing-029",
           "term": "New York Stock Exchange (NYSE)",
           "definition": "The world's largest stock exchange, physically located in New York City",
           "spanish": {
@@ -1025,7 +1043,7 @@
           }
         },
         {
-          "id": "investing-029",
+          "id": "investing-030",
           "term": "Nominal Rate of Return",
           "definition": "The rate of return that does not account for inflation or taxes",
           "spanish": {
@@ -1034,7 +1052,7 @@
           }
         },
         {
-          "id": "investing-030",
+          "id": "investing-031",
           "term": "Passive Investing",
           "definition": "A long-term strategy for building wealth by buying investments - typically index funds - and holding them for many years to minimize trading and costs. Research shows that 85-95% of passively managed funds perform better than actively managed funds over the long run.",
           "spanish": {
@@ -1043,7 +1061,7 @@
           }
         },
         {
-          "id": "investing-031",
+          "id": "investing-032",
           "term": "Pension",
           "definition": "A retirement account, offered in some job sectors or companies, that an employer maintains to give an employee a fixed payout at retirement",
           "spanish": {
@@ -1052,7 +1070,7 @@
           }
         },
         {
-          "id": "investing-032",
+          "id": "investing-033",
           "term": "Portfolio",
           "definition": "A collection of financial investments like stocks, bonds, commodities, cash, and cash equivalents, including mutual funds and ETFs",
           "spanish": {
@@ -1061,7 +1079,7 @@
           }
         },
         {
-          "id": "investing-033",
+          "id": "investing-034",
           "term": "Purchasing Power",
           "definition": "The number of goods and services that money can buy. It can weaken in time due to inflation.",
           "spanish": {
@@ -1070,7 +1088,7 @@
           }
         },
         {
-          "id": "investing-034",
+          "id": "investing-035",
           "term": "Rate Of Return",
           "definition": "The ratio of money gained or lost on an investment relative to the amount of money invested; also known as return on investment (ROI)",
           "spanish": {
@@ -1079,7 +1097,7 @@
           }
         },
         {
-          "id": "investing-035",
+          "id": "investing-036",
           "term": "Real Rate Of Return",
           "definition": "The rate of return that accounts for inflation and taxes",
           "spanish": {
@@ -1088,7 +1106,7 @@
           }
         },
         {
-          "id": "investing-036",
+          "id": "investing-037",
           "term": "Risk",
           "definition": "Degree of uncertainty on how likely the investor is to make money on an investment",
           "spanish": {
@@ -1097,7 +1115,7 @@
           }
         },
         {
-          "id": "investing-037",
+          "id": "investing-038",
           "term": "Robo-Advisor",
           "definition": "An online wealth management service that provides automated, algorithm-based portfolio management advice without the use of human financial planners",
           "spanish": {
@@ -1106,7 +1124,7 @@
           }
         },
         {
-          "id": "investing-038",
+          "id": "investing-039",
           "term": "Roth IRA",
           "definition": "An individual retirement account that allows a person to set aside after-tax income up to a specified amount each year",
           "spanish": {
@@ -1115,7 +1133,7 @@
           }
         },
         {
-          "id": "investing-039",
+          "id": "investing-040",
           "term": "Shareholder",
           "definition": "A person, company, or institution that owns that least one share in a company",
           "spanish": {
@@ -1124,7 +1142,7 @@
           }
         },
         {
-          "id": "investing-040",
+          "id": "investing-041",
           "term": "Security",
           "definition": "A financial asset, such as a stock or a bond, that can be bought and sold in a financial market",
           "spanish": {
@@ -1133,7 +1151,7 @@
           }
         },
         {
-          "id": "investing-041",
+          "id": "investing-042",
           "term": "S&P 500",
           "definition": "An index of 500 large cap companies chosen based on their size, industry, and other factors, used to represent the entire market",
           "spanish": {
@@ -1142,7 +1160,7 @@
           }
         },
         {
-          "id": "investing-042",
+          "id": "investing-043",
           "term": "Social Security",
           "definition": "A federal program that provides monthly benefits to millions of Americans, including retirees, military families, surviving families of deceased workers, and disabled individuals",
           "spanish": {
@@ -1151,7 +1169,7 @@
           }
         },
         {
-          "id": "investing-043",
+          "id": "investing-044",
           "term": "Stock",
           "definition": "A share of the value of a company, which can be bought, sold, or traded as an investment and which gives the investor small partial ownership of the company",
           "spanish": {
@@ -1160,7 +1178,7 @@
           }
         },
         {
-          "id": "investing-044",
+          "id": "investing-045",
           "term": "Stock Exchange",
           "definition": "A market where shares in corporations are bought and sold through an organized system",
           "spanish": {
@@ -1169,7 +1187,7 @@
           }
         },
         {
-          "id": "investing-045",
+          "id": "investing-046",
           "term": "Target Date Fund (TDF)",
           "definition": "A type of investment fund that rebalances its asset mix over time based on a projected retirement year",
           "spanish": {
@@ -1178,7 +1196,7 @@
           }
         },
         {
-          "id": "investing-046",
+          "id": "investing-047",
           "term": "Treasury Bond",
           "definition": "A bond, generally considered to be a risk-free investment, issued by the U.S. Treasury with a maturity of more than 10 years",
           "spanish": {
@@ -1187,21 +1205,12 @@
           }
         },
         {
-          "id": "investing-047",
+          "id": "investing-048",
           "term": "Traditional IRA",
           "definition": "An individual retirement account that allows a person to set aside pre-tax income up to a specified amount each year",
           "spanish": {
             "term": "El IRA tradicional (una cuenta de jubilación tradicional)",
             "definition": "Es una cuenta de jubilación individual que permite al individuo ahorrar una cierta cantidad determinada cada año de dinero de sus ingresos antes de pagar los impuestos."
-          }
-        },
-        {
-          "id": "investing-048",
-          "term": "Traditional 401(k) Plan",
-          "definition": "A retirement savings plan, sponsored through your employer who will often match your contributions, that allows an individual to save for retirement and have the savings grow while deferring taxes until funds are withdrawn",
-          "spanish": {
-            "term": "El plan de jubilación del 401(k) tradicional",
-            "definition": "Es una cuenta de ahorros para la jubilación, patrocinada por el empleador quien hace una contribución proporcional, lo que permite al empleado ahorrar para su jubilación mientras aplaza los impuestos hasta sacar los fondos."
           }
         }
       ]
@@ -1213,20 +1222,20 @@
       "terms": [
         {
           "id": "types-of-credit-001",
-          "term": "Adjustable-Rate Mortgage (ARM)",
-          "definition": "A mortgage in which the initial interest rate is normally fixed for a specified period of time after which it is reset periodically, often every month",
-          "spanish": {
-            "term": "La hipoteca de tasa variable",
-            "definition": "Es una hipoteca con un interés inicial fijo por un periodo de tiempo específico y después el interés está reprogramado cada cierto tiempo, muchas veces es cada mes."
-          }
-        },
-        {
-          "id": "types-of-credit-002",
           "term": "401(k) Loan",
           "definition": "A type of loan where you borrow money from your retirement savings account. You must pay that borrowed money back, plus interest, within 5 years of taking your loan, in most cases.",
           "spanish": {
             "term": "El préstamo del 401(k)",
             "definition": "Es un tipo de préstamo en el cual puede pedir prestado dinero de su cuenta de ahorros para la jubilación.  Tiene que devolver el dinero presentado, más intereses, en un periodo de tiempo de 5 años en la mayoría de los casos."
+          }
+        },
+        {
+          "id": "types-of-credit-002",
+          "term": "Adjustable-Rate Mortgage (ARM)",
+          "definition": "A mortgage in which the initial interest rate is normally fixed for a specified period of time after which it is reset periodically, often every month",
+          "spanish": {
+            "term": "La hipoteca de tasa variable",
+            "definition": "Es una hipoteca con un interés inicial fijo por un periodo de tiempo específico y después el interés está reprogramado cada cierto tiempo, muchas veces es cada mes."
           }
         },
         {
@@ -1258,6 +1267,15 @@
         },
         {
           "id": "types-of-credit-006",
+          "term": "Asset",
+          "definition": "A valuable resource that is owned by a person, company, or government in order to get an economic benefit.",
+          "spanish": {
+            "term": "El activo",
+            "definition": "Es un recurso de valor que tiene una persona, una compañía o un gobierno para poder recibir un beneficio económico"
+          }
+        },
+        {
+          "id": "types-of-credit-007",
           "term": "Authorized User",
           "definition": "A person who has permission to use and/or carry another person's credit card, but isn't legally responsible for paying the bill",
           "spanish": {
@@ -1266,7 +1284,16 @@
           }
         },
         {
-          "id": "types-of-credit-007",
+          "id": "types-of-credit-008",
+          "term": "Auto Loan",
+          "definition": "A secured loan used to purchase a car.",
+          "spanish": {
+            "term": "Préstamo para automóvil",
+            "definition": "Préstamo con garantía que se usa para comprar un automóvil. Si no haces los pagos, el prestamista puede recuperar el automóvil."
+          }
+        },
+        {
+          "id": "types-of-credit-009",
           "term": "Balance Transfer",
           "definition": "The act of transferring debt from one credit card account to another, usually for a fee",
           "spanish": {
@@ -1275,7 +1302,16 @@
           }
         },
         {
-          "id": "types-of-credit-008",
+          "id": "types-of-credit-010",
+          "term": "Buy Now, Pay Later Loan",
+          "definition": "A payment method that allows you to pay for purchases over time by dividing the purchase amount into smaller equal payments, often with interest and additional fees",
+          "spanish": {
+            "term": "Préstamo \"compra ahora, paga después\"",
+            "definition": "Forma de pago que te permite comprar algo ahora y pagarlo poco a poco en varios pagos iguales. A veces incluye intereses y cargos adicionales."
+          }
+        },
+        {
+          "id": "types-of-credit-011",
           "term": "Cash Advance",
           "definition": "A credit card service that allows cardholders to withdraw a certain amount of cash, either through an ATM or directly from a bank, typically at a high interest rate or for a fee",
           "spanish": {
@@ -1284,7 +1320,7 @@
           }
         },
         {
-          "id": "types-of-credit-009",
+          "id": "types-of-credit-012",
           "term": "Cash Back",
           "definition": "A credit card benefit that pays the cardholder a small percentage of their net expenditures, often as cash, payment toward their balance, reward points, travel miles, or gift cards",
           "spanish": {
@@ -1293,7 +1329,7 @@
           }
         },
         {
-          "id": "types-of-credit-010",
+          "id": "types-of-credit-013",
           "term": "Charge Card",
           "definition": "A special type of credit card with no interest because you must pay the balance in full each month",
           "spanish": {
@@ -1302,7 +1338,7 @@
           }
         },
         {
-          "id": "types-of-credit-011",
+          "id": "types-of-credit-014",
           "term": "Collateral",
           "definition": "Something valuable that the lender can take as payment if you can't or don't repay your secured loan",
           "spanish": {
@@ -1311,7 +1347,7 @@
           }
         },
         {
-          "id": "types-of-credit-012",
+          "id": "types-of-credit-015",
           "term": "Consolidation Loan",
           "definition": "A loan that combines two or more education loans into a single loan, allowing the borrower to make a single monthly payment",
           "spanish": {
@@ -1320,7 +1356,7 @@
           }
         },
         {
-          "id": "types-of-credit-013",
+          "id": "types-of-credit-016",
           "term": "Cosigner",
           "definition": "Someone who legally agrees to take responsibility for a person's debt if they cannot repay it",
           "spanish": {
@@ -1329,7 +1365,16 @@
           }
         },
         {
-          "id": "types-of-credit-014",
+          "id": "types-of-credit-017",
+          "term": "Credit",
+          "definition": "An agreement in which a borrower receives something of value now and agrees to repay the lender in the future, generally with interest",
+          "spanish": {
+            "term": "El crédito",
+            "definition": "Un contrato que delinea que el solicitante recibe algo de valor ahora y acepta las condiciones de devolución al prestamista en el futuro, normalmente con intereses."
+          }
+        },
+        {
+          "id": "types-of-credit-018",
           "term": "Credit Card",
           "definition": "A plastic card that allows you to make purchases now with borrowed money, which then you must repay to the lender in one lump sum or in monthly payments with interest",
           "spanish": {
@@ -1338,7 +1383,7 @@
           }
         },
         {
-          "id": "types-of-credit-015",
+          "id": "types-of-credit-019",
           "term": "Credit Card Agreement",
           "definition": "A legal document that outlines the terms and conditions for using your credit card",
           "spanish": {
@@ -1347,7 +1392,7 @@
           }
         },
         {
-          "id": "types-of-credit-016",
+          "id": "types-of-credit-020",
           "term": "Credit Limit",
           "definition": "The maximum amount that may be borrowed on a credit card",
           "spanish": {
@@ -1356,7 +1401,16 @@
           }
         },
         {
-          "id": "types-of-credit-017",
+          "id": "types-of-credit-021",
+          "term": "Credit Score",
+          "definition": "A three-digit number (ranging from 300-850) based on an individual's credit history detailed in a credit report",
+          "spanish": {
+            "term": "El número de capacidad crediticia",
+            "definition": "Es un número de tres dígitos (con un rango de 300 a 850) basado en el historial de crédito detallado en un informe crediticio"
+          }
+        },
+        {
+          "id": "types-of-credit-022",
           "term": "Credit Union",
           "definition": "A nonprofit financial institution that is owned by its members and organized for their benefit",
           "spanish": {
@@ -1365,7 +1419,7 @@
           }
         },
         {
-          "id": "types-of-credit-018",
+          "id": "types-of-credit-023",
           "term": "Crowdfunding",
           "definition": "The practice of funding a project or venture by raising many small amounts of money from a large number of people, typically via the Internet",
           "spanish": {
@@ -1374,7 +1428,7 @@
           }
         },
         {
-          "id": "types-of-credit-019",
+          "id": "types-of-credit-024",
           "term": "Debit Card",
           "definition": "A card that is directly connected to your checking account; it enables you to conduct ATM transactions and to make purchases instead of using cash or writing a check",
           "spanish": {
@@ -1383,7 +1437,16 @@
           }
         },
         {
-          "id": "types-of-credit-020",
+          "id": "types-of-credit-025",
+          "term": "Debt",
+          "definition": "Something, typically money, that you owe to a person or a business",
+          "spanish": {
+            "term": "La Deuda",
+            "definition": "Algo, normalmente dinero, que usted debe a otra persona o negocio."
+          }
+        },
+        {
+          "id": "types-of-credit-026",
           "term": "Default",
           "definition": "Long-term failure to repay a loan according to the terms agreed to, which has a substantial negative impact on the borrower's credit score",
           "spanish": {
@@ -1392,7 +1455,7 @@
           }
         },
         {
-          "id": "types-of-credit-021",
+          "id": "types-of-credit-027",
           "term": "Direct Plus Loans",
           "definition": "A federal loan available to graduate or professional students and eligible parents of dependent undergraduate students to help pay for the cost of the student's education at participating schools",
           "spanish": {
@@ -1401,7 +1464,7 @@
           }
         },
         {
-          "id": "types-of-credit-022",
+          "id": "types-of-credit-028",
           "term": "Direct Subsidized Loan",
           "definition": "A federal student loan available to undergraduate students; the federal government pays interest on the loan as long as the student is in school at least part-time",
           "spanish": {
@@ -1410,7 +1473,7 @@
           }
         },
         {
-          "id": "types-of-credit-023",
+          "id": "types-of-credit-029",
           "term": "Direct Unsubsidized Loan",
           "definition": "A federal student loan available to undergraduate and graduate students; the student is responsible for paying the interest during the time they are in school, which means they must pay that interest while studying or have it rolled into the principal amount of their loan",
           "spanish": {
@@ -1419,7 +1482,7 @@
           }
         },
         {
-          "id": "types-of-credit-024",
+          "id": "types-of-credit-030",
           "term": "Down Payment",
           "definition": "A partial payment made in cash at the beginning of the purchase of a good or service, while the remaining balance is due later or is financed as part of a loan",
           "spanish": {
@@ -1428,7 +1491,7 @@
           }
         },
         {
-          "id": "types-of-credit-025",
+          "id": "types-of-credit-031",
           "term": "Fixed-Rate Loan",
           "definition": "A loan with an interest rate that does not change over the life of the loan",
           "spanish": {
@@ -1437,7 +1500,7 @@
           }
         },
         {
-          "id": "types-of-credit-026",
+          "id": "types-of-credit-032",
           "term": "Fixed-Rate Mortgage",
           "definition": "A mortgage that has a fixed interest rate for the entire term of the loan as long as on time payments are being made",
           "spanish": {
@@ -1446,7 +1509,7 @@
           }
         },
         {
-          "id": "types-of-credit-027",
+          "id": "types-of-credit-033",
           "term": "Grace Period",
           "definition": "The number of days between a borrower's statement date and when payment is due, often without accruing interest",
           "spanish": {
@@ -1455,7 +1518,7 @@
           }
         },
         {
-          "id": "types-of-credit-028",
+          "id": "types-of-credit-034",
           "term": "Home Equity",
           "definition": "The value of ownership built up in a home or property that represents the current market value of the house minus any remaining mortgage payments",
           "spanish": {
@@ -1464,7 +1527,7 @@
           }
         },
         {
-          "id": "types-of-credit-029",
+          "id": "types-of-credit-035",
           "term": "Home-Equity Loan",
           "definition": "A consumer loan extended to a homeowner that uses the borrower's home as collateral",
           "spanish": {
@@ -1473,7 +1536,7 @@
           }
         },
         {
-          "id": "types-of-credit-030",
+          "id": "types-of-credit-036",
           "term": "Installment Loan",
           "definition": "Loan used to finance a specific purchase for a specific amount of time, during which regular payments pay the accrued interest and a portion of the principal",
           "spanish": {
@@ -1482,7 +1545,7 @@
           }
         },
         {
-          "id": "types-of-credit-031",
+          "id": "types-of-credit-037",
           "term": "Interest",
           "definition": "The amount you owe as the cost of borrowing money",
           "spanish": {
@@ -1491,7 +1554,7 @@
           }
         },
         {
-          "id": "types-of-credit-032",
+          "id": "types-of-credit-038",
           "term": "Interest Rate",
           "definition": "The rate charged for borrowing money usually expressed as a percent of the amount borrowed",
           "spanish": {
@@ -1500,7 +1563,7 @@
           }
         },
         {
-          "id": "types-of-credit-033",
+          "id": "types-of-credit-039",
           "term": "Introductory APR",
           "definition": "The typically low rate charged during the introductory period after a credit account is opened, after which the regular, typically higher, APR will apply",
           "spanish": {
@@ -1509,7 +1572,7 @@
           }
         },
         {
-          "id": "types-of-credit-034",
+          "id": "types-of-credit-040",
           "term": "Joint Account",
           "definition": "A bank or credit account that is shared between two or more people which allows everyone named on the account to access the funds",
           "spanish": {
@@ -1518,7 +1581,7 @@
           }
         },
         {
-          "id": "types-of-credit-035",
+          "id": "types-of-credit-041",
           "term": "Late Payment Fee",
           "definition": "A fee charged if your payment is received after the due date",
           "spanish": {
@@ -1527,7 +1590,7 @@
           }
         },
         {
-          "id": "types-of-credit-036",
+          "id": "types-of-credit-042",
           "term": "Lease",
           "definition": "A contract (often used for cars or property) by which one party gives property to another for a specified time, usually in return for a periodic payment",
           "spanish": {
@@ -1536,7 +1599,16 @@
           }
         },
         {
-          "id": "types-of-credit-037",
+          "id": "types-of-credit-043",
+          "term": "Liability",
+          "definition": "Something a person or company owes, usually a sum of money",
+          "spanish": {
+            "term": "La obligación o la responsabilidad financiera",
+            "definition": "Es algo que una persona o una compañía debe y normalmente es una cantidad de dinero"
+          }
+        },
+        {
+          "id": "types-of-credit-044",
           "term": "Loan",
           "definition": "An agreement where you are credited with a fixed amount of money for a fixed period of time, usually with interest",
           "spanish": {
@@ -1545,7 +1617,7 @@
           }
         },
         {
-          "id": "types-of-credit-038",
+          "id": "types-of-credit-045",
           "term": "Minimum Payment",
           "definition": "The smallest amount of a credit card bill that a credit card holder must pay during a billing cycle to remain in good standing with the lender",
           "spanish": {
@@ -1554,7 +1626,7 @@
           }
         },
         {
-          "id": "types-of-credit-039",
+          "id": "types-of-credit-046",
           "term": "Micro Credit",
           "definition": "A method of lending very small sums to individuals, typically in developing countries, to start or expand a small business",
           "spanish": {
@@ -1563,7 +1635,7 @@
           }
         },
         {
-          "id": "types-of-credit-040",
+          "id": "types-of-credit-047",
           "term": "Mortgage",
           "definition": "A loan taken by individuals and businesses to make real estate purchases without paying the entire value of the purchase up front",
           "spanish": {
@@ -1572,7 +1644,7 @@
           }
         },
         {
-          "id": "types-of-credit-041",
+          "id": "types-of-credit-048",
           "term": "Net Price",
           "definition": "The actual cost a student pays to attend a school, calculated as the sticker price minus grants and scholarships",
           "spanish": {
@@ -1581,7 +1653,16 @@
           }
         },
         {
-          "id": "types-of-credit-042",
+          "id": "types-of-credit-049",
+          "term": "Net Worth",
+          "definition": "A measurement of your assets (money you've saved or things of value you own) minus your liabilities (money you owe others); also called wealth",
+          "spanish": {
+            "term": "El valor neto",
+            "definition": "Es la medida de sus activos (el dinero que tiene ahorrado o las cosas de valor que tiene en su posesión) menos sus obligaciones financieras; también se llama la riqueza."
+          }
+        },
+        {
+          "id": "types-of-credit-050",
           "term": "Overdraft Protection",
           "definition": "A loan banks offer to their customers when they try to withdraw more funds than they have in their account, usually for a fee and with interest",
           "spanish": {
@@ -1590,7 +1671,16 @@
           }
         },
         {
-          "id": "types-of-credit-043",
+          "id": "types-of-credit-051",
+          "term": "Payday Alternative Loan (PAL)",
+          "definition": "A short-term, small loan that is offered by some credit unions. These loans must meet certain requirements, such as maximum interest rates and fees.",
+          "spanish": {
+            "term": "Préstamo alternativo al préstamo de anticipo hasta el día de pago",
+            "definition": "Préstamo pequeño y a corto plazo que ofrecen algunas cooperativas de crédito. Estos préstamos deben cumplir ciertos requisitos, como límites en las tasas de interés y los cargos."
+          }
+        },
+        {
+          "id": "types-of-credit-052",
           "term": "Payday Loan",
           "definition": "A small loan, offered through a business, lent at a high interest rate, and meant to be paid as soon as you receive your next paycheck",
           "spanish": {
@@ -1599,7 +1689,7 @@
           }
         },
         {
-          "id": "types-of-credit-044",
+          "id": "types-of-credit-053",
           "term": "Peer-To-Peer Lending",
           "definition": "A method of debt financing that enables individuals to borrow and lend money without the use of a financial institution as an intermediary",
           "spanish": {
@@ -1608,7 +1698,7 @@
           }
         },
         {
-          "id": "types-of-credit-045",
+          "id": "types-of-credit-054",
           "term": "Penalty APR",
           "definition": "A higher interest rate triggered by being late with or missing a credit card payment",
           "spanish": {
@@ -1617,7 +1707,16 @@
           }
         },
         {
-          "id": "types-of-credit-046",
+          "id": "types-of-credit-055",
+          "term": "Predatory Lending",
+          "definition": "Any lending practice that gives borrowers unfair and abusive loan terms, including high-interest rates, high fees, and terms that take away the borrowers' equity",
+          "spanish": {
+            "term": "El préstamo usurario",
+            "definition": "Es una práctica de prestar dinero incluyendo unas condiciones del préstamo injustas y abusivas para el prestatario.  Incluye intereses muy altos, cobros o cuotas altas y otras condiciones que eliminan el valor del patrimonio neto."
+          }
+        },
+        {
+          "id": "types-of-credit-056",
           "term": "Prepaid Debit Card",
           "definition": "A card that is loaded with a specific cash amount before you use it. It is not linked to a bank or credit union account.",
           "spanish": {
@@ -1626,7 +1725,7 @@
           }
         },
         {
-          "id": "types-of-credit-047",
+          "id": "types-of-credit-057",
           "term": "Principal",
           "definition": "Original amount of money borrowed, separate from interest or fees",
           "spanish": {
@@ -1635,7 +1734,7 @@
           }
         },
         {
-          "id": "types-of-credit-048",
+          "id": "types-of-credit-058",
           "term": "Personal Loan",
           "definition": "A type of loan issued by a bank, credit union or online lender that you pay back in fixed monthly payments, typically over two to seven years",
           "spanish": {
@@ -1644,7 +1743,7 @@
           }
         },
         {
-          "id": "types-of-credit-049",
+          "id": "types-of-credit-059",
           "term": "Point of Sale (POS)",
           "definition": "A place where a customer makes the payment for goods or services and where sales taxes may become payable. The transaction can take place through a physical device or online through a digital system.",
           "spanish": {
@@ -1653,7 +1752,7 @@
           }
         },
         {
-          "id": "types-of-credit-050",
+          "id": "types-of-credit-060",
           "term": "Revolving Credit",
           "definition": "An open line of credit that can be used for any purchases as long as you are under the limit; its payments vary monthly based on size of the debt",
           "spanish": {
@@ -1662,7 +1761,7 @@
           }
         },
         {
-          "id": "types-of-credit-051",
+          "id": "types-of-credit-061",
           "term": "Schumer Box",
           "definition": "A standard table that legally must appear in a credit card agreement showing basic information about the card's rates and fees",
           "spanish": {
@@ -1671,7 +1770,7 @@
           }
         },
         {
-          "id": "types-of-credit-052",
+          "id": "types-of-credit-062",
           "term": "Secured Credit Card",
           "definition": "A type of credit card that requires the borrower to pay the company a fixed, up-front amount of money as collateral, which becomes the credit limit of the card, thereby making it low-risk to the credit card company",
           "spanish": {
@@ -1680,7 +1779,7 @@
           }
         },
         {
-          "id": "types-of-credit-053",
+          "id": "types-of-credit-063",
           "term": "Secured Debt",
           "definition": "Debt tied to a specific tangible asset that can be used as collateral and repossessed if payments are not made",
           "spanish": {
@@ -1689,7 +1788,7 @@
           }
         },
         {
-          "id": "types-of-credit-054",
+          "id": "types-of-credit-064",
           "term": "Small Business Loan",
           "definition": "A loan used to fund expenses connected with operating a small business",
           "spanish": {
@@ -1698,7 +1797,7 @@
           }
         },
         {
-          "id": "types-of-credit-055",
+          "id": "types-of-credit-065",
           "term": "Statement",
           "definition": "A monthly record of your account transactions provided by your credit card company electronically or on paper",
           "spanish": {
@@ -1707,7 +1806,7 @@
           }
         },
         {
-          "id": "types-of-credit-056",
+          "id": "types-of-credit-066",
           "term": "Term",
           "definition": "The amount of time you have to repay your entire loan",
           "spanish": {
@@ -1716,7 +1815,7 @@
           }
         },
         {
-          "id": "types-of-credit-057",
+          "id": "types-of-credit-067",
           "term": "Unsecured Debt",
           "definition": "Debt not tied to a specific asset, making it difficult or impossible for the lender to repossess items if payments are not made",
           "spanish": {
@@ -1725,7 +1824,7 @@
           }
         },
         {
-          "id": "types-of-credit-058",
+          "id": "types-of-credit-068",
           "term": "Variable-Rate Loan",
           "definition": "A loan in which the interest rate can change, based on prime rate or index rate, over the course of the loan",
           "spanish": {
@@ -1841,6 +1940,15 @@
         },
         {
           "id": "managing-credit-012",
+          "term": "Credit Builder Loan",
+          "definition": "A credit builder loan is a type of loan designed to help people with little or no credit history establish or improve their credit score. Unlike a traditional loan, you don't receive the funds upfront. Instead, the lender holds the loan amount in a savings account while you make monthly payments, and once the loan is fully paid off, the funds are released to you.",
+          "spanish": {
+            "term": "Préstamo para crear crédito",
+            "definition": "Un préstamo diseñado para ayudar a las personas con poco o ningún historial de crédito a crear o mejorar su puntaje de crédito. A diferencia de un préstamo tradicional, no recibes el dinero de inmediato. El prestamista guarda el dinero del préstamo en una cuenta de ahorros mientras haces pagos mensuales. Una vez que pagas el préstamo por completo, recibes el dinero."
+          }
+        },
+        {
+          "id": "managing-credit-013",
           "term": "Credit Bureau",
           "definition": "A consumer-reporting company that collects and sells information about how individual people manage their credit (e.g. Equifax)",
           "spanish": {
@@ -1849,7 +1957,16 @@
           }
         },
         {
-          "id": "managing-credit-013",
+          "id": "managing-credit-014",
+          "term": "Credit Card",
+          "definition": "A plastic card that allows you to make purchases now with borrowed money, which then you must repay to the lender in one lump sum or in monthly payments with interest",
+          "spanish": {
+            "term": "La tarjeta de crédito",
+            "definition": "Es una tarjeta de plástico que permite al titular hacer compras ahora con dinero prestado que podrá devolver al prestamista en una sola cantidad o con pagos mensuales con intereses"
+          }
+        },
+        {
+          "id": "managing-credit-015",
           "term": "Credit Counselor",
           "definition": "A certified financial advisor who works for an accredited nonprofit specializing in helping consumers repay debt in a responsible manner",
           "spanish": {
@@ -1858,7 +1975,7 @@
           }
         },
         {
-          "id": "managing-credit-014",
+          "id": "managing-credit-016",
           "term": "Credit History",
           "definition": "A record of a person's use of credit over time; 15% of your credit score is based on the length of your credit history",
           "spanish": {
@@ -1867,7 +1984,7 @@
           }
         },
         {
-          "id": "managing-credit-015",
+          "id": "managing-credit-017",
           "term": "Credit Report",
           "definition": "A document with information about a person’s credit activity and history",
           "spanish": {
@@ -1876,7 +1993,7 @@
           }
         },
         {
-          "id": "managing-credit-016",
+          "id": "managing-credit-018",
           "term": "Credit Score",
           "definition": "A three-digit number (ranging from 300-850) based on an individual's credit history detailed in a credit report",
           "spanish": {
@@ -1885,7 +2002,7 @@
           }
         },
         {
-          "id": "managing-credit-017",
+          "id": "managing-credit-019",
           "term": "Credit Utilization Rate",
           "definition": "A measurement of your outstanding debt divided by your total available credit; a general rule of thumb is to keep this under 30%",
           "spanish": {
@@ -1894,7 +2011,7 @@
           }
         },
         {
-          "id": "managing-credit-018",
+          "id": "managing-credit-020",
           "term": "Debt",
           "definition": "Something, typically money, that you owe to a person or a business",
           "spanish": {
@@ -1903,7 +2020,7 @@
           }
         },
         {
-          "id": "managing-credit-019",
+          "id": "managing-credit-021",
           "term": "Debt Avalanche Method (also known as: High Rate Method)",
           "definition": "A method of debt repayment whereby the borrower prioritizes paying down debts with the highest interest rates first",
           "spanish": {
@@ -1912,7 +2029,7 @@
           }
         },
         {
-          "id": "managing-credit-020",
+          "id": "managing-credit-022",
           "term": "Debt Consolidation Loan",
           "definition": "A type of loan that combines a person’s existing debts into a single loan with one monthly payment",
           "spanish": {
@@ -1921,7 +2038,7 @@
           }
         },
         {
-          "id": "managing-credit-021",
+          "id": "managing-credit-023",
           "term": "Debt Management Plan",
           "definition": "A detailed plan drawn up by a debt management company (DMC) and sent to an individual's creditors (entities they owe money). It groups several credit card debts into one payment, cuts your interest rate and creates a 3- to 5-year repayment plan.",
           "spanish": {
@@ -1930,7 +2047,7 @@
           }
         },
         {
-          "id": "managing-credit-022",
+          "id": "managing-credit-024",
           "term": "Debt Relief Company (Debt Settlement Company)",
           "definition": "A high-risk company that charges high fees and claims to eliminate a person’s debt for them",
           "spanish": {
@@ -1939,7 +2056,7 @@
           }
         },
         {
-          "id": "managing-credit-023",
+          "id": "managing-credit-025",
           "term": "Debt Settlement",
           "definition": "An agreement made between a creditor and a consumer in which the total debt balance owed is reduced and/or fees are waived, and the reduced debt amount is paid in a lump sum instead of revolving monthly",
           "spanish": {
@@ -1948,7 +2065,7 @@
           }
         },
         {
-          "id": "managing-credit-024",
+          "id": "managing-credit-026",
           "term": "Debt Snowball Method",
           "definition": "A method of debt repayment whereby the borrower prioritizes paying down debts with the smallest balances first",
           "spanish": {
@@ -1957,7 +2074,7 @@
           }
         },
         {
-          "id": "managing-credit-025",
+          "id": "managing-credit-027",
           "term": "Default",
           "definition": "Long-term failure to repay a loan according to the terms agreed to, which has a substantial negative impact on the borrower's credit score",
           "spanish": {
@@ -1966,7 +2083,7 @@
           }
         },
         {
-          "id": "managing-credit-026",
+          "id": "managing-credit-028",
           "term": "The Dodd-Frank Act",
           "definition": "A law passed in response to the 2007-2008 financial crisis that included creating the Consumer Financial Protection Bureau (CFPB) to protect consumers from risky and abusive financial products",
           "spanish": {
@@ -1975,7 +2092,7 @@
           }
         },
         {
-          "id": "managing-credit-027",
+          "id": "managing-credit-029",
           "term": "Emergency Fund",
           "definition": "Money set aside for unanticipated expenses or loss of income",
           "spanish": {
@@ -1984,7 +2101,7 @@
           }
         },
         {
-          "id": "managing-credit-028",
+          "id": "managing-credit-030",
           "term": "Equal Credit Opportunity Act",
           "definition": "A law that protects consumers from discrimination in the granting or denying of credit",
           "spanish": {
@@ -1993,7 +2110,7 @@
           }
         },
         {
-          "id": "managing-credit-029",
+          "id": "managing-credit-031",
           "term": "Fair Credit Reporting Act",
           "definition": "A federal law that helps to ensure the accuracy, fairness and privacy of the information in consumer credit bureau files",
           "spanish": {
@@ -2002,7 +2119,7 @@
           }
         },
         {
-          "id": "managing-credit-030",
+          "id": "managing-credit-032",
           "term": "Fair Debt Collection Practices Act",
           "definition": "A law that limits what debt collectors can do while trying to collect debts",
           "spanish": {
@@ -2011,7 +2128,7 @@
           }
         },
         {
-          "id": "managing-credit-031",
+          "id": "managing-credit-033",
           "term": "Federal Trade Commission (FTC)",
           "definition": "A government organization whose role is to protect consumers and competition by preventing anti-competitive, deceptive, and unfair business practices through law enforcement, advocacy, and education",
           "spanish": {
@@ -2020,7 +2137,7 @@
           }
         },
         {
-          "id": "managing-credit-032",
+          "id": "managing-credit-034",
           "term": "FICO Score",
           "definition": "The most commonly used credit score",
           "spanish": {
@@ -2029,7 +2146,7 @@
           }
         },
         {
-          "id": "managing-credit-033",
+          "id": "managing-credit-035",
           "term": "Foreclosure",
           "definition": "A legal process in which a lender attempts to recover the balance of a loan from a borrower who has stopped making payments by forcing the sale of the property",
           "spanish": {
@@ -2038,7 +2155,7 @@
           }
         },
         {
-          "id": "managing-credit-034",
+          "id": "managing-credit-036",
           "term": "Good Debt",
           "definition": "A debt that is likely to increase a person’s net worth or generate future income",
           "spanish": {
@@ -2047,7 +2164,7 @@
           }
         },
         {
-          "id": "managing-credit-035",
+          "id": "managing-credit-037",
           "term": "Hard Inquiry",
           "definition": "An inquiry into your credit history, typically in advance of applying for a loan. Hard inquiries can negatively affect your credit for 12 months and remain on your credit history for two years.",
           "spanish": {
@@ -2056,7 +2173,7 @@
           }
         },
         {
-          "id": "managing-credit-036",
+          "id": "managing-credit-038",
           "term": "Interest Rate",
           "definition": "The rate charged for borrowing money usually expressed as a percent of the amount borrowed",
           "spanish": {
@@ -2065,7 +2182,7 @@
           }
         },
         {
-          "id": "managing-credit-037",
+          "id": "managing-credit-039",
           "term": "Lawsuit",
           "definition": "A civil legal action by one person or entity (the \"plaintiff\") against another person or entity (the \"defendant\"), to be decided in a court",
           "spanish": {
@@ -2074,7 +2191,7 @@
           }
         },
         {
-          "id": "managing-credit-038",
+          "id": "managing-credit-040",
           "term": "New Credit",
           "definition": "The number of recently opened credit accounts and all new credit inquiries; 10% of your credit score is based on this",
           "spanish": {
@@ -2083,7 +2200,7 @@
           }
         },
         {
-          "id": "managing-credit-039",
+          "id": "managing-credit-041",
           "term": "Payment History",
           "definition": "A history of the payments you have made on all credit you have obtained; 35% of your credit score is based on this",
           "spanish": {
@@ -2092,7 +2209,7 @@
           }
         },
         {
-          "id": "managing-credit-040",
+          "id": "managing-credit-042",
           "term": "Net Worth",
           "definition": "A measurement of your assets (money you've saved or things of value you own) minus your liabilities (money you owe others); also called wealth",
           "spanish": {
@@ -2101,7 +2218,7 @@
           }
         },
         {
-          "id": "managing-credit-041",
+          "id": "managing-credit-043",
           "term": "Repossession",
           "definition": "The taking back of property after a borrower has defaulted on payments",
           "spanish": {
@@ -2110,7 +2227,25 @@
           }
         },
         {
-          "id": "managing-credit-042",
+          "id": "managing-credit-044",
+          "term": "Revolving Credit",
+          "definition": "An open line of credit that can be used for any purchases as long as you are under the limit; its payments vary monthly based on size of the debt",
+          "spanish": {
+            "term": "El crédito rotativo",
+            "definition": "Una línea de crédito abierta que puede ser usada para compras mientras no llegue al límite; los pagos varían cada mes dependiendo de la deuda"
+          }
+        },
+        {
+          "id": "managing-credit-045",
+          "term": "Secured Credit Card",
+          "definition": "A type of credit card that requires the borrower to pay the company a fixed, up-front amount of money as collateral, which becomes the credit limit of the card, thereby making it low-risk to the credit card company",
+          "spanish": {
+            "term": "La tarjeta de crédito asegurada",
+            "definition": "Es un tipo de tarjeta de crédito que requiere al solicitante pagar una cantidad de dinero establecida por adelantado como garantía. Esa cantidad se convierte en el límite de crédito disponible en la tarjeta, haciendo que sea una tarjeta de crédito de poco riesgo para la compañía."
+          }
+        },
+        {
+          "id": "managing-credit-046",
           "term": "Soft Inquiry",
           "definition": "An inquiry into your credit history as part of a background check. This does not affect your credit score.",
           "spanish": {
@@ -2119,7 +2254,7 @@
           }
         },
         {
-          "id": "managing-credit-043",
+          "id": "managing-credit-047",
           "term": "Tax Lien",
           "definition": "A legal claim by a government entity to take an individual's property or income when their taxes are not paid in full",
           "spanish": {
@@ -2128,7 +2263,7 @@
           }
         },
         {
-          "id": "managing-credit-044",
+          "id": "managing-credit-048",
           "term": "Thin File",
           "definition": "A term used to describe someone with little to no credit history",
           "spanish": {
@@ -2137,7 +2272,7 @@
           }
         },
         {
-          "id": "managing-credit-045",
+          "id": "managing-credit-049",
           "term": "Truth in Lending Act",
           "definition": "A law that requires lenders to share specific loan cost information and notify borrowers of changes",
           "spanish": {
@@ -2146,12 +2281,21 @@
           }
         },
         {
-          "id": "managing-credit-046",
+          "id": "managing-credit-050",
           "term": "Types of Credit",
           "definition": "Also known as your credit mix. This can include a mix of accounts from credit cards, retail accounts, installment loans, finance companies and mortgage loans. 10% of your credit score is based on this.",
           "spanish": {
             "term": "Los tipos de crédito",
             "definition": "También se conoce como la mezcla de crédito.  Puede incluir la mezcla de cuentas de tarjetas de crédito, cuentas de negocios minoristas, préstamos fraccionados, las hipotecas u otros préstamos de compañías financieras.  10% de su número de capacidad crediticia se calcula con esto."
+          }
+        },
+        {
+          "id": "managing-credit-051",
+          "term": "Wage Garnishment",
+          "definition": "A legal process where a person’s earnings are withheld to pay off a debt",
+          "spanish": {
+            "term": "Embargo del salario",
+            "definition": "Proceso legal en el que se retiene una parte del salario de una persona para pagar una deuda."
           }
         }
       ]
@@ -2217,6 +2361,15 @@
         },
         {
           "id": "paying-for-college-007",
+          "term": "Direct Costs",
+          "definition": "Expenses that are billed directly by the college. These include tuition, fees, housing, and meal plan. These costs are mostly set by the college.",
+          "spanish": {
+            "term": "Costos directos",
+            "definition": "Gastos que la universidad te cobra directamente. Incluyen la matrícula, las cuotas, la vivienda y el plan de comidas. La universidad establece la mayoría de estos costos."
+          }
+        },
+        {
+          "id": "paying-for-college-008",
           "term": "Direct Plus Loans",
           "definition": "A federal loan available to graduate or professional students and eligible parents of dependent undergraduate students to help pay for the cost of the student's education at participating schools",
           "spanish": {
@@ -2225,7 +2378,7 @@
           }
         },
         {
-          "id": "paying-for-college-008",
+          "id": "paying-for-college-009",
           "term": "Direct Subsidized Loan",
           "definition": "A federal student loan available to undergraduate students; the federal government pays interest on the loan as long as the student is in school at least part-time",
           "spanish": {
@@ -2234,7 +2387,7 @@
           }
         },
         {
-          "id": "paying-for-college-009",
+          "id": "paying-for-college-010",
           "term": "Direct Unsubsidized Loan",
           "definition": "A federal student loan available to undergraduate and graduate students; the student is responsible for paying the interest during the time they are in school, which means they must pay that interest while studying or have it rolled into the principal amount of their loan",
           "spanish": {
@@ -2243,7 +2396,7 @@
           }
         },
         {
-          "id": "paying-for-college-010",
+          "id": "paying-for-college-011",
           "term": "Disbursement",
           "definition": "A portion of a federal student loan that the school pays out by applying the funds to the student's school account or by paying the borrower directly. Students generally receive their federal student loans in more than one disbursement.",
           "spanish": {
@@ -2252,7 +2405,7 @@
           }
         },
         {
-          "id": "paying-for-college-011",
+          "id": "paying-for-college-012",
           "term": "Entrance Counseling",
           "definition": "A mandatory information session which takes place before a student receives their first federal student loan. It explains their rights and responsibilities as a student borrower.",
           "spanish": {
@@ -2261,7 +2414,7 @@
           }
         },
         {
-          "id": "paying-for-college-012",
+          "id": "paying-for-college-013",
           "term": "Exit Counseling",
           "definition": "A mandatory information session which takes place when a student graduates, leaves school, or attends school less than half-time. It explains the student's loan repayment responsibilities and when repayment begins.",
           "spanish": {
@@ -2270,7 +2423,7 @@
           }
         },
         {
-          "id": "paying-for-college-013",
+          "id": "paying-for-college-014",
           "term": "FAFSA Submission Summary",
           "definition": "A report you receive with the information you submitted in your FAFSA. It contains your SAI and other information that colleges will use to determine your financial aid package.",
           "spanish": {
@@ -2279,7 +2432,7 @@
           }
         },
         {
-          "id": "paying-for-college-014",
+          "id": "paying-for-college-015",
           "term": "Federal Student Aid",
           "definition": "The largest form of student aid in the country; federal aid programs come in the form of government grants, loans, and work-study opportunities",
           "spanish": {
@@ -2288,7 +2441,7 @@
           }
         },
         {
-          "id": "paying-for-college-015",
+          "id": "paying-for-college-016",
           "term": "Financial Aid Offer",
           "definition": "The total amount of financial aid (federal and nonfederal) a student is offered by a college, designed to help meet a student’s education costs",
           "spanish": {
@@ -2297,7 +2450,7 @@
           }
         },
         {
-          "id": "paying-for-college-016",
+          "id": "paying-for-college-017",
           "term": "Fixed-Rate Loan",
           "definition": "A loan with an interest rate that does not change over the life of the loan",
           "spanish": {
@@ -2306,7 +2459,7 @@
           }
         },
         {
-          "id": "paying-for-college-017",
+          "id": "paying-for-college-018",
           "term": "Forbearance",
           "definition": "A process that allows a borrower to pause their federal student loan payments; interest continues to accrue during this time period and may be capitalized",
           "spanish": {
@@ -2315,7 +2468,7 @@
           }
         },
         {
-          "id": "paying-for-college-018",
+          "id": "paying-for-college-019",
           "term": "Free Application For Federal Student Aid (FAFSA)",
           "definition": "A free online application that current or prospective college students can submit each year to determine their eligibility for financial aid",
           "spanish": {
@@ -2324,7 +2477,7 @@
           }
         },
         {
-          "id": "paying-for-college-019",
+          "id": "paying-for-college-020",
           "term": "Gift Aid",
           "definition": "Financial aid that does not have to be paid back, such as scholarships and grants",
           "spanish": {
@@ -2333,7 +2486,7 @@
           }
         },
         {
-          "id": "paying-for-college-020",
+          "id": "paying-for-college-021",
           "term": "Grace Period",
           "definition": "A period of time during which a borrower is typically not required to make loan payments. It generally begins on the day after a borrower graduates, leaves school, or drops below half-time enrollment. This period typically lasts 6 to 9 months but can vary.",
           "spanish": {
@@ -2342,7 +2495,7 @@
           }
         },
         {
-          "id": "paying-for-college-021",
+          "id": "paying-for-college-022",
           "term": "Grants",
           "definition": "Student aid coming from the state or federal government, the school, or from private sources that does not need to be repaid",
           "spanish": {
@@ -2351,7 +2504,16 @@
           }
         },
         {
-          "id": "paying-for-college-022",
+          "id": "paying-for-college-023",
+          "term": "Indirect Costs",
+          "definition": "College-related expenses not billed by the school, such as textbooks, transportation, and personal spending.",
+          "spanish": {
+            "term": "Costos indirectos",
+            "definition": "Gastos relacionados con la universidad que no le pagas directamente a la escuela, como libros, transporte y gastos personales."
+          }
+        },
+        {
+          "id": "paying-for-college-024",
           "term": "Interest Rate",
           "definition": "The rate charged for borrowing money usually expressed as a percent of the amount borrowed",
           "spanish": {
@@ -2360,7 +2522,7 @@
           }
         },
         {
-          "id": "paying-for-college-023",
+          "id": "paying-for-college-025",
           "term": "Loan Refinancing",
           "definition": "A process that REPLACES one or more existing federal or private loans with a new private student loan, ideally with a lower interest rate",
           "spanish": {
@@ -2369,7 +2531,7 @@
           }
         },
         {
-          "id": "paying-for-college-024",
+          "id": "paying-for-college-026",
           "term": "Loan Consolidation",
           "definition": "A process that allows a borrower to COMBINE multiple federal loans into one, allowing the borrower to make one monthly payment. The new interest rate of the loan is a weighted average of the prior loans' rates.",
           "spanish": {
@@ -2378,7 +2540,7 @@
           }
         },
         {
-          "id": "paying-for-college-025",
+          "id": "paying-for-college-027",
           "term": "Loan Servicer",
           "definition": "The organization that collects payments on a loan, responds to customer service inquiries, and performs other administrative tasks associated with maintaining a loan on behalf of a loan holder",
           "spanish": {
@@ -2387,7 +2549,7 @@
           }
         },
         {
-          "id": "paying-for-college-026",
+          "id": "paying-for-college-028",
           "term": "Master Promissory Note (MPN)",
           "definition": "A legal document in which you promise to repay your federal student loan(s) and any accrued interest and fees to your lender or loan holder",
           "spanish": {
@@ -2396,7 +2558,7 @@
           }
         },
         {
-          "id": "paying-for-college-027",
+          "id": "paying-for-college-029",
           "term": "Needs",
           "definition": "Expenses that are essential for you to be able to live and function",
           "spanish": {
@@ -2405,7 +2567,7 @@
           }
         },
         {
-          "id": "paying-for-college-028",
+          "id": "paying-for-college-030",
           "term": "Net Price",
           "definition": "The actual cost a student pays to attend a school, calculated as the sticker price minus grants and scholarships",
           "spanish": {
@@ -2414,7 +2576,7 @@
           }
         },
         {
-          "id": "paying-for-college-029",
+          "id": "paying-for-college-031",
           "term": "Pell Grant",
           "definition": "A federal grant usually awarded to undergraduate students who display exceptional financial need and have not earned a bachelor's, graduate, or professional degree. This grant does not have to be repaid.",
           "spanish": {
@@ -2423,7 +2585,7 @@
           }
         },
         {
-          "id": "paying-for-college-030",
+          "id": "paying-for-college-032",
           "term": "Prepayment Penalty Fee",
           "definition": "A fee that some lenders charge if you pay off all or part of your loan early",
           "spanish": {
@@ -2432,7 +2594,7 @@
           }
         },
         {
-          "id": "paying-for-college-031",
+          "id": "paying-for-college-033",
           "term": "Principal",
           "definition": "Original amount of money borrowed, separate from interest or fees",
           "spanish": {
@@ -2441,7 +2603,7 @@
           }
         },
         {
-          "id": "paying-for-college-032",
+          "id": "paying-for-college-034",
           "term": "Private Student Loan",
           "definition": "A non-federal student loan made by a bank, credit union, or other entity, which sets the terms and conditions for the interest rate, grace period, and length of repayment",
           "spanish": {
@@ -2450,7 +2612,7 @@
           }
         },
         {
-          "id": "paying-for-college-033",
+          "id": "paying-for-college-035",
           "term": "Repayment Period",
           "definition": "The maximum time period over which you must repay your student loan -- currently between 10 and 30 years for Federal loans",
           "spanish": {
@@ -2459,7 +2621,7 @@
           }
         },
         {
-          "id": "paying-for-college-034",
+          "id": "paying-for-college-036",
           "term": "Repayment Plan",
           "definition": "A plan that outlines your monthly loan payment, repayment period, and how much interest you will pay over the life of the loan",
           "spanish": {
@@ -2468,7 +2630,7 @@
           }
         },
         {
-          "id": "paying-for-college-035",
+          "id": "paying-for-college-037",
           "term": "Room And Board",
           "definition": "Cost of housing and food while at college",
           "spanish": {
@@ -2477,7 +2639,7 @@
           }
         },
         {
-          "id": "paying-for-college-036",
+          "id": "paying-for-college-038",
           "term": "Scholarship",
           "definition": "A type of aid primarily awarded for academic merit (good grades) or for something you have accomplished (volunteer work, athletics, etc) that does not need to be repaid",
           "spanish": {
@@ -2486,7 +2648,7 @@
           }
         },
         {
-          "id": "paying-for-college-037",
+          "id": "paying-for-college-039",
           "term": "Sticker Price",
           "definition": "Total expense of going to college which may include tuition, room and board, fees, books and supplies, transportation, health insurance, etc. Also known as Cost of Attendance or a school's published price.",
           "spanish": {
@@ -2495,7 +2657,7 @@
           }
         },
         {
-          "id": "paying-for-college-038",
+          "id": "paying-for-college-040",
           "term": "Student Aid Index (SAI)",
           "definition": "A numerical value that colleges use to determine a student's financial need for federal aid",
           "spanish": {
@@ -2504,7 +2666,7 @@
           }
         },
         {
-          "id": "paying-for-college-039",
+          "id": "paying-for-college-041",
           "term": "Work-Study",
           "definition": "A federal program that provides part-time jobs for undergraduate and graduate students with financial need, allowing them to earn money to help pay education expenses",
           "spanish": {
@@ -2513,7 +2675,7 @@
           }
         },
         {
-          "id": "paying-for-college-040",
+          "id": "paying-for-college-042",
           "term": "Tuition",
           "definition": "The sticker price for the academic portion of your college expenses, which does not include room and board, textbooks, or other fees",
           "spanish": {
@@ -2522,7 +2684,7 @@
           }
         },
         {
-          "id": "paying-for-college-041",
+          "id": "paying-for-college-043",
           "term": "Variable-Rate Loan",
           "definition": "A loan in which the interest rate can change, based on prime rate or index rate, over the course of the loan",
           "spanish": {
@@ -2531,7 +2693,7 @@
           }
         },
         {
-          "id": "paying-for-college-042",
+          "id": "paying-for-college-044",
           "term": "Wants",
           "definition": "Expenses that help you live more comfortably",
           "spanish": {
@@ -2611,6 +2773,15 @@
         },
         {
           "id": "career-008",
+          "term": "Employer",
+          "definition": "A business or individual who hires workers and pays them in exchange for their work",
+          "spanish": {
+            "term": "Jefe (empleador)",
+            "definition": "Persona o empresa que contrata a trabajadores y les paga por su trabajo."
+          }
+        },
+        {
+          "id": "career-009",
           "term": "Freelance Worker",
           "definition": "Freelance worker: a self-employed person who earns money on a per-job or per-task basis, often from different companies. They are considered an “independent contractor”.",
           "spanish": {
@@ -2619,7 +2790,7 @@
           }
         },
         {
-          "id": "career-009",
+          "id": "career-010",
           "term": "Full-time work",
           "definition": "Work that averages at least 30 hours per week",
           "spanish": {
@@ -2628,7 +2799,7 @@
           }
         },
         {
-          "id": "career-010",
+          "id": "career-011",
           "term": "Gig Economy",
           "definition": "A labor market where the majority of people have short-term jobs or gigs such as freelancing and temp jobs rather than long-term employment",
           "spanish": {
@@ -2637,16 +2808,16 @@
           }
         },
         {
-          "id": "career-011",
+          "id": "career-012",
           "term": "Gig Worker",
-          "definition": "a self-employed person, often working jobs that are in the service industry, temporary, or contracted through a larger company. They are considered an “independent contractor”.",
+          "definition": "A self-employed person, often working jobs that are in the service industry, temporary, or contracted through a larger company. They are considered an “independent contractor”.",
           "spanish": {
             "term": "Un trabajador de la economía “gig”",
             "definition": "Es un trabajador autónomo quien hace trabajos en el sector de servicios, trabajos temporales o un trabajo de contrato temporal para una compañía grande.  Se considera trabajador independiente."
           }
         },
         {
-          "id": "career-012",
+          "id": "career-013",
           "term": "Hard Skills",
           "definition": "Specific knowledge or abilities that let you tackle job-specific duties that you learn through courses, vocational training, and on the job",
           "spanish": {
@@ -2655,7 +2826,7 @@
           }
         },
         {
-          "id": "career-013",
+          "id": "career-014",
           "term": "Imposter Syndrome",
           "definition": "A feeling of not belonging or not being good enough, especially for people with marginalized identities",
           "spanish": {
@@ -2664,7 +2835,7 @@
           }
         },
         {
-          "id": "career-014",
+          "id": "career-015",
           "term": "Independent Contractor",
           "definition": "A self-employed person who provides goods, services, or labor to others",
           "spanish": {
@@ -2673,7 +2844,7 @@
           }
         },
         {
-          "id": "career-015",
+          "id": "career-016",
           "term": "Informational Interview",
           "definition": "A meeting to learn about the real-life experience of someone working in a field or company that interests you",
           "spanish": {
@@ -2682,7 +2853,7 @@
           }
         },
         {
-          "id": "career-016",
+          "id": "career-017",
           "term": "Intern",
           "definition": "A student or trainee who works, sometimes without pay, in order to gain work experience in a particular field",
           "spanish": {
@@ -2691,7 +2862,7 @@
           }
         },
         {
-          "id": "career-017",
+          "id": "career-018",
           "term": "I-9 Form",
           "definition": "Form used by an employer to verify an employee's identity and to establish that the worker is eligible to accept employment in the United States",
           "spanish": {
@@ -2700,7 +2871,7 @@
           }
         },
         {
-          "id": "career-018",
+          "id": "career-019",
           "term": "LinkedIn",
           "definition": "A social network site for building professional connections and job searching",
           "spanish": {
@@ -2709,7 +2880,7 @@
           }
         },
         {
-          "id": "career-019",
+          "id": "career-020",
           "term": "Minimum Wage",
           "definition": "The lowest wage per hour that a worker may be paid, as mandated by federal, and sometimes state, law",
           "spanish": {
@@ -2718,7 +2889,7 @@
           }
         },
         {
-          "id": "career-020",
+          "id": "career-021",
           "term": "Networking",
           "definition": "The process of meeting new business contacts and building professional relationships to further your career",
           "spanish": {
@@ -2727,7 +2898,7 @@
           }
         },
         {
-          "id": "career-021",
+          "id": "career-022",
           "term": "Partnership",
           "definition": "A business that has two or more co-owners",
           "spanish": {
@@ -2736,7 +2907,7 @@
           }
         },
         {
-          "id": "career-022",
+          "id": "career-023",
           "term": "Part-Time Work",
           "definition": "Work that averages less than 30 hours per week",
           "spanish": {
@@ -2745,7 +2916,7 @@
           }
         },
         {
-          "id": "career-023",
+          "id": "career-024",
           "term": "Professional Organization",
           "definition": "A group of people who share similar career or background who meet to build professional skills and connections",
           "spanish": {
@@ -2754,7 +2925,7 @@
           }
         },
         {
-          "id": "career-024",
+          "id": "career-025",
           "term": "Resume",
           "definition": "A short document describing your education, work history, and skills, that is used to apply for a job",
           "spanish": {
@@ -2763,7 +2934,7 @@
           }
         },
         {
-          "id": "career-025",
+          "id": "career-026",
           "term": "Salary",
           "definition": "A fixed amount that you are paid over a period of time, regardless of how many hours you work",
           "spanish": {
@@ -2772,7 +2943,7 @@
           }
         },
         {
-          "id": "career-026",
+          "id": "career-027",
           "term": "Self-Employed",
           "definition": "Working for oneself instead of an employer. This includes freelancers, gig workers, and business owners.",
           "spanish": {
@@ -2781,7 +2952,7 @@
           }
         },
         {
-          "id": "career-027",
+          "id": "career-028",
           "term": "Soft Skills",
           "definition": "Personality traits and interpersonal skills that are needed to communicate and work with others",
           "spanish": {
@@ -2790,7 +2961,7 @@
           }
         },
         {
-          "id": "career-028",
+          "id": "career-029",
           "term": "Sole Proprietor",
           "definition": "A person who is the exclusive owner of a business",
           "spanish": {
@@ -2799,7 +2970,16 @@
           }
         },
         {
-          "id": "career-029",
+          "id": "career-030",
+          "term": "STAR Interview Method",
+          "definition": "A framework for answering behavioral interview questions. STAR stands for Situation, Task, Action, Result.",
+          "spanish": {
+            "term": "STAR Interview Method",
+            "definition": "Spanish translation coming soon!"
+          }
+        },
+        {
+          "id": "career-031",
           "term": "Stipend",
           "definition": "A set payment amount for a fixed time period of work",
           "spanish": {
@@ -2808,7 +2988,7 @@
           }
         },
         {
-          "id": "career-030",
+          "id": "career-032",
           "term": "Trade School",
           "definition": "A school that prepares students to enter a specific career directly after training, usually in less than 2 years",
           "spanish": {
@@ -2817,7 +2997,7 @@
           }
         },
         {
-          "id": "career-031",
+          "id": "career-033",
           "term": "Transferable Skills",
           "definition": "Skills that can be applied in multiple professional contexts",
           "spanish": {
@@ -2826,7 +3006,7 @@
           }
         },
         {
-          "id": "career-032",
+          "id": "career-034",
           "term": "Wage",
           "definition": "A set amount you are paid for every hour that you work; also called hourly pay",
           "spanish": {
@@ -2835,7 +3015,7 @@
           }
         },
         {
-          "id": "career-033",
+          "id": "career-035",
           "term": "W-4 Form",
           "definition": "A form completed by an employee to indicate his or her tax situation (exemptions, marital status, etc.) to the employer, who then withholds the corresponding amount of taxes from each paycheck",
           "spanish": {
@@ -2852,6 +3032,15 @@
       "terms": [
         {
           "id": "insurance-001",
+          "term": "ACA Marketplace",
+          "definition": "An online platform created through the Affordable Care Act where people can compare and buy private health insurance",
+          "spanish": {
+            "term": "Mercado de seguros médicos de la ACA",
+            "definition": "Sitio web creado por la Ley del Cuidado de Salud a Bajo Precio (ACA) donde las personas pueden comparar y comprar seguros médicos."
+          }
+        },
+        {
+          "id": "insurance-002",
           "term": "Actuary",
           "definition": "A person who compiles and analyzes statistics to calculate risk and determine insurance rates and premiums",
           "spanish": {
@@ -2860,7 +3049,25 @@
           }
         },
         {
-          "id": "insurance-002",
+          "id": "insurance-003",
+          "term": "Affordable Care Act (ACA)",
+          "definition": "A 2010 federal law that expanded access to health insurance and set rules for what plans must cover",
+          "spanish": {
+            "term": "Ley del Cuidado de Salud a Bajo Precio (ACA)",
+            "definition": "Ley de Estados Unidos aprobada en 2010 que ayudó a más personas a obtener un seguro médico y estableció lo que los seguros médicos deben cubrir."
+          }
+        },
+        {
+          "id": "insurance-004",
+          "term": "Auto Liability Coverage",
+          "definition": "Auto insurance that protects you against medical costs for the bodily injury of others and damages to the property of others if you are at fault in an accident",
+          "spanish": {
+            "term": "Seguro de responsabilidad civil para carros",
+            "definition": "Es el seguro para carros que ofrece protección ante los costos médicos de una herida corporal o daños a la propiedad de otros si usted es el culpable del accidente"
+          }
+        },
+        {
+          "id": "insurance-005",
           "term": "Catastrophic Health Insurance",
           "definition": "Health insurance that provides protection against the high cost of treating severe or lengthy illness or disabilities and usually has a high deductible and lower premiums",
           "spanish": {
@@ -2869,7 +3076,7 @@
           }
         },
         {
-          "id": "insurance-003",
+          "id": "insurance-006",
           "term": "CHIP",
           "definition": "Children's Health Insurance Program. A program that provides low-cost health coverage to children in families who earn too much money to qualify for Medicaid",
           "spanish": {
@@ -2878,7 +3085,7 @@
           }
         },
         {
-          "id": "insurance-004",
+          "id": "insurance-007",
           "term": "Claim",
           "definition": "A formal request from the customer to an insurance company asking for a payment based on the terms of the insurance policy",
           "spanish": {
@@ -2887,7 +3094,7 @@
           }
         },
         {
-          "id": "insurance-005",
+          "id": "insurance-008",
           "term": "Coinsurance",
           "definition": "A percentage you pay each time you receive medical treatment, after you’ve paid your deductible",
           "spanish": {
@@ -2896,7 +3103,7 @@
           }
         },
         {
-          "id": "insurance-006",
+          "id": "insurance-009",
           "term": "Collision Coverage",
           "definition": "Auto insurance that protects you against costs to repair your own vehicle after a crash",
           "spanish": {
@@ -2905,7 +3112,7 @@
           }
         },
         {
-          "id": "insurance-007",
+          "id": "insurance-010",
           "term": "Comprehensive Coverage",
           "definition": "Auto insurance that protects you against costs to repair or replace your vehicle after events out of your control such as weather, vandalism, theft, etc.",
           "spanish": {
@@ -2914,7 +3121,7 @@
           }
         },
         {
-          "id": "insurance-008",
+          "id": "insurance-011",
           "term": "Conditions of the Policy",
           "definition": "The portion of a car insurance policy that spells out the details for how to make a claim, what information you must have, how much time you have, and how to cancel your policy",
           "spanish": {
@@ -2923,7 +3130,7 @@
           }
         },
         {
-          "id": "insurance-009",
+          "id": "insurance-012",
           "term": "Copay",
           "definition": "A fixed dollar amount that you agree to pay each time you receive medical treatment, such as a doctor's visit or prescription",
           "spanish": {
@@ -2932,7 +3139,7 @@
           }
         },
         {
-          "id": "insurance-010",
+          "id": "insurance-013",
           "term": "Coverage Limit",
           "definition": "The maximum amount an insurance company will pay if you file a claim",
           "spanish": {
@@ -2941,7 +3148,7 @@
           }
         },
         {
-          "id": "insurance-011",
+          "id": "insurance-014",
           "term": "Declaration Page",
           "definition": "The page of a car insurance policy which includes a summary description of the insurance coverage provided and gives the maximum dollar limit the insurer will pay for a claim under each coverage",
           "spanish": {
@@ -2950,7 +3157,7 @@
           }
         },
         {
-          "id": "insurance-012",
+          "id": "insurance-015",
           "term": "Deductible",
           "definition": "The amount of money you agree to pay towards your losses before your insurance coverage will begin paying",
           "spanish": {
@@ -2959,7 +3166,7 @@
           }
         },
         {
-          "id": "insurance-013",
+          "id": "insurance-016",
           "term": "Disability Insurance",
           "definition": "A type of insurance paid to an individual if they are injured and unable to work for a specified length of time",
           "spanish": {
@@ -2968,7 +3175,16 @@
           }
         },
         {
-          "id": "insurance-014",
+          "id": "insurance-017",
+          "term": "Elimination Period",
+          "definition": "The waiting time after a disability starts before your benefit payments begin",
+          "spanish": {
+            "term": "Período de espera",
+            "definition": "Tiempo que pasa desde que comienza una incapacidad hasta que empiezas a recibir los beneficios del seguro"
+          }
+        },
+        {
+          "id": "insurance-018",
           "term": "EPO",
           "definition": "Exclusive provider organization. A health insurance plan where you do not need a referral to see a specialist and your care is only covered in-network.",
           "spanish": {
@@ -2977,7 +3193,7 @@
           }
         },
         {
-          "id": "insurance-015",
+          "id": "insurance-019",
           "term": "Extended Warranty",
           "definition": "An additional form of protection that can be purchased to extend/enhance a manufacturer's warranty on consumer goods, like phones and electronics",
           "spanish": {
@@ -2986,7 +3202,7 @@
           }
         },
         {
-          "id": "insurance-016",
+          "id": "insurance-020",
           "term": "Federal Deposit Insurance Corporation (FDIC)",
           "definition": "The U.S. corporation insuring deposits in US banks against bank failure",
           "spanish": {
@@ -2995,7 +3211,7 @@
           }
         },
         {
-          "id": "insurance-017",
+          "id": "insurance-021",
           "term": "FSA",
           "definition": "Flexible Spending Account. An account set up through an employer to cover health costs with pretax dollars that has very little or no rollover from year to year.",
           "spanish": {
@@ -3004,7 +3220,25 @@
           }
         },
         {
-          "id": "insurance-018",
+          "id": "insurance-022",
+          "term": "Group/Employer-Sponsored Health Insurance",
+          "definition": "Coverage you get through a job, where the employer usually helps pay for the cost",
+          "spanish": {
+            "term": "Seguro médico por medio del trabajo",
+            "definition": "Seguro médico que obtienes por medio de tu trabajo y en el que, por lo general, tu empleador ayuda a pagar parte del costo"
+          }
+        },
+        {
+          "id": "insurance-023",
+          "term": "HDHP",
+          "definition": "High-Deductible Health Plan. A health insurance plan that features a lower monthly premium but a higher out-of-pocket deductible. HDHPs can be paired with an HSA.",
+          "spanish": {
+            "term": "Plan de salud con deducible alto (HDHP)",
+            "definition": "Plan de seguro médico con una prima mensual más baja, pero con un deducible más alto. Esto significa que debes pagar más dinero de tu bolsillo antes de que el seguro comience a pagar. Puede combinarse con una cuenta de ahorros para gastos médicos (HSA)"
+          }
+        },
+        {
+          "id": "insurance-024",
           "term": "HMO",
           "definition": "Health maintenance organization. A health insurance plan in which patients receive health care from designated providers.",
           "spanish": {
@@ -3013,7 +3247,7 @@
           }
         },
         {
-          "id": "insurance-019",
+          "id": "insurance-025",
           "term": "Homeowners Insurance",
           "definition": "A form of property insurance, available to property owners, that covers losses to the physical structure as well as to their personal property and protects the insured person from liability claims",
           "spanish": {
@@ -3022,7 +3256,7 @@
           }
         },
         {
-          "id": "insurance-020",
+          "id": "insurance-026",
           "term": "HSA",
           "definition": "Health savings account. An account where you contribute pre-tax dollars for expected medical expenses",
           "spanish": {
@@ -3031,7 +3265,16 @@
           }
         },
         {
-          "id": "insurance-021",
+          "id": "insurance-027",
+          "term": "Individual Health Insurance",
+          "definition": "A plan you buy on your own instead of getting through an employer or a government program like Medicare",
+          "spanish": {
+            "term": "Seguro médico individual",
+            "definition": "Plan de seguro médico que compras por tu cuenta en lugar de obtenerlo a través de un empleador o de un programa del gobierno, como Medicare"
+          }
+        },
+        {
+          "id": "insurance-028",
           "term": "Insurance",
           "definition": "An agreement where you make regular payments to a company and the company promises to pay you money if you suffer a specified injury, illness, loss, etc.",
           "spanish": {
@@ -3040,7 +3283,7 @@
           }
         },
         {
-          "id": "insurance-022",
+          "id": "insurance-029",
           "term": "Insurance Agent",
           "definition": "An employee of an insurance company who sells insurance policies and provides customer service",
           "spanish": {
@@ -3049,7 +3292,7 @@
           }
         },
         {
-          "id": "insurance-023",
+          "id": "insurance-030",
           "term": "Insurance Fraud",
           "definition": "An act on the part of either the buyer or seller of an insurance contract in an attempt to gain money illegally",
           "spanish": {
@@ -3058,7 +3301,7 @@
           }
         },
         {
-          "id": "insurance-024",
+          "id": "insurance-031",
           "term": "Insurance Policy",
           "definition": "A contract in which an individual or entity receives financial protection or reimbursement against losses",
           "spanish": {
@@ -3067,7 +3310,7 @@
           }
         },
         {
-          "id": "insurance-025",
+          "id": "insurance-032",
           "term": "Insuring Agreement",
           "definition": "The main part of a car insurance policy, which clearly spells out every point of what coverage you receive for the premium you're paying",
           "spanish": {
@@ -3076,16 +3319,7 @@
           }
         },
         {
-          "id": "insurance-026",
-          "term": "Liability Coverage",
-          "definition": "Auto insurance that protects you against medical costs for the bodily injury of others and damages to the property of others if you are at fault in an accident",
-          "spanish": {
-            "term": "La cobertura para lesiones corporales",
-            "definition": "Es el seguro para carros que ofrece protección ante los costos médicos de una herida corporal o daños a la propiedad de otros si usted es el culpable del accidente"
-          }
-        },
-        {
-          "id": "insurance-027",
+          "id": "insurance-033",
           "term": "Life Insurance",
           "definition": "Insurance paid to named beneficiaries when the insured person dies",
           "spanish": {
@@ -3094,7 +3328,16 @@
           }
         },
         {
-          "id": "insurance-028",
+          "id": "insurance-034",
+          "term": "Long-term Disability Insurance",
+          "definition": "Coverage that replaces part of your income if you can’t work for a long stretch, often months or years",
+          "spanish": {
+            "term": "Seguro por incapacidad a largo plazo",
+            "definition": "Seguro que reemplaza parte de tus ingresos durante un período largo si no puedes trabajar por una enfermedad o lesión"
+          }
+        },
+        {
+          "id": "insurance-035",
           "term": "Loss",
           "definition": "When someone with insurance endures a negative outcome, such as injury or theft, and expects payment from the insurance company to compensate them",
           "spanish": {
@@ -3103,7 +3346,7 @@
           }
         },
         {
-          "id": "insurance-029",
+          "id": "insurance-036",
           "term": "Medicaid",
           "definition": "A federal and state assistance program that pays for health care services for people who cannot afford them",
           "spanish": {
@@ -3112,7 +3355,16 @@
           }
         },
         {
-          "id": "insurance-030",
+          "id": "insurance-037",
+          "term": "Medicare",
+          "definition": "A government-run insurance program that provides healthcare assistance to elderly and disabled Americans",
+          "spanish": {
+            "term": "El seguro médico para los mayores (Medicare)",
+            "definition": "Es un seguro ofrecido por un programa del gobierno que ofrece ayuda con un seguro médico para los americanos mayores o discapacitados"
+          }
+        },
+        {
+          "id": "insurance-038",
           "term": "Minimum Liability Limit",
           "definition": "The lowest amount of auto insurance coverage one can have to be legally allowed to drive in each state",
           "spanish": {
@@ -3121,7 +3373,7 @@
           }
         },
         {
-          "id": "insurance-031",
+          "id": "insurance-039",
           "term": "Out of Pocket Maximum",
           "definition": "The maximum amount of money you will have to spend on health care in a year, after which the insurance company agrees to cover all costs",
           "spanish": {
@@ -3130,7 +3382,16 @@
           }
         },
         {
-          "id": "insurance-032",
+          "id": "insurance-040",
+          "term": "Permanent Life Insurance",
+          "definition": "Life insurance that lasts your whole life and often builds up cash value that you can borrow against",
+          "spanish": {
+            "term": "Seguro de vida permanente",
+            "definition": "Seguro de vida que dura toda tu vida y acumula un valor en efectivo que puedes pedir prestado"
+          }
+        },
+        {
+          "id": "insurance-041",
           "term": "Personal Injury Protection (PIP)",
           "definition": "Auto insurance that protects you against cost of your own medical bills if you are involved in a car accident",
           "spanish": {
@@ -3139,7 +3400,16 @@
           }
         },
         {
-          "id": "insurance-033",
+          "id": "insurance-042",
+          "term": "Personal Liability Coverage",
+          "definition": "Renters and homeowners insurance that protects you financially if you or your household relatives are responsible for injuries on your property, or for damage to others’ properties",
+          "spanish": {
+            "term": "Seguro de responsabilidad civil personal",
+            "definition": "Seguro para inquilinos o propietarios de vivienda que te protege si tú o alguien de tu familia causa lesiones a otra persona en tu propiedad o daña la propiedad de otra persona."
+          }
+        },
+        {
+          "id": "insurance-043",
           "term": "POS",
           "definition": "Point of service. A health insurance plan where you need a referral from your primary care provider to see a specialist and you will pay less by staying in-network.",
           "spanish": {
@@ -3148,7 +3418,7 @@
           }
         },
         {
-          "id": "insurance-034",
+          "id": "insurance-044",
           "term": "PPO",
           "definition": "Preferred provider organization. A health insurance plan in which providers agree to deliver services for discount fees; patients can go to any provider, but using nonparticipating providers results in higher costs to the patient.",
           "spanish": {
@@ -3157,7 +3427,16 @@
           }
         },
         {
-          "id": "insurance-035",
+          "id": "insurance-045",
+          "term": "Pre-existing Condition",
+          "definition": "A health problem you already had before your insurance coverage started. Under the Affordable Care Act, standard health plans cannot deny you coverage, raise your rates, or refuse to pay for treatments just because you have a pre-existing condition.",
+          "spanish": {
+            "term": "Condición preexistente",
+            "definition": "Enfermedad o problema de salud que ya tenías antes de obtener un seguro médico. La Ley del Cuidado de Salud a Bajo Precio (ACA) protege a las personas para que no sean rechazadas ni paguen más por esa razón."
+          }
+        },
+        {
+          "id": "insurance-046",
           "term": "Premium",
           "definition": "The specified amount of payment required periodically by an insurer to provide coverage under a plan for a defined period of time",
           "spanish": {
@@ -3166,7 +3445,16 @@
           }
         },
         {
-          "id": "insurance-036",
+          "id": "insurance-047",
+          "term": "Private Insurer",
+          "definition": "A company, not the government, that sells insurance plans",
+          "spanish": {
+            "term": "Compañía privada de seguros",
+            "definition": "Empresa que vende planes de seguros y que no pertenece al gobierno."
+          }
+        },
+        {
+          "id": "insurance-048",
           "term": "Probability",
           "definition": "The chance of something happening or not happening within a certain number of occurrences",
           "spanish": {
@@ -3175,7 +3463,7 @@
           }
         },
         {
-          "id": "insurance-037",
+          "id": "insurance-049",
           "term": "Quote",
           "definition": "An estimate of what premium you would pay for a certain insurance coverage plan",
           "spanish": {
@@ -3184,7 +3472,7 @@
           }
         },
         {
-          "id": "insurance-038",
+          "id": "insurance-050",
           "term": "Renters Insurance",
           "definition": "A form of property insurance, available to renters, that covers losses to their personal property and protects the insured person from liability claims",
           "spanish": {
@@ -3193,7 +3481,7 @@
           }
         },
         {
-          "id": "insurance-039",
+          "id": "insurance-051",
           "term": "Risk",
           "definition": "A situation involving exposure to danger, harm, or loss",
           "spanish": {
@@ -3202,7 +3490,7 @@
           }
         },
         {
-          "id": "insurance-040",
+          "id": "insurance-052",
           "term": "Risk Pooling",
           "definition": "The spreading of financial risk evenly among a large number of contributors to the program",
           "spanish": {
@@ -3211,7 +3499,16 @@
           }
         },
         {
-          "id": "insurance-041",
+          "id": "insurance-053",
+          "term": "Short-term Disability Insurance",
+          "definition": "Coverage that replaces part of your income for a few weeks or months while you recover from a non-work illness, injury, or pregnancy",
+          "spanish": {
+            "term": "Seguro por incapacidad a corto plazo",
+            "definition": "Seguro que reemplaza parte de tu salario durante unas semanas o meses mientras no puedes trabajar por una enfermedad, lesión o embarazo que no ocurrió en tu trabajo"
+          }
+        },
+        {
+          "id": "insurance-054",
           "term": "Social Security",
           "definition": "A federal program that provides monthly benefits to millions of Americans, including retirees, military families, surviving families of deceased workers, and disabled individuals",
           "spanish": {
@@ -3220,16 +3517,52 @@
           }
         },
         {
-          "id": "insurance-042",
+          "id": "insurance-055",
+          "term": "Term Life Insurance",
+          "definition": "Life insurance that covers you for a set number of years and pays out only if you die during that period",
+          "spanish": {
+            "term": "Seguro de vida por un tiempo determinado",
+            "definition": "Seguro de vida que te protege por un número específico de años. El seguro paga dinero a tus beneficiarios solo si mueres durante ese tiempo."
+          }
+        },
+        {
+          "id": "insurance-056",
           "term": "Underwriter",
           "definition": "An employee of an insurance company who evaluates an individual's risk factors and assigns premium amounts",
           "spanish": {
-            "term": "La aseguradora",
+            "term": "Evaluador de seguros la aseguradora",
             "definition": "Es un empleado de una compañía de seguro que evalúa los factores de riesgo de un individuo para determinar las primas para tal individuo"
           }
         },
         {
-          "id": "insurance-043",
+          "id": "insurance-057",
+          "term": "Underinsured",
+          "definition": "When you have an insurance policy but the coverage limits are too low, or your out-of-pocket costs are too high to fully protect you.",
+          "spanish": {
+            "term": "Con seguro insuficiente",
+            "definition": "Cuando tienes un seguro, pero no cubre lo suficiente o tienes que pagar demasiado dinero de tu bolsillo para protegerte completamente"
+          }
+        },
+        {
+          "id": "insurance-058",
+          "term": "Unemployment Insurance",
+          "definition": "Temporary payments from the government to help you cover costs after losing a job through no fault of your own",
+          "spanish": {
+            "term": "Seguro por desempleo",
+            "definition": "Beneficio del gobierno que ayuda con dinero a las personas que pierden su trabajo mientras encuentran otro"
+          }
+        },
+        {
+          "id": "insurance-059",
+          "term": "Uninsured",
+          "definition": "Having no insurance coverage.",
+          "spanish": {
+            "term": "Sin seguro",
+            "definition": "No tener un seguro."
+          }
+        },
+        {
+          "id": "insurance-060",
           "term": "Uninsured/Underinsured Coverage",
           "definition": "Auto insurance that protects you against another driver not having enough coverage to pay the entirety of your losses",
           "spanish": {
@@ -3264,6 +3597,15 @@
         },
         {
           "id": "taxes-003",
+          "term": "Appropriations",
+          "definition": "Specific laws passed by the legislature that authorize the government to spend tax money",
+          "spanish": {
+            "term": "Coming soon!",
+            "definition": "Coming soon!"
+          }
+        },
+        {
+          "id": "taxes-004",
           "term": "Audit",
           "definition": "An inspection of a filer's tax return by the IRS",
           "spanish": {
@@ -3272,7 +3614,7 @@
           }
         },
         {
-          "id": "taxes-004",
+          "id": "taxes-005",
           "term": "Capital Gain",
           "definition": "Profit from the sale of an asset, such as a stock or a bond, calculated by subtracting the price you initially paid from the price you then sold it for",
           "spanish": {
@@ -3281,7 +3623,7 @@
           }
         },
         {
-          "id": "taxes-005",
+          "id": "taxes-006",
           "term": "Corporate Income Tax",
           "definition": "A percentage of profits paid by a business to the federal and state government",
           "spanish": {
@@ -3290,7 +3632,7 @@
           }
         },
         {
-          "id": "taxes-006",
+          "id": "taxes-007",
           "term": "Dependent",
           "definition": "Someone you financially support who can be \"claimed\" on a tax return to reduce your taxable income and lower your taxes",
           "spanish": {
@@ -3299,8 +3641,17 @@
           }
         },
         {
-          "id": "taxes-007",
-          "term": "Discretionary Spending",
+          "id": "taxes-008",
+          "term": "Deduction",
+          "definition": "Any items subtracted from your paycheck, including state and federal income taxes, Social Security, health insurance or 401(k) contributions",
+          "spanish": {
+            "term": "La deducción",
+            "definition": "Cualquier cantidad de dinero restada de su pago, incluyendo los impuestos federales y estatales, la seguridad social, el seguro médico o las contribuciones a la cuenta de jubilación 401(k)."
+          }
+        },
+        {
+          "id": "taxes-009",
+          "term": "Discretionary Government Spending",
           "definition": "Spending by the federal government determined by legislative action and approved through votes by elected officials",
           "spanish": {
             "term": "Los gastos discrecionales",
@@ -3308,7 +3659,7 @@
           }
         },
         {
-          "id": "taxes-008",
+          "id": "taxes-010",
           "term": "Dividend",
           "definition": "Money from the profits of a company that is paid out to its shareholders, typically on a quarterly basis",
           "spanish": {
@@ -3317,7 +3668,7 @@
           }
         },
         {
-          "id": "taxes-009",
+          "id": "taxes-011",
           "term": "Earned Income",
           "definition": "Any income (wages/salary) that is generated by working",
           "spanish": {
@@ -3326,7 +3677,7 @@
           }
         },
         {
-          "id": "taxes-010",
+          "id": "taxes-012",
           "term": "Effective Tax Rate",
           "definition": "The actual rate you pay on your taxes, as a percentage of your overall income",
           "spanish": {
@@ -3335,7 +3686,7 @@
           }
         },
         {
-          "id": "taxes-011",
+          "id": "taxes-013",
           "term": "Excise Tax",
           "definition": "A tax paid on purchases of a specific good, like gasoline or cigarettes",
           "spanish": {
@@ -3344,7 +3695,7 @@
           }
         },
         {
-          "id": "taxes-012",
+          "id": "taxes-014",
           "term": "Exemption",
           "definition": "The set amount of money, per dependent, you can subtract from your taxable income",
           "spanish": {
@@ -3353,7 +3704,7 @@
           }
         },
         {
-          "id": "taxes-013",
+          "id": "taxes-015",
           "term": "Federal Insurance Contributions Act (FICA)",
           "definition": "A federal law that requires an employer to withhold taxes from the wages they pay their employees; the funds go toward Social Security and Medicare",
           "spanish": {
@@ -3362,7 +3713,7 @@
           }
         },
         {
-          "id": "taxes-014",
+          "id": "taxes-016",
           "term": "Filing Status",
           "definition": "A category that defines the type of tax return an individual will use, primarily based on marital status; it also determines the size of your tax brackets and how much of your income is taxed at each rate",
           "spanish": {
@@ -3371,7 +3722,7 @@
           }
         },
         {
-          "id": "taxes-015",
+          "id": "taxes-017",
           "term": "I-9",
           "definition": "Form used by an employer to verify an employee's identity and to establish that the worker is eligible to accept employment in the United States",
           "spanish": {
@@ -3380,7 +3731,7 @@
           }
         },
         {
-          "id": "taxes-016",
+          "id": "taxes-018",
           "term": "Income Tax",
           "definition": "Taxes paid by employees to federal and state government through a direct deduction from their paycheck",
           "spanish": {
@@ -3389,7 +3740,7 @@
           }
         },
         {
-          "id": "taxes-017",
+          "id": "taxes-019",
           "term": "Interest Income",
           "definition": "Income earned through interest on savings accounts, bonds, CDs, etc.",
           "spanish": {
@@ -3398,7 +3749,7 @@
           }
         },
         {
-          "id": "taxes-018",
+          "id": "taxes-020",
           "term": "Mandatory Spending",
           "definition": "Spending by the federal government required by previously existing laws, including funding programs like Social Security and Medicare/Medicaid",
           "spanish": {
@@ -3407,7 +3758,7 @@
           }
         },
         {
-          "id": "taxes-019",
+          "id": "taxes-021",
           "term": "Marginal Tax Rate",
           "definition": "The tax bracket that your highest dollar of income falls into, and therefore the highest tax rate you pay",
           "spanish": {
@@ -3416,7 +3767,7 @@
           }
         },
         {
-          "id": "taxes-020",
+          "id": "taxes-022",
           "term": "Medicaid",
           "definition": "A government-run insurance program that provides healthcare assistance to low income Americans",
           "spanish": {
@@ -3425,7 +3776,7 @@
           }
         },
         {
-          "id": "taxes-021",
+          "id": "taxes-023",
           "term": "Medicare",
           "definition": "A government-run insurance program that provides healthcare assistance to elderly and disabled Americans",
           "spanish": {
@@ -3434,7 +3785,7 @@
           }
         },
         {
-          "id": "taxes-022",
+          "id": "taxes-024",
           "term": "Paycheck Stub",
           "definition": "A document attached to every paycheck that details your earnings and the amount withheld for taxes, health insurance, retirement funds, etc.",
           "spanish": {
@@ -3443,7 +3794,7 @@
           }
         },
         {
-          "id": "taxes-023",
+          "id": "taxes-025",
           "term": "Payroll Tax",
           "definition": "Federal and state taxes that all employers must pay, based on a percentage of the employee's salary, toward social services such as Social Security and Medicare",
           "spanish": {
@@ -3452,7 +3803,7 @@
           }
         },
         {
-          "id": "taxes-024",
+          "id": "taxes-026",
           "term": "Progressive Tax",
           "definition": "A tax system that uses tax brackets to collect a larger percentage from the income of high-income earners than it does from low-income earners",
           "spanish": {
@@ -3461,7 +3812,16 @@
           }
         },
         {
-          "id": "taxes-025",
+          "id": "taxes-027",
+          "term": "Self-Employment Tax (SECA)",
+          "definition": "The Social Security and Medicare taxes that people who work for themselves pay on their net earnings. Regular employees split these taxes with their employer, but self-employed workers have no employer to cover the other half, so they pay both the employee and employer portions themselves.",
+          "spanish": {
+            "term": "Impuesto por trabajar por tu cuenta (SECA)",
+            "definition": "Impuesto para el Seguro Social y Medicare que pagan las personas que trabajan por su cuenta. Como no tienen un empleador, pagan la parte del trabajador y la del empleador."
+          }
+        },
+        {
+          "id": "taxes-028",
           "term": "Social Security",
           "definition": "A federal program that provides monthly benefits to millions of Americans, including retirees, military families, surviving families of deceased workers, and disabled individuals",
           "spanish": {
@@ -3470,7 +3830,7 @@
           }
         },
         {
-          "id": "taxes-026",
+          "id": "taxes-029",
           "term": "Standard Deduction",
           "definition": "A standardized dollar amount that reduces your taxable income, specifically for individuals who do not receive additional benefit by itemizing their deductions into medical expenses, donations, etc.",
           "spanish": {
@@ -3479,7 +3839,7 @@
           }
         },
         {
-          "id": "taxes-027",
+          "id": "taxes-030",
           "term": "Tax Bracket",
           "definition": "A range of income amounts that are taxed at a particular rate",
           "spanish": {
@@ -3488,7 +3848,7 @@
           }
         },
         {
-          "id": "taxes-028",
+          "id": "taxes-031",
           "term": "Tax Credit",
           "definition": "An amount subtracted directly from the tax owed",
           "spanish": {
@@ -3497,7 +3857,7 @@
           }
         },
         {
-          "id": "taxes-029",
+          "id": "taxes-032",
           "term": "Tax Deduction",
           "definition": "An amount that can be subtracted from person's tax liability that lowers their taxable income",
           "spanish": {
@@ -3506,7 +3866,7 @@
           }
         },
         {
-          "id": "taxes-030",
+          "id": "taxes-033",
           "term": "Tax Rate",
           "definition": "The percentage at which taxes are paid on each dollar of income",
           "spanish": {
@@ -3515,7 +3875,7 @@
           }
         },
         {
-          "id": "taxes-031",
+          "id": "taxes-034",
           "term": "Tax Return",
           "definition": "An annual report to the IRS summarizing total income, deductions, and the taxes withheld by employers",
           "spanish": {
@@ -3524,7 +3884,7 @@
           }
         },
         {
-          "id": "taxes-032",
+          "id": "taxes-035",
           "term": "Taxable Income",
           "definition": "The amount of income that is used to calculate an individual's or a company's income tax due",
           "spanish": {
@@ -3533,7 +3893,7 @@
           }
         },
         {
-          "id": "taxes-033",
+          "id": "taxes-036",
           "term": "Tax Refund",
           "definition": "An amount that a government gives back to a taxpayer who has paid more taxes than were due",
           "spanish": {
@@ -3542,7 +3902,7 @@
           }
         },
         {
-          "id": "taxes-034",
+          "id": "taxes-037",
           "term": "Unearned Income",
           "definition": "Income received from sources other than employment",
           "spanish": {
@@ -3551,7 +3911,7 @@
           }
         },
         {
-          "id": "taxes-035",
+          "id": "taxes-038",
           "term": "W-2",
           "definition": "A form that an employer must send to an employee and the IRS at the end of the year to report the employee's annual wages and taxes withheld from their paycheck",
           "spanish": {
@@ -3560,7 +3920,7 @@
           }
         },
         {
-          "id": "taxes-036",
+          "id": "taxes-039",
           "term": "W-4",
           "definition": "A form completed by an employee to indicate his or her tax situation (exemptions, marital status, etc.) to the employer, who then withholds the corresponding amount of taxes from each paycheck",
           "spanish": {
@@ -3569,7 +3929,7 @@
           }
         },
         {
-          "id": "taxes-037",
+          "id": "taxes-040",
           "term": "Withholding",
           "definition": "The portion of an employee's wages that is not included in their paycheck because it goes directly to federal, state and local taxes",
           "spanish": {
@@ -3595,6 +3955,15 @@
         },
         {
           "id": "budgeting-002",
+          "term": "Auto Lease",
+          "definition": "An agreement where an individual makes monthly payments to use a car for a certain length of time instead of purchasing the car",
+          "spanish": {
+            "term": "El contrato de arrendamiento de automóvil",
+            "definition": "Es un tipo de contrato para financiar con pagos mensuales un automóvil que permite el “alquiler” de un vehículo de un distribuidor de automóviles para un periodo de tiempo determinado en vez de comprar el carro."
+          }
+        },
+        {
+          "id": "budgeting-003",
           "term": "Budget",
           "definition": "A plan of your expected income and how you will use it to meet your expected expenses over a period of time",
           "spanish": {
@@ -3603,7 +3972,7 @@
           }
         },
         {
-          "id": "budgeting-003",
+          "id": "budgeting-004",
           "term": "Cash Envelope Budget",
           "definition": "A budgeting method where money for monthly spending is taken out in cash and placed in labeled envelopes according to budget categories. Spending occurs only from the corresponding envelopes.",
           "spanish": {
@@ -3612,7 +3981,16 @@
           }
         },
         {
-          "id": "budgeting-004",
+          "id": "budgeting-005",
+          "term": "Cost-burdened",
+          "definition": "A description of a household that spends more than 30% of their gross income on housing. It is a measure of housing affordability; also called rent-burdened.",
+          "spanish": {
+            "term": "Carga alta por el costo de la vivienda",
+            "definition": "Descripción de un hogar que destina más del 30 % de sus ingresos brutos al pago de la vivienda. Se usa para medir si el costo de la vivienda es demasiado alto para ese hogar. También se conoce como carga alta por el costo de la renta."
+          }
+        },
+        {
+          "id": "budgeting-006",
           "term": "Cost of Living",
           "definition": "The amount of money needed to sustain a certain level of living, including basic expenses such as housing, food, taxes, and healthcare; often used when comparing how expensive it is to live in one city versus another",
           "spanish": {
@@ -3621,7 +3999,7 @@
           }
         },
         {
-          "id": "budgeting-005",
+          "id": "budgeting-007",
           "term": "Deduction",
           "definition": "Any items subtracted from your paycheck, including state and federal income taxes, Social Security, health insurance or 401(k) contributions",
           "spanish": {
@@ -3630,7 +4008,7 @@
           }
         },
         {
-          "id": "budgeting-006",
+          "id": "budgeting-008",
           "term": "Deficit",
           "definition": "When your expenses exceed your income",
           "spanish": {
@@ -3639,7 +4017,7 @@
           }
         },
         {
-          "id": "budgeting-007",
+          "id": "budgeting-009",
           "term": "Down Payment",
           "definition": "A portion of the total cost of an item, such as a car or house, that must be paid at the time of purchase. The buyer will often take out a loan to finance the remaining balance.",
           "spanish": {
@@ -3648,7 +4026,7 @@
           }
         },
         {
-          "id": "budgeting-008",
+          "id": "budgeting-010",
           "term": "Emergency Fund",
           "definition": "Money set aside for unanticipated expenses or loss of income",
           "spanish": {
@@ -3657,7 +4035,7 @@
           }
         },
         {
-          "id": "budgeting-009",
+          "id": "budgeting-011",
           "term": "Expenses",
           "definition": "Items or services you pay for such as rent, groceries, entertainment, bills, etc.",
           "spanish": {
@@ -3666,7 +4044,16 @@
           }
         },
         {
-          "id": "budgeting-010",
+          "id": "budgeting-012",
+          "term": "Financing",
+          "definition": "To buy an item with credit and pay it back over time with interest",
+          "spanish": {
+            "term": "El financiamiento",
+            "definition": "Comprar una cosa con crédito y devolver en dinero durante un periodo de tiempo con intereses"
+          }
+        },
+        {
+          "id": "budgeting-013",
           "term": "Fixed Expense",
           "definition": "A cost that can be expected at regular intervals and that remains the same amount (e.g., monthly rent payment)",
           "spanish": {
@@ -3675,7 +4062,7 @@
           }
         },
         {
-          "id": "budgeting-011",
+          "id": "budgeting-014",
           "term": "Fixed Income",
           "definition": "Income that remains the same from week to week or month to month",
           "spanish": {
@@ -3684,7 +4071,7 @@
           }
         },
         {
-          "id": "budgeting-012",
+          "id": "budgeting-015",
           "term": "Gross Pay",
           "definition": "Total earnings before any deductions are taken",
           "spanish": {
@@ -3693,7 +4080,7 @@
           }
         },
         {
-          "id": "budgeting-013",
+          "id": "budgeting-016",
           "term": "Income",
           "definition": "Money that is received from work, investments, business, etc.",
           "spanish": {
@@ -3702,7 +4089,16 @@
           }
         },
         {
-          "id": "budgeting-014",
+          "id": "budgeting-017",
+          "term": "Insurance",
+          "definition": "An agreement where you make regular payments to a company and the company promises to pay you money if you suffer a specified injury, illness, loss, etc.",
+          "spanish": {
+            "term": "El seguro",
+            "definition": "Es un acuerdo en el cual usted acepta hacer pagos regulares a una compañía y en cambio la compañía promete pagar dinero en el caso del sufrimiento de una herida especificada, una enfermedad, una pérdida, etc."
+          }
+        },
+        {
+          "id": "budgeting-018",
           "term": "Living Wage",
           "definition": "The lowest income necessary for a worker to meet their basic needs",
           "spanish": {
@@ -3711,7 +4107,7 @@
           }
         },
         {
-          "id": "budgeting-015",
+          "id": "budgeting-019",
           "term": "Low Income",
           "definition": "Not having or earning much money",
           "spanish": {
@@ -3720,7 +4116,7 @@
           }
         },
         {
-          "id": "budgeting-016",
+          "id": "budgeting-020",
           "term": "Needs",
           "definition": "Expenses that are essential for you to be able to live and function",
           "spanish": {
@@ -3729,7 +4125,7 @@
           }
         },
         {
-          "id": "budgeting-017",
+          "id": "budgeting-021",
           "term": "Net Pay",
           "definition": "Total earnings after payroll taxes and other deductions have been taken out; also called take-home pay",
           "spanish": {
@@ -3738,7 +4134,7 @@
           }
         },
         {
-          "id": "budgeting-018",
+          "id": "budgeting-022",
           "term": "Pay Yourself First",
           "definition": "A strategy where you save a specified amount of your paycheck before doing anything with the rest of your money",
           "spanish": {
@@ -3747,7 +4143,7 @@
           }
         },
         {
-          "id": "budgeting-019",
+          "id": "budgeting-023",
           "term": "Public Transportation",
           "definition": "Buses, trains, subways, and other forms of transportation that charge set fares, run on fixed routes, and are available to the public.",
           "spanish": {
@@ -3756,7 +4152,7 @@
           }
         },
         {
-          "id": "budgeting-020",
+          "id": "budgeting-024",
           "term": "Renters Insurance",
           "definition": "A form of property insurance, available to renters, that covers losses to their personal property and protects the insured person from liability claims",
           "spanish": {
@@ -3765,7 +4161,7 @@
           }
         },
         {
-          "id": "budgeting-021",
+          "id": "budgeting-025",
           "term": "Residential Lease",
           "definition": "A contract between a tenant and a landlord providing the terms and costs for renting the property",
           "spanish": {
@@ -3774,7 +4170,7 @@
           }
         },
         {
-          "id": "budgeting-022",
+          "id": "budgeting-026",
           "term": "Salary",
           "definition": "A fixed amount that you are paid over a period of time, regardless of how many hours you work",
           "spanish": {
@@ -3783,7 +4179,16 @@
           }
         },
         {
-          "id": "budgeting-023",
+          "id": "budgeting-027",
+          "term": "Security Deposit",
+          "definition": "A refundable upfront payment that a renter gives to a landlord. It covers possible damage or unpaid rent.",
+          "spanish": {
+            "term": "Depósito de seguridad",
+            "definition": "Dinero que una persona entrega al propietario antes de mudarse. Si no hay daños ni renta pendiente, el dinero se devuelve."
+          }
+        },
+        {
+          "id": "budgeting-028",
           "term": "Surplus",
           "definition": "When your income exceeds your expenses and you have money leftover",
           "spanish": {
@@ -3792,7 +4197,7 @@
           }
         },
         {
-          "id": "budgeting-024",
+          "id": "budgeting-029",
           "term": "Unit Price",
           "definition": "The cost for one item or measurement that allows it to be easily compared to other similar products to evaluate which is a better deal",
           "spanish": {
@@ -3801,7 +4206,7 @@
           }
         },
         {
-          "id": "budgeting-025",
+          "id": "budgeting-030",
           "term": "Utilities",
           "definition": "The basic services your home, apartment, or business needs to keep it comfortable and functioning properly (e.g. water, electricity, etc.)",
           "spanish": {
@@ -3810,7 +4215,7 @@
           }
         },
         {
-          "id": "budgeting-026",
+          "id": "budgeting-031",
           "term": "Variable Expense",
           "definition": "A cost that appears irregularly or that changes in amount (e.g., utility bills)",
           "spanish": {
@@ -3819,7 +4224,7 @@
           }
         },
         {
-          "id": "budgeting-027",
+          "id": "budgeting-032",
           "term": "Variable Income",
           "definition": "Income that varies from week to week or month to month",
           "spanish": {
@@ -3828,7 +4233,7 @@
           }
         },
         {
-          "id": "budgeting-028",
+          "id": "budgeting-033",
           "term": "Wage",
           "definition": "A set amount you are paid for every hour that you work; also called hourly pay",
           "spanish": {
@@ -3837,7 +4242,7 @@
           }
         },
         {
-          "id": "budgeting-029",
+          "id": "budgeting-034",
           "term": "Wants",
           "definition": "Expenses that help you live more comfortably",
           "spanish": {
@@ -3846,7 +4251,16 @@
           }
         },
         {
-          "id": "budgeting-030",
+          "id": "budgeting-035",
+          "term": "Warranty",
+          "definition": "A company's or a store's written agreement to repair a product or refund your money if the product doesn't function properly",
+          "spanish": {
+            "term": "La garantía",
+            "definition": "Es un acuerdo escrito de una compañía o de una tienda para la reparación de un producto o la devolución de dinero si un producto no funciona correctamente"
+          }
+        },
+        {
+          "id": "budgeting-036",
           "term": "Wealth",
           "definition": "A measurement of your assets (money you've saved or things of value you own) minus your liabilities (money you owe others); also called net worth",
           "spanish": {
@@ -3855,7 +4269,7 @@
           }
         },
         {
-          "id": "budgeting-031",
+          "id": "budgeting-037",
           "term": "Zero-Based Budget",
           "definition": "A budgeting method where every anticipated earning is assigned a role to be spent, saved, or invested somewhere, so there's no \"leftover\" money with no purpose",
           "spanish": {

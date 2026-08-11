@@ -1,0 +1,32 @@
+<div class="scenario-table-wrapper">
+  <table class="scenario-table">
+    <thead>
+      <tr>
+        @if (rowLabels().length) {
+          <th scope="col" class="row-label-head"><span class="sr-only">Scenario</span></th>
+        }
+        @for (h of headers(); track h) {
+          <th scope="col">{{ h }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track $index; let rowIndex = $index) {
+        <tr [class.yours]="row.isYours">
+          @if (rowLabels().length) {
+            <th scope="row" class="row-label">{{ rowLabels()[rowIndex] }}</th>
+          }
+          @for (cell of row.cells; track $index; let cellIndex = $index) {
+            @if (row.isYours && cellIndex === row.cells.length - 1) {
+              <td class="answer-cell">
+                <ng-content />
+              </td>
+            } @else {
+              <td [class.changed]="row.isYours">{{ cell }}</td>
+            }
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

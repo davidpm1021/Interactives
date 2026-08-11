@@ -1,24 +1,45 @@
 import { AccountStatement, AccountTransaction } from '../models/account-statement.model';
 import { pick, randFloat, randInt, shiftDays, toISO } from './random-helpers.util';
 import { CITIES, FIRST_NAMES, LAST_NAMES, STREETS } from './pools.util';
-import { CREDIT_VENDORS, DEBIT_VENDORS, REF_LABELS, VendorPicker, VendorPreset } from './vendors.util';
+import { CREDIT_VENDORS, DEBIT_VENDORS, VendorPicker, VendorPreset } from './vendors.util';
 
 const BANKS = [
   { name: 'Cascade Federal Credit Union', tagline: 'Member-owned since 1962' },
   { name: 'Brightline National Bank', tagline: 'Banking that travels with you' },
   { name: 'Pinecrest Community Bank', tagline: 'Local roots, regional reach' },
-  { name: 'Harbor Trust Savings', tagline: 'Established 1894' },
+  { name: 'Harbor Trust Bank', tagline: 'Established 1894' },
   { name: 'Northstar Bank', tagline: 'Built on trust' },
 ];
 
+/**
+ * Build a realistic all-caps bank-statement description for a vendor
+ * transaction. Real statements use terse prefixes like "POS PURCHASE",
+ * "ACH DEBIT", "CHECK #NNNN", "ATM WITHDRAWAL NNNN", "DIRECT DEPOSIT",
+ * with vendor names uppercased and parenthetical qualifiers stripped.
+ */
+function describeVendor(vendor: VendorPreset, isDebit: boolean): string {
+  const cleanName = vendor.description.replace(/\s*\([^)]*\)\s*$/, '').toUpperCase();
+  switch (vendor.refKind) {
+    case 'check':
+      return `CHECK #${randInt(1000, 9999)} ${cleanName}`;
+    case 'pos':
+      return `POS PURCHASE ${cleanName}`;
+    case 'ach':
+      return `${isDebit ? 'ACH DEBIT' : 'ACH CREDIT'} ${cleanName}`;
+    case 'atm':
+      return `ATM WITHDRAWAL ${randInt(1000, 9999)}`;
+    case 'dep':
+      if (vendor.id === 'paycheck') return 'DIRECT DEPOSIT PAYROLL';
+      if (vendor.id === 'birthday') return 'MOBILE DEPOSIT';
+      return `ELECTRONIC DEPOSIT ${cleanName}`;
+  }
+}
+
 function txnFromVendor(date: Date, vendor: VendorPreset, isDebit: boolean): AccountTransaction {
-  const amount = randFloat(vendor.amtMin, vendor.amtMax);
-  const channel = REF_LABELS[vendor.refKind];
-  const desc = channel ? `${channel} — ${vendor.description}` : vendor.description;
   return {
     date: toISO(date),
-    description: desc,
-    amount,
+    description: describeVendor(vendor, isDebit),
+    amount: randFloat(vendor.amtMin, vendor.amtMax),
     kind: isDebit ? 'debit' : 'credit',
   };
 }
@@ -64,7 +85,7 @@ export function randomChecking(now: Date = new Date()): AccountStatement {
   if (accountType === 'Standard Checking') {
     transactions.push({
       date: toISO(shiftDays(periodEnd, -1)),
-      description: 'Monthly maintenance fee',
+      description: 'MONTHLY MAINTENANCE FEE',
       amount: 12,
       kind: 'debit',
     });
@@ -73,7 +94,7 @@ export function randomChecking(now: Date = new Date()): AccountStatement {
   if (Math.random() < 0.15) {
     transactions.push({
       date: toISO(shiftDays(periodStart, randInt(5, 22))),
-      description: 'ATM fee — out-of-network',
+      description: 'ATM FEE OUT-OF-NETWORK',
       amount: 3.5,
       kind: 'debit',
     });
@@ -120,7 +141,7 @@ export function randomSavings(now: Date = new Date()): AccountStatement {
     if (cursor > periodEnd) break;
     transactions.push({
       date: toISO(cursor),
-      description: 'Automatic transfer from checking',
+      description: 'TRANSFER FROM CHECKING',
       amount: transferAmt,
       kind: 'credit',
     });
@@ -129,9 +150,9 @@ export function randomSavings(now: Date = new Date()): AccountStatement {
     transactions.push({
       date: toISO(shiftDays(periodStart, randInt(10, 24))),
       description: pick([
-        'Withdrawal — emergency car repair',
-        'Withdrawal — medical co-pay',
-        'Withdrawal — security deposit',
+        'WITHDRAWAL EMERGENCY CAR REPAIR',
+        'WITHDRAWAL MEDICAL COPAY',
+        'WITHDRAWAL SECURITY DEPOSIT',
       ]),
       amount: randFloat(120, 480),
       kind: 'debit',

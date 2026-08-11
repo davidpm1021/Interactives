@@ -9,6 +9,12 @@ import {
   YearlyDataPoint,
 } from '../models/compound-interest.models';
 
+/**
+ * Monthly deposit for Challenge 3. Exported so the copy and the scenario
+ * table quote the same number the simulation runs, instead of retyping it.
+ */
+export const CHALLENGE_3_MONTHLY = 25;
+
 @Injectable({ providedIn: 'root' })
 export class CompoundInterestService {
   calculate(inputs: SimulationInputs): SimulationResult {
@@ -25,11 +31,11 @@ export class CompoundInterestService {
     return { dataPoints, summary };
   }
 
-  /** Challenge 1: $1k, 7%, 40yr, no contributions, annually */
-  calculateChallenge1(): SimulationResult {
+  /** Challenge 1: $1k, {rate=7%}, 40yr, no contributions, annually */
+  calculateChallenge1(rate = 0.07): SimulationResult {
     return this.calculate({
       principal: 1000,
-      interestRate: 0.07,
+      interestRate: rate,
       timeHorizon: 40,
       contributionAmount: 0,
       contributionFrequency: 'none',
@@ -61,23 +67,31 @@ export class CompoundInterestService {
     });
   }
 
-  /** Challenge 3: $1k + $100/mo, 7%, 40yr, monthly compounding */
-  calculateChallenge3(): SimulationResult {
+  /**
+   * Challenge 3: $1k + $25/mo, {rate=7%}, 40yr, monthly compounding.
+   *
+   * $25 rather than $100 so the deposits stay *smaller* than what the original
+   * $1,000 grows to on its own ($12,000 vs $14,974). Review: at $100/mo "you're
+   * adding more than the final value of the initial investment", which makes
+   * "the power of adding a little" read as "obviously, you put in a pile of
+   * money."
+   */
+  calculateChallenge3(rate = 0.07): SimulationResult {
     return this.calculate({
       principal: 1000,
-      interestRate: 0.07,
+      interestRate: rate,
       timeHorizon: 40,
-      contributionAmount: 100,
+      contributionAmount: CHALLENGE_3_MONTHLY,
       contributionFrequency: 'monthly',
       compoundingFrequency: 'monthly',
     });
   }
 
-  /** Challenge 4 early: $0 + $200/mo, 7%, 40yr (age 22–62), monthly compounding */
-  calculateChallenge4Early(): SimulationResult {
+  /** Challenge 4 early: $0 + $200/mo, {rate=7%}, 40yr (age 22–62), monthly compounding */
+  calculateChallenge4Early(rate = 0.07): SimulationResult {
     return this.calculate({
       principal: 0,
-      interestRate: 0.07,
+      interestRate: rate,
       timeHorizon: 40,
       contributionAmount: 200,
       contributionFrequency: 'monthly',
@@ -85,11 +99,11 @@ export class CompoundInterestService {
     });
   }
 
-  /** Challenge 4 late: $0 + $200/mo, 7%, 30yr (age 32–62), monthly compounding */
-  calculateChallenge4Late(): SimulationResult {
+  /** Challenge 4 late: $0 + $200/mo, {rate=7%}, 30yr (age 32–62), monthly compounding */
+  calculateChallenge4Late(rate = 0.07): SimulationResult {
     return this.calculate({
       principal: 0,
-      interestRate: 0.07,
+      interestRate: rate,
       timeHorizon: 30,
       contributionAmount: 200,
       contributionFrequency: 'monthly',

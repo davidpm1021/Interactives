@@ -11,6 +11,23 @@
     input[type='checkbox'] { width: 16px; height: 16px; }
     span { font-weight: 400 !important; }
   }
+
+  &__autofill {
+    display: flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-sm);
+    margin-top: var(--ngpf-spacing-xs);
+    flex-wrap: wrap;
+  }
+
+  &__autofill-hint {
+    font-size: 0.75rem;
+    color: var(--ngpf-text-muted);
+    font-style: italic;
+    line-height: 1.3;
+    flex: 1;
+    min-width: 220px;
+  }
 }
 
 .w2-preview {
@@ -27,38 +44,35 @@
   max-width: 8.5in;
   margin: 0 auto;
 
-  &__title-row {
+  // ── Main body: identity boxes left, money boxes right (IRS Copy B) ──
+  &__body {
     display: grid;
-    grid-template-columns: 1.5fr 0.6fr 1fr;
-    gap: 0.15in;
-    align-items: end;
-    border-bottom: 2px solid #1a1a1a;
-    padding-bottom: 0.06in;
-    margin-bottom: 0.08in;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    border: 1px solid #1a1a1a;
   }
 
-  &__form-title { line-height: 1.1; }
-  &__form-name { font-size: 16pt; font-weight: 800; }
-  &__form-subtitle { font-size: 9pt; color: #555; }
-  &__year { font-size: 22pt; font-weight: 800; text-align: center; }
-  &__agency { font-size: 7pt; text-align: right; color: #444; }
+  &__col-left,
+  &__col-right {
+    display: flex;
+    flex-direction: column;
+  }
 
-  &__grid {
+  &__col-left {
+    border-right: 1px solid #1a1a1a;
+  }
+
+  &__money-pair {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 0;
-    border: 1px solid #1a1a1a;
+    grid-template-columns: 1fr 1fr;
   }
 
   &__box {
     border: 0.5px solid #999;
     padding: 3px 5px;
-    grid-column: span 2;
     min-height: 36px;
 
-    &--span-2 { grid-column: span 3; }
-    &--span-6 { grid-column: span 6; }
     &--tall { min-height: 58px; }
+    &--wide { grid-column: 1 / -1; }
   }
 
   &__box-label {
@@ -85,7 +99,8 @@
 
   &__box13 {
     display: flex;
-    gap: 0.15in;
+    flex-direction: column;
+    gap: 2px;
     font-size: 7pt;
     margin-top: 2px;
 
@@ -114,7 +129,12 @@
     }
   }
 
-  &__state { padding: 0; }
+  // ── State row (full width) ──
+  &__state {
+    border: 1px solid #1a1a1a;
+    border-top: none;
+  }
+
   &__state-row { display: grid; grid-template-columns: 0.5fr 1.2fr 1fr 1fr; }
   &__state-cell {
     padding: 3px 5px;
@@ -122,6 +142,23 @@
 
     &:last-child { border-right: none; }
   }
+
+  // ── Footer: form title at the bottom (Copy B convention) ──
+  &__footer {
+    display: grid;
+    grid-template-columns: 1.5fr 0.6fr 1fr;
+    gap: 0.15in;
+    align-items: end;
+    border-top: 2px solid #1a1a1a;
+    padding-top: 0.08in;
+    margin-top: 0.08in;
+  }
+
+  &__form-title { line-height: 1.1; }
+  &__form-name { font-size: 16pt; font-weight: 800; }
+  &__form-subtitle { font-size: 9pt; color: #555; }
+  &__year { font-size: 22pt; font-weight: 800; text-align: center; }
+  &__agency { font-size: 7pt; text-align: right; color: #444; }
 }
 
 @media print {
@@ -131,5 +168,7 @@
     padding: 0;
     max-width: 100%;
     page-break-inside: avoid;
+    break-inside: avoid;
+    &::after { content: none !important; }
   }
 }

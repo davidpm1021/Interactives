@@ -25,6 +25,23 @@
     margin: var(--ngpf-spacing-sm) 0 0;
   }
 
+  // Set apart from the scenario above it so it reads as a caveat about the
+  // whole activity rather than another line of the grandma story. White
+  // rather than --ngpf-soft-blue-tint, which is the exact page background
+  // here and made the box invisible.
+  &__caution {
+    font-size: 0.92rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.55;
+    margin: var(--ngpf-spacing-md) auto 0;
+    max-width: 34rem;
+    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
+    background: white;
+    border-left: 3px solid var(--ngpf-bright-blue);
+    border-radius: var(--ngpf-radius-sm);
+    text-align: left;
+  }
+
   &__section {
     display: flex;
     flex-direction: column;
@@ -61,61 +78,10 @@
     gap: var(--ngpf-spacing-sm);
   }
 
-  // ── Summary ──
-  &__summary {
+  &__advance-row {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--ngpf-spacing-md);
+    justify-content: center;
     animation: fadeIn 0.3s ease-out;
-  }
-
-  &__summary-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  &__summary-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-    background: white;
-    border-radius: var(--ngpf-radius-md);
-    overflow: hidden;
-    box-shadow: var(--ngpf-shadow-sm);
-
-    th, td {
-      padding: 0.625rem 0.75rem;
-      text-align: left;
-    }
-
-    th {
-      background: var(--ngpf-royal-blue);
-      color: var(--ngpf-text-on-dark);
-      font-family: var(--ngpf-font-heading);
-      font-weight: 700;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    td {
-      border-bottom: 1px solid var(--ngpf-light-gray-blue);
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    tbody tr:nth-child(even) {
-      background: var(--ngpf-soft-blue-tint);
-    }
-  }
-
-  &__ticker {
-    font-family: var(--ngpf-font-heading);
-    font-weight: 700;
-    color: var(--ngpf-royal-blue);
   }
 
   &__advance {

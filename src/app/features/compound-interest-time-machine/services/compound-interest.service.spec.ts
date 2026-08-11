@@ -210,16 +210,25 @@ describe('CompoundInterestService', () => {
       expect(ratio).toBeLessThan(7);
     });
 
-    it('calculateChallenge3 returns ~$262k at year 40', () => {
+    it('calculateChallenge3 returns ~$82k at year 40', () => {
       const result = service.calculateChallenge3();
-      expect(result.summary.finalBalance).toBeGreaterThan(240000);
-      expect(result.summary.finalBalance).toBeLessThan(290000);
+      expect(result.summary.finalBalance).toBeGreaterThan(75000);
+      expect(result.summary.finalBalance).toBeLessThan(90000);
     });
 
-    it('challenge3 total contributions = $49,000 principal+monthly', () => {
+    it('challenge3 total contributions = $13,000 principal+monthly', () => {
       const result = service.calculateChallenge3();
-      // $1,000 principal + $100/mo * 12 * 40 = $49,000
-      expect(result.summary.totalContributions).toBeCloseTo(49000, 0);
+      // $1,000 principal + $25/mo * 12 * 40 = $13,000
+      expect(result.summary.totalContributions).toBeCloseTo(13000, 0);
+    });
+
+    it('challenge3 deposits stay below what the lump sum alone grows to', () => {
+      // The whole point of lowering the contribution: "the power of adding a
+      // little" fails to land if the little addition dwarfs the thing it's
+      // supplementing. Guards against a future bump back up.
+      const c3 = service.calculateChallenge3();
+      const depositsOnly = c3.summary.totalContributions - 1000;
+      expect(depositsOnly).toBeLessThan(service.calculateChallenge1().summary.finalBalance);
     });
 
     it('calculateChallenge4Early returns ~$528k', () => {
@@ -253,7 +262,9 @@ describe('CompoundInterestService', () => {
 
   describe('milestones', () => {
     it('should detect balance-100k milestone for large balances', () => {
-      const result = service.calculateChallenge3();
+      // Challenge 4 rather than 3: at $25/mo challenge 3 tops out around $82k
+      // and legitimately never crosses $100k.
+      const result = service.calculateChallenge4Early();
       const m100k = result.summary.milestones?.find((m) => m.type === 'balance-100k');
       expect(m100k).toBeDefined();
       expect(m100k!.year).toBeGreaterThan(0);

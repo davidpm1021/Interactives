@@ -1,0 +1,21 @@
+<section class="reflection-form" aria-labelledby="reflection-title">
+  <h3 id="reflection-title" class="reflection-form__title">Your Reflections</h3>
+  <p class="reflection-form__hint">
+    A few short questions to help you take something away. These save automatically.
+  </p>
+
+  @for (field of fields; track field.id) {
+    <div class="reflection-field">
+      <label class="reflection-field__label" [attr.for]="field.id">
+        {{ field.prompt }}
+      </label>
+      <textarea
+        [id]="field.id"
+        class="reflection-field__input"
+        rows="3"
+        [value]="reflections()[field.id] ?? ''"
+        (input)="onInput(field.id, $event)"
+      ></textarea>
+    </div>
+  }
+</section>

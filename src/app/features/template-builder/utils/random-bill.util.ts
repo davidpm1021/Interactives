@@ -13,109 +13,10 @@ interface BillerPreset {
 }
 
 const BILLERS: BillerPreset[] = [
-  // Electric — local.
-  {
-    name: 'Pacific Northwest Electric',
-    addressLine1: 'PO Box 4421',
-    addressLine2: 'Portland, OR 97208',
-    phone: '(503) 555-0142',
-    geoStates: ['OR', 'WA'],
-    buildItems: () => {
-      const kwh = randInt(280, 720);
-      const rate = 0.118;
-      return [
-        { description: 'Basic service charge', amount: round2(12 + Math.random() * 8) },
-        { description: `Energy used: ${kwh} kWh @ $${rate}/kWh`, amount: round2(kwh * rate) },
-        { description: 'Delivery charges', amount: round2(15 + Math.random() * 10) },
-        { description: 'State energy tax', amount: round2(1 + Math.random() * 4) },
-      ];
-    },
-  },
-  {
-    name: 'Bayfront Power',
-    addressLine1: 'PO Box 8810',
-    addressLine2: 'Tampa, FL 33601',
-    phone: '(813) 555-0177',
-    geoStates: ['FL', 'CA'],
-    buildItems: () => {
-      const kwh = randInt(420, 980);
-      const rate = 0.132;
-      return [
-        { description: 'Customer charge', amount: round2(11 + Math.random() * 6) },
-        { description: `Energy used: ${kwh} kWh @ $${rate}/kWh`, amount: round2(kwh * rate) },
-        { description: 'Fuel adjustment', amount: round2(6 + Math.random() * 8) },
-      ];
-    },
-  },
-  {
-    name: 'Prairie Electric Co-op',
-    addressLine1: '88 Industrial Way',
-    addressLine2: 'Boulder, CO 80301',
-    phone: '(303) 555-0144',
-    geoStates: ['CO', 'MT', 'TX'],
-    buildItems: () => {
-      const kwh = randInt(320, 760);
-      const rate = 0.106;
-      return [
-        { description: 'Member service charge', amount: 9.75 },
-        { description: `Energy used: ${kwh} kWh @ $${rate}/kWh`, amount: round2(kwh * rate) },
-        { description: 'Generation adjustment', amount: round2(3 + Math.random() * 4) },
-      ];
-    },
-  },
-  {
-    name: 'Badger Energy',
-    addressLine1: '215 Capitol Square',
-    addressLine2: 'Madison, WI 53703',
-    phone: '(608) 555-0118',
-    geoStates: ['WI', 'MN', 'NC'],
-    buildItems: () => {
-      const kwh = randInt(380, 820);
-      const rate = 0.124;
-      return [
-        { description: 'Basic service', amount: 14.5 },
-        { description: `Energy used: ${kwh} kWh @ $${rate}/kWh`, amount: round2(kwh * rate) },
-        { description: 'Delivery surcharge', amount: round2(8 + Math.random() * 6) },
-        { description: 'Renewable energy fund', amount: round2(2 + Math.random() * 2) },
-      ];
-    },
-  },
-
-  // Water — local.
-  {
-    name: 'Stream City Water',
-    addressLine1: '210 Civic Plaza',
-    addressLine2: 'Madison, WI 53703',
-    phone: '(608) 555-0124',
-    geoStates: ['WI', 'MN'],
-    buildItems: () => {
-      const gal = randInt(2000, 5500);
-      return [
-        { description: 'Water base charge', amount: 12.5 },
-        { description: `Water use: ${gal} gal`, amount: round2(gal * 0.0058) },
-        { description: 'Sewer service', amount: round2(18 + Math.random() * 6) },
-        { description: 'Stormwater fee', amount: 4.25 },
-      ];
-    },
-  },
-
-  // Natural gas — local.
-  {
-    name: 'Greenway Natural Gas',
-    addressLine1: 'PO Box 1199',
-    addressLine2: 'Denver, CO 80201',
-    phone: '(720) 555-0185',
-    geoStates: ['CO', 'MT', 'NC', 'WI', 'MN'],
-    buildItems: () => {
-      const therms = randInt(20, 95);
-      const rate = 0.84;
-      return [
-        { description: 'Monthly service fee', amount: 9.5 },
-        { description: `Natural gas: ${therms} therms @ $${rate}`, amount: round2(therms * rate) },
-        { description: 'Pipeline integrity charge', amount: round2(2 + Math.random() * 3) },
-      ];
-    },
-  },
+  // Electric, water, and natural gas billers were removed. Real versions of
+  // those bills include a previous-usage chart that this template doesn't
+  // render — better to drop them than fake it. Only usage-agnostic billers
+  // stay: internet, mobile, insurance.
 
   // Nationwide.
   {
@@ -148,10 +49,77 @@ const BILLERS: BillerPreset[] = [
     addressLine2: 'San Diego, CA 92103',
     phone: '(619) 555-0166',
     buildItems: () => [
-      { description: 'Liability coverage — monthly premium', amount: round2(46 + Math.random() * 20) },
+      { description: 'Liability coverage (monthly premium)', amount: round2(46 + Math.random() * 20) },
       { description: 'Comprehensive and collision', amount: round2(30 + Math.random() * 18) },
       { description: 'Roadside assistance', amount: 4.0 },
       { description: 'Multi-policy discount', amount: round2(-(3 + Math.random() * 4)) },
+    ],
+  },
+  {
+    name: 'Pinecrest Renters Insurance',
+    addressLine1: 'PO Box 5501',
+    addressLine2: 'Minneapolis, MN 55402',
+    phone: '(612) 555-0139',
+    buildItems: () => [
+      { description: 'Personal property coverage', amount: round2(10 + Math.random() * 8) },
+      { description: 'Liability coverage', amount: round2(4 + Math.random() * 4) },
+      { description: 'Loss of use coverage', amount: 2.0 },
+      { description: 'Policy service fee', amount: 1.5 },
+    ],
+  },
+  {
+    name: 'Northstar Gym & Fitness',
+    addressLine1: '722 Lakeview Drive',
+    addressLine2: 'Denver, CO 80202',
+    phone: '(720) 555-0192',
+    buildItems: () => [
+      { description: 'Monthly membership', amount: pick([29.99, 39.99, 49.99]) },
+      { description: 'Group class add-on', amount: pick([0, 0, 10]) },
+      { description: 'Annual maintenance fee (prorated)', amount: round2(2 + Math.random() * 2) },
+    ],
+  },
+  {
+    name: 'Harbor Trust Home Security',
+    addressLine1: 'PO Box 3320',
+    addressLine2: 'Tampa, FL 33601',
+    phone: '(813) 555-0155',
+    buildItems: () => [
+      { description: '24/7 professional monitoring', amount: pick([34.99, 44.99, 54.99]) },
+      { description: 'Cellular backup', amount: 8.0 },
+      { description: 'Equipment lease', amount: round2(6 + Math.random() * 3) },
+    ],
+  },
+  {
+    name: 'Cascade Waste Services',
+    addressLine1: '1440 Industrial Boulevard',
+    addressLine2: 'Portland, OR 97220',
+    phone: '(503) 555-0148',
+    buildItems: () => [
+      { description: 'Trash and recycling service', amount: pick([26.5, 29.75, 32.0]) },
+      { description: 'Yard debris collection', amount: 8.5 },
+      { description: 'Fuel and environmental fee', amount: round2(2 + Math.random() * 2) },
+    ],
+  },
+  {
+    name: 'Ridgeline HOA',
+    addressLine1: '355 Meadowbrook Circle',
+    addressLine2: 'Asheville, NC 28803',
+    phone: '(828) 555-0117',
+    buildItems: () => [
+      { description: 'Monthly homeowner dues', amount: pick([185, 220, 265, 310]) },
+      { description: 'Reserve fund contribution', amount: round2(18 + Math.random() * 10) },
+      { description: 'Landscaping assessment', amount: 12.0 },
+    ],
+  },
+  {
+    name: 'Atlas Streaming Bundle',
+    addressLine1: '600 Market Street',
+    addressLine2: 'Culver City, CA 90232',
+    phone: '(310) 555-0181',
+    buildItems: () => [
+      { description: 'Standard plan (2 screens, HD)', amount: pick([15.99, 17.99, 19.99]) },
+      { description: 'Add-on: live sports package', amount: pick([0, 9.99, 12.99]) },
+      { description: 'Taxes and regulatory fees', amount: round2(1 + Math.random() * 2) },
     ],
   },
 ];

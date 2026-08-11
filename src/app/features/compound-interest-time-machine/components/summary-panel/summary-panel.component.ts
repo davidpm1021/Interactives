@@ -1,12 +1,11 @@
-import { Component, input, computed, signal, effect, OnDestroy } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { Component, input, computed, signal, effect, untracked, OnDestroy } from '@angular/core';
 import { SimulationResult, YearlyDataPoint } from '../../models/compound-interest.models';
-import { formatCurrency, formatPercent } from '../../utils/formatters';
+import { formatCurrency } from '../../utils/formatters';
 
 @Component({
   selector: 'app-summary-panel',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [],
   templateUrl: './summary-panel.component.html',
   styleUrl: './summary-panel.component.scss',
 })
@@ -14,6 +13,40 @@ export class SummaryPanelComponent implements OnDestroy {
   readonly result = input.required<SimulationResult>();
   readonly selectedYear = input<number | null>(null);
   readonly comparisonResult = input<SimulationResult | null>(null);
+  /**
+   * When true, changes to the values tween over 300ms. When false, they snap
+   * instantly. Sandbox turns this on only during auto-play so slider/scrub
+   * updates don't leave the numbers chasing the target.
+   */
+  readonly animate = input(false);
+  /**
+   * When set, callouts and headings render "age N" instead of "year N".
+   * The header year label uses (startAge + displayData.year).
+   */
+  readonly startAge = input<number | null>(null);
+  /**
+   * Copy for the comparison-delta callout. Sandbox passes the "wait 5 years"
+   * phrasing; other consumers can override. Not used unless comparisonResult
+   * is set.
+   */
+  readonly comparisonLabel = input('Starting earlier earned you');
+  /**
+   * Text after the dollar amount. Lives alongside comparisonLabel because the
+   * sentence reads differently depending on framing: "Starting earlier earned
+   * you $X more!" vs "Waiting 5 years cost you $X." A hardcoded " more."
+   * suffix made the second phrasing say the opposite of what it means.
+   */
+  readonly comparisonSuffix = input(' more!');
+  /**
+   * Timeline position the narrative callouts respond to, independent of hover.
+   *
+   * `selectedYear` follows the cursor so the numbers update as the student
+   * inspects the chart, but a summary statement about the whole run should not
+   * blink out just because the pointer is resting left of the doubling point —
+   * which is exactly where it sits while scrolling down to read the callout.
+   * Falls back to `selectedYear` when not supplied.
+   */
+  readonly calloutYear = input<number | null>(null);
 
   protected readonly displayData = computed(() => {
     const res = this.result();
@@ -25,9 +58,6 @@ export class SummaryPanelComponent implements OnDestroy {
       balance: dp.compoundBalance,
       contributions: dp.totalContributions,
       interestEarned: dp.totalInterestEarned,
-      interestPercent: dp.compoundBalance > 0
-        ? (dp.totalInterestEarned / dp.compoundBalance) * 100
-        : 0,
       year: dp.year,
     };
   });
@@ -36,14 +66,14 @@ export class SummaryPanelComponent implements OnDestroy {
   protected readonly animatedBalance = signal(0);
   protected readonly animatedContributions = signal(0);
   protected readonly animatedInterest = signal(0);
-  protected readonly animatedInterestPercent = signal(0);
 
   private animationId: number | null = null;
   private readonly reducedMotion: boolean;
 
   protected readonly showDoublingCallout = computed(() => {
     const res = this.result();
-    const year = this.selectedYear() ?? res.dataPoints[res.dataPoints.length - 1].year;
+    const lastYear = res.dataPoints[res.dataPoints.length - 1].year;
+    const year = this.calloutYear() ?? this.selectedYear() ?? lastYear;
     return res.summary.doublingYear !== null && year >= res.summary.doublingYear;
   });
 
@@ -58,7 +88,6 @@ export class SummaryPanelComponent implements OnDestroy {
   });
 
   protected formatCurrency = (n: number) => formatCurrency(Math.round(n));
-  protected formatPercent = formatPercent;
 
   constructor() {
     this.reducedMotion =
@@ -68,7 +97,14 @@ export class SummaryPanelComponent implements OnDestroy {
 
     effect(() => {
       const data = this.displayData();
-      this.animateToValues(data.balance, data.contributions, data.interestEarned, data.interestPercent);
+      // untracked: animateToValues reads the `animated*` signals to pick up the
+      // tween's starting point, and its rAF tick writes those same signals. A
+      // tracked read would make every animation frame re-run this effect,
+      // cancelling and restarting the tween each frame so the 300ms ease never
+      // completes. Only displayData should drive it.
+      untracked(() =>
+        this.animateToValues(data.balance, data.contributions, data.interestEarned),
+      );
     });
   }
 
@@ -76,25 +112,22 @@ export class SummaryPanelComponent implements OnDestroy {
     targetBalance: number,
     targetContributions: number,
     targetInterest: number,
-    targetPercent: number,
   ): void {
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
 
-    if (this.reducedMotion) {
+    if (this.reducedMotion || !this.animate()) {
       this.animatedBalance.set(targetBalance);
       this.animatedContributions.set(targetContributions);
       this.animatedInterest.set(targetInterest);
-      this.animatedInterestPercent.set(targetPercent);
       return;
     }
 
     const startBalance = this.animatedBalance();
     const startContributions = this.animatedContributions();
     const startInterest = this.animatedInterest();
-    const startPercent = this.animatedInterestPercent();
 
     const duration = 300;
     let startTime: number | null = null;
@@ -110,7 +143,6 @@ export class SummaryPanelComponent implements OnDestroy {
       this.animatedBalance.set(startBalance + (targetBalance - startBalance) * eased);
       this.animatedContributions.set(startContributions + (targetContributions - startContributions) * eased);
       this.animatedInterest.set(startInterest + (targetInterest - startInterest) * eased);
-      this.animatedInterestPercent.set(startPercent + (targetPercent - startPercent) * eased);
 
       if (progress < 1) {
         this.animationId = requestAnimationFrame(tick);

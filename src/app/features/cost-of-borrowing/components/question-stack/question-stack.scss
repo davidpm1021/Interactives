@@ -1,19 +1,201 @@
 .question-stack {
+  &__heading-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ngpf-spacing-md);
+    margin-bottom: var(--ngpf-spacing-md);
+  }
+
   &__heading {
     font-family: var(--ngpf-font-heading);
     color: var(--ngpf-royal-blue);
     font-size: 1.35rem;
-    margin: 0 0 var(--ngpf-spacing-lg);
+    margin: 0;
+  }
+
+  &__progress {
+    font-family: var(--ngpf-font-body);
+    color: var(--ngpf-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
   }
 
   &__list {
+    display: block;
+  }
+
+  // One-at-a-time on screen. Slots stay mounted so per-question state
+  // (attempts, nudge, textInput) persists as the student navigates.
+  &__slot {
+    display: none;
+
+    &--active {
+      display: block;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--ngpf-spacing-md);
+    margin-top: var(--ngpf-spacing-lg);
+  }
+
+  &__nav-btn {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.95rem;
+    padding: 10px 16px;
+    border-radius: var(--ngpf-radius-sm);
+    cursor: pointer;
+
+    &--prev {
+      background: transparent;
+      color: var(--ngpf-text-secondary);
+      border: 1px solid var(--ngpf-light-gray-blue);
+
+      &:hover:not(:disabled),
+      &:focus-visible {
+        background: var(--ngpf-soft-blue-tint);
+        color: var(--ngpf-royal-blue);
+        border-color: var(--ngpf-royal-blue);
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+    }
+
+    &--next {
+      margin-left: auto;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__review {
+    margin-top: var(--ngpf-spacing-lg);
+    background: white;
+    border-radius: var(--ngpf-radius-lg);
+    box-shadow: var(--ngpf-shadow-sm);
+    padding: var(--ngpf-spacing-lg);
+  }
+
+  &__review-heading {
+    font-family: var(--ngpf-font-heading);
+    color: var(--ngpf-royal-blue);
+    font-size: 1.2rem;
+    margin: 0 0 var(--ngpf-spacing-md);
+  }
+
+  &__review-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--ngpf-spacing-lg);
+    gap: var(--ngpf-spacing-sm);
+  }
+
+  &__review-item {
+    border-left: 4px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    background: var(--ngpf-soft-blue-tint);
+
+    &--correct { border-left-color: var(--ngpf-success, #2e7d32); }
+    &--wrong { border-left-color: var(--ngpf-error, #c62828); }
+    &--self-graded { border-left-color: var(--ngpf-gold, #d68b0a); }
+    &--skipped { border-left-color: var(--ngpf-light-gray-blue); }
+  }
+
+  &__review-jump {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'num prompt badge'
+      'num answer badge';
+    gap: 4px 10px;
+    align-items: center;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 10px 12px;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--ngpf-font-body);
+    color: var(--ngpf-text-primary);
+    border-radius: var(--ngpf-radius-sm);
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: -2px;
+    }
+  }
+
+  &__review-num {
+    grid-area: num;
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+    font-family: var(--ngpf-font-heading);
+    font-size: 0.95rem;
+  }
+
+  &__review-prompt {
+    grid-area: prompt;
+    font-size: 0.9rem;
+    color: var(--ngpf-text-primary);
+    line-height: 1.3;
+  }
+
+  &__review-answer {
+    grid-area: answer;
+    font-size: 0.85rem;
+    color: var(--ngpf-text-secondary);
+    font-style: italic;
+
+    &--skipped {
+      color: var(--ngpf-text-muted);
+    }
+  }
+
+  &__review-badge {
+    grid-area: badge;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ngpf-text-secondary);
+    align-self: center;
+  }
+
+  .only-print {
+    display: none;
   }
 }
 
 @media print {
+  .question-stack {
+    .only-print { display: block; }
+  }
+
+  // The review recap is a screen-only wayfinding aid; the printed sheet
+  // shows every question with the student's answer inline, which is the
+  // artifact worth keeping.
+  .question-stack__review,
+  .question-stack__nav,
+  .question-stack__heading-row {
+    display: none !important;
+  }
+
   .question-stack__heading {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #000;
@@ -25,6 +207,11 @@
     margin: 0 0 8pt;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  // All slots visible on print, laid out as the 2×N worksheet grid.
+  .question-stack__slot {
+    display: block !important;
   }
 
   // 2×4 table: Q1 | Q2 on the top row, Q3, Q4, Q5 each merged full-width
@@ -39,21 +226,20 @@
     gap: 0;
   }
 
-  .question-stack__list > app-question-item {
-    display: block;
+  .question-stack__list > .question-stack__slot {
     outline: 1.25pt solid #000;
     outline-offset: -0.5pt; // pull outlines inward so adjacent ones align cleanly
   }
 
   // Q3, Q4, Q5 span the full width (merged cells).
-  .question-stack__list > app-question-item:nth-child(n+3) {
+  .question-stack__list > .question-stack__slot:nth-child(n+3) {
     grid-column: 1 / -1;
   }
 
   // Short-text answers (Q3, Q5) get more blank writing space than short
   // answers.
-  .question-stack__list > app-question-item:nth-child(3) .question-item::after,
-  .question-stack__list > app-question-item:nth-child(5) .question-item::after {
+  .question-stack__list > .question-stack__slot:nth-child(3) .question-item::after,
+  .question-stack__list > .question-stack__slot:nth-child(5) .question-item::after {
     min-height: 90pt;
   }
 }

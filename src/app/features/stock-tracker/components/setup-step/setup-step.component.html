@@ -2,8 +2,20 @@
   <div class="setup-step__intro">
     <h2 class="setup-step__title">Setup & Pick 5 Companies</h2>
     <p class="setup-step__description">
-      Your wealthy grandma offers to buy you 100 shares of one stock on your 10th birthday.
-      Pick 5 companies, track how each would have performed, and decide which one you'd choose.
+      Imagine your grandma offered to buy you 100 shares of one company on your 10th birthday.
+      Explore 5 companies you could have chosen. Which would have been the best investment?
+    </p>
+    <!--
+      The caution is not decorative. The activity ranks stocks by past return,
+      so without it students reasonably conclude the lesson is "find the
+      winner", which contradicts the rest of NGPF's investing content. Review:
+      "might send the message that students should pick individual stocks based
+      on their past performance and assume that performance will continue
+      moving forward."
+    -->
+    <p class="setup-step__caution">
+      Keep in mind: you are looking backwards. Knowing which stock won since your 10th
+      birthday tells you nothing about their future performance.
     </p>
   </div>
 
@@ -16,12 +28,12 @@
   @if (state.profile()) {
     <div class="setup-step__section">
       <h3 class="setup-step__section-title">Pick your 5 companies</h3>
-      <p class="setup-step__section-hint">
-        Search the curated list of companies. Each must have been on the stock market on your 10th birthday.
-      </p>
-      <p class="setup-step__data-note">
-        Stock prices as of {{ refreshedAt }}. Refreshed quarterly.
-      </p>
+
+      <app-suggestion-chips
+        [tenthBirthdayYear]="tenthBirthdayYear()"
+        [existingTickers]="existingTickers()"
+        (pickSelected)="onChipPick($event)">
+      </app-suggestion-chips>
 
       <div class="setup-step__pickers">
         @for (pick of pickerSlots(); track $index) {
@@ -37,36 +49,9 @@
       </div>
     </div>
 
-    <!-- Summary & Advance -->
+    <!-- Advance -->
     @if (state.allPicksComplete()) {
-      <div class="setup-step__summary">
-        <h3 class="setup-step__section-title">Your 5 Stock Picks</h3>
-        <div class="setup-step__summary-table-wrapper">
-          <table class="setup-step__summary-table">
-            <caption class="sr-only">Your 5 stock picks with prices on your 10th birthday</caption>
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Company</th>
-                <th scope="col">Ticker</th>
-                <th scope="col">Price on 10th Birthday</th>
-                <th scope="col">100 Shares Cost</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (pick of state.picks(); track pick.ticker; let i = $index) {
-                <tr>
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ pick.companyName }}</td>
-                  <td class="setup-step__ticker">{{ pick.ticker }}</td>
-                  <td>{{ formatCurrency(pick.priceOnBirthday) }}</td>
-                  <td>{{ formatCurrency(pick.priceOnBirthday * 100) }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
+      <div class="setup-step__advance-row">
         <button class="ngpf-btn ngpf-btn-primary setup-step__advance"
                 (click)="onAdvance()">
           Track My Stocks

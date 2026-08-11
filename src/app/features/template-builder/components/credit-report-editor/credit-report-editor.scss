@@ -2,15 +2,84 @@
 
 .credit-editor {
   @include fc.form-chrome;
-}
 
-.credit-preview__util {
-  margin-top: 0.08in;
-  font-size: 9pt;
+  // Payment-history 24-cell grid inside each account row.
+  &__history {
+    margin: var(--ngpf-spacing-sm) 0;
+    padding: var(--ngpf-spacing-sm);
+    background: var(--ngpf-soft-blue-tint);
+    border-radius: var(--ngpf-radius-sm);
+  }
 
-  &-label {
-    color: #444;
-    margin-right: 0.25rem;
+  &__history-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ngpf-spacing-sm);
+    font-size: 0.85rem;
+    color: var(--ngpf-text-primary);
+    font-weight: 600;
+  }
+
+  &__history-reset {
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: white;
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  &__history-hint {
+    margin: 4px 0;
+    font-size: 0.75rem;
+    color: var(--ngpf-text-muted);
+    font-style: italic;
+  }
+
+  &__history-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3px;
+  }
+
+  &__history-cell {
+    color: white;
+    font-family: inherit;
+    font-size: 0.6rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 6px 0;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-align: center;
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 1px;
+    }
+  }
+
+  &__hint {
+    margin: 0 0 var(--ngpf-spacing-sm);
+    font-size: 0.8rem;
+    color: var(--ngpf-text-muted);
+    font-style: italic;
   }
 }
 
@@ -149,6 +218,119 @@
   }
 
   &__col-num { text-align: right !important; }
+
+  // ── Account summary block ──
+  &__summary {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.08in 0.12in;
+    padding: 0.1in 0.15in;
+    background: #f7f9fc;
+    border-radius: 4px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  &__summary-cell { min-width: 0; }
+  &__summary-value {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  &__summary-value--warn { color: #c62828; }
+
+  // ── Per-account details card ──
+  &__account {
+    padding: 0.1in 0.12in;
+    border: 1px solid #d0d6df;
+    border-radius: 4px;
+    margin-bottom: 0.1in;
+  }
+
+  &__account:last-child { margin-bottom: 0; }
+
+  &__account-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.15in;
+    margin-bottom: 0.08in;
+  }
+
+  &__account-name {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  &__account-sub {
+    font-size: 8pt;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  &__account-status {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__account-status-line {
+    font-size: 8.5pt;
+    color: #333;
+    font-weight: 600;
+
+    &--warn { color: #c62828; }
+  }
+
+  &__account-figures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.15in;
+    margin-bottom: 0.08in;
+  }
+
+  // ── Payment history strip on the printed report ──
+  &__history { margin-top: 0.06in; }
+
+  &__history-legend {
+    font-size: 7pt;
+    color: #555;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__history-strip {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    gap: 2px;
+  }
+
+  &__history-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 14px;
+    padding: 1px 0;
+    color: white;
+    font-size: 6pt;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 2px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  &__none {
+    font-size: 9pt;
+    color: #666;
+    font-style: italic;
+    margin: 0;
+  }
 }
 
 @media print {

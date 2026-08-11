@@ -1,0 +1,53 @@
+@if (hasChips()) {
+  <div class="suggestion-chips">
+    <div class="suggestion-chips__header">
+      <span class="suggestion-chips__lead">Not sure where to start?</span>
+      <div class="suggestion-chips__controls">
+        <label class="suggestion-chips__sector-label">
+          <span class="sr-only">Filter by sector</span>
+          <select
+            class="suggestion-chips__sector"
+            [ngModel]="selectedSector()"
+            (ngModelChange)="onSectorChange($event)"
+          >
+            <option value="All">All sectors</option>
+            @for (s of sectors; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </label>
+        <button
+          type="button"
+          class="suggestion-chips__shuffle"
+          (click)="onShuffle()"
+          aria-label="Shuffle suggestions"
+        >
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"
+            />
+          </svg>
+          Shuffle
+        </button>
+      </div>
+    </div>
+
+    <div class="suggestion-chips__row">
+      @for (chip of chips(); track chip.ticker) {
+        <button
+          type="button"
+          class="suggestion-chips__chip"
+          (click)="onChipClick(chip.ticker)"
+        >
+          <span class="suggestion-chips__chip-ticker">{{ chip.ticker }}</span>
+          <span class="suggestion-chips__chip-name">{{ chip.name }}</span>
+        </button>
+      }
+    </div>
+  </div>
+}

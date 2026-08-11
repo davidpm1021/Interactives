@@ -4,6 +4,8 @@ import {
   CreditAccount,
   CreditInquiry,
   CreditReport,
+  MonthStatus,
+  PAYMENT_HISTORY_MONTHS,
   PaymentStatus,
 } from '../models/credit-report.model';
 import { pick, randFloat, randInt, shiftDays, toISO } from './random-helpers.util';
@@ -84,6 +86,35 @@ interface AccountConstraints {
   maxAccountAge: number;
 }
 
+/**
+ * Generate a 24-month payment history consistent with the account's current
+ * paymentStatus. If the account is currently "Current", almost all months
+ * are OK with an occasional random blip on lower-scoring reports. Late
+ * accounts show that late mark for the most recent 1-3 months, with prior
+ * months mostly OK to reflect a recent stumble.
+ */
+function paymentHistoryFor(paymentStatus: PaymentStatus, score: number): MonthStatus[] {
+  const history: MonthStatus[] = Array(PAYMENT_HISTORY_MONTHS).fill('OK');
+  const badMark: MonthStatus | null =
+    paymentStatus === '30 days late' ? '30'
+    : paymentStatus === '60 days late' ? '60'
+    : paymentStatus === '90+ days late' ? '90'
+    : null;
+
+  if (badMark) {
+    const streak = paymentStatus === '30 days late' ? randInt(1, 2) : randInt(2, 4);
+    for (let i = 0; i < streak; i++) history[i] = badMark;
+  }
+
+  // Add sporadic 30-day blips further back for lower-scoring reports.
+  const blipRate = score >= 740 ? 0 : score >= 670 ? 0.02 : score >= 580 ? 0.08 : 0.18;
+  for (let i = 0; i < PAYMENT_HISTORY_MONTHS; i++) {
+    if (history[i] !== 'OK') continue;
+    if (Math.random() < blipRate) history[i] = '30';
+  }
+  return history;
+}
+
 function buildAccount(
   now: Date,
   kind: 'card' | 'auto' | 'student' | 'store',
@@ -107,6 +138,7 @@ function buildAccount(
       creditLimit: limit,
       status: 'Open',
       paymentStatus: paymentStatusForScore(score),
+      paymentHistory: [],
     };
   }
   if (kind === 'auto') {
@@ -121,6 +153,7 @@ function buildAccount(
       creditLimit: original,
       status: 'Open',
       paymentStatus: paymentStatusForScore(score),
+      paymentHistory: [],
     };
   }
   if (kind === 'student') {
@@ -135,6 +168,7 @@ function buildAccount(
       creditLimit: original,
       status: 'Open',
       paymentStatus: paymentStatusForScore(score),
+      paymentHistory: [],
     };
   }
   const limit = pick([500, 800, 1200, 1500]);
@@ -148,6 +182,7 @@ function buildAccount(
     creditLimit: limit,
     status: (isPaid ? 'Paid' : 'Open') as AccountStatus,
     paymentStatus: paymentStatusForScore(score),
+    paymentHistory: [],
   };
 }
 
@@ -180,6 +215,12 @@ export function randomCreditReport(now: Date = new Date()): CreditReport {
     accounts.push(buildAccount(now, kind, accountConstraints, score));
   }
 
+  // Fill in the payment history after account status has been chosen so the
+  // history strip reads consistently with the current paymentStatus.
+  for (const a of accounts) {
+    a.paymentHistory = paymentHistoryFor(a.paymentStatus, score);
+  }
+
   const numInquiries = randInt(0, 4);
   const inquiries: CreditInquiry[] = [];
   const inquiryRequesters = [
@@ -208,12 +249,14 @@ export function randomCreditReport(now: Date = new Date()): CreditReport {
       currentAddressLine2: `${city.city}, ${city.state} ${city.zip}`,
       previousAddress: `${randInt(100, 9999)} ${pick(STREETS)}, ${prevCity.city}, ${prevCity.state} ${prevCity.zip}`,
       dobMasked: `**/**/${birthYear}`,
-      ssnMasked: `***-**-${randInt(1000, 9999)}`,
+      // Repeated-digit last-4 so the masked SSN reads as obviously fake.
+      ssnMasked: (() => { const d = randInt(1, 9); return `***-**-${d}${d}${d}${d}`; })(),
     },
     reportDate: toISO(now),
     bureau: pick(BUREAUS),
     score,
     accounts,
+    publicRecords: [],
     inquiries,
   };
 }

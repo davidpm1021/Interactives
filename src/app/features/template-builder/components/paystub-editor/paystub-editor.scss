@@ -8,6 +8,86 @@
 .paystub-editor {
   @include fc.form-chrome;
 
+  // Collapsible section that visually matches the __section fieldset used by
+  // form-chrome — same border, radius, and background. Contents render only
+  // when the details is open.
+  &__accordion {
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-md);
+    background: #fff;
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ngpf-spacing-sm);
+      padding: 10px 14px;
+      font-weight: 600;
+      color: var(--ngpf-text-primary);
+      font-size: 0.9rem;
+      user-select: none;
+
+      &::-webkit-details-marker { display: none; }
+
+      &:focus-visible {
+        outline: 2px solid var(--ngpf-royal-blue);
+        outline-offset: -2px;
+        border-radius: var(--ngpf-radius-md);
+      }
+    }
+  }
+
+  &__accordion-caret {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--ngpf-text-secondary);
+    border-bottom: 2px solid var(--ngpf-text-secondary);
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+    transform-origin: 60% 60%;
+  }
+
+  &__accordion[open] &__accordion-caret {
+    transform: rotate(-135deg);
+  }
+
+  &__accordion-body {
+    padding: var(--ngpf-spacing-md);
+    border-top: 1px solid var(--ngpf-light-gray-blue);
+
+    // Mirror the label + input styling that form-chrome scopes to __section,
+    // since the accordion body is a peer, not a __section.
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: var(--ngpf-spacing-sm);
+      font-size: 0.9rem;
+      color: var(--ngpf-text-secondary);
+
+      span { font-weight: 500; }
+
+      input,
+      select {
+        font-family: inherit;
+        padding: 8px 10px;
+        border: 1px solid var(--ngpf-light-gray-blue);
+        border-radius: var(--ngpf-radius-sm);
+        font-size: 0.95rem;
+        background: #fff;
+        color: var(--ngpf-text-primary);
+
+        &:focus-visible {
+          outline: 2px solid var(--ngpf-sky-blue);
+          outline-offset: 2px;
+          border-color: var(--ngpf-bright-blue);
+        }
+      }
+    }
+  }
+
   &__hint {
     display: block;
     font-size: 0.8rem;
@@ -27,6 +107,29 @@
 
     strong {
       color: var(--ngpf-text-primary);
+    }
+  }
+
+  &__add-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  &__preset-picker {
+    margin: 0;
+    display: inline-flex;
+
+    select {
+      font-family: inherit;
+      font-size: 0.875rem;
+      padding: 6px 10px;
+      border: 1px solid var(--ngpf-light-gray-blue);
+      border-radius: var(--ngpf-radius-sm);
+      background: white;
+      color: var(--ngpf-text-primary);
+      cursor: pointer;
     }
   }
 
@@ -288,6 +391,13 @@
     font-size: 8.5pt;
     font-weight: 400;
     color: #c5d3e3;
+  }
+
+  &__sub {
+    font-size: 7.5pt;
+    color: #666;
+    font-weight: 400;
+    margin-left: 4px;
   }
 }
 

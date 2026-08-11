@@ -6,6 +6,7 @@ import { Component, input, output } from '@angular/core';
   template: `
     <button class="download-btn"
             [attr.aria-label]="label()"
+            [attr.title]="label()"
             [disabled]="downloading"
             (click)="onDownload()">
       @if (downloading) {
@@ -13,11 +14,28 @@ import { Component, input, output } from '@angular/core';
       } @else if (showCheck) {
         <span class="download-btn__check" aria-hidden="true">&#10003;</span>
       } @else {
-        <span class="download-btn__icon" aria-hidden="true">&#x2B73;</span>
+        <svg class="download-btn__icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 3v12m0 0l-4-4m4 4l4-4M5 19h14"
+          />
+        </svg>
       }
     </button>
   `,
   styles: [`
+    /* A download control is meaningless on paper. Hidden here rather than at
+       each call site so every host gets it. */
+    @media print {
+      :host {
+        display: none;
+      }
+    }
+
     .download-btn {
       display: inline-flex;
       align-items: center;

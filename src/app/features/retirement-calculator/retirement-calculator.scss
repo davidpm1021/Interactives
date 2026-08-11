@@ -4,6 +4,39 @@
   background: var(--ngpf-soft-blue-tint);
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+
+  &__toolbar {
+    position: absolute;
+    top: var(--ngpf-spacing-md);
+    right: var(--ngpf-spacing-lg);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+  }
+
+  &__icon-btn {
+    background: transparent;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    line-height: 0;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ngpf-soft-blue-tint);
+      color: var(--ngpf-royal-blue);
+      border-color: var(--ngpf-royal-blue);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+  }
 
   &__intro {
     text-align: center;
@@ -46,79 +79,28 @@
     min-width: 0;
   }
 
-  &__assumptions {
+}
+
+@media print {
+  html, body { background: white !important; }
+  .no-print { display: none !important; }
+
+  .retirement-calculator {
     background: white;
-    border-radius: var(--ngpf-radius-lg);
-    box-shadow: var(--ngpf-shadow-sm);
-    max-width: 900px;
-    margin: 0 auto;
+    padding: 0;
+    max-width: none;
+    min-height: 0;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 
-    // Native <summary> uses list-item display + a triangle marker by
-    // default; suppress both and use our own caret so keyboard focus,
-    // click-to-toggle, and screen-reader state all still work.
-    summary {
-      list-style: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--ngpf-spacing-md);
-      padding: var(--ngpf-spacing-lg);
-      user-select: none;
-
-      &::-webkit-details-marker {
-        display: none;
-      }
-
-      &:focus-visible {
-        outline: 2px solid var(--ngpf-royal-blue);
-        outline-offset: -2px;
-        border-radius: var(--ngpf-radius-lg);
-      }
+    &__grid {
+      display: block;
     }
 
-    &-title {
-      font-family: var(--ngpf-font-heading);
-      color: var(--ngpf-royal-blue);
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    &-caret {
-      width: 0.6rem;
-      height: 0.6rem;
-      border-right: 2px solid var(--ngpf-royal-blue);
-      border-bottom: 2px solid var(--ngpf-royal-blue);
-      transform: rotate(45deg);
-      transition: transform 0.15s ease;
-      transform-origin: 60% 60%;
-    }
-
-    &[open] &-caret {
-      transform: rotate(-135deg);
-    }
-
-    ul {
-      margin: 0;
-      padding: 0 var(--ngpf-spacing-lg) var(--ngpf-spacing-lg) calc(var(--ngpf-spacing-lg) + 1.25rem);
-      list-style: disc;
-
-      li {
-        font-family: var(--ngpf-font-body);
-        font-size: 0.9rem;
-        color: var(--ngpf-text-secondary);
-        line-height: 1.55;
-        margin-bottom: var(--ngpf-spacing-xs);
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        strong {
-          color: var(--ngpf-text-primary);
-        }
-      }
+    &__inputs {
+      position: static;
+      margin-bottom: var(--ngpf-spacing-lg);
     }
   }
 }

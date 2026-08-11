@@ -10,6 +10,13 @@ import { Component, input, output, signal, OnDestroy } from '@angular/core';
 export class TimeScrubberComponent implements OnDestroy {
   readonly maxYear = input.required<number>();
   readonly currentYear = input.required<number>();
+  /** When set, the scrubber displays ages instead of raw year offsets. */
+  readonly startAge = input<number | null>(null);
+  /**
+   * Draw attention to the play control because the inputs changed since the
+   * last run, so what's on screen is stale.
+   */
+  readonly needsRerun = input(false);
   readonly yearChange = output<number>();
   readonly playStateChange = output<boolean>();
 
@@ -74,11 +81,15 @@ export class TimeScrubberComponent implements OnDestroy {
   }
 
   private play(): void {
-    if (this.currentYear() >= this.maxYear()) {
-      // Already at end — stay there, don't reset
-      return;
-    }
-    this.fractionalYear = this.currentYear();
+    // Pressing play at the end replays from the start rather than doing
+    // nothing. Review: "Re-run animation if you click play button again" —
+    // previously the animation was effectively one-shot per session, since
+    // reaching the end left the button inert.
+    const restart = this.currentYear() >= this.maxYear();
+    const from = restart ? 0 : this.currentYear();
+    if (restart) this.yearChange.emit(0);
+
+    this.fractionalYear = from;
     this.isPlaying.set(true);
     this.playStateChange.emit(true);
     this.lastTimestamp = 0;
@@ -94,13 +105,19 @@ export class TimeScrubberComponent implements OnDestroy {
     }
   }
 
-  /** Adaptive speed: targets ~10-20s total playback regardless of time horizon */
+  /**
+   * Adaptive speed, targeting ~6-10s of playback regardless of horizon.
+   *
+   * Roughly 1.6x the original rates — review asked to "speed up the animation
+   * slightly", and a 40-year run took ~16s, long enough that students started
+   * scrubbing past it.
+   */
   private get yearsPerSecond(): number {
     const max = this.maxYear();
-    if (max <= 5) return 1.0;
-    if (max <= 15) return 1.5;
-    if (max <= 30) return 2.0;
-    return 2.5;
+    if (max <= 5) return 1.6;
+    if (max <= 15) return 2.4;
+    if (max <= 30) return 3.2;
+    return 4;
   }
 
   private tick(timestamp: number): void {

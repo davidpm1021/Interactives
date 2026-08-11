@@ -14,14 +14,64 @@
         <tr>
           <th scope="col">Year</th>
           <th scope="col">Age</th>
-          <th scope="col">Date Used</th>
-          <th scope="col">Adj. Close</th>
-          <th scope="col">100 Shares Value</th>
-          <th scope="col">YoY Change</th>
+          <!--
+            "Date", not "Date Used", per review. "Used" was the only signal
+            that this can differ from the actual birthday, so the explanation
+            moves into a tooltip alongside the three columns that already
+            carry one.
+          -->
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Date: the trading day the price comes from. If the market was closed on your birthday, this is the last trading day before it">
+              Date
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>Date.</strong> The trading day this price comes from.
+                Markets close on weekends and holidays, so if your birthday
+                wasn't a trading day this is the last one before it.
+              </span>
+            </span>
+          </th>
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Adjusted closing price: the day's closing price, adjusted for stock splits and dividends so it can be compared across years">
+              Adj. Close
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>Adjusted closing price.</strong> The day's closing
+                price, adjusted for stock splits and dividends so prices
+                from different years can be compared apples-to-apples.
+              </span>
+            </span>
+          </th>
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Value of 100 shares: what 100 shares would be worth at this price">
+              100 Shares Value
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>100 shares value.</strong> What 100 shares would be
+                worth at this price (Adj. Close × 100). Assumes you bought
+                at age 10 and held.
+              </span>
+            </span>
+          </th>
+          <th scope="col">
+            <span class="stock-table__th-info" tabindex="0"
+                  aria-label="Year-over-year change: how much the share value went up or down compared to the previous year">
+              YoY Change
+              <span class="stock-table__info-mark" aria-hidden="true">?</span>
+              <span class="stock-table__info-tooltip" role="tooltip">
+                <strong>Year-over-year change.</strong> How much the share
+                value went up or down compared to the previous year, as a
+                percent.
+              </span>
+            </span>
+          </th>
         </tr>
       </thead>
       <tbody>
-        @for (row of pick().annualData; track row.year) {
+        @for (row of visibleRows(); track row.year; let i = $index) {
           <tr>
             <td>{{ row.year }}</td>
             <td>{{ row.age }}</td>
@@ -37,8 +87,31 @@
               }
             </td>
           </tr>
+          @if (i === 0 && hiddenRowCount() > 0) {
+            <tr class="stock-table__hidden-row" aria-hidden="true">
+              <td colspan="6">
+                <span class="stock-table__hidden-marker">
+                  {{ hiddenRowCount() }} year{{ hiddenRowCount() === 1 ? '' : 's' }} hidden
+                </span>
+              </td>
+            </tr>
+          }
         }
       </tbody>
     </table>
   </div>
+
+  @if (!fitsWithoutCap()) {
+    <button
+      type="button"
+      class="stock-table__toggle"
+      (click)="toggleExpanded()"
+    >
+      @if (expanded()) {
+        Collapse to recent years
+      } @else {
+        Show all {{ pick().annualData.length }} years
+      }
+    </button>
+  }
 </div>

@@ -23,6 +23,61 @@
     line-height: 1.4;
   }
 
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--ngpf-light-gray-blue);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.85rem;
+    color: var(--ngpf-text-primary);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+
+    &:hover {
+      border-color: var(--ngpf-royal-blue);
+      background: var(--ngpf-soft-blue-tint);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+    }
+
+    &--picked {
+      border-color: var(--ngpf-royal-blue);
+      background: var(--ngpf-soft-blue-tint);
+      font-weight: 600;
+    }
+  }
+
+  &__chip-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__chip-ticker {
+    font-family: var(--ngpf-font-heading);
+    font-weight: 700;
+    color: var(--ngpf-royal-blue);
+  }
+
+  &__chip-name {
+    color: var(--ngpf-text-secondary);
+  }
+
   &__textarea {
     width: 100%;
     font-family: var(--ngpf-font-body);
@@ -44,6 +99,75 @@
 
     &::placeholder {
       color: var(--ngpf-text-muted);
+    }
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+// ── Print ──
+@media print {
+  .print-only {
+    display: block;
+  }
+
+  .reflection-form {
+    // Only the chip they chose. Printing five options with one highlighted
+    // wastes most of a page and reads as an unanswered multiple-choice.
+    &__chip:not(.reflection-form__chip--picked) {
+      display: none;
+    }
+
+    &__chip--picked {
+      border: none;
+      background: none;
+      padding: 0;
+      font-weight: 600;
+    }
+
+    &__textarea {
+      display: none;
+    }
+
+    &__answer {
+      margin: 0;
+      font-family: var(--ngpf-font-body);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--ngpf-text-primary);
+      white-space: pre-wrap;
+      // Leaves a visible gap when a student skipped the question, rather than
+      // silently collapsing so the sheet looks complete.
+      min-height: 1.4em;
+    }
+
+    &__section {
+      break-inside: avoid;
+    }
+
+    // Ruled line where a stock was never chosen, so the question is visibly
+    // unanswered rather than silently absent.
+    &__pick-blank {
+      display: flex;
+      align-items: baseline;
+      gap: var(--ngpf-spacing-sm);
+      margin: 0 0 var(--ngpf-spacing-xs);
+      font-family: var(--ngpf-font-body);
+      font-size: 0.9rem;
+      max-width: 22rem;
+    }
+
+    &__pick-blank-label {
+      color: var(--ngpf-text-secondary);
+      flex-shrink: 0;
+    }
+
+    &__pick-blank-rule {
+      flex: 1;
+      border-bottom: 1px solid var(--ngpf-text-secondary);
+      height: 1.1em;
     }
   }
 }

@@ -1,53 +1,70 @@
 .final-summary {
   max-width: 720px;
   margin: 0 auto;
-  padding: 1rem 0;
+  padding: var(--ngpf-spacing-md) 0;
 
   h2 {
     text-align: center;
     font-family: var(--ngpf-font-heading);
     color: var(--ngpf-navy-blue);
-    margin: 0 0 1.5rem;
+    margin: 0 0 var(--ngpf-spacing-lg);
   }
 }
 
-// ── Recap table ──
-.recap-table-wrapper {
-  overflow-x: auto;
-  margin-bottom: 2rem;
+// ── Name line (print only) ──
+// Screen readers and screen users never see this; it exists so a teacher
+// collecting a stack of printouts can tell them apart. No input element, so
+// nothing is typed into or stored by the app.
+.print-only {
+  display: none;
 }
 
-.recap-table {
-  width: 100%;
-  border-collapse: collapse;
+.name-line {
+  align-items: baseline;
+  gap: var(--ngpf-spacing-sm);
+  margin-bottom: var(--ngpf-spacing-lg);
   font-family: var(--ngpf-font-body);
 
-  th {
-    background: var(--ngpf-navy-blue);
-    color: white;
+  &__label {
     font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 10px 14px;
-    text-align: left;
+    color: var(--ngpf-text-primary);
   }
 
-  td {
-    padding: 12px 14px;
-    font-size: 0.9rem;
-    color: #333;
-    border-bottom: 1px solid #e8e8e8;
-    vertical-align: top;
-  }
-
-  tbody tr:hover {
-    background: rgba(31, 59, 155, 0.02);
+  &__rule {
+    flex: 1;
+    border-bottom: 1px solid var(--ngpf-text-secondary);
+    height: 1.2em;
   }
 }
 
-.challenge-cell {
-  font-weight: 500;
+// ── Challenge recap ──
+.challenge-recap {
+  margin-bottom: var(--ngpf-spacing-xl);
+
+  h3 {
+    font-family: var(--ngpf-font-heading);
+    font-size: 1.1rem;
+    color: var(--ngpf-navy-blue);
+    margin: 0 0 var(--ngpf-spacing-md);
+  }
+}
+
+.recap-item {
+  margin-bottom: var(--ngpf-spacing-md);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.recap-prompt {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--ngpf-font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ngpf-navy-blue);
+  margin: 0 0 var(--ngpf-spacing-xs);
 }
 
 .challenge-num {
@@ -61,83 +78,36 @@
   color: white;
   font-size: 0.72rem;
   font-weight: 700;
-  margin-right: 8px;
+  margin-right: var(--ngpf-spacing-sm);
   flex-shrink: 0;
+  align-self: flex-start;
 }
 
-.guess-cell {
-  color: #888;
-}
+.recap-answer {
+  margin: 0 0 0 30px; // clears the numbered bullet
+  font-family: var(--ngpf-font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ngpf-text-primary);
+  white-space: pre-wrap;
 
-.reality-cell {
-  font-weight: 600;
-  color: var(--ngpf-navy-blue);
-}
-
-// ── Takeaways ──
-.takeaways {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: var(--ngpf-shadow-sm);
-  margin-bottom: 2rem;
-
-  h3 {
-    font-family: var(--ngpf-font-heading);
-    color: var(--ngpf-navy-blue);
-    font-size: 1.1rem;
-    margin: 0 0 1rem;
-  }
-
-  ol {
-    margin: 0;
-    padding-left: 1.25rem;
-
-    li {
-      font-family: var(--ngpf-font-body);
-      font-size: 0.95rem;
-      color: #444;
-      line-height: 1.6;
-      margin-bottom: 0.75rem;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
+  // Unanswered prompts still print, as a line to write on by hand. The extra
+  // bottom margin keeps the rule from reading as an underline on the next
+  // prompt down.
+  &--blank {
+    border-bottom: 1px solid var(--ngpf-light-gray-blue);
+    min-height: 1.5em;
+    margin-bottom: var(--ngpf-spacing-sm);
   }
 }
 
 // ── Print button ──
 .print-action {
-  text-align: center;
-}
-
-.print-btn {
-  display: inline-block;
-  background: var(--ngpf-bright-blue);
-  border: none;
-  color: white;
-  padding: 14px 32px;
-  border-radius: 10px;
-  font-family: var(--ngpf-font-heading);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-
-  &:hover {
-    background: var(--ngpf-royal-blue);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--ngpf-sky-blue);
-    outline-offset: 2px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--ngpf-spacing-sm);
+  margin-top: var(--ngpf-spacing-xl);
 }
 
 // ── Print styles ──
@@ -150,31 +120,12 @@
     display: none;
   }
 
-  .takeaways {
-    box-shadow: none;
-    border: 1px solid #ddd;
+  .print-only {
+    display: flex;
   }
 
-  .recap-table th {
-    background: #333;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-}
-
-@media (max-width: 600px) {
-  .recap-table {
-    font-size: 0.82rem;
-
-    th,
-    td {
-      padding: 8px 10px;
-    }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .print-btn {
-    transition: none;
+  // Keep a prompt and its answer together across a page break.
+  .recap-item {
+    break-inside: avoid;
   }
 }

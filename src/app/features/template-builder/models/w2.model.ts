@@ -38,8 +38,8 @@ export function emptyBox12(): W2Box12 {
 export function sampleW2(): W2 {
   return {
     taxYear: 2025,
-    employeeSSN: '123-45-6789',
-    employerEIN: '93-1234567',
+    employeeSSN: '111-11-1111',
+    employerEIN: '11-1111111',
     employer: {
       name: 'Riverside Coffee Co.',
       addressLine1: '482 Market Street',

@@ -16,6 +16,13 @@ import { ChartPoint, RetirementProjection } from '../../models/retirement.models
 import { formatCurrency } from '../../utils/formatters';
 import { computeChartDimensions, createScales, DEFAULT_MARGIN } from '../../utils/chart-helpers';
 
+interface HoverPoint {
+  age: number;
+  actual: number;
+  target: number;
+  phase: ChartPoint['phase'];
+}
+
 @Component({
   selector: 'app-growth-chart',
   standalone: true,
@@ -28,6 +35,13 @@ export class GrowthChart {
   readonly projection = input.required<RetirementProjection>();
 
   protected readonly view = signal<'graph' | 'table'>('graph');
+  protected readonly hover = signal<HoverPoint | null>(null);
+  protected readonly tooltipPos = signal<{ left: number; top: number } | null>(null);
+  protected readonly tooltipAnchor = signal<'left' | 'center' | 'right'>('center');
+  protected readonly hoverAnnouncement = signal('');
+
+  /** Bound so the template can call {{ formatCurrency(x) }} directly. */
+  protected readonly formatCurrency = formatCurrency;
 
   private readonly injector = inject(Injector);
   private readonly container = viewChild<ElementRef<HTMLDivElement>>('container');
@@ -35,6 +49,12 @@ export class GrowthChart {
   private svg?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   private chartGroup?: d3.Selection<SVGGElement, unknown, null, undefined>;
   private readonly initialized = signal(false);
+  private renderState?: {
+    minAge: number;
+    maxAge: number;
+    setHoverAtAge: (age: number) => void;
+    clearHover: () => void;
+  };
 
   constructor() {
     afterNextRender(
@@ -75,9 +95,17 @@ export class GrowthChart {
     this.chartGroup.append('g').attr('class', 'x-axis');
     this.chartGroup.append('g').attr('class', 'y-axis');
     this.chartGroup.append('g').attr('class', 'actual-area-layer');
+    this.chartGroup.append('g').attr('class', 'match-area-layer');
     this.chartGroup.append('g').attr('class', 'target-line-layer');
+    this.chartGroup.append('g').attr('class', 'no-match-line-layer');
     this.chartGroup.append('g').attr('class', 'actual-line-layer');
     this.chartGroup.append('g').attr('class', 'retirement-marker-layer');
+    this.chartGroup.append('g').attr('class', 'hover-layer');
+    // Invisible mouse-capture rect covering the plot area.
+    this.chartGroup
+      .append('rect')
+      .attr('class', 'hover-capture')
+      .attr('fill', 'transparent');
 
     const ro = new ResizeObserver(() => this.render(this.projection()));
     ro.observe(el);
@@ -175,6 +203,42 @@ export class GrowthChart {
       .attr('fill', 'var(--ngpf-royal-blue, #1f3b9b)')
       .attr('opacity', 0.12);
 
+    // Employer-match band: the area between the "with match" and "no match"
+    // lines. Only renders (visibly) when the two series differ, i.e. when
+    // employer match is enabled and has produced a nonzero contribution.
+    const matchActive = data.some((d) => d.actual - d.actualNoMatch > 0.5);
+    const matchLayer = this.chartGroup.select('.match-area-layer');
+    matchLayer.selectAll('*').remove();
+    if (matchActive) {
+      const matchArea = d3
+        .area<ChartPoint>()
+        .x((d) => scales.x(d.age))
+        .y0((d) => scales.y(d.actualNoMatch))
+        .y1((d) => scales.y(d.actual))
+        .curve(d3.curveMonotoneX);
+      // Same hue as the balance area beneath it, separated by depth rather
+      // than by a different colour. Review: green "feels a little TOO
+      // distinct - it distracts from the key distinction between your
+      // projected balance and your target balance."
+      //
+      // 0.40 over the 0.12 base composites to #95A2D0 against #E4E7F3, which
+      // validates at ΔE 21.7 normal-vision and 21.0 under protanopia. The
+      // green it replaces was ΔE 12.1 / 11.1, i.e. below the readability floor
+      // it appeared to satisfy by being a different hue.
+      matchLayer
+        .append('path')
+        .attr('d', matchArea(data))
+        .attr('fill', 'var(--ngpf-royal-blue, #1f3b9b)')
+        .attr('opacity', 0.4);
+    }
+
+    // No stroked line along the bottom of the match band. Review: "Remove
+    // dotted blue line, but keep shading for employer match. The line makes it
+    // look like that's another function you have to track. Removing it keeps
+    // the focus on the projected balance vs target." The band's own fill edge
+    // still shows where the balance would sit without the match.
+    this.chartGroup.select('.no-match-line-layer').selectAll('*').remove();
+
     // Projected balance: solid royal-blue.
     const actualLine = d3
       .line<ChartPoint>()
@@ -214,5 +278,120 @@ export class GrowthChart {
         'aria-label',
         `Two lines from age ${minAge} to age ${maxAge}. Projected balance peaks at ${formatCurrency(p.finalBalance)} at retirement. Target balance peaks at ${formatCurrency(p.targetNestEgg)}.`,
       );
+
+    // ── Hover interaction ────────────────────────────────────────────────
+    const capture = this.chartGroup
+      .select<SVGRectElement>('.hover-capture')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', dims.innerWidth)
+      .attr('height', dims.innerHeight);
+
+    const hoverLayer = this.chartGroup.select('.hover-layer');
+    const containerEl = el;
+
+    const setHoverAtAge = (rawAge: number) => {
+      const clampedAge = Math.max(minAge, Math.min(maxAge, Math.round(rawAge)));
+      const point = data.find((d) => d.age === clampedAge);
+      if (!point) return;
+
+      this.hover.set({
+        age: clampedAge,
+        actual: point.actual,
+        target: point.target,
+        phase: point.phase,
+      });
+      this.hoverAnnouncement.set(
+        `Age ${clampedAge}: projected ${formatCurrency(point.actual)}, target ${formatCurrency(point.target)}.`,
+      );
+
+      hoverLayer.selectAll('*').remove();
+      const cx = scales.x(clampedAge);
+      hoverLayer
+        .append('line')
+        .attr('x1', cx)
+        .attr('x2', cx)
+        .attr('y1', 0)
+        .attr('y2', dims.innerHeight)
+        .attr('stroke', 'var(--ngpf-text-muted, #888)')
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '3 3');
+
+      hoverLayer
+        .append('circle')
+        .attr('cx', cx)
+        .attr('cy', scales.y(point.actual))
+        .attr('r', 5)
+        .attr('fill', 'var(--ngpf-royal-blue, #1f3b9b)')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2);
+
+      hoverLayer
+        .append('circle')
+        .attr('cx', cx)
+        .attr('cy', scales.y(point.target))
+        .attr('r', 5)
+        .attr('fill', 'var(--ngpf-orange, #f78219)')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2);
+
+      // Position tooltip in container-relative px so it survives viewBox scaling.
+      const containerRect = containerEl.getBoundingClientRect();
+      const scaleX = containerRect.width / dims.width;
+      const scaleY = containerRect.height / dims.height;
+      const leftPx = (DEFAULT_MARGIN.left + cx) * scaleX;
+      const topPx = DEFAULT_MARGIN.top * scaleY;
+      this.tooltipPos.set({ left: leftPx, top: topPx });
+
+      // Flip anchor near the edges so the tooltip body stays inside the container.
+      const edgeBudget = 130;
+      if (leftPx < edgeBudget) this.tooltipAnchor.set('left');
+      else if (containerRect.width - leftPx < edgeBudget) this.tooltipAnchor.set('right');
+      else this.tooltipAnchor.set('center');
+    };
+
+    const clearHover = () => {
+      this.hover.set(null);
+      this.tooltipPos.set(null);
+      this.hoverAnnouncement.set('');
+      hoverLayer.selectAll('*').remove();
+    };
+
+    const handleMove = (event: MouseEvent) => {
+      const [mx] = d3.pointer(event, capture.node()!);
+      const age = scales.x.invert(mx);
+      setHoverAtAge(age);
+    };
+
+    capture.on('mousemove', handleMove).on('mouseleave', clearHover);
+
+    this.renderState = { minAge, maxAge, setHoverAtAge, clearHover };
+
+    this.svg
+      .attr('tabindex', 0)
+      .on('keydown', (event: KeyboardEvent) => this.onSvgKeydown(event))
+      .on('focus', () => {
+        const state = this.renderState;
+        if (!state) return;
+        const current = this.hover()?.age ?? state.minAge;
+        state.setHoverAtAge(current);
+      })
+      .on('blur', () => this.renderState?.clearHover());
+  }
+
+  private onSvgKeydown(event: KeyboardEvent): void {
+    const state = this.renderState;
+    if (!state) return;
+    const current = this.hover()?.age ?? state.minAge;
+    let next = current;
+    const key = event.key;
+    if (key === 'ArrowRight' || key === 'ArrowUp') next = Math.min(state.maxAge, current + 1);
+    else if (key === 'ArrowLeft' || key === 'ArrowDown') next = Math.max(state.minAge, current - 1);
+    else if (key === 'Home') next = state.minAge;
+    else if (key === 'End') next = state.maxAge;
+    else if (key === 'Escape') { state.clearHover(); event.preventDefault(); return; }
+    else return;
+    event.preventDefault();
+    state.setHoverAtAge(next);
   }
 }

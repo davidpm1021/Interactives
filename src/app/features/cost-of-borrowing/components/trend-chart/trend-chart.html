@@ -10,6 +10,8 @@
   <div #container class="trend-chart__container">
     @if (hover(); as h) {
       <div class="trend-chart__tooltip"
+           [class.trend-chart__tooltip--left]="tooltipAnchor() === 'left'"
+           [class.trend-chart__tooltip--right]="tooltipAnchor() === 'right'"
            [style.left.px]="tooltipPos()?.left ?? 0"
            [style.top.px]="tooltipPos()?.top ?? 0"
            role="tooltip">

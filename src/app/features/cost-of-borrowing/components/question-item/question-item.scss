@@ -8,69 +8,6 @@
   flex-direction: column;
   gap: var(--ngpf-spacing-md);
 
-  &__concepts {
-    background: var(--ngpf-soft-blue-tint);
-    border-radius: var(--ngpf-radius-md);
-    padding: var(--ngpf-spacing-sm) var(--ngpf-spacing-md);
-    font-size: 0.9rem;
-
-    &-label {
-      font-family: var(--ngpf-font-heading);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--ngpf-text-secondary);
-      margin-bottom: var(--ngpf-spacing-xs);
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    li {
-      display: flex;
-      align-items: center;
-      gap: var(--ngpf-spacing-xs);
-    }
-
-    &-note {
-      margin: var(--ngpf-spacing-xs) 0 0;
-      font-size: 0.78rem;
-      color: var(--ngpf-text-secondary);
-      font-style: italic;
-    }
-  }
-
-  &__concept-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    font-weight: 700;
-  }
-
-  &__concept--hit &__concept-icon {
-    background: var(--ngpf-success);
-    color: white;
-  }
-
-  &__concept--miss &__concept-icon {
-    background: white;
-    color: var(--ngpf-text-secondary);
-    border: 1px solid var(--ngpf-light-gray-blue);
-  }
-
-  &__concept--miss &__concept-label {
-    color: var(--ngpf-text-secondary);
-  }
-
   &--correct { border-left-color: var(--ngpf-success, #2e7d32); }
   &--wrong { border-left-color: var(--ngpf-error, #c62828); }
   &--self-graded { border-left-color: var(--ngpf-gold, #d68b0a); }
@@ -202,6 +139,16 @@
     font-weight: 600;
   }
 
+  &__nudge {
+    margin: 0;
+    padding: 8px 12px;
+    background: var(--ngpf-soft-blue-tint);
+    border-left: 3px solid var(--ngpf-gold, #d68b0a);
+    border-radius: var(--ngpf-radius-sm);
+    color: var(--ngpf-text-secondary);
+    font-size: 0.9rem;
+  }
+
   &__actions {
     display: flex;
     justify-content: flex-start;
@@ -270,6 +217,12 @@
       outline-offset: 2px;
     }
   }
+
+  // Only rendered when the student has submitted a response. Hidden on
+  // screen; the print stylesheet promotes it into the answer box.
+  &__print-answer {
+    display: none;
+  }
 }
 
 @keyframes revealFade {
@@ -334,6 +287,7 @@
     &__numeric,
     &__text-input,
     &__actions,
+    &__nudge,
     &__reveal,
     &__reset {
       display: none !important;
@@ -348,6 +302,30 @@
       flex: 1 0 auto;
       min-height: 46pt;
     }
+
+    // If the student has submitted a response, render it in the answer box
+    // instead of leaving the blank hand-write area.
+    &__print-answer {
+      display: block;
+      flex: 1 0 auto;
+      margin-top: 4pt;
+      padding: 6pt 8pt;
+      border: 0.75pt solid #999;
+      background: #f5f5f5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.35;
+      color: #1a1a1a;
+      white-space: pre-wrap;
+      min-height: 46pt;
+    }
+  }
+
+  // Suppress the blank hand-write area when a rendered answer sits above it.
+  .question-item:has(.question-item__print-answer)::after {
+    display: none !important;
   }
 }
 

@@ -9,6 +9,10 @@
 
   <p class="question-item__prompt">{{ question().prompt }}</p>
 
+  @if (printAnswer()) {
+    <div class="question-item__print-answer" aria-hidden="true">{{ printAnswer() }}</div>
+  }
+
   @switch (question().answerType) {
     @case ('multiple-choice') {
       <div class="question-item__options" role="radiogroup" [attr.aria-label]="question().prompt" (keydown)="onOptionKeydown($event)">
@@ -18,9 +22,9 @@
             [attr.data-option-index]="i"
             class="question-item__option"
             [class.question-item__option--selected]="selectedIndex() === i"
-            [class.question-item__option--correct-answer]="submitted() && i === asMc(question()).correctIndex"
-            [class.question-item__option--wrong-answer]="submitted() && selectedIndex() === i && i !== asMc(question()).correctIndex"
-            [disabled]="submitted()"
+            [class.question-item__option--correct-answer]="reveal() && i === asMc(question()).correctIndex"
+            [class.question-item__option--wrong-answer]="(reveal() || nudge()) && selectedIndex() === i && i !== asMc(question()).correctIndex"
+            [disabled]="reveal()"
             role="radio"
             [attr.aria-checked]="selectedIndex() === i"
             [attr.tabindex]="(selectedIndex() ?? 0) === i ? '0' : '-1'"
@@ -35,6 +39,9 @@
     @case ('numeric') {
       <div class="question-item__numeric">
         <label class="sr-only" [attr.for]="'q-' + question().id + '-numeric'">{{ question().prompt }}</label>
+        @if (asNumeric(question()).unit === '$') {
+          <span class="question-item__numeric-unit question-item__numeric-unit--prefix" aria-hidden="true">$</span>
+        }
         <input
           [id]="'q-' + question().id + '-numeric'"
           type="text"
@@ -42,12 +49,12 @@
           class="question-item__numeric-input"
           [ngModel]="numericInput()"
           (ngModelChange)="numericInput.set($event)"
-          [disabled]="submitted()"
+          [disabled]="reveal()"
           [placeholder]="asNumeric(question()).unit === '$' ? 'Amount in dollars' : 'Your answer'"
           [attr.aria-invalid]="submitted() && correct() === false ? 'true' : null"
           [attr.aria-describedby]="submitted() ? 'q-' + question().id + '-reveal' : null"
         />
-        @if (asNumeric(question()).unit) {
+        @if (asNumeric(question()).unit && asNumeric(question()).unit !== '$') {
           <span class="question-item__numeric-unit">{{ asNumeric(question()).unit }}</span>
         }
       </div>
@@ -61,61 +68,58 @@
         rows="3"
         [ngModel]="textInput()"
         (ngModelChange)="textInput.set($event)"
-        [disabled]="submitted()"
         placeholder="Type your answer..."
-        [attr.aria-describedby]="submitted() ? 'q-' + question().id + '-reveal' : null"
       ></textarea>
     }
   }
 
-  @if (!submitted()) {
-    <div class="question-item__actions">
+  @if (submitted() && question().answerType !== 'short-text') {
+    <div class="question-item__reveal" [id]="'q-' + question().id + '-reveal'" aria-live="polite">
+      @if (correct() === true) {
+        <div class="question-item__verdict">Correct.</div>
+      } @else if (correct() === false) {
+        <div class="question-item__verdict">Not quite.</div>
+      }
+
+      <div class="question-item__explanation">{{ question().explanation }}</div>
+
+      <button type="button" class="question-item__reset" (click)="onReset()">
+        Try again
+      </button>
+    </div>
+  } @else if (nudge()) {
+    <p class="question-item__nudge" role="status">
+      Not quite. Take another look at the data and try again.
+    </p>
+  }
+
+  <div class="question-item__actions">
+    @if (submitted() && question().answerType !== 'short-text') {
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-primary"
+        (click)="onAdvance()"
+      >
+        {{ advanceLabel() }}
+      </button>
+    } @else if (question().answerType === 'short-text') {
       <button
         type="button"
         class="ngpf-btn ngpf-btn-primary"
         [disabled]="!canCheck()"
         (click)="onCheck()"
       >
-        Check
+        {{ advanceLabel() }}
       </button>
-    </div>
-  } @else {
-    <div class="question-item__reveal" [id]="'q-' + question().id + '-reveal'" aria-live="polite">
-      @if (correct() === true) {
-        <div class="question-item__verdict">Correct.</div>
-      } @else if (correct() === false) {
-        <div class="question-item__verdict">Not quite.</div>
-      } @else {
-        <div class="question-item__verdict">Compare your answer to the model answer below.</div>
-      }
-
-      @if (question().answerType === 'short-text') {
-        @if (conceptHits().length > 0) {
-          <div class="question-item__concepts">
-            <div class="question-item__concepts-label">Concepts your answer touched on</div>
-            <ul>
-              @for (item of conceptHits(); track item.concept.label) {
-                <li [class.question-item__concept--hit]="item.hit" [class.question-item__concept--miss]="!item.hit">
-                  <span class="question-item__concept-icon" aria-hidden="true">{{ item.hit ? '✓' : '·' }}</span>
-                  <span class="question-item__concept-label">{{ item.concept.label }}</span>
-                  <span class="sr-only">{{ item.hit ? 'included' : 'not detected' }}</span>
-                </li>
-              }
-            </ul>
-            <p class="question-item__concepts-note">
-              This is a keyword check, not a grade. Your answer is fine if it makes the point another way.
-            </p>
-          </div>
-        }
-        <div class="question-item__model">
-          <div class="question-item__model-label">Model answer</div>
-          <p>{{ asShortText(question()).modelAnswer }}</p>
-        </div>
-      }
-
-      <div class="question-item__explanation">{{ question().explanation }}</div>
-
-      <button type="button" class="question-item__reset" (click)="onReset()">Try again</button>
-    </div>
-  }
+    } @else {
+      <button
+        type="button"
+        class="ngpf-btn ngpf-btn-primary"
+        [disabled]="!canCheck()"
+        (click)="onCheck()"
+      >
+        @if (nudge()) { Check again } @else { Check }
+      </button>
+    }
+  </div>
 </article>

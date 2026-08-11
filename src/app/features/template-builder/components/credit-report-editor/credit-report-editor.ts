@@ -5,8 +5,12 @@ import {
   CreditAccount,
   CreditInquiry,
   CreditReport,
+  MonthStatus,
+  PAYMENT_HISTORY_MONTHS,
+  PublicRecord,
   emptyAccount,
   emptyInquiry,
+  emptyPublicRecord,
   sampleCreditReport,
 } from '../../models/credit-report.model';
 import { randomCreditReport } from '../../utils/random-credit-report.util';
@@ -21,8 +25,16 @@ function emptyReport(): CreditReport {
     bureau: 'Experian',
     score: 700,
     accounts: [],
+    publicRecords: [],
     inquiries: [],
   };
+}
+
+/** Rotate a month cell through OK → 30 → 60 → 90 → CO → NA → OK on click. */
+const CYCLE: MonthStatus[] = ['OK', '30', '60', '90', 'CO', 'NA'];
+function nextStatus(cur: MonthStatus): MonthStatus {
+  const i = CYCLE.indexOf(cur);
+  return CYCLE[(i + 1) % CYCLE.length];
 }
 
 @Component({
@@ -54,53 +66,6 @@ export class CreditReportEditor {
     return ((s - 300) / 550) * 100;
   }
 
-  /**
-   * Revolving accounts (cards) — the only kind for which "utilization" is
-   * meaningful. Installment loans use "balance / original amount" as loan
-   * progress, but that's not part of the utilization ratio.
-   */
-  private static readonly REVOLVING_TYPES = new Set([
-    'Credit Card',
-    'Store Card',
-    'Retail Card',
-    'Line of Credit',
-  ]);
-
-  protected isRevolving(type: string): boolean {
-    return CreditReportEditor.REVOLVING_TYPES.has(type);
-  }
-
-  /** Per-account utilization percentage, or null when not applicable. */
-  protected utilizationPctOf(acct: CreditAccount): number | null {
-    if (!this.isRevolving(acct.type)) return null;
-    if (!acct.creditLimit || acct.creditLimit <= 0) return null;
-    return Math.round((acct.balance / acct.creditLimit) * 100);
-  }
-
-  /**
-   * Aggregate utilization across all OPEN revolving accounts:
-   *   sum(balance) / sum(limit) of open cards.
-   */
-  protected aggregateUtilizationOf(r: CreditReport): number | null {
-    let totalBal = 0;
-    let totalLim = 0;
-    for (const a of r.accounts) {
-      if (!this.isRevolving(a.type)) continue;
-      if (a.status !== 'Open') continue;
-      totalBal += a.balance;
-      totalLim += a.creditLimit;
-    }
-    if (totalLim <= 0) return null;
-    return Math.round((totalBal / totalLim) * 100);
-  }
-
-  protected utilizationBandOf(pct: number): { label: string; color: string } {
-    if (pct <= 10) return { label: 'Excellent', color: '#2e7d32' };
-    if (pct <= 30) return { label: 'Good', color: '#558b2f' };
-    if (pct <= 50) return { label: 'Elevated', color: '#ef6c00' };
-    return { label: 'High', color: '#c62828' };
-  }
-
   private readonly mutator = new FirstItemMutator(this.reports, sampleCreditReport);
   private mutateFirst(fn: (r: CreditReport) => CreditReport): void {
     this.mutator.mutate(fn);
@@ -127,6 +92,87 @@ export class CreditReportEditor {
   protected removeAccount(index: number): void {
     this.mutateFirst((r) => ({ ...r, accounts: r.accounts.filter((_, i) => i !== index) }));
   }
+
+  /** Click a cell to cycle through payment-history statuses. */
+  protected cyclePaymentMonth(accountIndex: number, monthIndex: number): void {
+    this.mutateFirst((r) => ({
+      ...r,
+      accounts: r.accounts.map((a, i) => {
+        if (i !== accountIndex) return a;
+        const hist = [...a.paymentHistory];
+        while (hist.length < PAYMENT_HISTORY_MONTHS) hist.push('OK');
+        hist[monthIndex] = nextStatus(hist[monthIndex] ?? 'OK');
+        return { ...a, paymentHistory: hist };
+      }),
+    }));
+  }
+
+  /** Reset an account's payment history to 24 months of on-time. */
+  protected resetPaymentHistory(accountIndex: number): void {
+    this.mutateFirst((r) => ({
+      ...r,
+      accounts: r.accounts.map((a, i) =>
+        i === accountIndex ? { ...a, paymentHistory: Array(PAYMENT_HISTORY_MONTHS).fill('OK' as MonthStatus) } : a,
+      ),
+    }));
+  }
+
+  protected updatePublicRecord(index: number, patch: Partial<PublicRecord>): void {
+    this.mutateFirst((r) => ({
+      ...r,
+      publicRecords: r.publicRecords.map((p, i) => (i === index ? { ...p, ...patch } : p)),
+    }));
+  }
+  protected addPublicRecord(): void {
+    this.mutateFirst((r) => ({ ...r, publicRecords: [...r.publicRecords, emptyPublicRecord()] }));
+  }
+  protected removePublicRecord(index: number): void {
+    this.mutateFirst((r) => ({ ...r, publicRecords: r.publicRecords.filter((_, i) => i !== index) }));
+  }
+
+  /** Month label helper: given the report date and an offset, return e.g. "Feb '26". */
+  protected monthLabel(reportDate: string, monthsAgo: number): string {
+    const base = reportDate ? new Date(reportDate) : new Date();
+    const d = new Date(base.getFullYear(), base.getMonth() - monthsAgo, 1);
+    const m = d.toLocaleString('en-US', { month: 'short' });
+    const y = String(d.getFullYear()).slice(-2);
+    return `${m} '${y}`;
+  }
+
+  /** Cell-color mapping for the payment-history grid. */
+  protected monthColor(status: MonthStatus): string {
+    switch (status) {
+      case 'OK': return '#2e7d32';
+      case '30': return '#f9a825';
+      case '60': return '#ef6c00';
+      case '90': return '#c62828';
+      case 'CO': return '#4a148c';
+      case 'NA': return '#bdbdbd';
+    }
+  }
+
+  /** Summary counts for the top "Accounts summary" block. */
+  protected accountsSummary(r: CreditReport): {
+    total: number;
+    open: number;
+    closed: number;
+    pastDue: number;
+    totalBalance: number;
+    totalLimit: number;
+  } {
+    let open = 0, closed = 0, pastDue = 0, totalBalance = 0, totalLimit = 0;
+    for (const a of r.accounts) {
+      if (a.status === 'Open') open++;
+      else closed++;
+      if (a.paymentStatus !== 'Current') pastDue++;
+      totalBalance += a.balance;
+      totalLimit += a.creditLimit;
+    }
+    return { total: r.accounts.length, open, closed, pastDue, totalBalance, totalLimit };
+  }
+
+  /** Month indices 0..N-1 for the template's @for loop. */
+  protected readonly monthIndices = Array.from({ length: PAYMENT_HISTORY_MONTHS }, (_, i) => i);
   protected updateInquiry(index: number, patch: Partial<CreditInquiry>): void {
     this.mutateFirst((r) => ({
       ...r,

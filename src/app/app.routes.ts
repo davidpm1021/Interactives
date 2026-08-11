@@ -16,7 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'stock-tracker',
-    title: 'Stock Tracker | NGPF',
+    title: '5 Stocks on Your Birthday | NGPF',
     loadComponent: () => import('./features/stock-tracker/stock-tracker').then((m) => m.StockTracker),
   },
   {

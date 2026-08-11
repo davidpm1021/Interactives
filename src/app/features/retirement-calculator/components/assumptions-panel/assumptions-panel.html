@@ -1,0 +1,43 @@
+<details class="assumptions-panel">
+  <summary>
+    <span class="assumptions-panel__title">Assumptions</span>
+    <span class="assumptions-panel__hint">Tweak to see how they change your projection</span>
+    <span class="assumptions-panel__caret" aria-hidden="true"></span>
+  </summary>
+
+  <div class="assumptions-panel__body">
+    <div class="assumptions-panel__grid">
+      @for (field of fields; track field.key) {
+        <label class="assumptions-panel__field">
+          <span class="assumptions-panel__label">{{ field.label }}</span>
+          <span class="assumptions-panel__input-with-suffix">
+            <input
+              type="text"
+              inputmode="decimal"
+              [value]="pct(assumptions()[field.key])"
+              (input)="onPctInput(field, $event)"
+            />
+            <span class="assumptions-panel__suffix">%</span>
+          </span>
+          <span class="assumptions-panel__hint-line">{{ field.hint }}</span>
+        </label>
+      }
+    </div>
+
+    <ul class="assumptions-panel__static">
+      <li><strong>Life expectancy:</strong> 95 years old.</li>
+      <li><strong>What's not modeled:</strong> Social Security, taxes, market volatility.</li>
+    </ul>
+
+    <div class="assumptions-panel__actions">
+      <button
+        type="button"
+        class="assumptions-panel__reset"
+        (click)="onReset()"
+        [disabled]="isDefault()"
+      >
+        Reset to defaults
+      </button>
+    </div>
+  </div>
+</details>

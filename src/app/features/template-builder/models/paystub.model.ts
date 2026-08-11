@@ -8,6 +8,13 @@ export interface PaystubEarning {
 export interface PaystubLineItem {
   description: string;
   current: number;
+  /**
+   * When set (non-null), the line item is a percentage of gross rather than
+   * a fixed dollar amount. `current` is derived at read time as
+   * grossPerPeriod × percentOfGross / 100. Used for classic %-based
+   * deductions like 401(k) contributions.
+   */
+  percentOfGross?: number | null;
 }
 
 export interface PaystubParty {
@@ -30,6 +37,13 @@ export interface Paystub {
   periodsYTD: number;
   earnings: PaystubEarning[];
   includeFICA: boolean;
+  /** When true, federal income tax auto-computes from annualized gross. */
+  includeFederalTax: boolean;
+  /**
+   * When set (e.g. "OR"), state income tax auto-computes from annualized
+   * gross using the state's effective rate. Empty string = no state tax.
+   */
+  stateForTax: string;
   otherTaxes: PaystubLineItem[];
   deductions: PaystubLineItem[];
 }
@@ -47,7 +61,18 @@ export function emptyEarning(): PaystubEarning {
 }
 
 export function emptyLineItem(): PaystubLineItem {
-  return { description: '', current: 0 };
+  return { description: '', current: 0, percentOfGross: null };
+}
+
+/**
+ * Effective dollar amount for a line item on a given per-period gross.
+ * Percentage-based items derive from gross; fixed items use `current`.
+ */
+export function lineItemAmount(item: PaystubLineItem, grossPerPeriod: number): number {
+  if (item.percentOfGross != null && Number.isFinite(item.percentOfGross)) {
+    return Math.round((grossPerPeriod * item.percentOfGross) / 100 * 100) / 100;
+  }
+  return item.current;
 }
 
 export function samplePaystub(): Paystub {
@@ -75,13 +100,12 @@ export function samplePaystub(): Paystub {
       { description: 'Overtime', hours: 4, rate: 27.75, amount: 0 },
     ],
     includeFICA: true,
-    otherTaxes: [
-      { description: 'Federal Income Tax', current: 137.45 },
-      { description: 'State Income Tax (OR)', current: 92.31 },
-    ],
+    includeFederalTax: true,
+    stateForTax: 'OR',
+    otherTaxes: [],
     deductions: [
-      { description: '401(k) Contribution', current: 57.72 },
-      { description: 'Health Insurance', current: 45.0 },
+      { description: '401(k) Contribution', current: 0, percentOfGross: 4 },
+      { description: 'Health Insurance', current: 45.0, percentOfGross: null },
     ],
   };
 }

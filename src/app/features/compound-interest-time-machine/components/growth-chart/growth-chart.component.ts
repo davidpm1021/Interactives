@@ -9,12 +9,15 @@ import {
   viewChild,
   Injector,
   inject,
+  untracked,
 } from '@angular/core';
 import * as d3 from 'd3';
 import { SimulationResult, YearlyDataPoint } from '../../models/compound-interest.models';
 import { formatCurrency } from '../../utils/formatters';
 import {
   ChartMargin,
+  ChartDimensions,
+  ChartScales,
   DEFAULT_MARGIN,
   computeChartDimensions,
   createChartSvg,
@@ -35,8 +38,30 @@ export class GrowthChartComponent {
   readonly result = input.required<SimulationResult>();
   readonly comparisonResult = input<SimulationResult | null>(null);
   readonly selectedYear = input<number | null>(null);
+  /**
+   * Year the mouse is currently hovering over. Drives only the marker and
+   * tooltip, so hover doesn't retrigger the (expensive) chart data rebind.
+   */
+  readonly hoverYear = input<number | null>(null);
   readonly showSimpleInterest = input(false);
   readonly isAutoPlaying = input(false);
+  /**
+   * When set, the y-axis ceiling is pinned to this value instead of auto-fitting
+   * the current data. Lets the sandbox freeze the axis so slider changes don't
+   * telegraph how much bigger the final balance will be.
+   */
+  readonly yAxisMax = input<number | null>(null);
+  /**
+   * When set, the x-axis labels render as ages instead of "Yr N". Also lets the
+   * tooltip show ages.
+   */
+  readonly startAge = input<number | null>(null);
+  /**
+   * Offset (in years) at which the comparison series should start on the x-axis.
+   * The sandbox uses 5 for the "wait 5 years" scenario so the comparison line
+   * begins later in time rather than just being a shorter series stuck at year 0.
+   */
+  readonly comparisonStartYear = input(0);
   readonly yearHover = output<number | null>();
 
   private readonly injector = inject(Injector);
@@ -47,6 +72,18 @@ export class GrowthChartComponent {
   private tooltip!: d3.Selection<HTMLDivElement, unknown, null, undefined>;
   private initialized = false;
   private readonly reducedMotion = signal(false);
+
+  /**
+   * Snapshot of the last full render. The marker-only path (hover) reads this
+   * to place the dot + tooltip without re-drawing areas, lines, or axes.
+   */
+  private lastRender: {
+    scales: ChartScales;
+    dims: ChartDimensions;
+    data: YearlyDataPoint[];
+    comparison: SimulationResult | null;
+    displayYear: number;
+  } | null = null;
 
   private readonly margin: ChartMargin = DEFAULT_MARGIN;
 
@@ -60,14 +97,28 @@ export class GrowthChartComponent {
       { injector: this.injector },
     );
 
+    // Full render — data or curtain changed
     effect(() => {
       const data = this.result();
       const comparison = this.comparisonResult();
       const simple = this.showSimpleInterest();
       const year = this.selectedYear();
       const autoPlay = this.isAutoPlaying();
+      // Also track yAxisMax + startAge + comparisonStartYear so the chart re-renders
+      // when the sandbox re-freezes the axis or the age framing changes.
+      this.yAxisMax();
+      this.startAge();
+      this.comparisonStartYear();
       if (this.initialized) {
         this.updateChart(data, comparison, simple, year, autoPlay);
+      }
+    });
+
+    // Hover-only — just move the marker + tooltip, don't rebind chart data
+    effect(() => {
+      const hy = this.hoverYear();
+      if (this.initialized && this.lastRender) {
+        this.updateMarker(hy);
       }
     });
   }
@@ -136,27 +187,50 @@ export class GrowthChartComponent {
       .attr('width', dims.innerWidth)
       .attr('height', dims.innerHeight);
 
+    // Size the clip so a pinned y-axis can't let the curve draw outside the
+    // plot box. Slight vertical padding keeps a 2.5px-wide stroke sitting
+    // exactly on the ceiling from being shaved in half.
+    this.svg
+      .select('.plot-clip-rect')
+      .attr('y', -2)
+      .attr('width', dims.innerWidth)
+      .attr('height', dims.innerHeight + 4);
+
     const allData = result.dataPoints;
-    const allDataForScale = comparison ? [...allData, ...comparison.dataPoints] : allData;
+    const compOffset = this.comparisonStartYear();
+    // For scaling, project the comparison series onto the primary timeline.
+    const shiftedComp = comparison
+      ? comparison.dataPoints.map((d) => ({ ...d, year: d.year + compOffset }))
+      : [];
+    const allDataForScale = comparison ? [...allData, ...shiftedComp] : allData;
 
     const maxYear = Math.max(...allDataForScale.map((d) => d.year));
-    const maxBalance = Math.max(
+    const dataMaxBalance = Math.max(
       ...allDataForScale.map((d) => Math.max(d.compoundBalance, d.simpleBalance)),
     );
+    const frozenMax = this.yAxisMax();
+    const yMax = frozenMax !== null ? frozenMax : dataMaxBalance * 1.1;
 
     const scales = createScales(
       dims.innerWidth,
       dims.innerHeight,
       [0, maxYear],
-      [0, maxBalance * 1.1],
+      [0, yMax],
     );
 
     const displayYear = selectedYear ?? maxYear;
     const data = allData.filter((d) => d.year <= displayYear);
     const dur = this.getTransitionDuration(isAutoPlaying);
+    const startAge = this.startAge();
 
-    renderAxes(this.chartGroup, scales, dims.innerHeight, maxYear, dur, (d) =>
-      formatCurrency(d, true),
+    renderAxes(
+      this.chartGroup,
+      scales,
+      dims.innerHeight,
+      maxYear,
+      dur,
+      (d) => formatCurrency(d, true),
+      startAge !== null ? (d) => `Age ${startAge + d}` : undefined,
     );
 
     // Area generators
@@ -208,19 +282,22 @@ export class GrowthChartComponent {
       lineLayer.selectAll('.simple-line').remove();
     }
 
-    // Comparison result
+    // Comparison result — shifted right by compOffset years so a "waiting"
+    // scenario begins later in time rather than compressing to year 0.
     if (comparison) {
-      const compData = comparison.dataPoints;
+      const compData = comparison.dataPoints.filter(
+        (d) => d.year + compOffset <= displayYear,
+      );
 
       const compBalanceLine = d3
         .line<YearlyDataPoint>()
-        .x((d) => scales.x(d.year))
+        .x((d) => scales.x(d.year + compOffset))
         .y((d) => scales.y(d.compoundBalance))
         .curve(d3.curveMonotoneX);
 
       const compArea = d3
         .area<YearlyDataPoint>()
-        .x((d) => scales.x(d.year))
+        .x((d) => scales.x(d.year + compOffset))
         .y0(dims.innerHeight)
         .y1((d) => scales.y(d.compoundBalance))
         .curve(d3.curveMonotoneX);
@@ -232,47 +309,16 @@ export class GrowthChartComponent {
       lineLayer.selectAll('.comparison-line').remove();
     }
 
-    // Selected year marker — reuse elements to avoid flicker
-    if (selectedYear !== null) {
-      const dp = data.find((d) => d.year === selectedYear);
-      if (dp) {
-        const cx = scales.x(dp.year);
-        const cy = scales.y(dp.compoundBalance);
-
-        let circle = markerLayer.select<SVGCircleElement>('.year-marker-dot');
-        if (circle.empty()) {
-          circle = markerLayer.append('circle')
-            .attr('class', 'year-marker-dot')
-            .attr('r', 6)
-            .attr('fill', 'var(--ngpf-sky-blue)')
-            .attr('stroke', 'white')
-            .attr('stroke-width', 2);
-        }
-        circle.attr('cx', cx).attr('cy', cy);
-
-        let vline = markerLayer.select<SVGLineElement>('.year-marker-line');
-        if (vline.empty()) {
-          vline = markerLayer.append('line')
-            .attr('class', 'year-marker-line')
-            .attr('stroke', 'var(--ngpf-navy-blue)')
-            .attr('stroke-width', 1)
-            .attr('stroke-dasharray', '4,4')
-            .attr('opacity', 0.4);
-        }
-        vline.attr('x1', cx).attr('x2', cx).attr('y1', 0).attr('y2', dims.innerHeight);
-      }
-    } else {
-      markerLayer.selectAll('.year-marker-dot, .year-marker-line').remove();
-    }
+    // Cache render state for the hover-only path
+    this.lastRender = { scales, dims, data, comparison, displayYear };
 
     // Mouse events
-    const maxDisplayedYear = displayYear;
     this.chartGroup
       .select('.overlay')
       .on('mousemove', (event: MouseEvent) => {
         const [mx] = d3.pointer(event);
         const yearVal = Math.round(scales.x.invert(mx));
-        const clampedYear = Math.max(0, Math.min(maxDisplayedYear, yearVal));
+        const clampedYear = Math.max(0, Math.min(displayYear, yearVal));
         const dp = data.find((d) => d.year === clampedYear);
         if (dp) {
           this.showTooltip(dp, comparison, event, container);
@@ -284,9 +330,64 @@ export class GrowthChartComponent {
         this.yearHover.emit(null);
       });
 
+    // Initial marker placement — respects hoverYear if set, else selectedYear.
+    // Read hoverYear untracked: this runs inside the full-render effect, and a
+    // tracked read would make every mousemove re-run the whole render (axes,
+    // areas, lines, comparison series, all with 400ms transitions), which is
+    // exactly what the hover/render split exists to avoid.
+    this.updateMarker(untracked(() => this.hoverYear()) ?? selectedYear);
+
     // ARIA label
     const ariaLabel = `Growth chart showing ${formatCurrency(result.summary.finalBalance)} after ${maxYear} years`;
     this.svg.attr('aria-label', ariaLabel).attr('role', 'img');
+  }
+
+  /**
+   * Move (or remove) the year marker without touching the chart body. Called
+   * on hover changes and once per full render. The marker year falls back to
+   * selectedYear so the currently-animating year is highlighted during Play.
+   */
+  private updateMarker(hoverYear: number | null): void {
+    if (!this.lastRender || !this.chartGroup) return;
+    const { scales, dims, data, displayYear } = this.lastRender;
+    const year = hoverYear ?? this.selectedYear();
+    const markerLayer = this.chartGroup.select<SVGGElement>('.marker-layer');
+
+    if (year === null || year > displayYear) {
+      markerLayer.selectAll('.year-marker-dot, .year-marker-line').remove();
+      return;
+    }
+
+    const dp = data.find((d) => d.year === year);
+    if (!dp) {
+      markerLayer.selectAll('.year-marker-dot, .year-marker-line').remove();
+      return;
+    }
+
+    const cx = scales.x(dp.year);
+    const cy = scales.y(dp.compoundBalance);
+
+    let circle = markerLayer.select<SVGCircleElement>('.year-marker-dot');
+    if (circle.empty()) {
+      circle = markerLayer.append('circle')
+        .attr('class', 'year-marker-dot')
+        .attr('r', 6)
+        .attr('fill', 'var(--ngpf-sky-blue)')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2);
+    }
+    circle.attr('cx', cx).attr('cy', cy);
+
+    let vline = markerLayer.select<SVGLineElement>('.year-marker-line');
+    if (vline.empty()) {
+      vline = markerLayer.append('line')
+        .attr('class', 'year-marker-line')
+        .attr('stroke', 'var(--ngpf-navy-blue)')
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '4,4')
+        .attr('opacity', 0.4);
+    }
+    vline.attr('x1', cx).attr('x2', cx).attr('y1', 0).attr('y2', dims.innerHeight);
   }
 
   private showTooltip(
@@ -299,15 +400,20 @@ export class GrowthChartComponent {
     const x = event.clientX - containerRect.left + 15;
     const y = event.clientY - containerRect.top - 10;
 
+    const startAge = this.startAge();
+    const heading = startAge !== null ? `Age ${startAge + dp.year}` : `Year ${dp.year}`;
+
     let html = `
-      <strong>Year ${dp.year}</strong><br/>
+      <strong>${heading}</strong><br/>
       Balance: ${formatCurrency(dp.compoundBalance)}<br/>
       Contributed: ${formatCurrency(dp.totalContributions)}<br/>
       Interest: ${formatCurrency(dp.totalInterestEarned)}
     `;
 
     if (comparison) {
-      const compDp = comparison.dataPoints.find((d) => d.year === dp.year);
+      const compOffset = this.comparisonStartYear();
+      const compYear = dp.year - compOffset;
+      const compDp = compYear >= 0 ? comparison.dataPoints.find((d) => d.year === compYear) : null;
       if (compDp) {
         html += `<br/><hr style="margin:4px 0;border-color:#ddd"/>
           <strong>Comparison</strong><br/>

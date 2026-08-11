@@ -18,7 +18,11 @@ import { computeChartDimensions, DEFAULT_MARGIN } from '../../utils/chart-helper
 // fit inside the chart's viewBox instead of getting clipped.
 const CHART_MARGIN = { ...DEFAULT_MARGIN, right: 58 };
 
-const SERIES_COLORS: Record<string, string> = {
+/**
+ * Chart colors per series. Exported so the rate table can render column
+ * swatches that match the chart lines.
+ */
+export const SERIES_COLORS: Record<string, string> = {
   'credit-card': '#c62828',
   'personal-loan': '#e28f10',
   'auto-loan': '#1f78b4',
@@ -43,6 +47,7 @@ export class TrendChart {
 
   protected readonly hover = signal<HoverPoint | null>(null);
   protected readonly tooltipPos = signal<{ left: number; top: number } | null>(null);
+  protected readonly tooltipAnchor = signal<'left' | 'center' | 'right'>('center');
   protected readonly hoverAnnouncement = signal('');
 
   private readonly injector = inject(Injector);
@@ -275,6 +280,12 @@ export class TrendChart {
       const leftPx = (CHART_MARGIN.left + cx) * scaleX;
       const topPx = CHART_MARGIN.top * scaleY;
       this.tooltipPos.set({ left: leftPx, top: topPx });
+      // Flip the anchor near the edges so the tooltip stays inside the
+      // container. Rough width budget: half of a wide tooltip is ~120px.
+      const edgeBudget = 120;
+      if (leftPx < edgeBudget) this.tooltipAnchor.set('left');
+      else if (containerRect.width - leftPx < edgeBudget) this.tooltipAnchor.set('right');
+      else this.tooltipAnchor.set('center');
     };
 
     const clearHover = () => {

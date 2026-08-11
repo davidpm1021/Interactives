@@ -1,83 +1,59 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { ChallengeStateService } from '../../services/challenge-state.service';
-import { CompoundInterestService } from '../../services/compound-interest.service';
-import { CHALLENGE_CONTENT, SUMMARY_TAKEAWAYS } from '../../data/challenge-content';
-import { formatCurrency } from '../../utils/formatters';
+import { CHALLENGE_CONTENT } from '../../data/challenge-content';
+import { TakeawaysFillComponent } from '../takeaways-fill/takeaways-fill.component';
+import { ReflectionFormComponent } from '../reflection-form/reflection-form.component';
 
-interface RecapRow {
+interface ChallengeReflection {
   challenge: number;
-  title: string;
-  guess: string;
-  reality: string;
+  prompt: string;
+  answer: string;
 }
+
+const REFLECTED_CHALLENGES = [
+  'challenge1',
+  'challenge2',
+  'challenge3',
+  'challenge4',
+] as const;
 
 @Component({
   selector: 'app-final-summary',
   standalone: true,
-  imports: [],
+  imports: [TakeawaysFillComponent, ReflectionFormComponent],
   templateUrl: './final-summary.component.html',
   styleUrl: './final-summary.component.scss',
 })
 export class FinalSummaryComponent {
+  readonly canGoBack = input(false);
+  readonly goBack = output<void>();
+
   private readonly stateService = inject(ChallengeStateService);
-  private readonly service = inject(CompoundInterestService);
 
-  protected readonly takeaways = SUMMARY_TAKEAWAYS;
+  protected onBack(): void {
+    this.goBack.emit();
+  }
 
-  protected readonly recapRows = computed<RecapRow[]>(() => {
-    const preds = this.stateService.predictions();
-    const rows: RecapRow[] = [];
-    const fmt = (n: number) => formatCurrency(Math.round(n));
-
-    // Challenge 1
-    const c1Actual = this.service.calculateChallenge1().summary.finalBalance;
-    rows.push({
-      challenge: 1,
-      title: CHALLENGE_CONTENT['challenge1'].title,
-      guess: preds.challenge1Year40 != null
-        ? fmt(preds.challenge1Year40)
-        : 'N/A',
-      reality: fmt(c1Actual),
+  /**
+   * The reflect-card prompts the student answered during the flow, replayed
+   * with their own answers.
+   *
+   * This replaced a Challenge / Your Guess / Reality recap table. Review:
+   * "the actual values aren't super important, as much as the students'
+   * experiences of going through the module. It also makes it seem like the
+   * guesses were more of a 'try to get the right answer' question, than the
+   * entry point to an exploratory activity."
+   *
+   * Unanswered prompts still render, as a blank line to write on after
+   * printing, so the report is complete either way.
+   */
+  protected readonly challengeReflections = computed<ChallengeReflection[]>(() => {
+    const saved = this.stateService.reflections();
+    return REFLECTED_CHALLENGES.flatMap((key, i) => {
+      const prompt = CHALLENGE_CONTENT[key].reflectPrompt;
+      if (!prompt) return [];
+      return [{ challenge: i + 1, prompt, answer: (saved[key] ?? '').trim() }];
     });
-
-    // Challenge 2
-    const c2Low = this.service.calculateChallenge2Low().summary.finalBalance;
-    const c2High = this.service.calculateChallenge2High().summary.finalBalance;
-    const ratio = c2High / c2Low;
-    rows.push({
-      challenge: 2,
-      title: CHALLENGE_CONTENT['challenge2'].title,
-      guess: preds.challenge2RateGuess
-        ? `Option ${preds.challenge2RateGuess}`
-        : 'N/A',
-      reality: `${ratio.toFixed(1)}x (${fmt(c2High)} vs ${fmt(c2Low)})`,
-    });
-
-    // Challenge 3
-    const c3Actual = this.service.calculateChallenge3().summary.finalBalance;
-    rows.push({
-      challenge: 3,
-      title: CHALLENGE_CONTENT['challenge3'].title,
-      guess: preds.challenge3ContributionGuess != null
-        ? fmt(preds.challenge3ContributionGuess)
-        : 'N/A',
-      reality: fmt(c3Actual),
-    });
-
-    // Challenge 4
-    const c4Early = this.service.calculateChallenge4Early().summary.finalBalance;
-    const c4Late = this.service.calculateChallenge4Late().summary.finalBalance;
-    const gap = c4Early - c4Late;
-    rows.push({
-      challenge: 4,
-      title: CHALLENGE_CONTENT['challenge4'].title,
-      guess: preds.challenge4WaitGuess
-        ? `Option ${preds.challenge4WaitGuess}`
-        : 'N/A',
-      reality: `${fmt(gap)} more by starting early`,
-    });
-
-    return rows;
   });
 
   protected onPrint(): void {

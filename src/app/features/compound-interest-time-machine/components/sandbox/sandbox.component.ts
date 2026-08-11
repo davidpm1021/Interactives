@@ -1,6 +1,7 @@
-import { Component, computed, effect, inject, output, signal, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal, OnInit } from '@angular/core';
 import { CompoundInterestService } from '../../services/compound-interest.service';
 import { GrowthChartComponent } from '../growth-chart/growth-chart.component';
+import { GrowthTableComponent } from '../growth-table/growth-table.component';
 import { SummaryPanelComponent } from '../summary-panel/summary-panel.component';
 import { TimeScrubberComponent } from '../time-scrubber/time-scrubber.component';
 import { SimulationInputs, SimulationResult } from '../../models/compound-interest.models';
@@ -9,19 +10,35 @@ import { CHALLENGE_CONTENT } from '../../data/challenge-content';
 @Component({
   selector: 'app-sandbox',
   standalone: true,
-  imports: [GrowthChartComponent, SummaryPanelComponent, TimeScrubberComponent],
+  imports: [GrowthChartComponent, GrowthTableComponent, SummaryPanelComponent, TimeScrubberComponent],
   templateUrl: './sandbox.component.html',
   styleUrl: './sandbox.component.scss',
 })
 export class SandboxComponent implements OnInit {
+  readonly canGoBack = input(false);
+  /**
+   * Rate the sandbox opens on, as a whole percent. The parent passes the
+   * randomized session rate so "Your Time Machine" continues the same
+   * scenario the student just worked through, instead of silently switching
+   * to a different rate and producing different numbers for identical inputs.
+   */
+  readonly initialRatePercent = input(7);
   readonly finish = output<void>();
+  readonly goBack = output<void>();
+
+  protected onBack(): void {
+    this.goBack.emit();
+  }
 
   private readonly service = inject(CompoundInterestService);
 
   protected readonly content = CHALLENGE_CONTENT['challenge5'];
 
   // ── Input signals (smart defaults from challenges) ──
-  protected readonly principal = signal(1000);
+  // Opens at $100, not the $1,000 from the challenge story. Review: "many
+  // (most?) students don't have an initial $1000 investment and some may feel
+  // put off." The slider steps in $100s to match.
+  protected readonly principal = signal(100);
   protected readonly contributionAmount = signal(100);
   protected readonly interestRatePercent = signal(7);
   protected readonly startAge = signal(22);
@@ -46,11 +63,11 @@ export class SandboxComponent implements OnInit {
 
   // ── Wait comparison ──
   protected readonly showWaitComparison = signal(false);
+  protected readonly waitYears = 5;
 
   protected readonly waitResult = computed<SimulationResult | null>(() => {
     if (!this.showWaitComparison()) return null;
-    const waitYears = 5;
-    const horizon = this.timeHorizon() - waitYears;
+    const horizon = this.timeHorizon() - this.waitYears;
     if (horizon < 1) return null;
     const inputs: SimulationInputs = {
       principal: this.principal(),
@@ -64,61 +81,142 @@ export class SandboxComponent implements OnInit {
   });
 
   // ── Time scrubber ──
-  /** The year the scrubber is set to (persists across hovers). */
-  private readonly scrubberYear = signal<number | null>(null);
-  /** The year shown on the chart (may temporarily differ during hover). */
+  /**
+   * The year the scrubber is set to. Also drives the growth-chart curtain
+   * (data drawn up to this year). Not affected by hover, so cursor movement
+   * doesn't retract/extend the chart on every mouse pixel.
+   */
   protected readonly selectedYear = signal<number | null>(null);
+  /** Year the mouse is hovering over. Drives the marker + tooltip only. */
+  protected readonly hoverYear = signal<number | null>(null);
   protected readonly isAutoPlaying = signal(false);
 
+  /**
+   * Y-axis ceiling passed to the growth chart. Frozen on init and re-frozen
+   * each time the student presses Play so sliding rate/contribution mid-idle
+   * doesn't leak the answer through a rescaling axis.
+   */
+  protected readonly frozenYMax = signal<number | null>(null);
+
+  /**
+   * True once the student has seen the curve reach the end of the timeline.
+   * Gates whether later input changes are allowed to rescale the y-axis.
+   */
+  protected readonly hasRevealed = signal(false);
+
+  /**
+   * True when inputs changed after a completed run, so the figures on screen
+   * no longer match what the student last watched.
+   *
+   * Review: "I ran the animation, then adjusted my inputs... it was hard to
+   * tell that it had re-run the estimate with my new input." Drives a prompt
+   * on the play control rather than silently updating.
+   */
+  protected readonly needsRerun = signal(false);
+
   ngOnInit(): void {
+    // Carry the session's rate over from the challenges before the first
+    // refit, so the frozen ceiling matches the scenario we open on.
+    // Rounded to the slider's 0.5 step: the caller derives this from a decimal
+    // rate, and 0.07 * 100 lands on 7.000000000000001, which rendered in full
+    // in the number field.
+    const seeded = Math.round(this.clamp(this.initialRatePercent(), 0, 15) * 2) / 2;
+    this.interestRatePercent.set(seeded);
     // Start at year 0 so the user scrubs or plays to reveal
-    this.scrubberYear.set(0);
     this.selectedYear.set(0);
+    this.refitYAxis();
   }
 
   // ── Input handlers ──
   protected onPrincipalInput(event: Event): void {
     this.principal.set(this.clamp(this.parseNumber(event), 0, 100000));
+    this.onInputsChanged();
   }
 
   protected onContributionInput(event: Event): void {
     this.contributionAmount.set(this.clamp(this.parseNumber(event), 0, 2000));
+    this.onInputsChanged();
   }
 
   protected onRateInput(event: Event): void {
     this.interestRatePercent.set(this.clamp(this.parseNumber(event), 0, 15));
+    this.onInputsChanged();
   }
 
   protected onStartAgeInput(event: Event): void {
     const val = Math.round(this.parseNumber(event));
     this.startAge.set(this.clamp(val, 18, this.endAge() - 1));
+    this.onInputsChanged();
   }
 
   protected onEndAgeInput(event: Event): void {
     const val = Math.round(this.parseNumber(event));
     this.endAge.set(this.clamp(val, this.startAge() + 1, 80));
+    this.onInputsChanged();
   }
 
   protected toggleWaitComparison(): void {
     this.showWaitComparison.update((v) => !v);
+    // Refit only. This overlays a second curve, it doesn't change the
+    // student's own inputs, so routing it through onInputsChanged told them
+    // "You changed your numbers. Press play to see the new result." about
+    // figures that were still current.
+    this.refitYAxisIfRevealed();
+  }
+
+  /**
+   * Rescale the y-axis on input changes, but only once the student has already
+   * watched the curve reach the end.
+   *
+   * Before the reveal the ceiling stays pinned so nudging the rate can't
+   * telegraph the final balance. After it, there is nothing left to withhold,
+   * and keeping the stale ceiling would leave the curve pressed against (or
+   * clipped at) the top of the plot with no way to recover short of pressing
+   * Play again.
+   */
+  private onInputsChanged(): void {
+    this.refitYAxisIfRevealed();
+    if (this.hasRevealed()) this.needsRerun.set(true);
+  }
+
+  /** Rescale without marking the on-screen figures stale. */
+  private refitYAxisIfRevealed(): void {
+    if (!this.hasRevealed()) return;
+    this.refitYAxis();
+  }
+
+  protected readonly showTable = signal(false);
+
+  protected toggleTable(): void {
+    this.showTable.update((v) => !v);
   }
 
   protected onYearChange(year: number): void {
-    this.scrubberYear.set(year);
     this.selectedYear.set(year);
+    // Once the timeline reaches the end the final balance is on screen, so the
+    // axis no longer needs to be withheld from later input changes.
+    if (year >= this.timeHorizon()) this.hasRevealed.set(true);
   }
 
   protected onPlayStateChange(playing: boolean): void {
     this.isAutoPlaying.set(playing);
+    if (playing) {
+      this.refitYAxis();
+      // The run now reflects the current inputs, so the prompt has served
+      // its purpose.
+      this.needsRerun.set(false);
+    }
+  }
+
+  private refitYAxis(): void {
+    const base = this.result().summary.finalBalance;
+    const wait = this.waitResult()?.summary.finalBalance ?? 0;
+    const ceiling = Math.max(base, wait) * 1.1;
+    this.frozenYMax.set(ceiling > 0 ? ceiling : null);
   }
 
   protected onYearHover(year: number | null): void {
-    if (year !== null) {
-      this.selectedYear.set(year);
-    } else {
-      // Mouse left the chart — snap back to scrubber position
-      this.selectedYear.set(this.scrubberYear());
-    }
+    this.hoverYear.set(year);
   }
 
   protected onFinish(): void {

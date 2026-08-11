@@ -81,7 +81,13 @@
   <fieldset class="account-editor__section">
     <legend>Transactions</legend>
     @for (txn of current().transactions; track $index) {
-      <div class="account-editor__line-item" role="group" [attr.aria-label]="'Transaction ' + ($index + 1)">
+      <div
+        #editorTxn
+        class="account-editor__line-item"
+        [class.account-editor__line-item--highlight]="highlightedTxn() === $index"
+        role="group"
+        [attr.aria-label]="'Transaction ' + ($index + 1)"
+      >
         <div class="account-editor__row">
           <label>
             <span>Date</span>
@@ -106,7 +112,13 @@
         <button type="button" class="account-editor__remove" (click)="removeTxn($index)" [attr.aria-label]="'Remove transaction ' + ($index + 1) + (txn.description ? ': ' + txn.description : '')">Remove</button>
       </div>
     }
-    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addTxn()">+ Add transaction</button>
+    <div class="account-editor__add-actions">
+      <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addTxn()">+ Add transaction</button>
+      @if (variant() === 'checking') {
+        <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addMaintenanceFee()">+ Monthly fee ($12)</button>
+        <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addAtmFee()">+ ATM fee ($3.50)</button>
+      }
+    </div>
   </fieldset>
 </app-editor-shell>
 
@@ -207,7 +219,15 @@
       </thead>
       <tbody>
         @for (txn of sortedTxnsOf(statement); track txn.origIndex) {
-          <tr [class.account-preview__row--negative]="txn.runningBalance < 0">
+          <tr
+            class="account-preview__row-clickable"
+            [class.account-preview__row--negative]="txn.runningBalance < 0"
+            tabindex="0"
+            [attr.aria-label]="'Edit transaction: ' + (txn.description || 'unnamed')"
+            (click)="jumpToTxn(txn.origIndex)"
+            (keydown.enter)="jumpToTxn(txn.origIndex); $event.preventDefault()"
+            (keydown.space)="jumpToTxn(txn.origIndex); $event.preventDefault()"
+          >
             <td>{{ txn.date ? (txn.date | date: 'M/d') : '' }}</td>
             <th scope="row">{{ txn.description }}</th>
             <td>{{ txn.kind === 'debit' ? (txn.amount | currency) : '' }}</td>

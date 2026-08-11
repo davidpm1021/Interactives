@@ -1,17 +1,13 @@
-<section class="inputs-panel" aria-labelledby="inputs-title">
-  <h2 id="inputs-title" class="inputs-panel__title">Your numbers</h2>
-
+<section class="inputs-panel" aria-label="Your numbers">
   <label class="inputs-panel__field">
     <span class="inputs-panel__label">Current salary</span>
     <span class="inputs-panel__input-with-prefix">
       <span class="inputs-panel__prefix">$</span>
       <input
-        type="number"
+        type="text"
         inputmode="numeric"
-        min="0"
-        step="1000"
-        [ngModel]="inputs().currentSalary"
-        (ngModelChange)="updateNumber('currentSalary', $event)"
+        [value]="formatMoney(inputs().currentSalary)"
+        (input)="onMoneyInput('currentSalary', $event)"
       />
     </span>
   </label>
@@ -42,16 +38,13 @@
 
   <label class="inputs-panel__field">
     <span class="inputs-panel__label">Retirement monthly budget</span>
-    <span class="inputs-panel__hint">How much you want to spend per month in retirement.</span>
     <span class="inputs-panel__input-with-prefix">
       <span class="inputs-panel__prefix">$</span>
       <input
-        type="number"
+        type="text"
         inputmode="numeric"
-        min="0"
-        step="100"
-        [ngModel]="inputs().targetMonthlyBudget"
-        (ngModelChange)="updateNumber('targetMonthlyBudget', $event)"
+        [value]="formatMoney(inputs().targetMonthlyBudget)"
+        (input)="onMoneyInput('targetMonthlyBudget', $event)"
       />
     </span>
   </label>
@@ -61,29 +54,105 @@
     <span class="inputs-panel__input-with-prefix">
       <span class="inputs-panel__prefix">$</span>
       <input
-        type="number"
+        type="text"
         inputmode="numeric"
-        min="0"
-        step="1000"
-        [ngModel]="inputs().currentSavings"
-        (ngModelChange)="updateNumber('currentSavings', $event)"
+        [value]="formatMoney(inputs().currentSavings)"
+        (input)="onMoneyInput('currentSavings', $event)"
       />
     </span>
   </label>
 
-  <label class="inputs-panel__field">
-    <span class="inputs-panel__label">Monthly contribution</span>
-    <span class="inputs-panel__input-with-prefix">
-      <span class="inputs-panel__prefix">$</span>
+  <div class="inputs-panel__field">
+    <div class="inputs-panel__label-row">
+      <span class="inputs-panel__label" id="monthly-contribution-label">Monthly contribution</span>
+      <div class="inputs-panel__mode-toggle" role="group" aria-label="Contribution mode">
+        <button
+          type="button"
+          class="inputs-panel__mode-btn"
+          [class.inputs-panel__mode-btn--active]="contributionMode() === '$'"
+          [attr.aria-pressed]="contributionMode() === '$'"
+          (click)="setContributionMode('$')"
+        >$</button>
+        <button
+          type="button"
+          class="inputs-panel__mode-btn"
+          [class.inputs-panel__mode-btn--active]="contributionMode() === '%'"
+          [attr.aria-pressed]="contributionMode() === '%'"
+          (click)="setContributionMode('%')"
+        >%</button>
+      </div>
+    </div>
+
+    @if (contributionMode() === '$') {
+      <label class="inputs-panel__input-with-prefix" aria-labelledby="monthly-contribution-label">
+        <span class="inputs-panel__prefix">$</span>
+        <input
+          type="text"
+          inputmode="numeric"
+          [value]="formatMoney(inputs().monthlyContribution)"
+          (input)="onMoneyInput('monthlyContribution', $event)"
+        />
+      </label>
+    } @else {
+      <label class="inputs-panel__input-with-suffix" aria-labelledby="monthly-contribution-label">
+        <input
+          type="text"
+          inputmode="decimal"
+          [value]="formatPct(contributionPct())"
+          (input)="onPctContributionInput($event)"
+          [disabled]="inputs().currentSalary <= 0"
+        />
+        <span class="inputs-panel__suffix">%</span>
+      </label>
+      <span class="inputs-panel__hint">
+        Percent of gross salary. Equals about ${{ formatMoney(inputs().monthlyContribution) }} per month.
+      </span>
+    }
+  </div>
+
+  <div class="inputs-panel__field inputs-panel__match">
+    <label class="inputs-panel__match-toggle">
       <input
-        type="number"
-        inputmode="numeric"
-        min="0"
-        step="50"
-        [ngModel]="inputs().monthlyContribution"
-        (ngModelChange)="updateNumber('monthlyContribution', $event)"
+        type="checkbox"
+        [checked]="matchEnabled()"
+        (change)="toggleMatch()"
       />
-    </span>
-  </label>
+      <span>Employer 401(k) match</span>
+    </label>
+
+    @if (matchEnabled()) {
+      <div class="inputs-panel__match-body">
+        <div class="inputs-panel__match-row">
+          <span class="inputs-panel__match-lead">Matches</span>
+          <label class="inputs-panel__input-with-suffix inputs-panel__match-input" aria-label="Employer match rate">
+            <input
+              type="text"
+              inputmode="decimal"
+              [value]="matchRatePct()"
+              (input)="onMatchRateInput($event)"
+            />
+            <span class="inputs-panel__suffix">%</span>
+          </label>
+          <span>of your contribution</span>
+        </div>
+        <div class="inputs-panel__match-row">
+          <span class="inputs-panel__match-lead">Up to</span>
+          <label class="inputs-panel__input-with-suffix inputs-panel__match-input" aria-label="Employer match cap as percent of salary">
+            <input
+              type="text"
+              inputmode="decimal"
+              [value]="matchCapPct()"
+              (input)="onMatchCapInput($event)"
+            />
+            <span class="inputs-panel__suffix">%</span>
+          </label>
+          <span>of your salary</span>
+        </div>
+        <span class="inputs-panel__hint">
+          Common: 50% match up to 6% of salary.
+        </span>
+      </div>
+    }
+  </div>
 
 </section>

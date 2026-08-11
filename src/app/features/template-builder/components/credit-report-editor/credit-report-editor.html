@@ -109,10 +109,68 @@
             <option value="90+ days late">90+ days late</option>
           </select>
         </label>
+
+        <div class="credit-editor__history">
+          <div class="credit-editor__history-label">
+            <span>Payment history (24 months, most recent first)</span>
+            <button type="button" class="credit-editor__history-reset" (click)="resetPaymentHistory($index)">
+              Reset all to on-time
+            </button>
+          </div>
+          <p class="credit-editor__history-hint">
+            Click a cell to cycle status: OK → 30 → 60 → 90 → CO → N/A → OK.
+          </p>
+          <div class="credit-editor__history-grid">
+            @for (m of monthIndices; track m) {
+              <button
+                type="button"
+                class="credit-editor__history-cell"
+                [style.background]="monthColor(acct.paymentHistory[m])"
+                [attr.aria-label]="monthLabel(current().reportDate, m) + ': ' + (acct.paymentHistory[m])"
+                [attr.title]="monthLabel(current().reportDate, m) + ' — ' + (acct.paymentHistory[m])"
+                (click)="cyclePaymentMonth($index, m)"
+              >{{ acct.paymentHistory[m] }}</button>
+            }
+          </div>
+        </div>
+
         <button type="button" class="credit-editor__remove" (click)="removeAccount($index)" [attr.aria-label]="'Remove account ' + ($index + 1) + (acct.creditor ? ': ' + acct.creditor : '')">Remove account</button>
       </div>
     }
     <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addAccount()">+ Add account</button>
+  </fieldset>
+
+  <fieldset class="credit-editor__section">
+    <legend>Public records</legend>
+    <p class="credit-editor__hint">
+      Bankruptcies, tax liens, or civil judgments. Most reports show none.
+    </p>
+    @for (rec of current().publicRecords; track $index) {
+      <div class="credit-editor__line-item" role="group" [attr.aria-label]="'Public record ' + ($index + 1)">
+        <div class="credit-editor__row">
+          <label>
+            <span>Kind</span>
+            <input type="text" [ngModel]="rec.kind" (ngModelChange)="updatePublicRecord($index, { kind: $event })" />
+          </label>
+          <label>
+            <span>Status</span>
+            <input type="text" [ngModel]="rec.status" (ngModelChange)="updatePublicRecord($index, { status: $event })" />
+          </label>
+        </div>
+        <div class="credit-editor__row">
+          <label>
+            <span>Filed</span>
+            <input type="date" [ngModel]="rec.date" (ngModelChange)="updatePublicRecord($index, { date: $event })" />
+          </label>
+          <label>
+            <span>Amount ($)</span>
+            <input type="number" step="0.01" [ngModel]="rec.amount" (ngModelChange)="updatePublicRecord($index, { amount: parseNumber($event) })" />
+          </label>
+        </div>
+        <button type="button" class="credit-editor__remove" (click)="removePublicRecord($index)" [attr.aria-label]="'Remove public record ' + ($index + 1)">Remove public record</button>
+      </div>
+    }
+    <button type="button" class="ngpf-btn ngpf-btn-secondary" (click)="addPublicRecord()">+ Add public record</button>
   </fieldset>
 
   <fieldset class="credit-editor__section">
@@ -168,15 +226,6 @@
         <div class="credit-preview__score-bar">
           <div class="credit-preview__score-bar-fill" [style.width.%]="scoreFractionOf(report)" [style.background]="scoreCategoryOf(report).color"></div>
         </div>
-        @if (aggregateUtilizationOf(report) !== null) {
-          <div class="credit-preview__util">
-            <span class="credit-preview__util-label">Revolving utilization:</span>
-            <strong [style.color]="utilizationBandOf(aggregateUtilizationOf(report)!).color">
-              {{ aggregateUtilizationOf(report) }}%
-              ({{ utilizationBandOf(aggregateUtilizationOf(report)!).label }})
-            </strong>
-          </div>
-        }
       </div>
     </section>
 
@@ -208,53 +257,118 @@
     </section>
 
     <section class="credit-preview__section">
-      <h3>Accounts</h3>
-      <table class="credit-preview__table">
-        <colgroup>
-          <col style="width: 20%" />
-          <col style="width: 13%" />
-          <col style="width: 14%" />
-          <col style="width: 9%" />
-          <col style="width: 10%" />
-          <col style="width: 10%" />
-          <col style="width: 8%" />
-          <col style="width: 8%" />
-          <col style="width: 8%" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th scope="col">Creditor</th>
-            <th scope="col">Type</th>
-            <th scope="col">Account #</th>
-            <th scope="col">Opened</th>
-            <th scope="col" class="credit-preview__col-num">Balance</th>
-            <th scope="col" class="credit-preview__col-num">Limit / Orig</th>
-            <th scope="col" class="credit-preview__col-num">Util.</th>
-            <th scope="col">Status</th>
-            <th scope="col">Payment</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (acct of report.accounts; track $index) {
-            <tr>
-              <th scope="row">{{ acct.creditor }}</th>
-              <td>{{ acct.type }}</td>
-              <td>{{ acct.accountNumber }}</td>
-              <td>{{ acct.openedDate ? (acct.openedDate | date: 'MMM y') : '' }}</td>
-              <td>{{ acct.balance | currency }}</td>
-              <td>{{ acct.creditLimit | currency }}</td>
-              <td>{{ utilizationPctOf(acct) !== null ? utilizationPctOf(acct) + '%' : '—' }}</td>
-              <td>{{ acct.status }}</td>
-              <td>{{ acct.paymentStatus }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <h3>Account summary</h3>
+      <div class="credit-preview__summary">
+        <div class="credit-preview__summary-cell">
+          <div class="credit-preview__label">Total accounts</div>
+          <div class="credit-preview__summary-value">{{ accountsSummary(report).total }}</div>
+        </div>
+        <div class="credit-preview__summary-cell">
+          <div class="credit-preview__label">Open</div>
+          <div class="credit-preview__summary-value">{{ accountsSummary(report).open }}</div>
+        </div>
+        <div class="credit-preview__summary-cell">
+          <div class="credit-preview__label">Closed / Paid</div>
+          <div class="credit-preview__summary-value">{{ accountsSummary(report).closed }}</div>
+        </div>
+        <div class="credit-preview__summary-cell">
+          <div class="credit-preview__label">Past due</div>
+          <div class="credit-preview__summary-value"
+               [class.credit-preview__summary-value--warn]="accountsSummary(report).pastDue > 0">
+            {{ accountsSummary(report).pastDue }}
+          </div>
+        </div>
+        <div class="credit-preview__summary-cell">
+          <div class="credit-preview__label">Total balance</div>
+          <div class="credit-preview__summary-value">{{ accountsSummary(report).totalBalance | currency }}</div>
+        </div>
+        <div class="credit-preview__summary-cell">
+          <div class="credit-preview__label">Total limits</div>
+          <div class="credit-preview__summary-value">{{ accountsSummary(report).totalLimit | currency }}</div>
+        </div>
+      </div>
     </section>
 
-    @if (report.inquiries.length) {
-      <section class="credit-preview__section">
-        <h3>Recent inquiries</h3>
+    <section class="credit-preview__section">
+      <h3>Account details</h3>
+      @for (acct of report.accounts; track $index) {
+        <div class="credit-preview__account">
+          <div class="credit-preview__account-head">
+            <div>
+              <div class="credit-preview__account-name">{{ acct.creditor }}</div>
+              <div class="credit-preview__account-sub">
+                {{ acct.type }} · {{ acct.accountNumber }} · Opened {{ acct.openedDate ? (acct.openedDate | date: 'MMM y') : '—' }}
+              </div>
+            </div>
+            <div class="credit-preview__account-status">
+              <span class="credit-preview__account-status-line">{{ acct.status }}</span>
+              <span class="credit-preview__account-status-line"
+                    [class.credit-preview__account-status-line--warn]="acct.paymentStatus !== 'Current'">
+                {{ acct.paymentStatus }}
+              </span>
+            </div>
+          </div>
+          <div class="credit-preview__account-figures">
+            <div>
+              <div class="credit-preview__label">Balance</div>
+              <div>{{ acct.balance | currency }}</div>
+            </div>
+            <div>
+              <div class="credit-preview__label">Limit / original</div>
+              <div>{{ acct.creditLimit | currency }}</div>
+            </div>
+          </div>
+          <div class="credit-preview__history">
+            <div class="credit-preview__history-legend">
+              <span>Payment history (last 24 months, most recent first)</span>
+            </div>
+            <div class="credit-preview__history-strip">
+              @for (m of monthIndices; track m) {
+                <span
+                  class="credit-preview__history-cell"
+                  [style.background]="monthColor(acct.paymentHistory[m])"
+                  [attr.title]="monthLabel(report.reportDate, m) + ' — ' + (acct.paymentHistory[m])"
+                >{{ acct.paymentHistory[m] === 'OK' ? '' : acct.paymentHistory[m] }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </section>
+
+    <section class="credit-preview__section">
+      <h3>Public records</h3>
+      @if (report.publicRecords.length === 0) {
+        <p class="credit-preview__none">None reported.</p>
+      } @else {
+        <table class="credit-preview__table">
+          <thead>
+            <tr>
+              <th scope="col">Kind</th>
+              <th scope="col">Filed</th>
+              <th scope="col" class="credit-preview__col-num">Amount</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (rec of report.publicRecords; track $index) {
+              <tr>
+                <th scope="row">{{ rec.kind }}</th>
+                <td>{{ rec.date ? (rec.date | date: 'MMM d, y') : '' }}</td>
+                <td>{{ rec.amount | currency }}</td>
+                <td>{{ rec.status }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+
+    <section class="credit-preview__section">
+      <h3>Recent inquiries</h3>
+      @if (report.inquiries.length === 0) {
+        <p class="credit-preview__none">No inquiries in the last 24 months.</p>
+      } @else {
         <table class="credit-preview__table">
           <colgroup>
             <col style="width: 18%" />
@@ -278,7 +392,7 @@
             }
           </tbody>
         </table>
-      </section>
-    }
+      }
+    </section>
   </article>
 </ng-template>

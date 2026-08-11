@@ -1,31 +1,52 @@
-<section class="results-panel" aria-labelledby="results-title">
-  <h2 id="results-title" class="results-panel__title">Where you'll land at {{ projection().yearlyBalances[projection().yearlyBalances.length - 1].age }}</h2>
-
+<section class="results-panel" aria-label="Retirement projection">
   <div class="results-panel__tiles">
-    <div class="results-panel__tile results-panel__tile--primary">
-      <span class="results-panel__label">Projected nest egg</span>
+    <div class="results-panel__tile results-panel__tile--primary"
+         [class.results-panel__tile--warn]="hasGap()"
+         [class.results-panel__tile--ok]="!hasGap()">
+      <!--
+        No employer-match sub-line. Review: "Remove 'Of that, $X came from your
+        employer.' from 'you'll have' box (cluttering key value + redundant
+        with graph)." The chart's shaded band and its legend entry carry it.
+      -->
+      <span class="results-panel__label">You'll have</span>
       <app-stat-counter [value]="projection().finalBalance" prefix="$" />
     </div>
 
     <div class="results-panel__tile">
-      <span class="results-panel__label">Target nest egg</span>
+      <span class="results-panel__label">You'll need</span>
       <app-stat-counter [value]="projection().targetNestEgg" prefix="$" />
     </div>
 
-    <div class="results-panel__tile"
-         [class.results-panel__tile--warn]="hasGap()"
-         [class.results-panel__tile--ok]="!hasGap()">
-      <span class="results-panel__label">
-        @if (hasGap()) { You're short } @else { You're on track }
-      </span>
-      <app-stat-counter [value]="projection().gapAtRetirement" prefix="$" />
-    </div>
+  </div>
 
-    <div class="results-panel__tile"
-         [class.results-panel__tile--warn]="saveMore()"
-         [class.results-panel__tile--ok]="!saveMore()">
-      <span class="results-panel__label">To hit target, save</span>
+  <!--
+    Opt-in, and below the two headline values rather than beside them. Review:
+    the third tile "distracts from the 2 key values", and because the
+    calculator recalculates on every keystroke with no submit, it "will default
+    to automatically giving them the 'answer' of how to make the numbers work,
+    which takes away some of the fun/exploration."
+
+    Kept rather than deleted because the accompanying worksheet asks students
+    to read this figure in three separate questions. Its wording already
+    assumes a click ("Click on 'Summary View'"), so revealing on request
+    matches the worksheet more closely than showing it unprompted did.
+  -->
+  @if (!revealed()) {
+    <button
+      type="button"
+      class="ngpf-btn ngpf-btn-secondary results-panel__reveal"
+      (click)="reveal()"
+    >
+      How much would I need to save?
+    </button>
+  } @else {
+    <div class="results-panel__banner"
+         [class.results-panel__banner--warn]="saveMore()"
+         [class.results-panel__banner--ok]="!saveMore()"
+         role="status"
+         aria-live="polite">
+      <span class="results-panel__banner-label">To hit target, save</span>
       <app-stat-counter [value]="projection().requiredMonthlyToHitGoal" prefix="$" suffix="/mo" />
     </div>
-  </div>
+  }
 </section>

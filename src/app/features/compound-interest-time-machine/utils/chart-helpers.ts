@@ -92,13 +92,27 @@ export function createChartSvg(
     .attr('fill', '#1db8e8')
     .attr('opacity', 0.4);
 
+  // Clip the plot area. When the y-axis is pinned (see the frozen-ceiling
+  // behavior in the sandbox) the data can exceed the visible domain, and
+  // without a clip the line and areas render outside the plot box and beyond
+  // the SVG viewBox entirely. `plot-clip-rect` is sized in updateChart once
+  // the dimensions are known.
+  defs
+    .append('clipPath')
+    .attr('id', 'plot-clip')
+    .append('rect')
+    .attr('class', 'plot-clip-rect')
+    .attr('x', 0)
+    .attr('y', 0);
+
   const chartGroup = svg
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  // Layer groups for ordering
-  chartGroup.append('g').attr('class', 'area-layer');
-  chartGroup.append('g').attr('class', 'line-layer');
+  // Layer groups for ordering. Data layers are clipped; axes and the marker
+  // are not, so tick labels and the hover dot can sit outside the plot box.
+  chartGroup.append('g').attr('class', 'area-layer').attr('clip-path', 'url(#plot-clip)');
+  chartGroup.append('g').attr('class', 'line-layer').attr('clip-path', 'url(#plot-clip)');
   chartGroup.append('g').attr('class', 'marker-layer');
   chartGroup.append('g').attr('class', 'x-axis');
   chartGroup.append('g').attr('class', 'y-axis');
@@ -125,6 +139,42 @@ export function createScales(
   return { x, y };
 }
 
+/**
+ * Pick a tick count that scales with the chart's inner width so labels don't
+ * collide on narrow (mobile) viewports. Rule of thumb: ~one tick per 60px.
+ * Callers can cap the target with `maxTicks` (e.g. `maxYear` for a whole-year
+ * scale that shouldn't produce fractional ticks).
+ */
+export function widthAwareTickCount(innerWidth: number, maxTicks: number, minTicks = 3): number {
+  const target = Math.floor(innerWidth / 60);
+  // Cap last so `maxTicks` always wins. Applying the floor last would let
+  // minTicks override a smaller cap — e.g. a 1-year horizon would still ask
+  // for 3 ticks and d3 would emit 0 / 0.5 / 1, rendering "Age 22.5".
+  return Math.min(maxTicks, Math.max(minTicks, target));
+}
+
+/**
+ * Whole year under the pointer, clamped to the plotted range.
+ *
+ * The one piece of hover handling worth sharing between charts: everything
+ * else (marker styling, tooltip contents, which series exist) differs enough
+ * per chart that a common implementation would take more configuration than
+ * it saves.
+ *
+ * `event.target` must be inside the chart group, since d3.pointer resolves
+ * coordinates against the element the listener is bound to.
+ */
+export function yearFromPointer(
+  event: PointerEvent | MouseEvent,
+  scales: ChartScales,
+  maxYear: number,
+  target?: d3.ContainerElement,
+): number {
+  const [mx] = d3.pointer(event, target);
+  const raw = Math.round(scales.x.invert(mx));
+  return Math.max(0, Math.min(maxYear, raw));
+}
+
 /** Render x and y axes with transitions. */
 export function renderAxes(
   chartGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
@@ -133,11 +183,13 @@ export function renderAxes(
   maxYear: number,
   duration: number,
   formatYTick: (d: number) => string,
+  formatXTick?: (d: number) => string,
 ): void {
+  const innerWidth = (scales.x.range()[1] as number) - (scales.x.range()[0] as number);
   const xAxis = d3
     .axisBottom(scales.x)
-    .ticks(Math.min(maxYear, 10))
-    .tickFormat((d) => `Yr ${d}`);
+    .ticks(widthAwareTickCount(innerWidth, Math.min(maxYear, 10)))
+    .tickFormat((d) => (formatXTick ? formatXTick(d as number) : `Yr ${d}`));
 
   const yAxis = d3
     .axisLeft(scales.y)

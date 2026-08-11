@@ -4,6 +4,27 @@
     <strong class="ngpf-text-primary">{{ unitCount() }} unit(s)</strong>
   </p>
 
+  <!--
+    The count above now follows the language, so it can drop when Spanish is
+    selected. Say why, otherwise the number appears to change for no reason
+    and disagrees with the term counts on the unit picker, which runs before
+    the language is chosen.
+  -->
+  @if (untranslatedCount() > 0) {
+    <p class="translation-note" role="status">
+      {{ untranslatedCount() }} of these terms {{ untranslatedCount() === 1 ? "isn't" : "aren't" }}
+      translated yet, so {{ untranslatedCount() === 1 ? "it's" : "they're" }} left out of the
+      Spanish deck.
+    </p>
+  }
+
+  @if (hasNoCards()) {
+    <p class="translation-note translation-note--blocking" role="status">
+      None of the units you picked are available in Spanish yet. Choose English, or go back and
+      pick different units.
+    </p>
+  }
+
   <div class="settings-section">
     <h3>Study Mode</h3>
     <p class="section-description">Choose how you want to see each card</p>
@@ -81,7 +102,12 @@
     <button type="button" class="ngpf-btn ngpf-btn-outline" (click)="onBack()">
       ← Back
     </button>
-    <button type="button" class="ngpf-btn ngpf-btn-primary start-btn" (click)="onStartStudying()">
+    <button
+      type="button"
+      class="ngpf-btn ngpf-btn-primary start-btn"
+      [disabled]="hasNoCards()"
+      (click)="onStartStudying()"
+    >
       Start Studying →
     </button>
   </div>

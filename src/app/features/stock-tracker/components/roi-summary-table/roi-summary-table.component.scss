@@ -15,7 +15,10 @@
   }
 
   &__wrapper {
-    overflow-x: auto;
+    // Not overflow-x:auto — that also clips overflow-y, which cuts off the
+    // header tooltips when the table is short. Any horizontal scrolling is
+    // handled by the outer page.
+    overflow: visible;
     background: white;
     border-radius: var(--ngpf-radius-md);
     box-shadow: var(--ngpf-shadow-sm);
@@ -85,5 +88,91 @@
   &__negative {
     color: var(--ngpf-error);
     font-weight: 700;
+  }
+
+  &__as-of {
+    margin: 6px 4px 0;
+    font-size: 0.75rem;
+    color: var(--ngpf-text-muted);
+    font-style: italic;
+    text-align: right;
+  }
+
+  &__th-info {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: help;
+
+    &:focus-visible {
+      outline: 2px solid var(--ngpf-sky-blue);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+
+  &__info-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: none;
+    line-height: 1;
+  }
+
+  &__info-tooltip {
+    position: absolute;
+    // Open above the header cell so short tables don't clip it below.
+    bottom: calc(100% + 8px);
+    right: 0;
+    z-index: 5;
+    display: none;
+    background: var(--ngpf-royal-blue);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: var(--ngpf-font-body);
+    font-size: 0.78rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: normal;
+    line-height: 1.4;
+    width: 240px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: left;
+
+    em {
+      font-family: var(--ngpf-font-mono, monospace);
+      font-style: normal;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.75rem;
+    }
+  }
+
+  &__th-info:hover &__info-tooltip,
+  &__th-info:focus-within &__info-tooltip,
+  &__th-info:focus &__info-tooltip {
+    display: block;
+  }
+}
+
+// ── Print ──
+@media print {
+  .roi-summary-table {
+    // The "?" affordance and its tooltip only mean something to a pointer.
+    &__info-mark,
+    &__info-tooltip {
+      display: none;
+    }
+
+    break-inside: avoid;
   }
 }

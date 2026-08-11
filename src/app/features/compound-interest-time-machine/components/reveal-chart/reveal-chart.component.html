@@ -1,1 +1,9 @@
-<div class="reveal-chart-wrapper" #chartContainer></div>
+<div class="reveal-chart-wrapper" #chartContainer>
+  <!--
+    Readout for the hovered/tapped year. Angular-owned rather than d3-appended
+    so the markup stays inspectable; d3 only toggles visibility and position.
+    aria-hidden because the same figures are announced via the SVG's
+    aria-label and the reveal copy below the chart.
+  -->
+  <div class="chart-readout" #readout aria-hidden="true"></div>
+</div>
