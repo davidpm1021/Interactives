@@ -58,6 +58,13 @@ describe('PredictionChartComponent', () => {
     expect(yMax()).toBeLessThan(TRUTH_YEAR_40);
   });
 
+  it('opens the Year-40 dot level with the locked Year-10 answer', () => {
+    setDot('dot10', 3400);
+    (component as never as { lockDot: (i: string) => void }).lockDot('dot10');
+    fixture.detectChanges();
+    expect(dot('dot40').value).toBe(3400);
+  });
+
   it('reaches the Year-40 answer after a single pinned drag', () => {
     (component as never as { lockDot: (i: string) => void }).lockDot('dot10');
     fixture.detectChanges();
@@ -83,6 +90,25 @@ describe('PredictionChartComponent', () => {
     for (let i = 0; i < 20; i++) pinToCeiling('dot10');
     fixture.detectChanges();
     expect(yMax()).toBeLessThanOrEqual(100_000);
+  });
+
+  it('does not overwrite a restored Year-40 guess with the mirror', async () => {
+    const restored = TestBed.createComponent(PredictionChartComponent);
+    restored.componentRef.setInput('initialYear10', 2500);
+    restored.componentRef.setInput('initialYear40', 9100);
+    restored.detectChanges();
+
+    const inst = restored.componentInstance as never as {
+      dot10: () => { value: number };
+      dot40: () => { value: number };
+      lockDot: (i: string) => void;
+    };
+    expect(inst.dot40().value).toBe(9100);
+
+    // Re-locking Year 10 on a restored guess must leave Year 40 alone.
+    inst.lockDot('dot10');
+    restored.detectChanges();
+    expect(inst.dot40().value).toBe(9100);
   });
 
   it('ratchets the pushed ceiling upward only', () => {

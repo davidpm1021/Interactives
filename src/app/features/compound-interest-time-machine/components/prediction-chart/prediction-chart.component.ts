@@ -55,7 +55,9 @@ export class PredictionChartComponent {
   // we're anchoring students to a starting answer (that may be a little
   // arbitrary/they don't have context for)."
   private readonly dot10 = signal<PredictionPoint>({ year: 10, value: 1000, locked: false });
-  private readonly dot40 = signal<PredictionPoint>({ year: 40, value: 5000, locked: false });
+  // Placeholder only. The real starting value is the student's locked Year-10
+  // answer, mirrored across in lockDot, or a restored guess.
+  private readonly dot40 = signal<PredictionPoint>({ year: 40, value: 1000, locked: false });
   private readonly show40 = signal(false);
   private draggingDot: 'dot10' | 'dot40' | null = null;
   /** Guards the restore effect so it seeds the dots only on first arrival. */
@@ -342,19 +344,21 @@ export class PredictionChartComponent {
     }
 
     // Value label above
-    group.append('text')
+    const valueLabel = group.append('text')
       .attr('class', 'value-label')
       .attr('text-anchor', 'middle')
       .attr('y', -(this.DOT_RADIUS + 12))
       .text(formatCurrency(point.value));
+    this.clampLabelToChart(valueLabel, cx);
 
     // Lock hint below
     if (!point.locked) {
-      group.append('text')
+      const lockHint = group.append('text')
         .attr('class', 'lock-hint')
         .attr('text-anchor', 'middle')
         .attr('y', this.DOT_RADIUS + 18)
         .text('Press Enter to lock');
+      this.clampLabelToChart(lockHint, cx);
     }
 
     if (!point.locked) {
@@ -393,6 +397,45 @@ export class PredictionChartComponent {
         this.onKeydown(id, event);
       });
     }
+  }
+
+  /**
+   * Nudge a dot's centered label back inside the SVG when it would overhang.
+   *
+   * The Year-40 dot sits flush against the right edge of the plot area, and
+   * the margin there is only 30px, so a centered "Press Enter to lock" was
+   * rendering clipped to "Press Enter to". Measured rather than estimated:
+   * label width depends on the font and on the formatted value.
+   *
+   * `cx` is the dot's x within the chart group; the label is positioned in the
+   * dot group's local space, so the usable range runs from -(margin.left + cx)
+   * to (innerWidth - cx) + margin.right.
+   */
+  private clampLabelToChart(
+    label: d3.Selection<SVGTextElement, unknown, null, undefined>,
+    cx: number,
+  ): void {
+    const node = label.node();
+    if (!node || typeof node.getBBox !== 'function') return;
+
+    let box: DOMRect;
+    try {
+      box = node.getBBox();
+    } catch {
+      return; // getBBox throws on detached/hidden nodes in some environments
+    }
+    if (box.width === 0) return;
+
+    const leftLimit = -(DEFAULT_MARGIN.left + cx);
+    const rightLimit = this.dims.innerWidth - cx + DEFAULT_MARGIN.right;
+
+    let shift = 0;
+    if (box.x + box.width > rightLimit) {
+      shift = rightLimit - (box.x + box.width);
+    } else if (box.x < leftLimit) {
+      shift = leftLimit - box.x;
+    }
+    if (shift !== 0) label.attr('x', shift);
   }
 
   /**
@@ -463,6 +506,15 @@ export class PredictionChartComponent {
     sig.set({ ...sig(), locked: true });
 
     if (id === 'dot10' && !this.show40()) {
+      // Year 40 opens level with the student's own Year-10 answer rather than
+      // a number we picked. A flat line from Year 10 to Year 40 reads as "it
+      // stops growing here", so the student has to actively decide how much
+      // more happens, and the anchor is their own reasoning instead of ours.
+      //
+      // Guarded by !show40() so it only fires the first time the dot appears:
+      // a restored guess (see the initialYear40 effect) already set show40 and
+      // must not be overwritten.
+      this.dot40.set({ ...this.dot40(), value: this.dot10().value });
       this.show40.set(true);
       // Focus the Year 40 dot after render
       setTimeout(() => {
