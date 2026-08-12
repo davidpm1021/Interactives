@@ -262,7 +262,13 @@ function validateContent(data: VocabularyData): ValidationError[] {
         term.spanish.definition,
       ];
       for (const field of allFields) {
-        if (field && /^(ENGLISH|SPANISH)\b/i.test(field)) {
+        // Case-sensitive on purpose. The headers this guards against are the
+        // doc's literal uppercase "ENGLISH" / "SPANISH" labels, which is also
+        // how parse-dictionary recognizes them. Matching case-insensitively
+        // caught ordinary prose instead: the doc marks untranslated entries
+        // "Spanish translation coming soon!", and every one of those was
+        // reported as a leak.
+        if (field && /^(ENGLISH|SPANISH)\b/.test(field)) {
           errors.push({
             layer: 'content',
             message: `[${unit.name}] Header leak detected in "${term.term}": field starts with "${field.substring(0, 20)}"`,
