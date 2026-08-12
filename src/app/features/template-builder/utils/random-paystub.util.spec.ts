@@ -140,4 +140,18 @@ describe('randomPaystub withholding flags', () => {
       }
     }
   });
+
+  // Without the flag the deduction still prints, but silently stops lowering
+  // the income tax, which is the behavior this pairing exists to prevent.
+  it('marks a generated 401(k) as pre-tax and leaves insurance post-tax', () => {
+    for (const p of sample()) {
+      for (const d of p.deductions) {
+        if (d.description.includes('401(k)')) {
+          expect(d.preTax).toBe(true);
+        } else {
+          expect(d.preTax).toBeFalsy();
+        }
+      }
+    }
+  });
 });

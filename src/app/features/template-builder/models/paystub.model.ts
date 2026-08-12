@@ -15,6 +15,18 @@ export interface PaystubLineItem {
    * deductions like 401(k) contributions.
    */
   percentOfGross?: number | null;
+  /**
+   * Whether the deduction comes out before income tax is figured, so it
+   * lowers the federal and state withholding base. It does not lower the FICA
+   * base: a traditional 401(k) contribution is still subject to Social
+   * Security and Medicare, which is why a W-2 reports Box 1 below Box 3.
+   *
+   * A flag rather than a check on the description, because the two cases that
+   * matter read almost identically: a traditional 401(k) is pre-tax and a Roth
+   * 401(k) is not. That contrast is the point of the lesson, so the tool has
+   * to be able to show both.
+   */
+  preTax?: boolean;
 }
 
 export interface PaystubParty {
@@ -104,7 +116,7 @@ export function samplePaystub(): Paystub {
     stateForTax: 'OR',
     otherTaxes: [],
     deductions: [
-      { description: '401(k) Contribution', current: 0, percentOfGross: 4 },
+      { description: '401(k) Contribution', current: 0, percentOfGross: 4, preTax: true },
       { description: 'Health Insurance', current: 45.0, percentOfGross: null },
     ],
   };

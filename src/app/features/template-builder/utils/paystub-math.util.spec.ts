@@ -227,34 +227,107 @@ describe('totals', () => {
 });
 
 describe('pre-tax deductions and the income tax base', () => {
-  /**
-   * Pinned deliberately, and not an endorsement.
-   *
-   * Federal and state withholding are computed on the full gross. A 401(k)
-   * contribution does not reduce the base, so two paystubs with the same gross
-   * withhold identical income tax whether or not the employee defers into a
-   * retirement plan.
-   *
-   * That disagrees with the W-2 generator, which computes Box 1 as
-   * `annualWages - contrib401k` and withholds federal tax against Box 1, and it
-   * disagrees with the comment in random-paystub.util.ts claiming this code
-   * subtracts pre-tax deductions from the tax base.
-   *
-   * If the intent is for the paystub to demonstrate that pre-tax contributions
-   * lower taxable income, this is the test to change. It exists so that the
-   * change is a deliberate decision with a visible diff, rather than something
-   * discovered from a teacher's worksheet.
-   */
-  it('does not reduce the income tax base by a pre-tax 401(k) contribution', () => {
+  const traditional401k = {
+    description: '401(k) Contribution',
+    current: 0,
+    percentOfGross: 6,
+    preTax: true,
+  };
+  const roth401k = {
+    description: 'Roth 401(k)',
+    current: 0,
+    percentOfGross: 6,
+    preTax: false,
+  };
+
+  it('taxes wages net of anything deferred before tax', () => {
+    const p = withGross800({ deductions: [traditional401k] });
+    expect(math.preTaxDeductionsCurrent(p)).toBe(48);
+    expect(math.taxableGrossCurrent(p)).toBe(752);
+  });
+
+  it('ignores post-tax deductions when working out taxable wages', () => {
+    const p = withGross800({
+      deductions: [roth401k, { description: 'Health', current: 45, percentOfGross: null }],
+    });
+    expect(math.preTaxDeductionsCurrent(p)).toBe(0);
+    expect(math.taxableGrossCurrent(p)).toBe(800);
+  });
+
+  it('withholds less income tax when the employee defers into a traditional 401(k)', () => {
     pinRandom();
     const without = withGross800({ includeFederalTax: true, stateForTax: 'PA' });
     const with401k = withGross800({
       includeFederalTax: true,
       stateForTax: 'PA',
-      deductions: [{ description: '401(k) Contribution', current: 0, percentOfGross: 6 }],
+      deductions: [traditional401k],
     });
 
-    expect(math.federalCurrent(with401k)).toBe(math.federalCurrent(without));
-    expect(math.stateCurrent(with401k)).toBe(math.stateCurrent(without));
+    expect(math.federalCurrent(with401k)).toBeLessThan(math.federalCurrent(without));
+    expect(math.stateCurrent(with401k)).toBeLessThan(math.stateCurrent(without));
+    // Pennsylvania is flat, so the state figure is exactly the rate on $752.
+    expect(math.stateCurrent(with401k)).toBeCloseTo(752 * 0.0307, 2);
+  });
+
+  /**
+   * The distinction the tool exists to show: same money out of the same
+   * paycheck, but only the traditional contribution lowers income tax.
+   */
+  it('gives a Roth contribution no income tax break, unlike a traditional one', () => {
+    pinRandom();
+    const traditional = withGross800({
+      includeFederalTax: true,
+      stateForTax: 'PA',
+      deductions: [traditional401k],
+    });
+    const roth = withGross800({
+      includeFederalTax: true,
+      stateForTax: 'PA',
+      deductions: [roth401k],
+    });
+    const neither = withGross800({ includeFederalTax: true, stateForTax: 'PA' });
+
+    expect(math.federalCurrent(roth)).toBe(math.federalCurrent(neither));
+    expect(math.federalCurrent(traditional)).toBeLessThan(math.federalCurrent(roth));
+    // Both still cost the employee the same amount out of pocket.
+    expect(math.deductionsCurrent(roth)).toBe(math.deductionsCurrent(traditional));
+  });
+
+  /**
+   * A 401(k) defers income tax, not payroll tax. A W-2 shows this as Box 1
+   * sitting below Box 3, and the paystub has to agree or the two documents
+   * contradict each other.
+   */
+  it('still charges FICA on the full gross, including the deferred amount', () => {
+    const with401k = withGross800({ includeFICA: true, deductions: [traditional401k] });
+    const without = withGross800({ includeFICA: true });
+
+    expect(math.socialSecurityCurrent(with401k)).toBe(math.socialSecurityCurrent(without));
+    expect(math.medicareCurrent(with401k)).toBe(math.medicareCurrent(without));
+    expect(math.socialSecurityCurrent(with401k)).toBeCloseTo(800 * 0.062, 10);
+  });
+
+  it('withholds nothing rather than crediting money back when deferrals exceed gross', () => {
+    pinRandom();
+    const p = withGross800({
+      includeFederalTax: true,
+      stateForTax: 'PA',
+      deductions: [{ description: 'Oversized', current: 900, percentOfGross: null, preTax: true }],
+    });
+    expect(math.taxableGrossCurrent(p)).toBe(0);
+    expect(math.federalCurrent(p)).toBe(0);
+    expect(math.stateCurrent(p)).toBe(0);
+  });
+
+  it('sums several pre-tax rows together', () => {
+    const p = withGross800({
+      deductions: [
+        traditional401k,
+        { description: 'HSA', current: 100, percentOfGross: null, preTax: true },
+        { description: 'Health', current: 45, percentOfGross: null },
+      ],
+    });
+    expect(math.preTaxDeductionsCurrent(p)).toBe(48 + 100);
+    expect(math.taxableGrossCurrent(p)).toBe(800 - 148);
   });
 });

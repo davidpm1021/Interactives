@@ -27,18 +27,25 @@ interface DeductionPreset {
   description: string;
   kind: '$' | '%';
   value: number;
+  /** Comes out before income tax, lowering the FIT/state base. */
+  preTax?: boolean;
 }
 
+// Traditional 401(k) is pre-tax and Roth 401(k) is not, which is the whole
+// contrast a teacher is usually after. Health, dental and vision are left
+// post-tax here so the paystub agrees with the W-2 generator, which excludes
+// only the 401(k) deferral from Box 1; the per-row Pre-tax box can override
+// any of them.
 const DEDUCTION_PRESETS: DeductionPreset[] = [
   { id: 'health-50', description: 'Health Insurance', kind: '$', value: 50 },
   { id: 'dental-12', description: 'Dental Insurance', kind: '$', value: 12 },
   { id: 'vision-8',  description: 'Vision Insurance', kind: '$', value: 8  },
-  { id: '401k-3',    description: '401(k) Contribution', kind: '%', value: 3 },
-  { id: '401k-5',    description: '401(k) Contribution', kind: '%', value: 5 },
-  { id: '401k-7',    description: '401(k) Contribution', kind: '%', value: 7 },
+  { id: '401k-3',    description: '401(k) Contribution', kind: '%', value: 3, preTax: true },
+  { id: '401k-5',    description: '401(k) Contribution', kind: '%', value: 5, preTax: true },
+  { id: '401k-7',    description: '401(k) Contribution', kind: '%', value: 7, preTax: true },
   { id: 'roth-3',    description: 'Roth 401(k)', kind: '%', value: 3 },
-  { id: 'hsa-100',   description: 'HSA Contribution', kind: '$', value: 100 },
-  { id: 'fsa-50',    description: 'FSA Contribution', kind: '$', value: 50 },
+  { id: 'hsa-100',   description: 'HSA Contribution', kind: '$', value: 100, preTax: true },
+  { id: 'fsa-50',    description: 'FSA Contribution', kind: '$', value: 50, preTax: true },
 ];
 
 /** Two-letter state abbreviations we know how to compute withholding for. */
@@ -304,8 +311,8 @@ export class PaystubEditor {
     const preset = DEDUCTION_PRESETS.find((p) => p.id === presetId);
     if (!preset) return;
     const row: PaystubLineItem = preset.kind === '%'
-      ? { description: preset.description, current: 0, percentOfGross: preset.value }
-      : { description: preset.description, current: preset.value, percentOfGross: null };
+      ? { description: preset.description, current: 0, percentOfGross: preset.value, preTax: !!preset.preTax }
+      : { description: preset.description, current: preset.value, percentOfGross: null, preTax: !!preset.preTax };
     this.mutateFirst((p) => ({ ...p, deductions: [...p.deductions, row] }));
   }
 

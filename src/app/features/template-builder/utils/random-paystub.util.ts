@@ -113,7 +113,7 @@ export function randomPaystub(now: Date = new Date(), opts: PaystubRandomOptions
 
   const grossPerPeriod = earnings.reduce((s, e) => s + (e.hours ?? 0) * (e.rate ?? 0), 0);
 
-  // Build deductions first so we can subtract the pre-tax ones (401(k))
+  // Deductions carry a preTax flag; paystub-math subtracts the flagged ones
   // from the FIT/state tax base. Matches the W-2's treatment of Box 1.
   const deductions: PaystubLineItem[] = [];
   let contrib401kPerPeriod = 0;
@@ -123,6 +123,7 @@ export function randomPaystub(now: Date = new Date(), opts: PaystubRandomOptions
     deductions.push({
       description: '401(k) Contribution',
       current: contrib401kPerPeriod,
+      preTax: true,
     });
   }
   if (Math.random() < 0.55) {

@@ -66,36 +66,49 @@ export function otherTaxesCurrent(p: Paystub): number {
   return p.otherTaxes.reduce((s, t) => s + lineItemCurrent(t, p), 0);
 }
 
+/** Deductions taken before income tax is figured, such as a traditional 401(k). */
+export function preTaxDeductionsCurrent(p: Paystub): number {
+  return p.deductions.reduce((s, d) => s + (d.preTax ? lineItemCurrent(d, p) : 0), 0);
+}
+
+/**
+ * The wages federal and state income tax are actually figured on: gross less
+ * anything deferred before tax. This is the paystub's equivalent of W-2 Box 1,
+ * and the W-2 generator computes its own the same way.
+ *
+ * Floored at zero so a teacher who enters deductions exceeding gross gets no
+ * withholding rather than a negative tax that would credit money back.
+ */
+export function taxableGrossCurrent(p: Paystub): number {
+  return Math.max(0, grossCurrent(p) - preTaxDeductionsCurrent(p));
+}
+
 /**
  * Federal withholding for the period.
  *
- * The rate is looked up from the annualized gross, then applied to the
- * period's gross.
- *
- * Note: the base is the full gross. Pre-tax deductions such as a 401(k)
- * contribution do not reduce it, which is not how the W-2 generator treats the
- * same situation (there, `wagesBox1 = annualWages - contrib401k` and federal
- * withholding is computed on Box 1). Preserved as-is during extraction rather
- * than quietly changed, since it alters the numbers on documents already in
- * use. See paystub-math.util.spec.ts, which pins the behavior and explains it.
+ * The rate is looked up from the annualized taxable wages, then applied to the
+ * period's taxable wages. Note this is the post-deferral figure, unlike FICA
+ * above, which is charged on the full gross.
  */
 export function federalCurrent(p: Paystub): number {
   if (!p.includeFederalTax) return 0;
-  const gross = grossCurrent(p);
-  if (gross <= 0) return 0;
-  return Math.round(gross * effectiveFederalRate(gross * PERIODS_PER_YEAR) * 100) / 100;
+  const taxable = taxableGrossCurrent(p);
+  if (taxable <= 0) return 0;
+  return Math.round(taxable * effectiveFederalRate(taxable * PERIODS_PER_YEAR) * 100) / 100;
 }
 
 export function federalYTD(p: Paystub): number {
   return federalCurrent(p) * p.periodsYTD;
 }
 
-/** State withholding for the period. Same full-gross base as federalCurrent. */
+/** State withholding for the period. Same post-deferral base as federalCurrent. */
 export function stateCurrent(p: Paystub): number {
   if (!p.stateForTax) return 0;
-  const gross = grossCurrent(p);
-  if (gross <= 0) return 0;
-  return Math.round(gross * effectiveStateRate(p.stateForTax, gross * PERIODS_PER_YEAR) * 100) / 100;
+  const taxable = taxableGrossCurrent(p);
+  if (taxable <= 0) return 0;
+  return (
+    Math.round(taxable * effectiveStateRate(p.stateForTax, taxable * PERIODS_PER_YEAR) * 100) / 100
+  );
 }
 
 export function stateYTD(p: Paystub): number {
