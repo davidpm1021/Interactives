@@ -1,7 +1,7 @@
 {
   "metadata": {
     "version": "1.0.0",
-    "generatedAt": "2026-08-12T15:27:17.906Z",
+    "generatedAt": "2026-08-12T20:48:10.276Z",
     "sourceDocument": "NGPF Personal Finance Dictionary",
     "totalTerms": 662
   },
@@ -883,7 +883,7 @@
         {
           "id": "investing-012",
           "term": "Cash Settlement Account",
-          "definition": "The account used to buy investments and receive proceeds from any investments you sell.",
+          "definition": "The account used to buy investments and receive proceeds from any investments you sell",
           "spanish": {
             "term": "La cuenta de liquidación en efectivo",
             "definition": "Spanish translation coming soon!"
@@ -982,7 +982,7 @@
         {
           "id": "investing-023",
           "term": "Investing",
-          "definition": "(No definition provided)",
+          "definition": "The process of setting money aside to increase wealth over time for long-term financial goals such as retirement",
           "spanish": {
             "term": "La inversión",
             "definition": "Es un proceso de guardar dinero para aumentar su riqueza para poder lograr metas financieras a largo plazo, por ejemplo la jubilación"
@@ -1144,7 +1144,7 @@
         {
           "id": "investing-041",
           "term": "Share",
-          "definition": "A single unit of ownership in a company. It can refer to units of stock, mutual funds, and real estate investment trusts.",
+          "definition": "A single unit of ownership in a company. It can refer to units of stock, mutual funds, and real estate investment trusts",
           "spanish": {
             "term": "Share",
             "definition": "Spanish translation coming soon!"
