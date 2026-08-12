@@ -5,6 +5,7 @@ import { ResultsPanel } from './components/results-panel/results-panel';
 import { GrowthChart } from './components/growth-chart/growth-chart';
 import { AssumptionsPanel } from './components/assumptions-panel/assumptions-panel';
 import { RetirementService } from './services/retirement.service';
+import { ScrollCueComponent } from '../../shared/scroll-cue/scroll-cue.component';
 import {
   DEFAULT_ASSUMPTIONS,
   DEFAULT_INPUTS,
@@ -15,7 +16,7 @@ import {
 @Component({
   selector: 'app-retirement-calculator',
   standalone: true,
-  imports: [TopHeader, InputsPanel, ResultsPanel, GrowthChart, AssumptionsPanel],
+  imports: [TopHeader, InputsPanel, ResultsPanel, GrowthChart, AssumptionsPanel, ScrollCueComponent],
   providers: [RetirementService],
   templateUrl: './retirement-calculator.html',
   styleUrl: './retirement-calculator.scss',

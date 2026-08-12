@@ -13,21 +13,23 @@ import {
 /**
  * "More below" pill shown while the page has content past the fold.
  *
- * Several screens in this activity run taller than a laptop viewport, and on
- * the reveal screens the reflect card and its Next button sit entirely below
- * it, so the page reads as finished when it isn't.
+ * Activity screens routinely run taller than a laptop viewport, and the
+ * controls that move a student forward are often the part that falls below it,
+ * so the page reads as finished when it isn't.
  *
- * This is the only signpost, by design. Scrolling the student to the reflect
- * card automatically was tried and removed: the reveal spends two seconds
- * drawing the curve, and moving the page the moment it lands takes the result
- * away before they've read it. The cue lets them look when they're ready, and
- * `label` names what's waiting so it reads as a prompt rather than a nudge.
+ * This is the only signpost, by design. Auto-scrolling the student to the
+ * waiting content was tried and removed: on a reveal screen the page spends
+ * two seconds drawing a result, and moving it the moment that lands takes the
+ * result away before they've read it. The cue lets them look when they're
+ * ready, and `label` names what's waiting so it reads as a prompt rather than
+ * a nudge.
  *
  * Deliberately a button rather than a gradient fade: a fade is easy to miss
  * and can't be acted on.
  *
- * Feature-local for now. If this earns its place it belongs in shared/, which
- * needs sign-off under the repo's isolation rules.
+ * Safe to drop into any feature: it measures the document and shows itself
+ * only when something is actually below the fold, so a screen that fits never
+ * renders it. It anchors bottom-center, which no feature's sticky panels use.
  */
 @Component({
   selector: 'app-scroll-cue',

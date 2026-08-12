@@ -9,6 +9,7 @@ import { StockTrackerStateService } from './services/stock-tracker-state.service
 import { StockDataService } from './services/stock-data.service';
 import { CalculationService } from './services/calculation.service';
 import { ExportService } from './services/export.service';
+import { ScrollCueComponent } from '../../shared/scroll-cue/scroll-cue.component';
 
 @Component({
   selector: 'app-stock-tracker',
@@ -20,6 +21,7 @@ import { ExportService } from './services/export.service';
     TrackStepComponent,
     CompareStepComponent,
     ReportStepComponent,
+    ScrollCueComponent,
   ],
   providers: [
     StockTrackerStateService,

@@ -13,7 +13,7 @@ import { PredictionInputComponent } from './components/prediction-input/predicti
 import { RevealChartComponent } from './components/reveal-chart/reveal-chart.component';
 import { SandboxComponent } from './components/sandbox/sandbox.component';
 import { FinalSummaryComponent } from './components/final-summary/final-summary.component';
-import { ScrollCueComponent } from './components/scroll-cue/scroll-cue.component';
+import { ScrollCueComponent } from '../../shared/scroll-cue/scroll-cue.component';
 import { IntroComponent } from './components/intro/intro.component';
 import { ConceptDemoComponent } from './components/concept-demo/concept-demo.component';
 import { ScenarioTableComponent, ScenarioRow } from './components/scenario-table/scenario-table.component';

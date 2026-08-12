@@ -8,11 +8,12 @@ import { TrendChart } from './components/trend-chart/trend-chart';
 import { QuestionStack } from './components/question-stack/question-stack';
 import { BehindTheNumbers } from './components/behind-the-numbers/behind-the-numbers';
 import { formatAnswerValue } from './utils/formatters';
+import { ScrollCueComponent } from '../../shared/scroll-cue/scroll-cue.component';
 
 @Component({
   selector: 'app-cost-of-borrowing',
   standalone: true,
-  imports: [TopHeader, RateTable, TrendChart, QuestionStack, BehindTheNumbers],
+  imports: [TopHeader, RateTable, TrendChart, QuestionStack, BehindTheNumbers, ScrollCueComponent],
   providers: [CostOfBorrowingStateService],
   templateUrl: './cost-of-borrowing.html',
   styleUrl: './cost-of-borrowing.scss',
