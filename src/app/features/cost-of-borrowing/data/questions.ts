@@ -40,17 +40,31 @@ export const QUESTIONS: Question[] = [
     explanation:
       'Compare each product\'s 2020 value to its 2026 value on the chart or table. Credit cards moved from about 14.7% to about 21%; that is the largest jump.',
   },
+  // Deliberately not another "read two values and subtract". Q2 is already
+  // that shape (and is levelled DOK 1 for it), and Q3 has students compute
+  // every product's change from 2020, mortgage included. This asks them to
+  // read the four lines as a group across the whole 20 years and generalise,
+  // which is the skill/concept work DOK 2 is meant to capture.
+  //
+  // The pattern holds: credit card > personal loan > {auto, mortgage} in
+  // every year of the series (auto and mortgage swap places once, in 2013,
+  // which doesn't disturb the secured/unsecured split). Every distractor is
+  // falsifiable from the same chart — see the explanation.
   {
-    id: 'q4-mortgage-rise',
+    id: 'q4-secured-vs-unsecured',
     dok: 2,
-    answerType: 'numeric',
+    answerType: 'multiple-choice',
     prompt:
-      'The 30-year mortgage rate hit its lowest point of the past 20 years in 2020. By roughly how many percentage points has it risen since then? Round to the nearest whole number.',
-    correctValue: 4,
-    tolerance: 1,
-    unit: 'points',
+      'Look at all four lines across the whole 20 years. Rates rise and fall a lot over that time. Which statement stays true anyway?',
+    options: [
+      'The loans backed by something you own always cost less than the ones that are not',
+      'All four rates move up and down by about the same amount',
+      'When mortgage rates fall, credit card rates fall too',
+      'The gap between the cheapest and most expensive product stays about the same',
+    ],
+    correctIndex: 0,
     explanation:
-      'The mortgage line drops to around 2.7% in 2020 and rises to about 6.4% by 2026. That is a jump of about 3.8 percentage points, which rounds to 4.',
+      'The auto loan and the mortgage are secured, backed by the car or the house, and they sit below the credit card and personal loan in every year on the chart. The others do not hold: credit card rates swung about 10 percentage points while personal loans moved about 3; mortgage rates fell from 2006 to 2020 while credit card rates rose; and the gap between the cheapest and priciest product roughly doubled, from about 7 points to about 15.',
   },
   {
     id: 'q5-history-cc',

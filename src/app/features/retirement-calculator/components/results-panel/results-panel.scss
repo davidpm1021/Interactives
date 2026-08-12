@@ -80,6 +80,13 @@
     }
   }
 
+  &__banner-note {
+    font-family: var(--ngpf-font-body);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--ngpf-text-primary);
+  }
+
   &__banner-label {
     font-family: var(--ngpf-font-body);
     font-size: 0.8rem;

@@ -101,8 +101,13 @@
               hold everything needed to work it out.
             -->
             <strong>Not quite.</strong>
+            <!--
+              Only on a wrong guess. resetGuess() clears the selection and
+              re-enables the options, so offering it after a correct answer
+              invited the student to undo one they'd already got right.
+            -->
+            <button type="button" class="track-step__check-reset" (click)="resetGuess()">Try again</button>
           }
-          <button type="button" class="track-step__check-reset" (click)="resetGuess()">Try again</button>
         </div>
       }
 
