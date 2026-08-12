@@ -164,5 +164,6 @@ export function randomPaystub(now: Date = new Date(), opts: PaystubRandomOptions
     stateForTax: hasStateIncomeTax(employer.stateAbbr) ? employer.stateAbbr : '',
     otherTaxes: [],
     deductions,
+    taxJitter: Math.random(),
   };
 }

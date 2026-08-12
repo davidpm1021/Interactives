@@ -66,6 +66,9 @@ function emptyPaystub(): Paystub {
     stateForTax: '',
     otherTaxes: [emptyLineItem()],
     deductions: [emptyLineItem()],
+    // A blank sheet a teacher fills in by hand: mid-window, so whatever they
+    // type gets the published rate rather than an arbitrary offset.
+    taxJitter: 0.5,
   };
 }
 

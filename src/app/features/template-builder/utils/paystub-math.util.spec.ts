@@ -18,6 +18,8 @@ function paystub(overrides: Partial<Paystub> = {}): Paystub {
     stateForTax: '',
     otherTaxes: [],
     deductions: [],
+    // Mid-window, so rates land exactly on their published value.
+    taxJitter: 0.5,
     ...overrides,
   };
 }
@@ -31,9 +33,13 @@ function withGross800(overrides: Partial<Paystub> = {}): Paystub {
 }
 
 /**
- * Both tax-rate functions add random jitter, so pin Math.random. At 0.5 the
- * state jitter term is exactly zero and the federal band midpoint is used,
- * which makes the expected numbers computable by hand.
+ * Rates are positioned by the paystub's own taxJitter, which the factory above
+ * fixes at 0.5: the state offset is then exactly zero and the federal band
+ * midpoint is used, so expected figures are computable by hand.
+ *
+ * Math.random is pinned too, belt and braces, so a rate that ever stopped
+ * taking the paystub's value would surface as a failure here rather than as
+ * flakiness.
  */
 function pinRandom(value = 0.5): void {
   vi.spyOn(Math, 'random').mockReturnValue(value);
@@ -329,5 +335,52 @@ describe('pre-tax deductions and the income tax base', () => {
     });
     expect(math.preTaxDeductionsCurrent(p)).toBe(48 + 100);
     expect(math.taxableGrossCurrent(p)).toBe(800 - 148);
+  });
+});
+
+describe('withholding is stable for a given paystub', () => {
+  /**
+   * Withholding is derived on every render. When the rate functions rolled
+   * their own random offset, a paystub's tax moved on each change-detection
+   * pass: editing the employee's name swung federal tax by nine dollars on an
+   * unchanged gross, and printing the same sheet twice could give two answers.
+   * The offset now travels on the paystub, so reads are repeatable.
+   */
+  it('returns the same figures however many times it is read', () => {
+    const p = withGross800({ includeFederalTax: true, stateForTax: 'CA', taxJitter: 0.83 });
+    const federal = Array.from({ length: 25 }, () => math.federalCurrent(p));
+    const state = Array.from({ length: 25 }, () => math.stateCurrent(p));
+    expect(new Set(federal).size).toBe(1);
+    expect(new Set(state).size).toBe(1);
+  });
+
+  it('is unaffected by edits that do not touch a tax base', () => {
+    const before = withGross800({ includeFederalTax: true, stateForTax: 'CA', taxJitter: 0.2 });
+    const renamed = { ...before, employee: { ...before.employee, name: 'Someone Else' } };
+    expect(math.federalCurrent(renamed)).toBe(math.federalCurrent(before));
+    expect(math.stateCurrent(renamed)).toBe(math.stateCurrent(before));
+  });
+
+  it('still lets two separately generated stubs differ in the cents', () => {
+    const low = withGross800({ includeFederalTax: true, taxJitter: 0 });
+    const high = withGross800({ includeFederalTax: true, taxJitter: 1 });
+    expect(math.federalCurrent(low)).not.toBe(math.federalCurrent(high));
+  });
+
+  it('tracks the gross it is given, so a rate is not frozen to one income', () => {
+    // The offset is fixed, but the band still has to follow the money.
+    const small = paystub({
+      earnings: [{ description: 'Regular', hours: 40, rate: 10, amount: 0 }],
+      includeFederalTax: true,
+      taxJitter: 0.5,
+    });
+    const large = paystub({
+      earnings: [{ description: 'Regular', hours: 40, rate: 60, amount: 0 }],
+      includeFederalTax: true,
+      taxJitter: 0.5,
+    });
+    const smallRate = math.federalCurrent(small) / math.grossCurrent(small);
+    const largeRate = math.federalCurrent(large) / math.grossCurrent(large);
+    expect(largeRate).toBeGreaterThan(smallRate);
   });
 });

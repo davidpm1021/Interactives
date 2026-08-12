@@ -50,22 +50,34 @@ export function hasStateIncomeTax(stateAbbr: string): boolean {
 
 /**
  * Effective state income tax withholding rate for the given annual gross.
- * Returns 0 for no-tax states. Adds a small jitter for realism so two
+ * Returns 0 for no-tax states. Offsets the published rate slightly so two
  * paystubs from the same employer don't show identical state tax cents.
+ *
+ * `jitter` is a 0-1 position within that offset window. Callers that read a
+ * rate repeatedly must pass a value they hold onto: a paystub re-derives its
+ * tax on every render, so rolling a fresh number here made the withholding on
+ * screen change as the teacher typed. The default keeps one-shot callers, like
+ * the W-2 generator, working as before.
  */
-export function effectiveStateRate(stateAbbr: string, annualGross: number): number {
+export function effectiveStateRate(
+  stateAbbr: string,
+  annualGross: number,
+  jitter: number = Math.random(),
+): number {
   const fn = STATE_RATE[stateAbbr];
   if (!fn) return 0;
   const base = fn(annualGross);
   if (base === 0) return 0;
-  // ±0.3% jitter
-  const jitter = (Math.random() - 0.5) * 0.006;
-  return Math.max(0, base + jitter);
+  // ±0.3%
+  const offset = (jitter - 0.5) * 0.006;
+  return Math.max(0, base + offset);
 }
 
 /**
  * Effective federal income tax withholding rate for the given annual gross.
- * Single filer, standard deduction. Returns roughly:
+ * Single filer, standard deduction. `jitter` positions the rate within its
+ * band; see effectiveStateRate for why a caller should supply it. Returns
+ * roughly:
  *   $15k → 1–3%
  *   $25k → 3–5%
  *   $40k → 6–8%
@@ -73,11 +85,14 @@ export function effectiveStateRate(stateAbbr: string, annualGross: number): numb
  *   $90k → 11–13%
  *  $120k → 13–15%
  */
-export function effectiveFederalRate(annualGross: number): number {
-  if (annualGross < 15000) return 0.01 + Math.random() * 0.02;
-  if (annualGross < 25000) return 0.03 + Math.random() * 0.02;
-  if (annualGross < 40000) return 0.06 + Math.random() * 0.02;
-  if (annualGross < 60000) return 0.09 + Math.random() * 0.02;
-  if (annualGross < 90000) return 0.11 + Math.random() * 0.02;
-  return 0.13 + Math.random() * 0.02;
+export function effectiveFederalRate(
+  annualGross: number,
+  jitter: number = Math.random(),
+): number {
+  if (annualGross < 15000) return 0.01 + jitter * 0.02;
+  if (annualGross < 25000) return 0.03 + jitter * 0.02;
+  if (annualGross < 40000) return 0.06 + jitter * 0.02;
+  if (annualGross < 60000) return 0.09 + jitter * 0.02;
+  if (annualGross < 90000) return 0.11 + jitter * 0.02;
+  return 0.13 + jitter * 0.02;
 }

@@ -94,7 +94,9 @@ export function federalCurrent(p: Paystub): number {
   if (!p.includeFederalTax) return 0;
   const taxable = taxableGrossCurrent(p);
   if (taxable <= 0) return 0;
-  return Math.round(taxable * effectiveFederalRate(taxable * PERIODS_PER_YEAR) * 100) / 100;
+  return (
+    Math.round(taxable * effectiveFederalRate(taxable * PERIODS_PER_YEAR, p.taxJitter) * 100) / 100
+  );
 }
 
 export function federalYTD(p: Paystub): number {
@@ -107,7 +109,9 @@ export function stateCurrent(p: Paystub): number {
   const taxable = taxableGrossCurrent(p);
   if (taxable <= 0) return 0;
   return (
-    Math.round(taxable * effectiveStateRate(p.stateForTax, taxable * PERIODS_PER_YEAR) * 100) / 100
+    Math.round(
+      taxable * effectiveStateRate(p.stateForTax, taxable * PERIODS_PER_YEAR, p.taxJitter) * 100,
+    ) / 100
   );
 }
 

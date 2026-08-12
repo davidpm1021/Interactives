@@ -58,6 +58,18 @@ export interface Paystub {
   stateForTax: string;
   otherTaxes: PaystubLineItem[];
   deductions: PaystubLineItem[];
+  /**
+   * Fixed 0-1 position within the tax-rate offset window, rolled once when the
+   * paystub is created.
+   *
+   * Withholding is derived on every render, so when the rate functions rolled
+   * their own number the figures moved on each change-detection pass: editing
+   * the employee's name alone swung federal tax across a nine-dollar spread on
+   * an unchanged gross, and printing twice could produce two different sheets.
+   * Holding the position here keeps a given paystub's tax stable while two
+   * separately generated stubs still differ in the cents.
+   */
+  taxJitter: number;
 }
 
 export const SOCIAL_SECURITY_RATE = 0.062;
@@ -119,5 +131,7 @@ export function samplePaystub(): Paystub {
       { description: '401(k) Contribution', current: 0, percentOfGross: 4, preTax: true },
       { description: 'Health Insurance', current: 45.0, percentOfGross: null },
     ],
+    // Mid-window, so the documented sample prints the published rate exactly.
+    taxJitter: 0.5,
   };
 }
