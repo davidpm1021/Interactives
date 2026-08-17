@@ -1,5 +1,5 @@
 import { AccountStatement, AccountTransaction } from '../models/account-statement.model';
-import { pick, randFloat, randInt, shiftDays, toISO } from './random-helpers.util';
+import { pick, randFloat, randInt, round2, shiftDays, toISO } from './random-helpers.util';
 import { CITIES, FIRST_NAMES, LAST_NAMES, STREETS } from './pools.util';
 import { CREDIT_VENDORS, DEBIT_VENDORS, VendorPicker, VendorPreset } from './vendors.util';
 
@@ -113,12 +113,38 @@ export function randomChecking(now: Date = new Date()): AccountStatement {
     accountType,
     periodStart: toISO(periodStart),
     periodEnd: toISO(periodEnd),
-    beginningBalance,
+    beginningBalance: openingBalanceThatStaysPositive(beginningBalance, transactions),
     transactions,
     fees: 0,
     interestEarned: 0,
     apy: null,
   };
+}
+
+/**
+ * Raise the opening balance if the month would otherwise overdraw the account.
+ *
+ * Rent lands early and the second paycheck lands late, so a low opening
+ * balance could carry the running column below zero mid-month. Arithmetically
+ * that was fine, but no real statement shows a negative balance without an
+ * overdraft or NSF fee beside it, and the template has no such line. Lifting
+ * the opening figure keeps the transactions untouched and the document honest.
+ */
+function openingBalanceThatStaysPositive(
+  opening: number,
+  transactions: AccountTransaction[],
+): number {
+  const ordered = [...transactions].sort((a, b) => a.date.localeCompare(b.date));
+  let balance = opening;
+  let lowest = opening;
+  for (const t of ordered) {
+    balance += t.kind === 'credit' ? t.amount : -t.amount;
+    if (balance < lowest) lowest = balance;
+  }
+  if (lowest >= 0) return opening;
+  // Clear the shortfall and leave a small cushion, so the low point reads as a
+  // tight month rather than a balance grazing exactly zero.
+  return round2(opening - lowest + randFloat(25, 180));
 }
 
 function pickCheckingType(): string {

@@ -221,13 +221,13 @@
       <tbody>
         @for (txn of sortedTxnsOf(statement); track txn.origIndex) {
           <tr
-            class="account-preview__row-clickable"
+            [class.account-preview__row-clickable]="!txn.synthetic"
             [class.account-preview__row--negative]="txn.runningBalance < 0"
-            tabindex="0"
-            [attr.aria-label]="'Edit transaction: ' + (txn.description || 'unnamed')"
-            (click)="jumpToTxn(txn.origIndex)"
-            (keydown.enter)="jumpToTxn(txn.origIndex); $event.preventDefault()"
-            (keydown.space)="jumpToTxn(txn.origIndex); $event.preventDefault()"
+            [attr.tabindex]="txn.synthetic ? null : 0"
+            [attr.aria-label]="txn.synthetic ? null : 'Edit transaction: ' + (txn.description || 'unnamed')"
+            (click)="txn.synthetic || jumpToTxn(txn.origIndex)"
+            (keydown.enter)="txn.synthetic || jumpToTxn(txn.origIndex); $event.preventDefault()"
+            (keydown.space)="txn.synthetic || jumpToTxn(txn.origIndex); $event.preventDefault()"
           >
             <td>{{ txn.date ? (txn.date | date: 'M/d') : '' }}</td>
             <th scope="row">{{ txn.description }}</th>
