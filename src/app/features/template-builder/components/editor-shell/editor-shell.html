@@ -34,32 +34,42 @@
           </button>
         </div>
       </div>
-      <div class="editor-shell__copies no-print" role="radiogroup" aria-label="Copies per page">
-        <span class="editor-shell__copies-label">Copies per page:</span>
-        <label>
-          <input
-            type="radio"
-            name="shell-copies"
-            [checked]="copiesPerPage() === 1"
-            (change)="setCopiesPerPage(1)"
-          />
-          <span>1</span>
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="shell-copies"
-            [checked]="copiesPerPage() === 2"
-            (change)="setCopiesPerPage(2)"
-          />
-          <span>2 (stacked)</span>
-        </label>
+    <!--
+      The page count still earns its place on a batch even where stacking is
+      off, so the row survives the radios being hidden.
+    -->
+    @if (allowTwoPerPage() || docs().length > 1) {
+      <div class="editor-shell__copies no-print">
+        @if (allowTwoPerPage()) {
+          <span class="editor-shell__copies-group" role="radiogroup" aria-label="Copies per page">
+            <span class="editor-shell__copies-label">Copies per page:</span>
+            <label>
+              <input
+                type="radio"
+                name="shell-copies"
+                [checked]="copiesPerPage() === 1"
+                (change)="setCopiesPerPage(1)"
+              />
+              <span>1</span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="shell-copies"
+                [checked]="copiesPerPage() === 2"
+                (change)="setCopiesPerPage(2)"
+              />
+              <span>2 (stacked)</span>
+            </label>
+          </span>
+        }
         @if (docs().length > 1) {
           <span class="editor-shell__page-count">
             {{ pageCount() }} page{{ pageCount() === 1 ? '' : 's' }} total
           </span>
         }
       </div>
+    }
     </div>
 
     <ng-content></ng-content>

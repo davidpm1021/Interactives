@@ -1,6 +1,7 @@
 <app-editor-shell
   [title]="variant() === 'savings' ? 'Savings Statement' : 'Bank Statement'"
   [singularLabel]="variant() === 'savings' ? 'savings statement' : 'bank statement'"
+  [allowTwoPerPage]="false"
   [(docs)]="statements"
   [previewTpl]="previewTpl"
   [randomFn]="randomFnRef"
