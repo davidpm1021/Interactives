@@ -18,12 +18,16 @@ const STATE_RATE: Record<string, (annualGross: number) => number> = {
   WY: () => 0,
 
   // Flat-rate states.
+  AZ: () => 0.025,
   CO: () => 0.044,
-  NC: () => 0.045,
+  IA: () => 0.038,
+  ID: () => 0.053,
   IL: () => 0.0495,
   IN: () => 0.0315,
   KY: () => 0.04,
+  LA: () => 0.03,
   MI: () => 0.0425,
+  NC: () => 0.045,
   PA: () => 0.0307,
   UT: () => 0.0485,
 
@@ -39,6 +43,31 @@ const STATE_RATE: Record<string, (annualGross: number) => number> = {
   MA: () => 0.05,
   CT: (g) => (g < 50000 ? 0.05 : g < 100000 ? 0.055 : 0.0635),
   GA: (g) => (g < 50000 ? 0.0539 : 0.0575),
+
+  // Remaining states, added so a teacher can pick their own rather than
+  // borrow a neighbour's rate or fall back to "No state tax". Same standard
+  // as everything above: approximate effective withholding, classroom-grade,
+  // not a withholding table.
+  AL: (g) => (g < 10000 ? 0.03 : g < 25000 ? 0.042 : 0.048),
+  AR: (g) => (g < 15000 ? 0.01 : g < 30000 ? 0.025 : 0.037),
+  DE: (g) => (g < 10000 ? 0.01 : g < 25000 ? 0.031 : g < 60000 ? 0.048 : 0.056),
+  HI: (g) => (g < 15000 ? 0.02 : g < 30000 ? 0.045 : g < 75000 ? 0.065 : 0.078),
+  KS: (g) => (g < 15000 ? 0.031 : g < 40000 ? 0.046 : 0.052),
+  MD: (g) => (g < 15000 ? 0.028 : g < 50000 ? 0.045 : 0.05),
+  ME: (g) => (g < 25000 ? 0.036 : g < 60000 ? 0.058 : 0.068),
+  MO: (g) => (g < 15000 ? 0.015 : g < 30000 ? 0.031 : 0.043),
+  MS: (g) => (g < 15000 ? 0.02 : 0.04),
+  // North Dakota and Ohio both exempt a sizeable first slice of income, so a
+  // student earning under it correctly sees no state tax withheld at all.
+  ND: (g) => (g < 48000 ? 0 : g < 245000 ? 0.0195 : 0.025),
+  NE: (g) => (g < 20000 ? 0.025 : g < 50000 ? 0.042 : 0.05),
+  NM: (g) => (g < 15000 ? 0.017 : g < 35000 ? 0.032 : g < 80000 ? 0.047 : 0.055),
+  OH: (g) => (g < 26000 ? 0 : g < 100000 ? 0.0245 : 0.031),
+  OK: (g) => (g < 15000 ? 0.012 : g < 35000 ? 0.031 : 0.043),
+  RI: (g) => (g < 30000 ? 0.031 : g < 75000 ? 0.045 : 0.052),
+  SC: (g) => (g < 17000 ? 0.005 : g < 35000 ? 0.033 : 0.052),
+  VA: (g) => (g < 10000 ? 0.021 : g < 25000 ? 0.04 : 0.05),
+  WV: (g) => (g < 15000 ? 0.025 : g < 40000 ? 0.037 : 0.047),
 };
 
 export function hasStateIncomeTax(stateAbbr: string): boolean {
@@ -47,6 +76,18 @@ export function hasStateIncomeTax(stateAbbr: string): boolean {
   // Sample at $50k to detect zero-rate states quickly.
   return fn(50000) > 0;
 }
+
+/**
+ * Every state this file can withhold for, sorted, for the editor's state
+ * picker to offer.
+ *
+ * Derived rather than listed. The picker used to carry its own copy of these
+ * abbreviations, so adding a state here left it invisible in the UI until
+ * somebody remembered to edit the component too.
+ */
+export const STATES_WITH_INCOME_TAX: readonly string[] = Object.keys(STATE_RATE)
+  .filter((abbr) => hasStateIncomeTax(abbr))
+  .sort();
 
 /**
  * Effective state income tax withholding rate for the given annual gross.

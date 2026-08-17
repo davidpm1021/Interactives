@@ -18,6 +18,7 @@ import {
   parseNonNegative,
   parseNullableNonNegative,
 } from '../../utils/input-parsers.util';
+import { STATES_WITH_INCOME_TAX } from '../../utils/tax-rates.util';
 import { EditorShell } from '../editor-shell/editor-shell';
 import * as math from '../../utils/paystub-math.util';
 
@@ -46,12 +47,6 @@ const DEDUCTION_PRESETS: DeductionPreset[] = [
   { id: 'roth-3',    description: 'Roth 401(k)', kind: '%', value: 3 },
   { id: 'hsa-100',   description: 'HSA Contribution', kind: '$', value: 100, preTax: true },
   { id: 'fsa-50',    description: 'FSA Contribution', kind: '$', value: 50, preTax: true },
-];
-
-/** Two-letter state abbreviations we know how to compute withholding for. */
-const STATES_WITH_TAX = [
-  'CA', 'CO', 'CT', 'GA', 'IL', 'IN', 'KY', 'MA', 'MI', 'MN', 'MT', 'NC', 'NJ',
-  'NY', 'OR', 'PA', 'UT', 'VT', 'WI',
 ];
 
 function emptyPaystub(): Paystub {
@@ -84,7 +79,7 @@ export class PaystubEditor {
   protected readonly SOCIAL_SECURITY_RATE = SOCIAL_SECURITY_RATE;
   protected readonly MEDICARE_RATE = MEDICARE_RATE;
   protected readonly deductionPresets = DEDUCTION_PRESETS;
-  protected readonly statesWithTax = STATES_WITH_TAX;
+  protected readonly statesWithTax = STATES_WITH_INCOME_TAX;
 
   protected readonly paystubs = signal<Paystub[]>([samplePaystub()]);
   protected readonly current = computed(() => this.paystubs()[0] ?? samplePaystub());
