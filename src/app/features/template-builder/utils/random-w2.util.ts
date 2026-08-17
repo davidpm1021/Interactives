@@ -2,17 +2,8 @@ import { W2 } from '../models/w2.model';
 import { pick, randInt, round2 } from './random-helpers.util';
 import { FIRST_NAMES, LAST_NAMES, NEIGHBOR_CITIES, STREETS } from './pools.util';
 import { effectiveFederalRate, effectiveStateRate, hasStateIncomeTax } from './tax-rates.util';
-
-const EMPLOYERS = [
-  { name: 'Riverside Coffee Co.', addr1: '482 Market Street', addr2: 'Portland, OR 97204', stateAbbr: 'OR' },
-  { name: 'Greenleaf Grocery', addr1: '215 Oak Avenue', addr2: 'Boulder, CO 80302', stateAbbr: 'CO' },
-  { name: 'Brightline Logistics', addr1: '1450 Cedar Road', addr2: 'Tacoma, WA 98402', stateAbbr: 'WA' },
-  { name: 'Lone Star Auto Parts', addr1: '720 Crockett Lane', addr2: 'Austin, TX 78704', stateAbbr: 'TX' },
-  { name: 'Bayfront Dental', addr1: '95 Harbor Drive', addr2: 'Tampa, FL 33602', stateAbbr: 'FL' },
-  { name: 'Sunset Pizzeria', addr1: '74 Beach Boulevard', addr2: 'San Diego, CA 92103', stateAbbr: 'CA' },
-  { name: 'Crescent Hardware', addr1: '88 Industrial Way', addr2: 'Asheville, NC 28801', stateAbbr: 'NC' },
-  { name: 'Pioneer Outfitters', addr1: '38 Mountain View Road', addr2: 'Bozeman, MT 59715', stateAbbr: 'MT' },
-];
+// Shared with the paystub generator, so a W-2 can come from any state too.
+import { EMPLOYERS } from './employers.util';
 
 /**
  * Deliberately-obvious fake SSN. Uses a single repeated digit (e.g.
