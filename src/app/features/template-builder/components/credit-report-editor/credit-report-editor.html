@@ -127,7 +127,7 @@
                 class="credit-editor__history-cell"
                 [style.background]="monthColor(acct.paymentHistory[m])"
                 [attr.aria-label]="monthLabel(current().reportDate, m) + ': ' + (acct.paymentHistory[m])"
-                [attr.title]="monthLabel(current().reportDate, m) + ' — ' + (acct.paymentHistory[m])"
+                [attr.title]="monthLabel(current().reportDate, m) + ': ' + (acct.paymentHistory[m])"
                 (click)="cyclePaymentMonth($index, m)"
               >{{ acct.paymentHistory[m] }}</button>
             }
@@ -327,7 +327,7 @@
                 <span
                   class="credit-preview__history-cell"
                   [style.background]="monthColor(acct.paymentHistory[m])"
-                  [attr.title]="monthLabel(report.reportDate, m) + ' — ' + (acct.paymentHistory[m])"
+                  [attr.title]="monthLabel(report.reportDate, m) + ': ' + (acct.paymentHistory[m])"
                 >{{ acct.paymentHistory[m] === 'OK' ? '' : acct.paymentHistory[m] }}</span>
               }
             </div>

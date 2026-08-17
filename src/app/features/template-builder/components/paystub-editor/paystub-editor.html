@@ -250,7 +250,7 @@
           <option value="">+ Add common deduction…</option>
           @for (preset of deductionPresets; track preset.id) {
             <option [value]="preset.id">
-              {{ preset.description }} — {{ preset.kind === '%' ? preset.value + '% of gross' : '$' + preset.value }}
+              {{ preset.description }} ({{ preset.kind === '%' ? preset.value + '% of gross' : '$' + preset.value }})
             </option>
           }
         </select>
