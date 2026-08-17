@@ -4,14 +4,25 @@
     @if (selected() === null) {
       <header class="template-builder__intro">
         <h1>{{ title }}</h1>
-        <p>
-          Ready-to-hand-out versions of the documents students see in real financial life
-          (paystubs, W-2s, bank statements, bills, credit reports). Start from a random
-          example or type your own numbers so every class period gets fresh, realistic
-          practice material. Use <strong>Print / Save as PDF</strong> to produce a
-          print-ready handout, or set <strong>Copies per page</strong> to two for a
-          space-saving worksheet layout.
+        <p class="template-builder__lede">
+          Ready-to-hand-out versions of the documents students meet in real financial life.
         </p>
+        <!--
+          Three steps rather than one paragraph. The original packed what this
+          is, how to fill it in, and how to print it into a single block, and
+          also listed the document types that the tiles below already name.
+        -->
+        <ol class="template-builder__steps">
+          <li><strong>Pick a template</strong> from the list below.</li>
+          <li>
+            <strong>Generate a random example</strong>, or type your own numbers, so every
+            class period gets a fresh one.
+          </li>
+          <li>
+            <strong>Print / Save as PDF</strong> for a print-ready handout. Set
+            <strong>Copies per page</strong> to two to fit a worksheet on less paper.
+          </li>
+        </ol>
       </header>
 
       @for (group of groupedCatalog(); track group.category) {

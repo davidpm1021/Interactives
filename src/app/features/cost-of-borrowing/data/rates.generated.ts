@@ -124,7 +124,7 @@ export const RATE_SERIES: RateSeries[] = [
     fredCode: "MORTGAGE30US",
     fredTitle: "30-Year Fixed Rate Mortgage Average in the United States",
     fredUrl: "https://fred.stlouisfed.org/series/MORTGAGE30US",
-    sourcePublisher: "Freddie Mac — Primary Mortgage Market Survey",
+    sourcePublisher: "Freddie Mac, Primary Mortgage Market Survey",
     units: "Percent, Not Seasonally Adjusted",
     frequency: "Weekly",
     methodology: "Weekly average rate on 30-year fixed-rate conforming mortgages, from Freddie Mac's Primary Mortgage Market Survey. Secured by the property.",

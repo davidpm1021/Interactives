@@ -293,13 +293,21 @@ function parseDocumentContent(doc: any): Map<string, Term[]> {
       }
     }
 
-    // Collect definitions (NORMAL_TEXT after term headers, or HEADING_2 that isn't a new term)
-    // Some definitions in the doc are misformatted as HEADING_2 instead of NORMAL_TEXT
-    if (
-      (styleType === 'NORMAL_TEXT' ||
-        (styleType === 'HEADING_2' && !text.startsWith('ENGLISH') && !text.startsWith('SPANISH'))) &&
-      currentUnit
-    ) {
+    // Collect the definition paragraph that follows a term header.
+    //
+    // Style-agnostic on purpose. This used to accept only NORMAL_TEXT and
+    // HEADING_2, and silently dropped anything else: the Investing unit's
+    // "Investing" definition is styled SUBTITLE in the doc, so that term
+    // shipped with "(No definition provided)" while its Spanish translation,
+    // one paragraph later and NORMAL_TEXT, came through fine. Editors restyle
+    // paragraphs by hand, so enumerating the allowed styles just queues up the
+    // next silent drop.
+    //
+    // Nothing else needs excluding here. Unit headings (HEADING_1) and term
+    // headings (ENGLISH / SPANISH) are both handled above and continue before
+    // reaching this point, and the flags below only allow the first paragraph
+    // after a term header to be taken.
+    if (currentUnit && (expectingEnglishDef || expectingSpanishDef)) {
       if (expectingEnglishDef && !currentEnglishDef) {
         currentEnglishDef = text;
         expectingEnglishDef = false;

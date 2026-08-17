@@ -10,7 +10,6 @@ import {
   earningCurrent,
   emptyLineItem,
   emptyEarning,
-  lineItemAmount,
   samplePaystub,
 } from '../../models/paystub.model';
 import { EMPLOYER_STATES, PaystubRandomOptions, randomPaystub } from '../../utils/random-paystub.util';
@@ -19,8 +18,9 @@ import {
   parseNonNegative,
   parseNullableNonNegative,
 } from '../../utils/input-parsers.util';
-import { effectiveFederalRate, effectiveStateRate } from '../../utils/tax-rates.util';
+import { STATES_WITH_INCOME_TAX } from '../../utils/tax-rates.util';
 import { EditorShell } from '../editor-shell/editor-shell';
+import * as math from '../../utils/paystub-math.util';
 
 /** Preset picker options for common deductions. */
 interface DeductionPreset {
@@ -28,24 +28,25 @@ interface DeductionPreset {
   description: string;
   kind: '$' | '%';
   value: number;
+  /** Comes out before income tax, lowering the FIT/state base. */
+  preTax?: boolean;
 }
 
+// Traditional 401(k) is pre-tax and Roth 401(k) is not, which is the whole
+// contrast a teacher is usually after. Health, dental and vision are left
+// post-tax here so the paystub agrees with the W-2 generator, which excludes
+// only the 401(k) deferral from Box 1; the per-row Pre-tax box can override
+// any of them.
 const DEDUCTION_PRESETS: DeductionPreset[] = [
   { id: 'health-50', description: 'Health Insurance', kind: '$', value: 50 },
   { id: 'dental-12', description: 'Dental Insurance', kind: '$', value: 12 },
   { id: 'vision-8',  description: 'Vision Insurance', kind: '$', value: 8  },
-  { id: '401k-3',    description: '401(k) Contribution', kind: '%', value: 3 },
-  { id: '401k-5',    description: '401(k) Contribution', kind: '%', value: 5 },
-  { id: '401k-7',    description: '401(k) Contribution', kind: '%', value: 7 },
+  { id: '401k-3',    description: '401(k) Contribution', kind: '%', value: 3, preTax: true },
+  { id: '401k-5',    description: '401(k) Contribution', kind: '%', value: 5, preTax: true },
+  { id: '401k-7',    description: '401(k) Contribution', kind: '%', value: 7, preTax: true },
   { id: 'roth-3',    description: 'Roth 401(k)', kind: '%', value: 3 },
-  { id: 'hsa-100',   description: 'HSA Contribution', kind: '$', value: 100 },
-  { id: 'fsa-50',    description: 'FSA Contribution', kind: '$', value: 50 },
-];
-
-/** Two-letter state abbreviations we know how to compute withholding for. */
-const STATES_WITH_TAX = [
-  'CA', 'CO', 'CT', 'GA', 'IL', 'IN', 'KY', 'MA', 'MI', 'MN', 'MT', 'NC', 'NJ',
-  'NY', 'OR', 'PA', 'UT', 'VT', 'WI',
+  { id: 'hsa-100',   description: 'HSA Contribution', kind: '$', value: 100, preTax: true },
+  { id: 'fsa-50',    description: 'FSA Contribution', kind: '$', value: 50, preTax: true },
 ];
 
 function emptyPaystub(): Paystub {
@@ -60,6 +61,9 @@ function emptyPaystub(): Paystub {
     stateForTax: '',
     otherTaxes: [emptyLineItem()],
     deductions: [emptyLineItem()],
+    // A blank sheet a teacher fills in by hand: mid-window, so whatever they
+    // type gets the published rate rather than an arbitrary offset.
+    taxJitter: 0.5,
   };
 }
 
@@ -75,7 +79,7 @@ export class PaystubEditor {
   protected readonly SOCIAL_SECURITY_RATE = SOCIAL_SECURITY_RATE;
   protected readonly MEDICARE_RATE = MEDICARE_RATE;
   protected readonly deductionPresets = DEDUCTION_PRESETS;
-  protected readonly statesWithTax = STATES_WITH_TAX;
+  protected readonly statesWithTax = STATES_WITH_INCOME_TAX;
 
   protected readonly paystubs = signal<Paystub[]>([samplePaystub()]);
   protected readonly current = computed(() => this.paystubs()[0] ?? samplePaystub());
@@ -149,74 +153,64 @@ export class PaystubEditor {
     return earningCurrent(e);
   }
   protected earningYTDFor(e: PaystubEarning, p: Paystub): number {
-    return earningCurrent(e) * p.periodsYTD;
+    return math.earningYTD(e, p);
   }
   protected itemYTDFor(item: PaystubLineItem, p: Paystub): number {
-    return this.itemCurrentFor(item, p) * p.periodsYTD;
+    return math.lineItemYTD(item, p);
   }
   protected itemCurrentFor(item: PaystubLineItem, p: Paystub): number {
-    return lineItemAmount(item, this.grossCurrentOf(p));
+    return math.lineItemCurrent(item, p);
   }
   protected grossCurrentOf(p: Paystub): number {
-    return p.earnings.reduce((sum, e) => sum + earningCurrent(e), 0);
+    return math.grossCurrent(p);
   }
   protected grossYTDOf(p: Paystub): number {
-    return this.grossCurrentOf(p) * p.periodsYTD;
+    return math.grossYTD(p);
   }
   protected ssCurrentOf(p: Paystub): number {
-    return p.includeFICA ? this.grossCurrentOf(p) * SOCIAL_SECURITY_RATE : 0;
+    return math.socialSecurityCurrent(p);
   }
   protected ssYTDOf(p: Paystub): number {
-    return this.ssCurrentOf(p) * p.periodsYTD;
+    return math.socialSecurityYTD(p);
   }
   protected medicareCurrentOf(p: Paystub): number {
-    return p.includeFICA ? this.grossCurrentOf(p) * MEDICARE_RATE : 0;
+    return math.medicareCurrent(p);
   }
   protected medicareYTDOf(p: Paystub): number {
-    return this.medicareCurrentOf(p) * p.periodsYTD;
+    return math.medicareYTD(p);
   }
   protected otherTaxesCurrentOf(p: Paystub): number {
-    return p.otherTaxes.reduce((s, t) => s + this.itemCurrentFor(t, p), 0);
+    return math.otherTaxesCurrent(p);
   }
   protected federalCurrentOf(p: Paystub): number {
-    if (!p.includeFederalTax) return 0;
-    const gross = this.grossCurrentOf(p);
-    if (gross <= 0) return 0;
-    return Math.round(gross * effectiveFederalRate(gross * 26) * 100) / 100;
+    return math.federalCurrent(p);
   }
   protected federalYTDOf(p: Paystub): number {
-    return this.federalCurrentOf(p) * p.periodsYTD;
+    return math.federalYTD(p);
   }
   protected stateCurrentOf(p: Paystub): number {
-    if (!p.stateForTax) return 0;
-    const gross = this.grossCurrentOf(p);
-    if (gross <= 0) return 0;
-    return Math.round(gross * effectiveStateRate(p.stateForTax, gross * 26) * 100) / 100;
+    return math.stateCurrent(p);
   }
   protected stateYTDOf(p: Paystub): number {
-    return this.stateCurrentOf(p) * p.periodsYTD;
+    return math.stateYTD(p);
   }
   protected taxesCurrentOf(p: Paystub): number {
-    return this.ssCurrentOf(p)
-      + this.medicareCurrentOf(p)
-      + this.federalCurrentOf(p)
-      + this.stateCurrentOf(p)
-      + this.otherTaxesCurrentOf(p);
+    return math.taxesCurrent(p);
   }
   protected taxesYTDOf(p: Paystub): number {
-    return this.taxesCurrentOf(p) * p.periodsYTD;
+    return math.taxesYTD(p);
   }
   protected deductionsCurrentOf(p: Paystub): number {
-    return p.deductions.reduce((s, d) => s + this.itemCurrentFor(d, p), 0);
+    return math.deductionsCurrent(p);
   }
   protected deductionsYTDOf(p: Paystub): number {
-    return this.deductionsCurrentOf(p) * p.periodsYTD;
+    return math.deductionsYTD(p);
   }
   protected netCurrentOf(p: Paystub): number {
-    return this.grossCurrentOf(p) - this.taxesCurrentOf(p) - this.deductionsCurrentOf(p);
+    return math.netCurrent(p);
   }
   protected netYTDOf(p: Paystub): number {
-    return this.netCurrentOf(p) * p.periodsYTD;
+    return math.netYTD(p);
   }
 
   // Form totals — operate on the first/edited paystub
@@ -315,8 +309,8 @@ export class PaystubEditor {
     const preset = DEDUCTION_PRESETS.find((p) => p.id === presetId);
     if (!preset) return;
     const row: PaystubLineItem = preset.kind === '%'
-      ? { description: preset.description, current: 0, percentOfGross: preset.value }
-      : { description: preset.description, current: preset.value, percentOfGross: null };
+      ? { description: preset.description, current: 0, percentOfGross: preset.value, preTax: !!preset.preTax }
+      : { description: preset.description, current: preset.value, percentOfGross: null, preTax: !!preset.preTax };
     this.mutateFirst((p) => ({ ...p, deductions: [...p.deductions, row] }));
   }
 

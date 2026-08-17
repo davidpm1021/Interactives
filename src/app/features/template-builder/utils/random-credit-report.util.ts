@@ -86,15 +86,37 @@ interface AccountConstraints {
   maxAccountAge: number;
 }
 
+/** Whole months between an ISO date and the report date, floored at zero. */
+function monthsBetween(fromISO: string, to: Date): number {
+  const from = new Date(fromISO + 'T00:00:00');
+  const months =
+    (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth());
+  return Math.max(0, months);
+}
+
 /**
- * Generate a 24-month payment history consistent with the account's current
- * paymentStatus. If the account is currently "Current", almost all months
- * are OK with an occasional random blip on lower-scoring reports. Late
- * accounts show that late mark for the most recent 1-3 months, with prior
- * months mostly OK to reflect a recent stumble.
+ * Generate a payment history consistent with the account's current
+ * paymentStatus. If the account is currently "Current", almost all months are
+ * OK with an occasional random blip on lower-scoring reports. Late accounts
+ * show that late mark for the most recent 1-3 months, with prior months
+ * mostly OK to reflect a recent stumble.
+ *
+ * `monthsOpen` caps how far back the strip can go. Months before the account
+ * existed are 'NA' rather than 'OK': the grid used to report two years of
+ * on-time payments on an account opened seven months ago, so the report
+ * contradicted its own Opened date.
  */
-function paymentHistoryFor(paymentStatus: PaymentStatus, score: number): MonthStatus[] {
-  const history: MonthStatus[] = Array(PAYMENT_HISTORY_MONTHS).fill('OK');
+function paymentHistoryFor(
+  paymentStatus: PaymentStatus,
+  score: number,
+  monthsOpen: number,
+): MonthStatus[] {
+  // Index 0 is last month, so an account opened this month still has one
+  // month to report.
+  const realMonths = Math.min(PAYMENT_HISTORY_MONTHS, monthsOpen + 1);
+  const history: MonthStatus[] = Array.from({ length: PAYMENT_HISTORY_MONTHS }, (_, i) =>
+    i < realMonths ? 'OK' : 'NA',
+  );
   const badMark: MonthStatus | null =
     paymentStatus === '30 days late' ? '30'
     : paymentStatus === '60 days late' ? '60'
@@ -103,12 +125,14 @@ function paymentHistoryFor(paymentStatus: PaymentStatus, score: number): MonthSt
 
   if (badMark) {
     const streak = paymentStatus === '30 days late' ? randInt(1, 2) : randInt(2, 4);
-    for (let i = 0; i < streak; i++) history[i] = badMark;
+    for (let i = 0; i < Math.min(streak, realMonths); i++) history[i] = badMark;
   }
 
-  // Add sporadic 30-day blips further back for lower-scoring reports.
+  // Sporadic 30-day blips further back for lower-scoring reports. Starts at
+  // index 1: month 0 is the one paymentStatus describes, and blipping it
+  // produced accounts labelled Current whose latest month read 30 days late.
   const blipRate = score >= 740 ? 0 : score >= 670 ? 0.02 : score >= 580 ? 0.08 : 0.18;
-  for (let i = 0; i < PAYMENT_HISTORY_MONTHS; i++) {
+  for (let i = 1; i < realMonths; i++) {
     if (history[i] !== 'OK') continue;
     if (Math.random() < blipRate) history[i] = '30';
   }
@@ -218,7 +242,7 @@ export function randomCreditReport(now: Date = new Date()): CreditReport {
   // Fill in the payment history after account status has been chosen so the
   // history strip reads consistently with the current paymentStatus.
   for (const a of accounts) {
-    a.paymentHistory = paymentHistoryFor(a.paymentStatus, score);
+    a.paymentHistory = paymentHistoryFor(a.paymentStatus, score, monthsBetween(a.openedDate, now));
   }
 
   const numInquiries = randInt(0, 4);

@@ -62,7 +62,7 @@ const SERIES = [
     label: 'Mortgage (30-yr fixed)',
     fredCode: 'MORTGAGE30US',
     fredTitle: '30-Year Fixed Rate Mortgage Average in the United States',
-    sourcePublisher: 'Freddie Mac — Primary Mortgage Market Survey',
+    sourcePublisher: 'Freddie Mac, Primary Mortgage Market Survey',
     units: 'Percent, Not Seasonally Adjusted',
     frequency: 'Weekly',
     methodology:

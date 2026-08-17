@@ -73,7 +73,9 @@ export function sampleSavings(): AccountStatement {
       { date: '2026-05-19', description: 'TRANSFER FROM CHECKING',        amount: 100.00, kind: 'credit' },
       { date: '2026-05-25', description: 'WITHDRAWAL EMERGENCY CAR REPAIR', amount: 240.00, kind: 'debit'  },
       { date: '2026-05-26', description: 'TRANSFER FROM CHECKING',        amount: 100.00, kind: 'credit' },
-      { date: '2026-05-31', description: 'INTEREST CREDIT',                amount:  13.18, kind: 'credit' },
+      // No INTEREST CREDIT row here. Interest lives in interestEarned below
+      // and posts as its own row; listing it in both places counted it twice
+      // and overstated the ending balance by $13.18.
     ],
     fees: 0,
     interestEarned: 13.18,

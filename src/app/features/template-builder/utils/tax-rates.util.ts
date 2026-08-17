@@ -18,12 +18,16 @@ const STATE_RATE: Record<string, (annualGross: number) => number> = {
   WY: () => 0,
 
   // Flat-rate states.
+  AZ: () => 0.025,
   CO: () => 0.044,
-  NC: () => 0.045,
+  IA: () => 0.038,
+  ID: () => 0.053,
   IL: () => 0.0495,
   IN: () => 0.0315,
   KY: () => 0.04,
+  LA: () => 0.03,
   MI: () => 0.0425,
+  NC: () => 0.045,
   PA: () => 0.0307,
   UT: () => 0.0485,
 
@@ -39,6 +43,31 @@ const STATE_RATE: Record<string, (annualGross: number) => number> = {
   MA: () => 0.05,
   CT: (g) => (g < 50000 ? 0.05 : g < 100000 ? 0.055 : 0.0635),
   GA: (g) => (g < 50000 ? 0.0539 : 0.0575),
+
+  // Remaining states, added so a teacher can pick their own rather than
+  // borrow a neighbour's rate or fall back to "No state tax". Same standard
+  // as everything above: approximate effective withholding, classroom-grade,
+  // not a withholding table.
+  AL: (g) => (g < 10000 ? 0.03 : g < 25000 ? 0.042 : 0.048),
+  AR: (g) => (g < 15000 ? 0.01 : g < 30000 ? 0.025 : 0.037),
+  DE: (g) => (g < 10000 ? 0.01 : g < 25000 ? 0.031 : g < 60000 ? 0.048 : 0.056),
+  HI: (g) => (g < 15000 ? 0.02 : g < 30000 ? 0.045 : g < 75000 ? 0.065 : 0.078),
+  KS: (g) => (g < 15000 ? 0.031 : g < 40000 ? 0.046 : 0.052),
+  MD: (g) => (g < 15000 ? 0.028 : g < 50000 ? 0.045 : 0.05),
+  ME: (g) => (g < 25000 ? 0.036 : g < 60000 ? 0.058 : 0.068),
+  MO: (g) => (g < 15000 ? 0.015 : g < 30000 ? 0.031 : 0.043),
+  MS: (g) => (g < 15000 ? 0.02 : 0.04),
+  // North Dakota and Ohio both exempt a sizeable first slice of income, so a
+  // student earning under it correctly sees no state tax withheld at all.
+  ND: (g) => (g < 48000 ? 0 : g < 245000 ? 0.0195 : 0.025),
+  NE: (g) => (g < 20000 ? 0.025 : g < 50000 ? 0.042 : 0.05),
+  NM: (g) => (g < 15000 ? 0.017 : g < 35000 ? 0.032 : g < 80000 ? 0.047 : 0.055),
+  OH: (g) => (g < 26000 ? 0 : g < 100000 ? 0.0245 : 0.031),
+  OK: (g) => (g < 15000 ? 0.012 : g < 35000 ? 0.031 : 0.043),
+  RI: (g) => (g < 30000 ? 0.031 : g < 75000 ? 0.045 : 0.052),
+  SC: (g) => (g < 17000 ? 0.005 : g < 35000 ? 0.033 : 0.052),
+  VA: (g) => (g < 10000 ? 0.021 : g < 25000 ? 0.04 : 0.05),
+  WV: (g) => (g < 15000 ? 0.025 : g < 40000 ? 0.037 : 0.047),
 };
 
 export function hasStateIncomeTax(stateAbbr: string): boolean {
@@ -49,23 +78,47 @@ export function hasStateIncomeTax(stateAbbr: string): boolean {
 }
 
 /**
- * Effective state income tax withholding rate for the given annual gross.
- * Returns 0 for no-tax states. Adds a small jitter for realism so two
- * paystubs from the same employer don't show identical state tax cents.
+ * Every state this file can withhold for, sorted, for the editor's state
+ * picker to offer.
+ *
+ * Derived rather than listed. The picker used to carry its own copy of these
+ * abbreviations, so adding a state here left it invisible in the UI until
+ * somebody remembered to edit the component too.
  */
-export function effectiveStateRate(stateAbbr: string, annualGross: number): number {
+export const STATES_WITH_INCOME_TAX: readonly string[] = Object.keys(STATE_RATE)
+  .filter((abbr) => hasStateIncomeTax(abbr))
+  .sort();
+
+/**
+ * Effective state income tax withholding rate for the given annual gross.
+ * Returns 0 for no-tax states. Offsets the published rate slightly so two
+ * paystubs from the same employer don't show identical state tax cents.
+ *
+ * `jitter` is a 0-1 position within that offset window. Callers that read a
+ * rate repeatedly must pass a value they hold onto: a paystub re-derives its
+ * tax on every render, so rolling a fresh number here made the withholding on
+ * screen change as the teacher typed. The default keeps one-shot callers, like
+ * the W-2 generator, working as before.
+ */
+export function effectiveStateRate(
+  stateAbbr: string,
+  annualGross: number,
+  jitter: number = Math.random(),
+): number {
   const fn = STATE_RATE[stateAbbr];
   if (!fn) return 0;
   const base = fn(annualGross);
   if (base === 0) return 0;
-  // ±0.3% jitter
-  const jitter = (Math.random() - 0.5) * 0.006;
-  return Math.max(0, base + jitter);
+  // ±0.3%
+  const offset = (jitter - 0.5) * 0.006;
+  return Math.max(0, base + offset);
 }
 
 /**
  * Effective federal income tax withholding rate for the given annual gross.
- * Single filer, standard deduction. Returns roughly:
+ * Single filer, standard deduction. `jitter` positions the rate within its
+ * band; see effectiveStateRate for why a caller should supply it. Returns
+ * roughly:
  *   $15k → 1–3%
  *   $25k → 3–5%
  *   $40k → 6–8%
@@ -73,11 +126,14 @@ export function effectiveStateRate(stateAbbr: string, annualGross: number): numb
  *   $90k → 11–13%
  *  $120k → 13–15%
  */
-export function effectiveFederalRate(annualGross: number): number {
-  if (annualGross < 15000) return 0.01 + Math.random() * 0.02;
-  if (annualGross < 25000) return 0.03 + Math.random() * 0.02;
-  if (annualGross < 40000) return 0.06 + Math.random() * 0.02;
-  if (annualGross < 60000) return 0.09 + Math.random() * 0.02;
-  if (annualGross < 90000) return 0.11 + Math.random() * 0.02;
-  return 0.13 + Math.random() * 0.02;
+export function effectiveFederalRate(
+  annualGross: number,
+  jitter: number = Math.random(),
+): number {
+  if (annualGross < 15000) return 0.01 + jitter * 0.02;
+  if (annualGross < 25000) return 0.03 + jitter * 0.02;
+  if (annualGross < 40000) return 0.06 + jitter * 0.02;
+  if (annualGross < 60000) return 0.09 + jitter * 0.02;
+  if (annualGross < 90000) return 0.11 + jitter * 0.02;
+  return 0.13 + jitter * 0.02;
 }

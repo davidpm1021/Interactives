@@ -1,6 +1,7 @@
 <app-editor-shell
   [title]="variant() === 2 ? 'Invoice Builder' : 'Bill Builder'"
   singularLabel="bill"
+  [allowTwoPerPage]="false"
   [(docs)]="bills"
   [previewTpl]="previewTpl"
   [randomFn]="randomFnRef"

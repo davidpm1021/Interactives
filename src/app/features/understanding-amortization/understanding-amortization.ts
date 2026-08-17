@@ -6,11 +6,12 @@ import { AmortizationTable } from './components/amortization-table/amortization-
 import { LoanCharts } from './components/loan-charts/loan-charts';
 import { AmortizationService } from './services/amortization.service';
 import { LoanInputs, LoanSummary, Payment } from './models/amortization.models';
+import { ScrollCueComponent } from '../../shared/scroll-cue/scroll-cue.component';
 
 @Component({
   selector: 'app-understanding-amortization',
   standalone: true,
-  imports: [TopHeader, LoanForm, SummaryBar, AmortizationTable, LoanCharts],
+  imports: [TopHeader, LoanForm, SummaryBar, AmortizationTable, LoanCharts, ScrollCueComponent],
   providers: [AmortizationService],
   templateUrl: './understanding-amortization.html',
   styleUrl: './understanding-amortization.scss',

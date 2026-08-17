@@ -25,11 +25,6 @@ export const routes: Routes = [
     loadComponent: () => import('./features/retirement-calculator/retirement-calculator').then((m) => m.RetirementCalculator),
   },
   {
-    path: 'net-worth-visualizer',
-    title: 'Salary vs. Net Worth | NGPF',
-    loadComponent: () => import('./features/net-worth-visualizer/net-worth-visualizer').then((m) => m.NetWorthVisualizer),
-  },
-  {
     path: 'cost-of-borrowing',
     title: 'Cost of Borrowing | NGPF',
     loadComponent: () => import('./features/cost-of-borrowing/cost-of-borrowing').then((m) => m.CostOfBorrowing),

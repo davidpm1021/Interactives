@@ -15,6 +15,7 @@ import {
   StudyMode,
 } from './models/flashcard.models';
 import { AnalyticsService } from '../../shared/services/analytics.service';
+import { ScrollCueComponent } from '../../shared/scroll-cue/scroll-cue.component';
 
 @Component({
   selector: 'app-ngpf-vocabulary-flashcards',
@@ -26,6 +27,7 @@ import { AnalyticsService } from '../../shared/services/analytics.service';
     StudySettingsComponent,
     FlashcardViewerComponent,
     CompletionScreenComponent,
+    ScrollCueComponent,
   ],
   templateUrl: './ngpf-vocabulary-flashcards.html',
   styleUrl: './ngpf-vocabulary-flashcards.scss',

@@ -223,6 +223,14 @@
           }
         </div>
         <div class="paystub-editor__line-meta">
+          <label class="paystub-editor__pretax">
+            <input
+              type="checkbox"
+              [ngModel]="!!deduction.preTax"
+              (ngModelChange)="updateDeduction($index, { preTax: $event })"
+              [attr.aria-label]="'Deduction row ' + ($index + 1) + ' comes out before income tax'" />
+            <span>Pre-tax</span>
+          </label>
           @if (deduction.percentOfGross != null) {
             <span>Current: <strong>{{ itemCurrentFor(deduction, current()) | currency }}</strong></span>
           }
@@ -242,7 +250,7 @@
           <option value="">+ Add common deduction…</option>
           @for (preset of deductionPresets; track preset.id) {
             <option [value]="preset.id">
-              {{ preset.description }} — {{ preset.kind === '%' ? preset.value + '% of gross' : '$' + preset.value }}
+              {{ preset.description }} ({{ preset.kind === '%' ? preset.value + '% of gross' : '$' + preset.value }})
             </option>
           }
         </select>

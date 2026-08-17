@@ -132,6 +132,15 @@
     }
   }
 
+  // Wraps the label and radios so they stay one unit when the page count sits
+  // beside them, and so hiding them leaves the row's spacing intact.
+  &__copies-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ngpf-spacing-md);
+  }
+
   &__copies-label {
     font-weight: 500;
   }

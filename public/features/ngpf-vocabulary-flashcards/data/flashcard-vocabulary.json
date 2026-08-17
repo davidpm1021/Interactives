@@ -1,9 +1,9 @@
 {
   "metadata": {
     "version": "1.0.0",
-    "generatedAt": "2026-07-30T17:42:03.485Z",
+    "generatedAt": "2026-08-12T20:48:10.276Z",
     "sourceDocument": "NGPF Personal Finance Dictionary",
-    "totalTerms": 660
+    "totalTerms": 662
   },
   "units": [
     {
@@ -882,6 +882,15 @@
         },
         {
           "id": "investing-012",
+          "term": "Cash Settlement Account",
+          "definition": "The account used to buy investments and receive proceeds from any investments you sell",
+          "spanish": {
+            "term": "La cuenta de liquidación en efectivo",
+            "definition": "Spanish translation coming soon!"
+          }
+        },
+        {
+          "id": "investing-013",
           "term": "Compound Return",
           "definition": "The growth of an investment where earnings, such as dividends or interest, are reinvested to generate additional earnings over time",
           "spanish": {
@@ -890,7 +899,7 @@
           }
         },
         {
-          "id": "investing-013",
+          "id": "investing-014",
           "term": "Coupon",
           "definition": "The annual interest payment on a bond, usually expressed as a percentage of its face value",
           "spanish": {
@@ -899,7 +908,7 @@
           }
         },
         {
-          "id": "investing-014",
+          "id": "investing-015",
           "term": "Diversification",
           "definition": "The practice of investing in a large variety of stocks, bonds, and/or funds as a way to reduce your overall risk",
           "spanish": {
@@ -908,7 +917,7 @@
           }
         },
         {
-          "id": "investing-015",
+          "id": "investing-016",
           "term": "Dividend",
           "definition": "Money from the profits of a company that is paid out to its shareholders, typically on a quarterly basis",
           "spanish": {
@@ -917,7 +926,7 @@
           }
         },
         {
-          "id": "investing-016",
+          "id": "investing-017",
           "term": "Dollar Cost Averaging",
           "definition": "The practice of putting a fixed amount into an investment over a period of time, regardless of the price of that investment",
           "spanish": {
@@ -926,7 +935,7 @@
           }
         },
         {
-          "id": "investing-017",
+          "id": "investing-018",
           "term": "Exchange-Traded Fund (ETF)",
           "definition": "A collection of stocks and/or bonds that are traded on securities exchanges. Unlike mutual funds, they can be traded throughout the day like an individual stock.",
           "spanish": {
@@ -935,7 +944,7 @@
           }
         },
         {
-          "id": "investing-018",
+          "id": "investing-019",
           "term": "Index Fund",
           "definition": "A low-fee portfolio of stocks chosen to track or mimic a stock market index, thereby removing the human element of investing because no one is choosing the individual stocks",
           "spanish": {
@@ -944,7 +953,7 @@
           }
         },
         {
-          "id": "investing-019",
+          "id": "investing-020",
           "term": "Individual Retirement Account (IRA)",
           "definition": "An investing tool for individuals to earmark funds specifically for their retirement",
           "spanish": {
@@ -953,7 +962,7 @@
           }
         },
         {
-          "id": "investing-020",
+          "id": "investing-021",
           "term": "Inflation",
           "definition": "The rate at which the price of goods increases and consumer purchasing power decreases over time",
           "spanish": {
@@ -962,7 +971,7 @@
           }
         },
         {
-          "id": "investing-021",
+          "id": "investing-022",
           "term": "Insider Trading",
           "definition": "The illegal act of trading a company's stock using information that is not available to the public",
           "spanish": {
@@ -971,16 +980,16 @@
           }
         },
         {
-          "id": "investing-022",
+          "id": "investing-023",
           "term": "Investing",
-          "definition": "(No definition provided)",
+          "definition": "The process of setting money aside to increase wealth over time for long-term financial goals such as retirement",
           "spanish": {
             "term": "La inversión",
             "definition": "Es un proceso de guardar dinero para aumentar su riqueza para poder lograr metas financieras a largo plazo, por ejemplo la jubilación"
           }
         },
         {
-          "id": "investing-023",
+          "id": "investing-024",
           "term": "Investment",
           "definition": "An asset or item that is acquired with the goal of making a profit",
           "spanish": {
@@ -989,7 +998,7 @@
           }
         },
         {
-          "id": "investing-024",
+          "id": "investing-025",
           "term": "Market Capitalization",
           "definition": "Market value of a company's outstanding shares calculated by multiplying the current share price by number of shares outstanding",
           "spanish": {
@@ -998,7 +1007,7 @@
           }
         },
         {
-          "id": "investing-025",
+          "id": "investing-026",
           "term": "Micro-Investing Platform",
           "definition": "An application that allows users to regularly save small sums of money",
           "spanish": {
@@ -1007,7 +1016,7 @@
           }
         },
         {
-          "id": "investing-026",
+          "id": "investing-027",
           "term": "Municipal Bond",
           "definition": "A bond, often having tax advantages for individual investors, issued by a state or local government which typically uses the loan to pay for public works to benefit its citizens",
           "spanish": {
@@ -1016,7 +1025,7 @@
           }
         },
         {
-          "id": "investing-027",
+          "id": "investing-028",
           "term": "Mutual Fund",
           "definition": "A collection of stocks and/or bonds combined into one fund which will be traded as a unit, typically chosen and actively managed by an \"expert\" in exchange for a fee from each investor",
           "spanish": {
@@ -1025,7 +1034,7 @@
           }
         },
         {
-          "id": "investing-028",
+          "id": "investing-029",
           "term": "Nasdaq",
           "definition": "The second largest stock exchange in the world behind the NYSE",
           "spanish": {
@@ -1034,7 +1043,7 @@
           }
         },
         {
-          "id": "investing-029",
+          "id": "investing-030",
           "term": "New York Stock Exchange (NYSE)",
           "definition": "The world's largest stock exchange, physically located in New York City",
           "spanish": {
@@ -1043,7 +1052,7 @@
           }
         },
         {
-          "id": "investing-030",
+          "id": "investing-031",
           "term": "Nominal Rate of Return",
           "definition": "The rate of return that does not account for inflation or taxes",
           "spanish": {
@@ -1052,7 +1061,7 @@
           }
         },
         {
-          "id": "investing-031",
+          "id": "investing-032",
           "term": "Passive Investing",
           "definition": "A long-term strategy for building wealth by buying investments - typically index funds - and holding them for many years to minimize trading and costs. Research shows that 85-95% of passively managed funds perform better than actively managed funds over the long run.",
           "spanish": {
@@ -1061,7 +1070,7 @@
           }
         },
         {
-          "id": "investing-032",
+          "id": "investing-033",
           "term": "Pension",
           "definition": "A retirement account, offered in some job sectors or companies, that an employer maintains to give an employee a fixed payout at retirement",
           "spanish": {
@@ -1070,7 +1079,7 @@
           }
         },
         {
-          "id": "investing-033",
+          "id": "investing-034",
           "term": "Portfolio",
           "definition": "A collection of financial investments like stocks, bonds, commodities, cash, and cash equivalents, including mutual funds and ETFs",
           "spanish": {
@@ -1079,7 +1088,7 @@
           }
         },
         {
-          "id": "investing-034",
+          "id": "investing-035",
           "term": "Purchasing Power",
           "definition": "The number of goods and services that money can buy. It can weaken in time due to inflation.",
           "spanish": {
@@ -1088,7 +1097,7 @@
           }
         },
         {
-          "id": "investing-035",
+          "id": "investing-036",
           "term": "Rate Of Return",
           "definition": "The ratio of money gained or lost on an investment relative to the amount of money invested; also known as return on investment (ROI)",
           "spanish": {
@@ -1097,7 +1106,7 @@
           }
         },
         {
-          "id": "investing-036",
+          "id": "investing-037",
           "term": "Real Rate Of Return",
           "definition": "The rate of return that accounts for inflation and taxes",
           "spanish": {
@@ -1106,7 +1115,7 @@
           }
         },
         {
-          "id": "investing-037",
+          "id": "investing-038",
           "term": "Risk",
           "definition": "Degree of uncertainty on how likely the investor is to make money on an investment",
           "spanish": {
@@ -1115,7 +1124,7 @@
           }
         },
         {
-          "id": "investing-038",
+          "id": "investing-039",
           "term": "Robo-Advisor",
           "definition": "An online wealth management service that provides automated, algorithm-based portfolio management advice without the use of human financial planners",
           "spanish": {
@@ -1124,7 +1133,7 @@
           }
         },
         {
-          "id": "investing-039",
+          "id": "investing-040",
           "term": "Roth IRA",
           "definition": "An individual retirement account that allows a person to set aside after-tax income up to a specified amount each year",
           "spanish": {
@@ -1133,7 +1142,16 @@
           }
         },
         {
-          "id": "investing-040",
+          "id": "investing-041",
+          "term": "Share",
+          "definition": "A single unit of ownership in a company. It can refer to units of stock, mutual funds, and real estate investment trusts",
+          "spanish": {
+            "term": "Share",
+            "definition": "Spanish translation coming soon!"
+          }
+        },
+        {
+          "id": "investing-042",
           "term": "Shareholder",
           "definition": "A person, company, or institution that owns that least one share in a company",
           "spanish": {
@@ -1142,7 +1160,7 @@
           }
         },
         {
-          "id": "investing-041",
+          "id": "investing-043",
           "term": "Security",
           "definition": "A financial asset, such as a stock or a bond, that can be bought and sold in a financial market",
           "spanish": {
@@ -1151,7 +1169,7 @@
           }
         },
         {
-          "id": "investing-042",
+          "id": "investing-044",
           "term": "S&P 500",
           "definition": "An index of 500 large cap companies chosen based on their size, industry, and other factors, used to represent the entire market",
           "spanish": {
@@ -1160,7 +1178,7 @@
           }
         },
         {
-          "id": "investing-043",
+          "id": "investing-045",
           "term": "Social Security",
           "definition": "A federal program that provides monthly benefits to millions of Americans, including retirees, military families, surviving families of deceased workers, and disabled individuals",
           "spanish": {
@@ -1169,7 +1187,7 @@
           }
         },
         {
-          "id": "investing-044",
+          "id": "investing-046",
           "term": "Stock",
           "definition": "A share of the value of a company, which can be bought, sold, or traded as an investment and which gives the investor small partial ownership of the company",
           "spanish": {
@@ -1178,7 +1196,7 @@
           }
         },
         {
-          "id": "investing-045",
+          "id": "investing-047",
           "term": "Stock Exchange",
           "definition": "A market where shares in corporations are bought and sold through an organized system",
           "spanish": {
@@ -1187,7 +1205,7 @@
           }
         },
         {
-          "id": "investing-046",
+          "id": "investing-048",
           "term": "Target Date Fund (TDF)",
           "definition": "A type of investment fund that rebalances its asset mix over time based on a projected retirement year",
           "spanish": {
@@ -1196,7 +1214,7 @@
           }
         },
         {
-          "id": "investing-047",
+          "id": "investing-049",
           "term": "Treasury Bond",
           "definition": "A bond, generally considered to be a risk-free investment, issued by the U.S. Treasury with a maturity of more than 10 years",
           "spanish": {
@@ -1205,7 +1223,7 @@
           }
         },
         {
-          "id": "investing-048",
+          "id": "investing-050",
           "term": "Traditional IRA",
           "definition": "An individual retirement account that allows a person to set aside pre-tax income up to a specified amount each year",
           "spanish": {

@@ -55,7 +55,26 @@ export class EditorShell {
    */
   readonly hidePreview = model<boolean>(false);
 
-  protected readonly copiesPerPage = signal<1 | 2>(1);
+  /**
+   * Whether two copies can share a sheet.
+   *
+   * False for documents that simply do not fit stacked: a credit report, a
+   * bill and a bank statement each run close to a full page on their own, and
+   * halving the height either clips them or shrinks the type past reading
+   * size. Those editors hide the control rather than offer a layout that
+   * prints badly.
+   */
+  readonly allowTwoPerPage = input<boolean>(true);
+
+  private readonly copiesPerPageRaw = signal<1 | 2>(1);
+
+  /**
+   * Clamped to 1 wherever two-up is not allowed, so the rest of the shell can
+   * read this without repeating the check.
+   */
+  protected readonly copiesPerPage = computed<1 | 2>(() =>
+    this.allowTwoPerPage() ? this.copiesPerPageRaw() : 1,
+  );
   protected readonly batchCount = signal<number>(1);
   protected readonly batchAnnouncement = signal<string>('');
 
@@ -92,7 +111,7 @@ export class EditorShell {
   }
 
   protected setCopiesPerPage(n: 1 | 2): void {
-    this.copiesPerPage.set(n);
+    this.copiesPerPageRaw.set(n);
   }
 
   protected setBatchCount(value: string | number): void {

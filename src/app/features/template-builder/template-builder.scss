@@ -23,6 +23,27 @@
     }
   }
 
+  &__lede {
+    font-size: 1.05rem;
+  }
+
+  &__steps {
+    max-width: 60ch;
+    margin: var(--ngpf-spacing-md) 0 0;
+    padding-left: 1.35rem;
+    color: var(--ngpf-text-secondary);
+    line-height: 1.5;
+
+    li + li {
+      margin-top: var(--ngpf-spacing-xs);
+    }
+
+    // The action in each step carries the weight; the rest is supporting detail.
+    strong {
+      color: var(--ngpf-text-primary);
+    }
+  }
+
   &__group {
     margin-bottom: var(--ngpf-spacing-xl);
 

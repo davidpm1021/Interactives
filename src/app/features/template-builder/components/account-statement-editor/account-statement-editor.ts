@@ -44,6 +44,12 @@ function emptyStatement(forSavings: boolean): AccountStatement {
 interface EnrichedTxn extends AccountTransaction {
   runningBalance: number;
   origIndex: number;
+  /**
+   * True for the interest and fee rows derived from the summary fields. They
+   * have no typed transaction behind them, so they are not editable and the
+   * preview must not offer to jump to one.
+   */
+  synthetic?: boolean;
 }
 
 @Component({
@@ -134,11 +140,43 @@ export class AccountStatementEditor {
       return da < db ? -1 : 1;
     });
     let running = s.beginningBalance;
-    return withIndex.map((t) => {
+    const rows: EnrichedTxn[] = withIndex.map((t) => {
       const amt = t.amount || 0;
       running += t.kind === 'credit' ? amt : -amt;
       return { ...t, runningBalance: running };
     });
+
+    // Interest and fees are entered as summary figures rather than typed
+    // transactions, but they still move the balance, so they post here as
+    // rows dated the last day of the period. Without them the running column
+    // stopped short of the stated ending balance: every generated savings
+    // statement was out by exactly its interest, which made the standard
+    // exercise of reconciling a statement impossible to complete.
+    if (s.interestEarned > 0) {
+      running += s.interestEarned;
+      rows.push({
+        date: s.periodEnd,
+        description: 'INTEREST CREDIT',
+        amount: s.interestEarned,
+        kind: 'credit',
+        runningBalance: running,
+        origIndex: -1,
+        synthetic: true,
+      });
+    }
+    if (s.fees > 0) {
+      running -= s.fees;
+      rows.push({
+        date: s.periodEnd,
+        description: 'SERVICE FEES',
+        amount: s.fees,
+        kind: 'debit',
+        runningBalance: running,
+        origIndex: -2,
+        synthetic: true,
+      });
+    }
+    return rows;
   }
 
   private readonly mutator = new FirstItemMutator(this.statements, sampleChecking);

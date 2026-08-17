@@ -12,6 +12,7 @@ import { BottomHeader } from '../../shared/bottom-header/bottom-header';
 import { PreferenceRadarComponent } from './components/preference-radar/preference-radar.component';
 import { PreferenceSliderComponent } from './components/preference-slider/preference-slider.component';
 import { SurveyConfigService } from './services/survey-config.service';
+import { ScrollCueComponent } from '../../shared/scroll-cue/scroll-cue.component';
 
 @Component({
   selector: 'app-car-preferences',
@@ -22,6 +23,7 @@ import { SurveyConfigService } from './services/survey-config.service';
     BottomHeader,
     PreferenceSliderComponent,
     PreferenceRadarComponent,
+    ScrollCueComponent,
   ],
   providers: [SurveyConfigService],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -133,6 +133,20 @@
     }
   }
 
+  // Sits with the row's other metadata rather than among the value inputs:
+  // it says how the row is treated, not what it is worth.
+  &__pretax {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ngpf-spacing-xs);
+    cursor: pointer;
+    user-select: none;
+
+    input {
+      cursor: pointer;
+    }
+  }
+
   &__line-meta {
     display: flex;
     flex-wrap: wrap;
