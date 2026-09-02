@@ -36,7 +36,7 @@ export const routes: Routes = [
   },
   {
     path: 'compound-interest-time-machine',
-    title: 'Compound Interest Time Machine | NGPF',
+    title: 'Compound Growth Time Machine | NGPF',
     loadComponent: () =>
       import('./features/compound-interest-time-machine/compound-interest-time-machine').then(
         (m) => m.CompoundInterestTimeMachine,

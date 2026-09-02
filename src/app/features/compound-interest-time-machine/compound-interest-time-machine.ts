@@ -293,7 +293,7 @@ export class CompoundInterestTimeMachine {
     // both totals are labelled on the chart, so this only has to explain the
     // mechanism. Restating the figures here pushed the reflection question
     // well below the fold.
-    return `After year one, the 10% account is only $50 ahead. But that $50 earns interest too, and so does every dollar of interest after it, so the gap widens by more every year.`;
+    return `After year one, the 10% account is only $50 ahead. But that $50 earns a return too, and so does every dollar it earns after that, so the gap widens by more every year.`;
   });
 
   protected onChallenge2Select(id: string): void {

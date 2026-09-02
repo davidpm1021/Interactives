@@ -35,7 +35,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     predictPrompt40: 'Now, where do you think it will be at Year 40?',
     revealButton: 'Show me reality',
     reflectInsight:
-      'The growth looks slow at first, then accelerates. That\'s the "compound" effect. Your money doesn\'t just earn interest. It earns interest on the interest.',
+      'The growth looks slow at first, then accelerates. That\'s the "compound" effect. Your money doesn\'t just earn a return on what you put in. It earns a return on everything it has already earned.',
     reflectInsightAccurate:
       'Impressive. Most people guess way lower. But did you expect it to curve like that? The growth isn\'t steady. It accelerates.',
     // Not "what surprised you": a student whose guess was close gets told they
@@ -58,7 +58,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     ],
     revealButton: 'Show me',
     reflectInsight:
-      'Doubling the rate of return didn\'t double the outcome. It did way more than that. With compound interest, small differences in return get magnified over time. That\'s why it\'s worth knowing what different accounts and investments actually earn.',
+      'Doubling the rate of return didn\'t double the outcome. It did way more than that. With compound growth, small differences in return get magnified over time. That\'s why it\'s worth knowing what different accounts and investments actually earn.',
     reflectPrompt:
       'In your own words: why does doubling the rate of return more than double the final balance?',
   },
@@ -74,7 +74,7 @@ export const CHALLENGE_CONTENT: Record<string, ChallengeContent> = {
     // found both read as sales-y and potentially out of touch for
     // lower-income students.
     reflectInsight:
-      'Compound interest turned {{c3Contributed}} into {{c3Final}}. That\'s the power of consistent investing over time.',
+      'Compound growth turned {{c3Contributed}} into {{c3Final}}. That\'s the power of consistent investing over time.',
     reflectPrompt:
       'What does this make you want to change (or keep doing) with your own money?',
   },

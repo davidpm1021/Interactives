@@ -535,7 +535,7 @@ export class RevealChartComponent {
       'var(--ngpf-royal-blue)',
       `Money you invested: ${formatCurrency(Math.round(totalContributed))}`,
     );
-    bandLabel(interestMid, 'var(--ngpf-sky-blue)', 'Interest earned');
+    bandLabel(interestMid, 'var(--ngpf-sky-blue)', 'Growth');
   }
 
   /**

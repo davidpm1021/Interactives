@@ -12,7 +12,7 @@ interface ConceptStep {
 }
 
 /**
- * Pre-guess concept demo: shows $1 at 10% for 3 years so students see the
+ * Pre-guess concept demo: shows $100 at a 10% return for 3 years so students see
  * "interest earns interest" mechanic before Challenge 1's hockey-stick reveal.
  * Uses simple SVG stacked bars (principal vs. accumulated interest) rather
  * than d3, because the numbers are so small and the point is qualitative.
@@ -32,10 +32,15 @@ export class ConceptDemoComponent {
   protected readonly stepIndex = signal(0);
 
   /**
-   * Uses $100 (not $1) as the principal so the yearly interest chunks are
+   * Uses $100 (not $1) as the principal so the yearly gains are
    * $10 / $11 / $12.10 — big enough to actually SEE the sliver grow. The
-   * pedagogy (interest earns interest) is identical to the $1 case; the
+   * pedagogy (what you earn starts earning too) is identical to the $1 case; the
    * numbers just render as meaningful bar segments instead of hairlines.
+   *
+   * 10% is a plausible investment return, not a savings rate, and the copy
+   * frames it that way. A realistic savings APY would make the yearly steps
+   * $4.00, $4.16 and $4.33, which hides the very effect this demo exists to
+   * show.
    */
   protected readonly steps: readonly ConceptStep[] = [
     {
@@ -43,7 +48,7 @@ export class ConceptDemoComponent {
       balance: 100,
       interestThisYear: 0,
       narrative:
-        'You start with $100. Imagine you put it in an account that pays 10% every year.',
+        'You start with $100. Imagine you invest it, and it earns a 10% return every year.',
     },
     {
       year: 1,
@@ -57,7 +62,7 @@ export class ConceptDemoComponent {
       balance: 121,
       interestThisYear: 11,
       narrative:
-        'After year 2, you earn $11 instead of $10. Why? You\'re earning 10% on $110, not on $100. That extra dollar is interest earning interest. That\'s what makes it "compound".',
+        'After year 2, you earn $11 instead of $10. Why? You\'re earning 10% on $110, not on $100. That extra dollar is last year\'s earnings earning for you. That\'s what makes it "compound".',
     },
     {
       year: 3,

@@ -24,11 +24,11 @@ export class ReflectionFormComponent {
   protected readonly fields: readonly ReflectionField[] = [
     {
       id: 'summary-remember',
-      prompt: 'One thing I want to remember about how compound interest works:',
+      prompt: 'One thing I want to remember about how compound growth works:',
     },
     {
       id: 'summary-action',
-      prompt: 'One thing I could do this year to start using compound interest for myself:',
+      prompt: 'One thing I could do this year to start using compound growth for myself:',
     },
     {
       id: 'summary-question',

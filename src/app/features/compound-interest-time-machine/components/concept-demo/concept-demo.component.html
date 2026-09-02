@@ -3,12 +3,12 @@
     Before you guess, watch this
   </h2>
   <p class="concept-demo__lede">
-    The whole story of compound interest is in one idea:
-    <strong>the interest you earn also earns interest.</strong>
+    The whole story of compound growth is in one idea:
+    <strong>the money you earn starts earning too.</strong>
     Here's what that looks like over just three years.
   </p>
 
-  <div class="concept-demo__chart" role="img" aria-label="Stacked bars showing $100 growing over 3 years at 10 percent">
+  <div class="concept-demo__chart" role="img" aria-label="Stacked bars showing $100 growing over 3 years at a 10 percent return">
     <div class="bars">
       @for (bar of bars(); track bar.year) {
         <div class="bar-col" [class.bar-col--highlight]="bar.highlight">
@@ -24,7 +24,7 @@
     </div>
     <div class="legend">
       <span class="legend-item"><span class="swatch swatch--principal"></span> Your original $100</span>
-      <span class="legend-item"><span class="swatch swatch--interest"></span> Interest earned</span>
+      <span class="legend-item"><span class="swatch swatch--interest"></span> Returns earned</span>
     </div>
   </div>
 
@@ -35,7 +35,7 @@
     </div>
     @if (currentStep().interestThisYear > 0) {
       <div class="figure figure--interest">
-        <div class="figure-label">Interest earned this year</div>
+        <div class="figure-label">Earned this year</div>
         <div class="figure-value">+${{ currentStep().interestThisYear.toFixed(currentStep().interestThisYear >= 10 ? 0 : 2) }}</div>
       </div>
     }
