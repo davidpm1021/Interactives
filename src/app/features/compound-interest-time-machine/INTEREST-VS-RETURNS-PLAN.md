@@ -1,6 +1,11 @@
 # Separating interest (savings) from returns (investments)
 
-Plan only. No code has been changed.
+**Status: shipped, with one change from the recommendation below.** The plan
+recommended naming the savings/investment contrast once in the intro. On review
+that paragraph was cut, so the activity now uses returns language throughout and
+does not mention savings accounts at all. Everything else shipped as written.
+See commits 0280783, 3df5d8d and the follow-up removing the paragraph.
+
 
 **Context:** NGPF distinguishes interest from returns in all PDs. Savings accounts pay
 interest; investments earn returns from price changes plus dividends. The 10% example
